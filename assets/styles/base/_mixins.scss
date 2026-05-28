@@ -1,0 +1,32 @@
+@use 'variables' as *;
+
+@mixin custom-btn(
+    $bg-opacity: 0.15,
+    $padding: 0.6rem 1rem,
+    $light-color: $ef-primary-orange,
+    $dark-color: $ef-primary-orange
+) {
+    background-color: rgba($light-color, $bg-opacity);
+    border: none;
+    padding: $padding;
+    border-radius: 8px;
+    transition: 0.3s;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $light-color;
+        color: #131926;
+    }
+
+    @include color-mode(dark) {
+        background-color: rgba($dark-color, 0.1);
+        border: 1px solid $dark-color;
+        color: $dark-color;
+        backdrop-filter: blur(5px);
+
+        &:hover {
+            background-color: $dark-color;
+            color: white;
+        }
+    }
+}

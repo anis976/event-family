@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block page_title %}Home{% endblock %}
+
+{% block title %}EventFamily — Accueil{% endblock %}
+
+{% block body %}
+    <section class="ef-hero-section">
+        <div class="ef-hero-overlay"></div>
+
+        <div class="position-relative text-center ef-hero-content">
+            <h1 class="display-4 fw-bold">Welcome to EventFamily</h1>
+            <p class="lead mb-0">The platform that brings your family events together</p>
+        </div>
+
+        <div class="ef-wave-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" aria-hidden="true" focusable="false">
+                <path
+                    fill="currentColor"
+                    fill-opacity="1"
+                    d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,250.7C960,235,1056,181,1152,165.3C1248,149,1344,171,1392,181.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                ></path>
+            </svg>
+        </div>
+    </section>
+
+    <div class="ef-main-content-padding">
+        <div class="row g-4 text-center mb-5">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                    <div class="ef-icon-box mx-auto mb-3">
+                        <i class="bi bi-people fs-3" aria-hidden="true"></i>
+                    </div>
+                    <h5 class="fw-bold">Create family groups</h5>
+                    <p class="text-muted small mb-0">Join us to create and share your family moments</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                    <div class="ef-icon-box mx-auto mb-3">
+                        <i class="bi bi-calendar-event fs-3" aria-hidden="true"></i>
+                    </div>
+                    <h5 class="fw-bold">Organize events</h5>
+                    <p class="text-muted small mb-0">Discover our events</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                    <div class="ef-icon-box mx-auto mb-3">
+                        <i class="bi bi-stars fs-3" aria-hidden="true"></i>
+                    </div>
+                    <h5 class="fw-bold">Stay connected</h5>
+                    <p class="text-muted small mb-0">Keep in touch with your family</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold h4 mb-0 text-body text-truncate me-2 ef-home__section-title">
+                Upcoming Events
+            </h2>
+            <a href="#" class="btn ef-btn-viewAllEvent btn-sm rounded-pill px-3 shadow-sm flex-shrink-0 text-nowrap">
+                View all events <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div class="card mb-3 ef-events__empty-event border-dashed">
+            <div class="card-body d-flex align-items-center justify-content-center ef-events__empty-body">
+                <div class="text-center">
+                    <i class="bi bi-calendar-x fs-1 text-secondary opacity-50 mb-2" aria-hidden="true"></i>
+                    <p class="card-text text-secondary fw-medium mb-0">
+                        No upcoming public events found
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

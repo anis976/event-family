@@ -18,3 +18,13 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+/node_modules/
+
+# Fichiers de test Sass locaux
+/test-out.css.map
+/public/test-compile.css.map
+
+###> symfonycasts/sass-bundle ###
+/public/assets/
+###< symfonycasts/sass-bundle ###

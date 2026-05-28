@@ -1,0 +1,67 @@
+<header class="ef-topbar d-flex justify-content-between align-items-center bg-body navbar navbar-expand-lg shadow-sm">
+    <div class="d-flex align-items-center">
+        <button
+            class="btn border-0 me-2 d-lg-none"
+            type="button"
+            id="mobile-toggle"
+            aria-label="Ouvrir le menu"
+        >
+            <i class="bi bi-list fs-2" aria-hidden="true"></i>
+        </button>
+        <h1 class="mb-0 ef-topbar__title h5">{% block page_title %}Home{% endblock %}</h1>
+    </div>
+
+    <div class="d-flex align-items-center gap-1">
+        <button
+            type="button"
+            id="btnSearchToggle"
+            class="btn px-2 border-0 ef-topbar__search-btn"
+            aria-label="Rechercher"
+            aria-expanded="false"
+            aria-controls="searchBarCollapse"
+        >
+            <i class="bi bi-search fs-5" aria-hidden="true"></i>
+        </button>
+
+        <div class="px-2 position-relative ef-topbar__notification" role="presentation">
+            <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ef-topbar__notification-badge">
+                9
+            </span>
+        </div>
+
+        <div class="dropdown">
+            <button
+                class="btn dropdown-toggle border-0 px-2 ef-topbar__theme-btn"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Choisir le thème"
+            >
+                <i class="bi bi-sun-fill" id="theme-icon-main" aria-hidden="true"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end ef-topbar__dropdown-menu shadow rounded-4">
+                <li>
+                    <button type="button" class="dropdown-item ef-topbar__dropdown-menu-item" data-ef-theme="light">
+                        <i class="bi bi-sun-fill me-2" aria-hidden="true"></i> Clair
+                        <i class="bi bi-check2 d-none" aria-hidden="true"></i>
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="dropdown-item ef-topbar__dropdown-menu-item" data-ef-theme="dark">
+                        <i class="bi bi-moon-stars-fill me-2" aria-hidden="true"></i> Sombre
+                        <i class="bi bi-check2 d-none" aria-hidden="true"></i>
+                    </button>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <button type="button" class="dropdown-item ef-topbar__dropdown-menu-item" data-ef-theme="auto">
+                        <i class="bi bi-circle-half me-2" aria-hidden="true"></i> Auto
+                        <i class="bi bi-check2 d-none" aria-hidden="true"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

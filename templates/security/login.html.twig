@@ -1,0 +1,41 @@
+{% extends 'layout/auth.html.twig' %}
+
+{% block title %}EventFamily — Connexion{% endblock %}
+
+{% block body_class %} ef-signIn{% endblock %}
+
+{% block body %}
+    <div class="container-fluid ef-main-wrapper ef-signIn d-flex align-items-center justify-content-center min-vh-100 p-4">
+        <div class="card shadow-lg p-4 p-lg-5" style="max-width: 420px; width: 100%;">
+            <h1 class="fw-bold mb-3">Connexion</h1>
+            <p class="text-muted small">Page de connexion — maquette HTML/SCSS à venir.</p>
+
+            {% if error %}
+                <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <form method="post" action="{{ path('app_login') }}">
+                {% if csrf_token('authenticate') %}
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                {% endif %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small" for="username">Adresse e-mail</label>
+                    <input type="email" id="username" name="_username" class="form-control" value="{{ last_username }}" autocomplete="email" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small" for="password">Mot de passe</label>
+                    <input type="password" id="password" name="_password" class="form-control" autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="btn btn-submit-custom w-100 mb-3">Se connecter</button>
+            </form>
+
+            <p class="text-center mb-0 small">
+                Pas encore de compte ?
+                <a href="{{ path('app_register') }}" class="ef-link-orange fw-bold text-decoration-none">S'inscrire</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

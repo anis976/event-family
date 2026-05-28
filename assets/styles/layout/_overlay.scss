@@ -1,0 +1,37 @@
+.ef-sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1040;
+    display: none;
+    backdrop-filter: blur(2px);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+    .ef-sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -280px;
+        width: 280px;
+        z-index: 1055;
+        transition: left 0.3s ease-in-out;
+        display: flex !important;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .ef-body.ef-sidebar-open {
+        .ef-sidebar {
+            left: 0;
+        }
+
+        .ef-sidebar-overlay {
+            display: block;
+        }
+    }
+}

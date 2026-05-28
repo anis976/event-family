@@ -1,0 +1,180 @@
+@use '../base/variables' as *;
+
+.ef-sidebar {
+    width: 250px;
+    background-color: $ef-sidebar-bg-light;
+    padding: 0.8rem;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+
+    @include color-mode(dark) {
+        background-color: #1e1e1e;
+        border-right-color: rgba(255, 255, 255, 0.05);
+    }
+
+    &__logo-texte {
+        background-color: #f2f2f2;
+        padding: 12px 15px;
+        border-radius: 8px;
+
+        @include color-mode(dark) {
+            background-color: #252525;
+        }
+    }
+
+    &__logo {
+        width: 40px;
+        height: 40px;
+        background-color: $ef-primary-orange;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .bi {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-soft-gold, 0.2);
+            border: 1px solid rgba($ef-soft-gold, 0.4);
+
+            .bi {
+                color: $ef-soft-gold;
+            }
+        }
+    }
+
+    &__nav-link {
+        font-size: 15px;
+        color: #3f3f46;
+        font-weight: 500;
+        margin-bottom: 5px;
+        border-radius: 8px;
+        padding: 0.25rem 1.25rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+
+        &:hover,
+        &.active {
+            background-color: rgba($ef-primary-orange, 0.1);
+            color: $ef-primary-orange !important;
+        }
+    }
+
+    &__badge-msg {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        padding: 0;
+        line-height: 1;
+    }
+
+    &__info-link {
+        color: #2d2d2d;
+        text-decoration: none;
+        padding: 0.25rem 1.25rem;
+        margin-top: 0.2rem;
+        display: block;
+        border-radius: 8px;
+        transition: 0.2s;
+        font-size: 0.9rem;
+        font-weight: 400;
+
+        @include color-mode(dark) {
+            color: #aaa;
+        }
+
+        &:hover,
+        &--active {
+            background-color: #eee;
+            color: #555 !important;
+
+            @include color-mode(dark) {
+                background-color: #333;
+                color: #aaa !important;
+            }
+        }
+
+        &--active {
+            color: $ef-primary-orange !important;
+            font-weight: 500;
+
+            @include color-mode(dark) {
+                color: $ef-primary-orange !important;
+            }
+        }
+    }
+
+    &__settings-trigger {
+        cursor: pointer;
+    }
+
+    &__settings {
+        margin-top: auto;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+        @include color-mode(dark) {
+            border-top-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+
+    &__settings-name {
+        font-size: 14px;
+        color: #111827;
+        line-height: 1.2;
+        font-weight: 600;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__settings-email {
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    &__settings-dropdown {
+        min-width: calc(100% - 1.5rem);
+    }
+
+    &__settings-link {
+        text-decoration: none;
+        transition: all 0.2s ease;
+
+        @include color-mode(dark) {
+            color: #a0a0a0;
+        }
+
+        &:hover {
+            color: $ef-primary-orange;
+            background-color: rgba($ef-primary-orange, 0.1);
+            transform: translateX(3px);
+        }
+    }
+
+    &__settings-link-auth {
+        color: #b91c1c;
+
+        @include color-mode(dark) {
+            color: #ef4444;
+        }
+    }
+}

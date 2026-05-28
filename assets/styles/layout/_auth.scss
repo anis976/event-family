@@ -1,0 +1,152 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+// Styles partagés login / register (hors base.html.twig)
+.ef-auth-page {
+    .ef-auth__theme {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1050;
+    }
+
+    .card {
+        background-color: var(--bs-body-bg);
+        border: none;
+        transition: transform 0.3s ease;
+
+        @include color-mode(dark) {
+            background-color: $ef-mission-card-dark-bg;
+            border: 1px solid rgba($ef-white-color-dark, 0.1);
+        }
+    }
+
+    .btn-submit-custom {
+        @include custom-btn($bg-opacity: 0.2, $padding: 0.8rem 1.5rem);
+        width: 100%;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-google-custom {
+        @include custom-btn(
+            $bg-opacity: 0.05,
+            $padding: 0.6rem 1rem,
+            $light-color: $gray-700,
+            $dark-color: $ef-white-color-dark
+        );
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid $gray-400;
+        transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease,
+            color 0.3s ease,
+            transform 0.2s ease;
+
+        &:hover {
+            background-color: $ef-primary-orange;
+            border-color: $ef-primary-orange;
+            color: #131926;
+            transform: translateY(-1px);
+
+            i {
+                color: #fff;
+            }
+        }
+
+        &[aria-disabled='true'] {
+            cursor: not-allowed;
+        }
+
+        @include color-mode(dark) {
+            border-color: rgba($ef-primary-orange-dark, 0.6);
+            color: $ef-white-color-dark !important;
+
+            i {
+                color: #fff !important;
+            }
+
+            &:hover {
+                background: $ef-primary-orange-dark;
+                color: #000 !important;
+                border-color: $ef-primary-orange-dark;
+            }
+        }
+
+        i {
+            color: #4285f4;
+            transition: color 0.3s ease;
+        }
+    }
+
+    .form-control {
+        transition: all 0.3s ease;
+
+        &:focus {
+            background-color: rgba($ef-primary-orange, 0.05);
+            border-color: $ef-primary-orange;
+            box-shadow: 0 0 0 0.25rem rgba($ef-primary-orange, 0.15);
+            color: inherit;
+        }
+
+        @include color-mode(dark) {
+            &:focus {
+                background-color: rgba($ef-primary-orange, 0.1);
+                color: $ef-white-color-dark;
+            }
+        }
+    }
+
+    .ef-link-orange {
+        color: $ef-primary-orange-dark;
+        transition: 0.3s;
+
+        &:hover {
+            color: $ef-primary-orange-dark;
+            text-decoration: underline !important;
+        }
+    }
+
+    .divider {
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid $gray-400;
+        }
+
+        @include color-mode(dark) {
+            &::before,
+            &::after {
+                border-color: rgba($ef-white-color-dark, 0.1);
+            }
+        }
+    }
+
+    .form-check-input {
+        cursor: pointer;
+
+        &:checked {
+            background-color: $ef-primary-orange-dark;
+            border-color: $ef-primary-orange-dark;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+        }
+
+        &:focus {
+            border-color: $ef-primary-orange;
+            box-shadow: 0 0 0 0.25rem rgba($ef-primary-orange, 0.25);
+        }
+    }
+
+    h1 {
+        font-size: clamp(1.5rem, 5vw, 2.2rem);
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+}

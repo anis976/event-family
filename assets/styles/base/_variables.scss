@@ -1,0 +1,57 @@
+// ===== Variables globales EventFamily =====
+$ef-primary-orange: #f37a1f;
+$ef-primary-orange-dark: #ff9142;
+$ef-active-hover-orange: #8a4700;
+$ef-bg-light: #fefdfa;
+$ef-sidebar-bg-light: #f8f9fa;
+$ef-soft-gold: #f38d1e;
+$ef-primary-blue: #2b59c3;
+$ef-primary-blue-dark: #1a3a8f;
+$ef-mission-card-bg: #fff7e3;
+$ef-font-size-md: 1.25rem;
+$ef-font-size-sm: 1.1rem;
+$ef-text-gray: #333;
+$ef-border-color: #dee2e6;
+$gray-100: #f8f9fa;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-600-dark: #adb5bd;
+$gray-700: #495057;
+$border-radius: 0.375rem;
+$border-radius-lg: 0.5rem;
+$box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+$box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+
+$ef-white-color-dark: #e0e0e0;
+$ef-mission-card-dark-bg: #2d2a22;
+
+@mixin color-mode($mode) {
+    @if $mode == dark {
+        [data-bs-theme='dark'] & {
+            @content;
+        }
+    } @else {
+        @content;
+    }
+}
+
+@mixin media-breakpoint-up($size) {
+    @if $size == md {
+        @media (min-width: 768px) {
+            @content;
+        }
+    } @else if $size == lg {
+        @media (min-width: 992px) {
+            @content;
+        }
+    }
+}
+
+@mixin media-breakpoint-down($size) {
+    @if $size == md {
+        @media (max-width: 767.98px) {
+            @content;
+        }
+    }
+}

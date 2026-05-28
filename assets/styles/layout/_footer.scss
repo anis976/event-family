@@ -1,0 +1,78 @@
+@use '../base/variables' as *;
+
+.ef-footer {
+    padding: 2rem 1.5rem 1rem;
+    background-color: $gray-100;
+    flex-shrink: 0;
+
+    @include color-mode(dark) {
+        background-color: #1a1a1a;
+    }
+
+    // Tablette + desktop : 3 colonnes sur une seule ligne
+    &__row {
+        @include media-breakpoint-up(md) {
+            flex-wrap: nowrap;
+            align-items: flex-start;
+        }
+    }
+
+    &__col {
+        @include media-breakpoint-down(md) {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    &-link {
+        color: #5c5b5b;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: inline-block;
+        padding: 2px 0;
+
+        @include color-mode(dark) {
+            color: #a0a0a0;
+        }
+
+        &:hover {
+            color: $ef-primary-orange;
+            transform: translateX(3px);
+
+            @include color-mode(dark) {
+                color: $ef-primary-orange;
+            }
+        }
+    }
+
+    .ef-btn-donate {
+        background-color: rgba(243, 141, 30, 0.15);
+        color: $ef-primary-orange;
+        border: none;
+        padding: 0.6rem 2rem;
+        border-radius: 8px;
+        transition: 0.3s;
+
+        @include media-breakpoint-down(md) {
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        &:hover {
+            background-color: $ef-primary-orange;
+            color: white;
+        }
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-primary-orange, 0.1);
+            border: 1px solid $ef-primary-orange;
+            color: $ef-primary-orange;
+            backdrop-filter: blur(5px);
+
+            &:hover {
+                background-color: $ef-primary-orange;
+                color: white;
+            }
+        }
+    }
+}

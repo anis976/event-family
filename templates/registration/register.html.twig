@@ -1,0 +1,107 @@
+{% extends 'layout/auth.html.twig' %}
+
+{% block title %}EventFamily — Inscription{% endblock %}
+
+{% block body_class %} ef-signUp{% endblock %}
+
+{% block body %}
+    <div class="container-fluid ef-main-wrapper ef-signUp">
+        <div class="container">
+            <div class="row align-items-center justify-content-center g-4">
+                <div class="col-lg-6 d-none d-lg-block text-center">
+                    <img
+                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                        class="img-fluid illustration-img"
+                        alt="Illustration inscription"
+                        width="500"
+                        height="450"
+                    >
+                </div>
+
+                <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+                    {{ form_start(registrationForm, {
+                        attr: { class: 'card shadow-lg p-4 p-lg-5', novalidate: 'novalidate' }
+                    }) }}
+
+                    <h1 class="fw-bold mb-3">Créer un compte</h1>
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success" role="alert">{{ message }}</div>
+                    {% endfor %}
+
+                    {# aria-disabled (pas disabled) : le navigateur bloque :hover sur disabled #}
+                    <button
+                        type="button"
+                        class="btn btn-google-custom mb-3"
+                        aria-disabled="true"
+                        title="Bientôt disponible"
+                        data-ef-google-soon
+                    >
+                        <i class="bi bi-google me-2" aria-hidden="true"></i>
+                        <span>S'inscrire avec Google</span>
+                    </button>
+
+                    <div class="divider d-flex align-items-center mb-3">
+                        <p class="text-center fw-bold mx-3 mb-0 text-muted small">OU</p>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold small" for="{{ registrationForm.email.vars.id }}">Adresse e-mail</label>
+                        {{ form_widget(registrationForm.email, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small" for="{{ registrationForm.firstName.vars.id }}">Prénom</label>
+                            {{ form_widget(registrationForm.firstName, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(registrationForm.firstName) }}
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small" for="{{ registrationForm.lastName.vars.id }}">Nom</label>
+                            {{ form_widget(registrationForm.lastName, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(registrationForm.lastName) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold small" for="{{ registrationForm.pseudo.vars.id }}">Pseudo</label>
+                        {{ form_widget(registrationForm.pseudo, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(registrationForm.pseudo) }}
+                    </div>
+
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small" for="{{ registrationForm.plainPassword.first.vars.id }}">Mot de passe</label>
+                            {{ form_widget(registrationForm.plainPassword.first, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(registrationForm.plainPassword.first) }}
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small" for="{{ registrationForm.plainPassword.second.vars.id }}">Confirmer</label>
+                            {{ form_widget(registrationForm.plainPassword.second, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(registrationForm.plainPassword.second) }}
+                        </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'form-check-input' } }) }}
+                        <label class="form-check-label small" for="{{ registrationForm.agreeTerms.vars.id }}">
+                            J'accepte les
+                            <a href="#" class="ef-link-orange fw-bold text-decoration-none">Conditions d'utilisation</a>
+                        </label>
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-submit-custom mb-3">S'inscrire</button>
+
+                    <p class="text-center mb-0 small">
+                        Déjà un compte ?
+                        <a href="{{ path('app_login') }}" class="ef-link-orange fw-bold text-decoration-none">Se connecter</a>
+                    </p>
+
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

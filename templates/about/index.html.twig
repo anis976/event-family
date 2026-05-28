@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — About{% endblock %}
+
+{% block page_title %}About{% endblock %}
+
+{% block body %}
+    <div class="ef-about">
+        <div class="d-flex justify-content-center container-fluid ef-about__content">
+            <div class="col-md-9 ef-about__content-col">
+                <div class="text-center ef-about__content-col-title">
+                    <h2 class="fw-bold">About</h2>
+                    <p class="mb-5">Family event management platform</p>
+                </div>
+
+                <div class="card mb-4 p-2 border-0 shadow-sm ef-about__content-card">
+                    <div class="card-body ef-about__content-card-body">
+                        <p class="card-text ef-about__content-card-text mb-0">
+                            EventFamily is a platform designed to bring families closer together
+                            and facilitate the organization of family events.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4 ef-about__content-row">
+                    <div class="col ef-about__content-row-col">
+                        <div class="card text-center h-100 border-0 shadow-sm ef-about__content-row-card">
+                            <div class="card-body ef-about__content-row-card-body">
+                                <h5 class="card-title mb-3">Create family groups</h5>
+                                <p class="card-text mb-0">
+                                    Gather your family in private groups for better organization.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ef-about__content-row-col">
+                        <div class="card text-center h-100 border-0 shadow-sm ef-about__content-row-col-card">
+                            <div class="card-body ef-about__content-row-col-card-body">
+                                <h5 class="card-title mb-3">Organize events</h5>
+                                <p class="card-text mb-0">
+                                    Plan and share your events with all your family members.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col ef-about__content-row-col">
+                        <div class="card text-center h-100 border-0 shadow-sm ef-about__content-row-card">
+                            <div class="card-body ef-about__content-row-card-body">
+                                <h5 class="card-title mb-3">Stay connected</h5>
+                                <p class="card-text mb-0">
+                                    Communicate easily with group members through integrated messaging.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-3 border-0 shadow-sm ef-about__mission-card">
+                    <div class="card-body ef-about__mission-card-card-body">
+                        <h5 class="card-title ef-about__mission-card-title">
+                            <i class="bi bi-heart me-2" aria-hidden="true"></i>Our Mission
+                        </h5>
+                        <p class="card-text ef-about__mission-card-text mb-0">
+                            We believe that family is at the heart of our lives. Our mission is to create
+                            simple and effective tools to keep family bonds strong, regardless of distance.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

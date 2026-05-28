@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Contact{% endblock %}
+
+{% block page_title %}Contact{% endblock %}
+
+{% block body %}
+    <div class="ef-contact">
+        <div class="p-4 d-flex justify-content-center container-fluid ef-contact__content">
+            <div class="col-md-10 ef-contact__content-col">
+                <div class="text-center ef-contact__content-col-title">
+                    <h2 class="fw-bold mb-3">Contact Us</h2>
+                    <p class="mb-5">Have a question? Don't hesitate to contact us</p>
+                </div>
+
+                <div class="row g-4 justify-content-center ef-contact__row">
+                    <div class="col-lg-6 col-md-12 ef-contact__col">
+                        <div class="card h-100 p-1 border-0 ef-contact__row-card">
+                            <div class="card-body ef-contact__row-card-body">
+                                <h5 class="card-title mb-4">Send</h5>
+                                {# TODO: brancher formulaire Symfony (validation, BDD, envoi mail) #}
+                                <form data-ef-contact-form novalidate>
+                                    <div class="mb-3">
+                                        <label for="contact-name" class="form-label">Name</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="contact-name"
+                                            name="name"
+                                            placeholder="your name"
+                                            autocomplete="name"
+                                        >
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contact-email" class="form-label">Email address</label>
+                                        <input
+                                            type="email"
+                                            class="form-control"
+                                            id="contact-email"
+                                            name="email"
+                                            placeholder="your email"
+                                            autocomplete="email"
+                                        >
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contact-message" class="form-label">Message</label>
+                                        <textarea
+                                            class="form-control ef-contact__textarea"
+                                            id="contact-message"
+                                            name="message"
+                                            rows="5"
+                                        ></textarea>
+                                    </div>
+                                    <button type="submit" class="btn col-12">
+                                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>Send
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5 col-md-12 ef-contact__row-adresses">
+                        <div class="card mb-3 p-1 border-0 ef-contact__email">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>Email
+                                </h5>
+                                <p class="card-text mb-0">admin@eventfamily.com</p>
+                            </div>
+                        </div>
+                        <div class="card mb-3 p-1 border-0 ef-contact__row-phone">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <i class="bi bi-chat-left me-2" aria-hidden="true"></i>WhatsApp
+                                </h5>
+                                <p class="card-text mb-0">+33 1 23 45 67 89</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

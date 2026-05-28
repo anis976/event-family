@@ -1,0 +1,95 @@
+@use '../base/variables' as *;
+
+.ef-topbar {
+    padding: 0.7rem 1.3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    flex-shrink: 0;
+
+    @include color-mode(dark) {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &__title {
+        font-size: 1.1rem;
+        font-weight: 500;
+
+        @media (max-width: 575.98px) {
+            font-size: 0.95rem;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    &__notification {
+        cursor: pointer;
+
+        &-badge {
+            font-size: 8px;
+            margin-top: 5px;
+            margin-left: -5px;
+        }
+    }
+
+    &__search-btn {
+        background: none;
+    }
+
+    &__dropdown-menu {
+        min-width: 190px;
+        padding: 0.5rem !important;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    }
+
+    &__dropdown-menu-item {
+        color: #2d2d2d;
+        font-weight: 400;
+        padding: 0.4rem 1rem !important;
+        border-radius: 8px !important;
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        border: none;
+        background: transparent;
+        transition: 0.2s;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+
+        &:hover,
+        &.ef-theme-active {
+            background-color: rgba($ef-primary-orange, 0.1) !important;
+            color: $ef-primary-orange !important;
+        }
+
+        .bi-check2 {
+            position: absolute;
+            right: 12px;
+            color: $ef-primary-orange;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        &.ef-theme-active .bi-check2 {
+            display: block;
+        }
+    }
+
+    &__theme-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        font-size: $ef-font-size-md;
+
+        &::after {
+            vertical-align: middle;
+            margin-left: 0;
+        }
+    }
+}

@@ -1,0 +1,145 @@
+@use '../base/variables' as *;
+
+.ef-hero-section {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+    background-image: url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+
+    &__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            135deg,
+            rgba($ef-primary-orange, 0.85) 0%,
+            rgba($ef-primary-orange-dark, 0.7) 100%
+        );
+        z-index: 1;
+    }
+
+    &__content {
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    &__wave-container {
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        line-height: 0;
+        z-index: 3;
+        pointer-events: none;
+        color: var(--bs-body-bg);
+
+        svg {
+            display: block;
+            width: 100%;
+            height: 60px;
+
+            @include media-breakpoint-up(lg) {
+                height: 100px;
+            }
+        }
+    }
+}
+
+.ef-card {
+    border: none;
+    border-radius: 15px;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: $box-shadow-lg !important;
+    }
+
+    @include color-mode(dark) {
+        background-color: #252525;
+        color: white;
+    }
+
+    .ef-icon-box {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background-color: $ef-primary-orange;
+        color: white;
+        margin: 0 auto 1.5rem;
+        font-size: 1.5rem;
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-soft-gold, 0.2);
+            border: 1px solid rgba($ef-soft-gold, 0.4);
+            color: $ef-soft-gold;
+
+            .bi {
+                color: $ef-soft-gold;
+            }
+        }
+    }
+}
+
+.ef-btn-viewAllEvent {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    background: rgba(243, 141, 30, 0.15);
+    color: $ef-primary-orange !important;
+    transition: 0.3s;
+    transform: translateZ(0);
+    text-decoration: none;
+
+    .bi {
+        margin-left: 8px;
+        transition: 0.3s;
+    }
+
+    &:hover {
+        transform: translateX(3px);
+        background: $ef-primary-orange;
+        color: white !important;
+
+        .bi {
+            transform: translateX(3px);
+        }
+    }
+
+    @include color-mode(dark) {
+        background: rgba($ef-primary-orange, 0.1);
+
+        &:hover {
+            background: $ef-primary-orange;
+        }
+    }
+}
+
+.ef-home {
+    &__section-title {
+        font-size: 1.1rem;
+    }
+}
+
+.ef-events {
+    &__empty-event {
+        border-style: dashed !important;
+    }
+
+    &__empty-body {
+        min-height: 200px;
+    }
+}
