@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Messages de groupe{% endblock %}
+{% block page_title %}Messages de groupe{% endblock %}
+
+{% block body %}
+<div class="ef-messages container-fluid py-3 py-md-4" data-ef-read-url-base="{{ path('app_messages_read', { id: 0 })|slice(0, -1) }}">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <h2 class="fw-bold mb-0 fs-3 fs-md-2">Messages de groupe</h2>
+            {% if current_group %}
+                <span class="badge rounded-pill bg-secondary">{{ group_threads|length }}</span>
+            {% endif %}
+        </div>
+
+        {% if user_has_group %}
+            <div class="dropdown">
+                <button class="btn btn-light btn-sm rounded-pill shadow-sm" type="button" data-bs-toggle="dropdown" aria-label="Choisir un groupe">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                    <li><h6 class="dropdown-header">Mes groupes</h6></li>
+                    {% for group in user_groups %}
+                        <li>
+                            <a class="dropdown-item{% if current_group and current_group.id == group.id %} active{% endif %}"
+                               href="{{ path('app_messages_group', { groupId: group.id }) }}">
+                                {{ group.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if user_has_group and current_group %}
+        <p class="text-muted small mb-4">{{ current_group.name }} — {{ current_group.familyName }}</p>
+
+        <div class="ef-messages__thread-container d-flex flex-column gap-4 mb-4">
+            {% for thread in group_threads %}
+                {% if thread.parent is null %}
+                    {% include 'messages/_thread.html.twig' with { thread: thread, unread_ids: unread_ids } %}
+                {% endif %}
+            {% else %}
+                <p class="text-muted text-center my-5">Aucun message dans ce groupe.</p>
+            {% endfor %}
+        </div>
+
+        <div class="ef-messages__footer mt-4">
+            {% include 'messages/_footer_form.html.twig' with { form: form, placeholder: 'Écrire un message au groupe…' } %}
+        </div>
+    {% else %}
+        <p class="text-muted text-center my-5">Tu n'as aucun groupe.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block body_class %} ef-page-messages{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" src="{{ asset('js/ef-messages.js') }}"></script>
+{% endblock %}

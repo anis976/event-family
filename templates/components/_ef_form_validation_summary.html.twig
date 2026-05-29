@@ -1,0 +1,9 @@
+{% if form is defined and form.vars.submitted and not form.vars.valid %}
+    {% include 'components/_ef_alert.html.twig' with {
+        type: 'warning',
+        title: 'Formulaire incomplet',
+        message: 'Vérifie les champs signalés ci-dessous.',
+        dismissible: true,
+        show_title: true,
+    } only %}
+{% endif %}

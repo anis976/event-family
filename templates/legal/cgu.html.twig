@@ -1,0 +1,61 @@
+{% extends 'layout/legal.html.twig' %}
+
+{% block title %}EventFamily — CGU &amp; Confidentialité{% endblock %}
+
+{% block body_class %} ef-cgu-page{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="card ef-legal-card border-0 shadow-sm p-4 p-md-5">
+                    <a href="{{ path('app_home') }}" class="btn-return">
+                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Retour à l'accueil
+                    </a>
+
+                    <h1 class="fw-bold mb-5">CGU &amp; Politique de Confidentialité</h1>
+
+                    <section class="mb-5">
+                        <h2 class="h4 fw-bold mb-3">
+                            <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>Protection des données personnelles
+                        </h2>
+                        <p>Conformément au RGPD, nous nous engageons à protéger la vie privée de nos utilisateurs.</p>
+
+                        <h3 class="h6 fw-bold mt-4">Collecte des données</h3>
+                        <p>Nous collectons les données suivantes : adresse e-mail, nom d'utilisateur, ville de résidence, ainsi que les textes et images liés aux événements créés.</p>
+
+                        <h3 class="h6 fw-bold mt-4">Utilisation des données (AdSense)</h3>
+                        <p>Le site affiche des publicités via Google AdSense pour financer les frais d'hébergement. Des cookies tiers sont utilisés pour proposer des publicités pertinentes. Vous pouvez gérer votre consentement via le bandeau dédié.</p>
+
+                        <h3 class="h6 fw-bold mt-4">Conservation et Droits</h3>
+                        <p>
+                            Vos données sont conservées durant toute la durée de vie du compte. En cas de suppression du compte, les données sont définitivement effacées sous un délai de 3 mois.
+                            Vous pouvez demander l'accès ou la suppression de vos données en contactant l'administrateur à :
+                            <a href="mailto:anissoir976@gmail.com">anissoir976@gmail.com</a>.
+                        </p>
+                    </section>
+
+                    <hr class="my-5 opacity-50">
+
+                    <section>
+                        <h2 class="h4 fw-bold mb-3">
+                            <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>Conditions Générales d'Utilisation
+                        </h2>
+
+                        <h3 class="h6 fw-bold mt-4">Objet du service</h3>
+                        <p>EventFamily est une plateforme de mise en relation familiale. Elle permet la publication d'événements (mariages, fêtes, etc.). L'accès est strictement réservé aux utilisateurs connectés.</p>
+
+                        <h3 class="h6 fw-bold mt-4">Responsabilité de l'utilisateur</h3>
+                        <p>L'utilisateur est seul responsable du contenu qu'il publie. Il est interdit de publier du contenu haineux, diffamatoire ou portant atteinte au respect de la vie privée des autres membres de la famille.</p>
+
+                        <h3 class="h6 fw-bold mt-4">Responsabilité de l'éditeur</h3>
+                        <p>SOUFFOUMADI Anissoir ne pourra être tenu responsable des fausses informations publiées par les membres, ni des dommages indirects résultant de l'utilisation du site.</p>
+
+                        <h3 class="h6 fw-bold mt-4">Propriété intellectuelle</h3>
+                        <p>Les photos et textes publiés restent la propriété de l'utilisateur. En publiant, l'utilisateur concède à EventFamily le droit d'afficher ces contenus uniquement sur la plateforme pour les membres autorisés.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

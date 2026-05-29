@@ -1,0 +1,21 @@
+<div class="table-responsive px-2 pb-3">
+    <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
+        <thead>
+            <tr>
+                <th class="ps-4 py-3 border-0">Nom</th>
+                <th class="py-3 border-0">Pseudo</th>
+                <th class="py-3 border-0 text-end pe-4">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                {% include 'groups/_user_invite_row.html.twig' with {
+                    group: group,
+                    user: user,
+                    rules: userStatusRules[user.id]|default({ pending_or_invited: false, refused_count: 0 }),
+                    searchQuery: searchQuery|default(''),
+                } %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

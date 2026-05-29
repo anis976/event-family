@@ -1,0 +1,31 @@
+{# type: success|danger|warning|info #}
+{% set type = type|default('info') %}
+{% set dismissible = dismissible|default(true) %}
+{% set icons = {
+    success: 'bi-check-circle-fill',
+    danger: 'bi-exclamation-triangle-fill',
+    warning: 'bi-exclamation-circle-fill',
+    info: 'bi-info-circle-fill',
+} %}
+{% set titles = {
+    success: 'Succès',
+    danger: 'Erreur',
+    warning: 'Attention',
+    info: 'Information',
+} %}
+
+<div
+    class="ef-alert ef-alert--{{ type }} alert alert-{{ type }}{% if dismissible %} alert-dismissible fade show{% endif %}{% if compact|default(false) %} ef-alert--compact{% endif %}"
+    role="alert"
+>
+    <i class="ef-alert__icon bi {{ icons[type] }}" aria-hidden="true"></i>
+    <div class="ef-alert__content">
+        {% if show_title|default(true) %}
+            <strong class="ef-alert__title">{{ title|default(titles[type]) }}</strong>
+        {% endif %}
+        <div class="ef-alert__message{% if show_title|default(true) %} small{% endif %}">{{ message }}</div>
+    </div>
+    {% if dismissible %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    {% endif %}
+</div>

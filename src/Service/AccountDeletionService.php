@@ -1,0 +1,172 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service;
+
+use App\Entity\User;
+use App\Repository\GroupRepository;
+use App\Repository\UserRepository;
+use App\Util\ParisClock;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+final class AccountDeletionService
+{
+    private const int TOKEN_TTL_HOURS = 1;
+
+    private const int MIN_SECONDS_BETWEEN_EMAILS = 300;
+
+    public function __construct(
+        private readonly MailerInterface $mailer,
+        private readonly UserRepository $userRepository,
+        private readonly GroupRepository $groupRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        #[Autowire('%env(MAILER_FROM)%')]
+        private readonly string $mailerFrom,
+    ) {
+    }
+
+    public function ownsGroups(User $user): bool
+    {
+        return $this->groupRepository->countOwnedByUser($user) > 0;
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function requestAccountDeletion(User $user): void
+    {
+        $now = ParisClock::now();
+        $lastRequest = $user->getAccountDeletionRequestedAt();
+
+        if (
+            null !== $lastRequest
+            && $lastRequest > $now->modify(sprintf('-%d seconds', self::MIN_SECONDS_BETWEEN_EMAILS))
+        ) {
+            return;
+        }
+
+        $plainToken = bin2hex(random_bytes(32));
+
+        $user->clearPasswordReset();
+        $user->clearPendingPasswordChange();
+        $user->setAccountDeletionTokenHash($this->hashToken($plainToken));
+        $user->setAccountDeletionTokenExpiresAt(
+            $now->modify(sprintf('+%d hours', self::TOKEN_TTL_HOURS)),
+        );
+        $user->setAccountDeletionRequestedAt($now);
+
+        $confirmUrl = $this->urlGenerator->generate(
+            'app_profile_confirm_account_deletion',
+            ['token' => $plainToken],
+            UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+
+        $email = (new TemplatedEmail())
+            ->from(Address::create($this->mailerFrom))
+            ->to($user->getEmail())
+            ->subject('EventFamily — Confirmer la suppression de ton compte')
+            ->htmlTemplate('emails/account_deletion_confirm.html.twig')
+            ->context([
+                'user' => $user,
+                'confirmUrl' => $confirmUrl,
+                'expiresHours' => self::TOKEN_TTL_HOURS,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    public function findUserForValidToken(string $plainToken): ?User
+    {
+        if (!$this->isValidTokenFormat($plainToken)) {
+            return null;
+        }
+
+        $user = $this->userRepository->findOneByAccountDeletionTokenHash($this->hashToken($plainToken));
+
+        if (null === $user || null !== $user->getDeletedAt()) {
+            return null;
+        }
+
+        $expiresAt = $user->getAccountDeletionTokenExpiresAt();
+
+        if (null === $expiresAt || $expiresAt < ParisClock::now()) {
+            $user->clearAccountDeletion();
+            $this->entityManager->flush();
+
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * Soft-delete + anonymisation. Gestion des groupes (successeur) : module Groupes à venir.
+     *
+     * @throws TransportExceptionInterface
+     */
+    public function confirmAccountDeletion(User $user): void
+    {
+        if ($this->ownsGroups($user)) {
+            throw new \LogicException('Cannot delete account while owning groups without succession flow.');
+        }
+
+        $originalEmail = $user->getEmail();
+
+        $user->setDeletedAt(ParisClock::now());
+        $user->setEmail(sprintf(
+            'deleted_%d_%s@deleted.invalid',
+            $user->getId() ?? 0,
+            bin2hex(random_bytes(6)),
+        ));
+        $user->setPassword($this->passwordHasher->hashPassword($user, bin2hex(random_bytes(32))));
+        $user->setPseudo(null);
+        // Couple prénom/nom unique (contrainte uniq_ef_users_full_name).
+        $user->setFirstName('Compte');
+        $user->setLastName(sprintf('Supprimé_%d', $user->getId() ?? 0));
+        $user->setIsVerified(false);
+        $user->clearPasswordReset();
+        $user->clearPendingPasswordChange();
+        $user->clearAccountDeletion();
+
+        $this->entityManager->flush();
+
+        $this->sendDeletionDoneNotification($originalEmail, $user);
+    }
+
+    public function isValidTokenFormat(string $plainToken): bool
+    {
+        return 64 === strlen($plainToken) && ctype_xdigit($plainToken);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    private function sendDeletionDoneNotification(string $originalEmail, User $user): void
+    {
+        $email = (new TemplatedEmail())
+            ->from(Address::create($this->mailerFrom))
+            ->to($originalEmail)
+            ->subject('EventFamily — Ton compte a été supprimé')
+            ->htmlTemplate('emails/account_deletion_done.html.twig')
+            ->context([
+                'deletedAt' => ParisClock::now(),
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    private function hashToken(string $plainToken): string
+    {
+        return hash('sha256', $plainToken);
+    }
+}

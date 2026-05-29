@@ -37,7 +37,7 @@
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
     {% endif %}
 </head>
-<body class="ef-body{% block body_class %}{% endblock %}">
+<body class="ef-body{% block body_class %}{% endblock %}"{% if app.user %} data-ef-counts-url="{{ path('app_invitations_counts') }}"{% endif %}>
     <div class="ef-main-wrapper d-flex">
         {% include 'layout/_sidebar.html.twig' %}
 
@@ -46,6 +46,10 @@
                 {% block page_title %}Home{% endblock %}
             {% endembed %}
             {% include 'layout/_search_panel.html.twig' %}
+
+            <div class="ef-main__flash container-fluid px-4 pt-3">
+                {% include 'components/_ef_flash_messages.html.twig' %}
+            </div>
 
             {% block body %}{% endblock %}
 

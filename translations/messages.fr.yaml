@@ -1,0 +1,36 @@
+# Messages applicatifs (flash, UI)
+auth:
+  register_success: "Ton compte a été créé. Tu peux maintenant te connecter."
+  register_check_email: "Compte créé. Consulte ta boîte e-mail (et les spams) pour activer ton compte avant de te connecter."
+  resend_verification_sent: "Si un compte non activé existe avec cette adresse, un nouvel e-mail de confirmation vient d'être envoyé. Pense à vérifier aussi tes spams."
+  resend_verification_rate_limited: "Trop de demandes de renvoi. Attends quelques minutes, vérifie tes spams, puis réessaie."
+  register_invalid: "Le formulaire contient des erreurs. Corrige les champs signalés."
+  register_duplicate: "Un compte existe déjà avec cet e-mail ou ce couple prénom / nom. Connecte-toi ou modifie tes informations."
+  login_invalid: "Adresse e-mail ou mot de passe incorrect."
+  already_logged_in: "Tu es déjà connecté."
+  password_reset_email_sent: "Si un compte actif existe avec cette adresse, un e-mail de réinitialisation vient d'être envoyé. Vérifie aussi tes spams (lien valable 1 h)."
+  password_reset_email_failed: "Impossible d'envoyer l'e-mail pour le moment. Réessaie plus tard."
+  password_reset_rate_limited: "Trop de tentatives. Réessaie dans quelques minutes."
+  password_reset_invalid_token: "Ce lien de réinitialisation est invalide, expiré ou déjà utilisé. Fais une nouvelle demande."
+  password_reset_done: "Ton mot de passe a été réinitialisé. Tu peux te connecter."
+  password_reset_done_no_notify: "Ton mot de passe a été réinitialisé, mais l'e-mail de notification n'a pas pu être envoyé."
+
+profile:
+  updated: "Ton profil a été mis à jour."
+  duplicate_fields: "Ce pseudo ou ce couple prénom / nom est déjà utilisé par un autre compte."
+  password_updated: "Ton mot de passe a été mis à jour."
+  password_change_email_sent: "Un e-mail de confirmation vient d'être envoyé. Clique sur le lien pour appliquer le nouveau mot de passe (vérifie aussi tes spams)."
+  password_change_email_failed: "Impossible d'envoyer l'e-mail de confirmation. Vérifie MAILER_DSN ou réessaie plus tard."
+  password_change_confirmed: "Ton mot de passe a été mis à jour. Tu peux te connecter avec le nouveau mot de passe."
+  password_change_invalid_token: "Ce lien de confirmation est invalide ou a expiré. Refais une demande depuis ton profil."
+  account_deletion_email_sent: "E-mail envoyé. Tu es déconnecté pour éviter les conflits entre onglets. Clique sur le lien reçu (1 h) pour finaliser la suppression. N'inscris pas un nouveau compte avant d'avoir confirmé par e-mail."
+  account_deletion_email_failed: "Impossible d'envoyer l'e-mail de confirmation. Réessaie plus tard."
+  account_deletion_rate_limited: "Trop de demandes de suppression. Réessaie dans quelques minutes."
+  account_deletion_invalid_token: "Ce lien de confirmation est invalide, expiré ou déjà utilisé."
+  account_deletion_done: "Ton compte a été supprimé. À bientôt."
+  account_deletion_done_no_notify: "Ton compte a été supprimé, mais l'e-mail de notification n'a pas pu être envoyé."
+  account_deletion_blocked_groups: "Tu ne peux pas supprimer ton compte tant que tu es chef d'un groupe. La gestion des successeurs arrive avec le module Groupes."
+
+messages:
+  direct_coming_soon: "Message validé. L'envoi sera activé dès que la messagerie sera branchée."
+  recipient_not_found: "Destinataire introuvable."

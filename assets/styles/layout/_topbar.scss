@@ -27,11 +27,39 @@
 
     &__notification {
         cursor: pointer;
+        color: inherit;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover,
+        &:focus,
+        &.show {
+            color: $ef-primary-orange;
+        }
 
         &-badge {
-            font-size: 8px;
+            font-size: 0.65rem;
+            min-width: 1.1rem;
+            padding: 0.2em 0.45em;
             margin-top: 5px;
             margin-left: -5px;
+            pointer-events: none;
+        }
+    }
+
+    &__notification-menu {
+        min-width: 240px;
+    }
+
+    &__notification-menu-item {
+        transition: background-color 0.2s ease, color 0.2s ease;
+
+        &:hover,
+        &:focus {
+            background-color: rgba($ef-primary-orange, 0.1) !important;
+            color: $ef-primary-orange !important;
         }
     }
 

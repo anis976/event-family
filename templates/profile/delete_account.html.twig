@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Supprimer mon compte{% endblock %}
+
+{% block page_title %}Suppression du compte{% endblock %}
+
+{% block body %}
+    <section class="ef-profile-section py-3 py-lg-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card ef-profile-card border-0 shadow-sm border-danger-subtle">
+                        <div class="card-body p-4 p-md-5">
+                            <div class="d-flex align-items-center mb-4">
+                                <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary btn-sm me-3">
+                                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                                </a>
+                                <h2 class="h4 mb-0 text-danger">Supprimer mon compte</h2>
+                            </div>
+
+                            <div class="alert alert-danger small" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-1" aria-hidden="true"></i>
+                                Action <strong>définitive</strong>. Après envoi, tu seras <strong>déconnecté</strong> : ouvre le lien reçu par e-mail (1&nbsp;h) pour confirmer. Ferme les autres onglets EventFamily et n'inscris pas un nouveau compte avant la confirmation.
+                            </div>
+
+                            {% include 'components/_ef_form_validation_summary.html.twig' with { form: deleteAccountForm } only %}
+
+                            {{ form_start(deleteAccountForm) }}
+
+                            <div class="mb-3">
+                                {{ form_label(deleteAccountForm.currentPassword, null, { label_attr: { class: 'form-label fw-bold' } }) }}
+                                {{ form_widget(deleteAccountForm.currentPassword) }}
+                                {{ form_errors(deleteAccountForm.currentPassword) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(deleteAccountForm.confirmPhrase, null, { label_attr: { class: 'form-label fw-bold' } }) }}
+                                {{ form_widget(deleteAccountForm.confirmPhrase) }}
+                                {% if deleteAccountForm.confirmPhrase.vars.help %}
+                                    <div class="form-text">{{ deleteAccountForm.confirmPhrase.vars.help }}</div>
+                                {% endif %}
+                                {{ form_errors(deleteAccountForm.confirmPhrase) }}
+                            </div>
+
+                            <div class="form-check mb-4">
+                                {{ form_widget(deleteAccountForm.agreeDeletion, { attr: { class: 'form-check-input' } }) }}
+                                <label class="form-check-label text-muted small" for="{{ deleteAccountForm.agreeDeletion.vars.id }}">
+                                    {{ deleteAccountForm.agreeDeletion.vars.label }}
+                                </label>
+                                {{ form_errors(deleteAccountForm.agreeDeletion) }}
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-danger w-100 py-2 fw-bold">
+                                <i class="bi bi-envelope-exclamation me-2" aria-hidden="true"></i>
+                                Recevoir l'e-mail de confirmation
+                            </button>
+
+                            {{ form_end(deleteAccountForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,8 @@
+# Contraintes de validation Symfony (extraits utiles)
+"This value should not be blank.": "Ce champ est obligatoire."
+"This value is not a valid email address.": "Cette adresse e-mail n'est pas valide."
+"This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.": "Cette valeur est trop courte ({{ limit }} caractères minimum)."
+"The password fields must match.": "Les mots de passe ne correspondent pas."
+"You must accept the terms of use.": "Tu dois accepter les conditions d'utilisation."
+"This email is already registered.": "Cette adresse e-mail est déjà utilisée."
+"This first and last name combination is already registered.": "Ce prénom et ce nom sont déjà associés à un compte."

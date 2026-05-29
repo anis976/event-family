@@ -1,0 +1,111 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+// CGU + Mentions légales (même SCSS)
+.ef-legal-page,
+.ef-cgu-page {
+    background-color: $ef-bg-light;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+
+    @include color-mode(dark) {
+        background-color: #121212;
+    }
+
+    .ef-legal-card {
+        border-radius: 1.25rem;
+        background-color: white;
+        border: 1px solid $ef-border-color;
+
+        @include color-mode(dark) {
+            background-color: #1e1e1e;
+            border-color: rgba($ef-white-color-dark, 0.1);
+        }
+
+        h1 {
+            color: $ef-primary-orange;
+            position: relative;
+            padding-bottom: 0.75rem;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 50px;
+                height: 4px;
+                background: $ef-primary-orange;
+                border-radius: 2px;
+            }
+        }
+
+        h2 {
+            color: $ef-primary-blue;
+            font-size: 1.1rem;
+
+            @include color-mode(dark) {
+                color: $ef-primary-orange-dark;
+            }
+
+            .bi {
+                color: $ef-primary-orange;
+            }
+        }
+
+        h3 {
+            @include color-mode(dark) {
+                color: rgba($ef-white-color-dark, 0.9);
+            }
+        }
+
+        p,
+        li {
+            color: $ef-text-gray;
+            line-height: 1.7;
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+            }
+        }
+
+        .border-start {
+            border-color: $ef-primary-orange !important;
+
+            @include color-mode(dark) {
+                border-color: $ef-primary-orange-dark !important;
+            }
+        }
+
+        hr {
+            @include color-mode(dark) {
+                border-color: rgba($ef-white-color-dark, 0.12);
+            }
+        }
+
+        a:not(.btn-return) {
+            color: $ef-primary-orange-dark;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .btn-return {
+        @include custom-btn(
+            $bg-opacity: 0.1,
+            $light-color: $ef-primary-blue,
+            $dark-color: $ef-primary-blue
+        );
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        font-weight: 500;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+}

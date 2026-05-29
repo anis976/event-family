@@ -1,0 +1,326 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+// --- Inscription : layout + illustration ---
+.ef-signUp {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    background-color: transparent;
+    padding: 1.5rem 1rem 1.25rem;
+    overflow-y: auto;
+
+    @include media-breakpoint-up(lg) {
+        justify-content: center;
+        padding-top: 1.75rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .ef-signUp__alerts {
+        margin-bottom: 0.75rem;
+
+        .ef-alert {
+            box-shadow: $box-shadow;
+        }
+    }
+
+    .ef-terms-check {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        gap: 0.625rem;
+
+        .form-check-input {
+            float: none;
+            margin: 0;
+            flex: 0 0 auto;
+            width: 1.125em;
+            height: 1.125em;
+        }
+
+        .ef-terms-check__label {
+            flex: 1 1 auto;
+            min-width: 0;
+            margin: 0;
+            line-height: 1.35;
+            cursor: pointer;
+        }
+    }
+
+    section {
+        width: 100%;
+    }
+
+    .illustration-img {
+        filter: hue-rotate(165deg) saturate(1.5) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+        object-fit: contain;
+        max-width: 100%;
+        transition: filter 0.4s ease;
+
+        @include media-breakpoint-up(lg) {
+            max-height: 450px !important;
+        }
+
+        @include color-mode(dark) {
+            filter: hue-rotate(165deg) brightness(0.8) saturate(1.2)
+                drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+        }
+    }
+}
+
+// --- Connexion (maquette dédiée) ---
+.ef-signIn {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    min-height: 100vh;
+    background-color: transparent;
+    padding: 1.5rem 1rem 1.25rem;
+    overflow-y: auto;
+
+    @include media-breakpoint-up(lg) {
+        justify-content: center;
+        padding-top: 1.75rem;
+        padding-bottom: 1.5rem;
+    }
+
+    .ef-signIn__column {
+        width: 100%;
+        max-width: 520px;
+    }
+
+    .ef-signIn__alerts {
+        margin-bottom: 0.75rem;
+
+        .ef-flash-stack {
+            margin-bottom: 0;
+        }
+
+        .ef-alert {
+            box-shadow: $box-shadow;
+        }
+    }
+
+    .ef-signIn__resend-panel {
+        padding: 1.25rem 1.5rem !important;
+        margin-top: 1rem !important;
+        margin-bottom: 0.5rem;
+        border: 1px dashed rgba($ef-primary-orange, 0.35) !important;
+        background-color: rgba($ef-primary-orange, 0.04) !important;
+        box-shadow: $box-shadow;
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-primary-orange-dark, 0.08) !important;
+            border-color: rgba($ef-primary-orange-dark, 0.4) !important;
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+        }
+    }
+
+    .ef-signIn__resend-hint {
+        line-height: 1.45;
+
+        strong {
+            color: inherit;
+            font-weight: 600;
+        }
+    }
+
+    .ef-signIn__resend-title {
+        color: $ef-text-gray;
+        font-weight: 600;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+
+        .bi {
+            color: $ef-primary-orange;
+        }
+    }
+
+    .card,
+    .ef-auth__form-card {
+        background-color: var(--bs-body-bg);
+        border: none;
+        padding: 2rem !important;
+        transition: transform 0.3s ease;
+
+        @include color-mode(dark) {
+            background-color: $ef-mission-card-dark-bg;
+            border: 1px solid rgba($ef-white-color-dark, 0.1);
+        }
+
+        @include media-breakpoint-down(lg) {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    }
+
+    h1 {
+        font-size: 1.75rem;
+        margin-bottom: 1.2rem !important;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+        font-size: 1rem;
+        padding: 0.6rem 0.8rem;
+        transition: all 0.3s ease;
+
+        &:focus {
+            border-color: $ef-primary-orange;
+            box-shadow: 0 0 0 0.2rem rgba($ef-primary-orange, 0.15);
+        }
+
+        @include color-mode(dark) {
+            &:focus {
+                background-color: rgba($ef-primary-orange, 0.1);
+                color: $ef-white-color-dark;
+            }
+        }
+    }
+
+    .btn-submit-custom {
+        @include custom-btn($bg-opacity: 0.2, $padding: 0.7rem 1.2rem);
+        width: 100%;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .btn-google-custom {
+        @include custom-btn(
+            $bg-opacity: 0.05,
+            $padding: 0.6rem 1rem,
+            $light-color: $gray-700,
+            $dark-color: $ef-white-color-dark
+        );
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        border: 1px solid $gray-400;
+        transition:
+            background-color 0.3s ease,
+            border-color 0.3s ease,
+            color 0.3s ease,
+            transform 0.2s ease;
+
+        &:hover {
+            background-color: $ef-primary-orange;
+            border-color: $ef-primary-orange;
+            color: #131926;
+            transform: translateY(-1px);
+
+            i {
+                color: #fff;
+            }
+        }
+
+        &[aria-disabled='true'] {
+            cursor: not-allowed;
+        }
+
+        @include color-mode(dark) {
+            border-color: rgba($ef-primary-orange-dark, 0.6);
+
+            &:hover {
+                background: $ef-primary-orange-dark;
+                color: #000 !important;
+                border-color: $ef-primary-orange-dark;
+            }
+        }
+
+        i {
+            color: #4285f4;
+            transition: color 0.3s ease;
+        }
+    }
+
+    .divider {
+        margin: 1.2rem 0 !important;
+
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid $gray-400;
+        }
+
+        @include color-mode(dark) {
+            &::before,
+            &::after {
+                border-color: rgba($ef-white-color-dark, 0.1);
+            }
+        }
+    }
+
+    a:not(.btn) {
+        color: $ef-primary-orange-dark;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: 0.3s;
+
+        &:hover {
+            text-decoration: underline !important;
+            opacity: 0.8;
+        }
+    }
+
+    p,
+    .form-check-label {
+        font-size: 0.9rem !important;
+    }
+
+    .form-check-input {
+        cursor: pointer;
+        width: 1.1em;
+        height: 1.1em;
+
+        &:checked {
+            background-color: $ef-primary-orange-dark;
+            border-color: $ef-primary-orange-dark;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+        }
+
+        &:focus {
+            border-color: $ef-primary-orange;
+            box-shadow: 0 0 0 0.25rem rgba($ef-primary-orange, 0.25);
+        }
+    }
+
+    .illustration-img {
+        filter: hue-rotate(165deg) saturate(1.5) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+        object-fit: contain;
+        max-height: min(380px, 55vh) !important;
+        max-width: 100%;
+        transition: filter 0.4s ease;
+
+        @include color-mode(dark) {
+            filter: hue-rotate(165deg) brightness(0.8) saturate(1.2)
+                drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+        }
+    }
+
+    .mb-3,
+    .mb-4,
+    .my-4 {
+        margin-bottom: 1rem !important;
+    }
+}

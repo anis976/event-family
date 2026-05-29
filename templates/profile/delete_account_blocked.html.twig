@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Suppression impossible{% endblock %}
+
+{% block page_title %}Suppression du compte{% endblock %}
+
+{% block body %}
+    <section class="ef-profile-section py-3 py-lg-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card ef-profile-card border-0 shadow-sm">
+                        <div class="card-body p-4 p-md-5">
+                            <h2 class="h5 text-danger fw-bold mb-3">Suppression temporairement impossible</h2>
+                            <p class="mb-3">
+                                Tu es propriétaire d'au moins un groupe familial. Avant de supprimer ton compte, il faudra soit :
+                            </p>
+                            <ul class="small text-muted mb-4">
+                                <li>désigner un successeur (chef de groupe),</li>
+                                <li>soit supprimer le groupe sans successeur (le modérateur prendra le relais automatiquement).</li>
+                            </ul>
+                            <p class="small text-muted mb-4">
+                                Cette étape sera disponible avec le module <strong>Groupes</strong> (prochainement).
+                            </p>
+                            <a href="{{ path('app_profile') }}" class="btn btn-save-profile w-100 py-2 fw-bold">
+                                Retour à mon espace
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

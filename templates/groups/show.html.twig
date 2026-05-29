@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — {{ group.name }}{% endblock %}
+{% block page_title %}{{ group.name }}{% endblock %}
+
+{% block body %}
+<div class="container py-5 ef-GroupShow">
+    <nav aria-label="Fil d'Ariane" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item ef-GroupShow__nav-link">
+                <a href="{{ path('app_groups') }}">{{ isMember ? 'Mes groupes' : 'Groupes' }}</a>
+            </li>
+            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">{{ group.name }}</li>
+        </ol>
+    </nav>
+
+    {% if isStaff %}
+        <div class="d-flex flex-wrap gap-2 mb-4 ef-GroupShow__staff-actions">
+            <a href="{{ path('app_groups_manage_requests', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit">
+                <i class="bi bi-inbox me-2"></i> Gérer les demandes
+                {% if pendingRequestsCount > 0 %}
+                    <span class="badge bg-danger ms-1">{{ pendingRequestsCount }}</span>
+                {% endif %}
+            </a>
+            <a href="{{ path('app_groups_invite_search', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit">
+                <i class="bi bi-person-plus me-2"></i> Inviter des membres
+            </a>
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm ef-card-info p-3 sticky-top" style="top: 80px;">
+                <div class="card-body ef-GroupShow__card-body">
+                    {% if isMember and isOwner %}
+                        <span class="badge mb-2 px-3 ef-badge-role-chef">PROPRIÉTAIRE</span>
+                    {% elseif isMember and isModerator %}
+                        <span class="badge mb-2 px-3 ef-badge-role-modo"><i class="bi bi-shield-check me-1"></i>MODÉRATEUR</span>
+                    {% endif %}
+
+                    <p class="ef-groups-modal__family-text mb-2">{{ group.familyName }}</p>
+                    <h2 class="h4 mb-1">{{ group.name }}</h2>
+                    <p class="mb-4 ef-GroupShow__createdAt">Créé le {{ group.createdAt|date('d/m/Y') }}</p>
+                    <hr class="opacity-10">
+
+                    <div class="mb-4">
+                        <h3 class="text-uppercase text-muted small h6">Description</h3>
+                        <p class="ef-GroupShow__desc-full">{{ group.description|default('Aucune description fournie.') }}</p>
+                    </div>
+
+                    {% if isMember and isOwner %}
+                        <a href="{{ path('app_groups_edit', { id: group.id }) }}" class="btn w-100 ef-GroupShow__btn-edit">
+                            <i class="bi bi-pencil-square me-2"></i>Modifier les infos
+                        </a>
+                    {% elseif not isMember %}
+                        <div class="ef-GroupShow__join-box">
+                            {% if joinState.state == 'invited' and joinState.request %}
+                                <p class="small text-muted mb-3">Tu as reçu une invitation pour rejoindre ce groupe.</p>
+                                <div class="d-flex flex-column gap-2">
+                                    <form action="{{ path('app_groups_accept_invitation', { id: group.id, requestId: joinState.request.id }) }}" method="POST" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('accept-invitation' ~ joinState.request.id) }}">
+                                        <button type="submit" class="btn btn-save-profile w-100 py-2 fw-bold">
+                                            <i class="bi bi-check-lg me-2"></i> Accepter l'invitation
+                                        </button>
+                                    </form>
+                                    <form action="{{ path('app_groups_refuse_invitation', { id: group.id, requestId: joinState.request.id }) }}" method="POST" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('refuse-invitation' ~ joinState.request.id) }}">
+                                        <button type="submit" class="btn ef-groups-form__btn-cancel w-100 py-2">
+                                            Refuser l'invitation
+                                        </button>
+                                    </form>
+                                </div>
+                            {% elseif joinState.state == 'pending' %}
+                                <button type="button" class="btn btn-secondary w-100 py-2" disabled>
+                                    <i class="bi bi-hourglass-split me-2"></i> Demande en attente
+                                </button>
+                            {% elseif joinState.state == 'blocked' %}
+                                <div class="alert alert-danger mb-0 small">
+                                    <i class="bi bi-slash-circle me-1"></i>
+                                    Tu ne peux plus demander à rejoindre ce groupe.
+                                </div>
+                            {% elseif joinState.state == 'available' %}
+                                <form action="{{ path('app_groups_request_join', { id: group.id }) }}" method="POST" data-turbo="false">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('join-group' ~ group.id) }}">
+                                    <button type="submit" class="btn btn-save-profile w-100 py-2 fw-bold">
+                                        <i class="bi bi-door-open me-2"></i> Demander à rejoindre
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            {% include 'groups/_members_table.html.twig' %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" src="{{ asset('js/ef-groups.js') }}"></script>
+{% endblock %}

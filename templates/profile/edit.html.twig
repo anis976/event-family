@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Mon espace{% endblock %}
+
+{% block page_title %}Mon espace{% endblock %}
+
+{% block body %}
+    <section class="ef-profile-section py-3 py-lg-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-10 col-lg-8">
+                    {% include 'profile/_header.html.twig' with {
+                        title: 'Mon espace personnel',
+                        subtitle: 'Gérer les informations privées de ton compte',
+                    } only %}
+
+                    <div class="card ef-profile-card border-0 shadow-sm">
+                        <div class="card-body p-3 p-md-4">
+                            {% include 'components/_ef_form_validation_summary.html.twig' with { form: profileForm } only %}
+
+                            {{ form_start(profileForm, {
+                                attr: {
+                                    id: 'profileForm',
+                                    class: 'row g-3',
+                                    novalidate: 'novalidate',
+                                }
+                            }) }}
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-uppercase opacity-50">Nom d'utilisateur</label>
+                                <div class="form-control-plaintext ps-2 fw-medium">
+                                    {% if user.pseudo %}
+                                        @{{ user.pseudo }}
+                                    {% else %}
+                                        <span class="text-muted">Non défini</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-uppercase opacity-50">Adresse e-mail (privée)</label>
+                                <div class="form-control-plaintext ps-2 fw-medium">{{ user.email }}</div>
+                            </div>
+
+                            <div class="col-12"><hr class="my-2 opacity-50"></div>
+
+                            <div class="col-md-6">
+                                {{ form_label(profileForm.firstName, 'Prénom', { label_attr: { class: 'form-label fw-medium' } }) }}
+                                {{ form_widget(profileForm.firstName, { attr: { class: 'form-control ef-input', placeholder: 'Ton prénom' } }) }}
+                                {{ form_errors(profileForm.firstName) }}
+                            </div>
+
+                            <div class="col-md-6">
+                                {{ form_label(profileForm.lastName, 'Nom de famille', { label_attr: { class: 'form-label fw-medium' } }) }}
+                                {{ form_widget(profileForm.lastName, { attr: { class: 'form-control ef-input', placeholder: 'Ton nom' } }) }}
+                                {{ form_errors(profileForm.lastName) }}
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ form_label(profileForm.pseudo, 'Pseudo', { label_attr: { class: 'form-label fw-medium' } }) }}
+                                {{ form_widget(profileForm.pseudo, { attr: { class: 'form-control ef-input', placeholder: 'Optionnel' } }) }}
+                                {% if profileForm.pseudo.vars.help is not empty %}
+                                    <div class="form-text">{{ profileForm.pseudo.vars.help }}</div>
+                                {% endif %}
+                                {{ form_errors(profileForm.pseudo) }}
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <label class="form-label small fw-bold text-uppercase opacity-50 mb-2">Sécurité</label>
+                                <div class="p-3 border rounded-3 bg-light-subtle d-flex flex-column flex-md-row align-items-center justify-content-between ef-profile__security-box">
+                                    <div class="mb-3 mb-md-0 text-center text-md-start">
+                                        <span class="d-block fw-bold">Mot de passe</span>
+                                        <span class="text-muted small">Sécurise l'accès à ton compte</span>
+                                    </div>
+                                    <a
+                                        href="{{ path('app_profile_change_password') }}"
+                                        class="btn btn-change-password px-4 py-2 fw-bold shadow-sm"
+                                    >
+                                        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>
+                                        Modifier
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-2">
+                                <label class="form-label small fw-bold text-uppercase opacity-50 mb-2">Zone dangereuse</label>
+                                <div class="p-3 border border-danger-subtle rounded-3 bg-danger-subtle">
+                                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
+                                        <div class="mb-3 mb-md-0 text-center text-md-start">
+                                            <span class="d-block fw-bold text-danger">Suppression du compte</span>
+                                            <span class="text-muted small">
+                                                Attention : cette action sera irréversible et supprimera toutes tes données.
+                                            </span>
+                                        </div>
+                                        <a
+                                            href="{{ path('app_profile_delete_account') }}"
+                                            class="btn btn-outline-danger px-4 py-2 fw-bold shadow-sm"
+                                        >
+                                            <i class="bi bi-trash me-2" aria-hidden="true"></i>
+                                            Supprimer mon compte
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-save-profile w-100 py-2 fw-bold shadow-sm">
+                                    <i class="bi bi-check-all fs-5 me-2" aria-hidden="true"></i>
+                                    Mettre à jour mon profil
+                                </button>
+                            </div>
+
+                            {{ form_end(profileForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

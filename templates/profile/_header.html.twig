@@ -1,0 +1,11 @@
+<div class="d-flex align-items-center mb-3 ps-1 ef-profile__header">
+    <div class="ef-icon-box me-3">
+        <i class="bi bi-person-circle fs-3" aria-hidden="true"></i>
+    </div>
+    <div>
+        <h2 class="fw-bold h4 mb-0 text-body">{{ title }}</h2>
+        {% if subtitle is defined and subtitle %}
+            <p class="text-muted small mb-0">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+</div>

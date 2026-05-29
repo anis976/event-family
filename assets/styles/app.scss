@@ -5,8 +5,14 @@
 @use 'layout/overlay';
 @use 'layout/footer';
 @use 'components/back-to-top';
+@use 'components/alerts';
 @use 'pages/home';
 @use 'pages/about';
 @use 'pages/contact';
 @use 'layout/auth';
-@use 'pages/sign-up';
+@use 'pages/sign-in';
+@use 'pages/legal';
+@use 'pages/profile';
+@use 'pages/groups';
+@use 'pages/group-show';
+@use 'pages/messages';

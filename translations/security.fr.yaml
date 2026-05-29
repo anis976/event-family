@@ -1,0 +1,8 @@
+# Messages du composant Security
+"Invalid credentials.": "Adresse e-mail ou mot de passe incorrect."
+"Invalid CSRF token.": "Session expirée. Recharge la page de connexion puis réessaie."
+"Jeton CSRF invalide.": "Session expirée. Recharge la page de connexion puis réessaie."
+"Ton compte n'est pas encore activé. Ouvre le lien reçu par e-mail pour confirmer ton adresse.": "Ton compte n'est pas encore activé. Ouvre le lien reçu par e-mail pour confirmer ton adresse."
+"User account is disabled.": "Ce compte est désactivé."
+"User account is locked.": "Ce compte est verrouillé."
+"Too many failed login attempts, please try again later.": "Trop de tentatives de connexion. Réessaie plus tard."

@@ -1,0 +1,230 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use App\Entity\Trait\TimestampableParisTrait;
+use App\Repository\GroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
+#[ORM\Entity(repositoryClass: GroupRepository::class)]
+#[ORM\Table(name: 'ef_groups')]
+#[ORM\UniqueConstraint(name: 'uniq_ef_groups_owner', columns: ['owner_id'])]
+#[ORM\HasLifecycleCallbacks]
+class Group
+{
+    use TimestampableParisTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom du groupe est obligatoire.')]
+    private string $name = '';
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom de famille est obligatoire.')]
+    private string $familyName = '';
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    #[Assert\Length(max: 500, maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.')]
+    private ?string $description = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'authoredGroups')]
+    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $author = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ownedGroups')]
+    #[ORM\JoinColumn(name: 'owner_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?User $owner = null;
+
+    /**
+     * @var Collection<int, GroupMember>
+     */
+    #[ORM\OneToMany(targetEntity: GroupMember::class, mappedBy: 'group', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $groupMembers;
+
+    /**
+     * @var Collection<int, UserBan>
+     */
+    #[ORM\OneToMany(targetEntity: UserBan::class, mappedBy: 'relatedGroup', orphanRemoval: true)]
+    private Collection $userBans;
+
+    /**
+     * @var Collection<int, GroupRequest>
+     */
+    #[ORM\OneToMany(targetEntity: GroupRequest::class, mappedBy: 'relatedGroup', orphanRemoval: true)]
+    private Collection $groupRequests;
+
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'relatedGroup', orphanRemoval: true)]
+    private Collection $messages;
+
+    public function __construct()
+    {
+        $this->groupMembers = new ArrayCollection();
+        $this->userBans = new ArrayCollection();
+        $this->groupRequests = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFamilyName(): string
+    {
+        return $this->familyName;
+    }
+
+    public function setFamilyName(string $familyName): static
+    {
+        $this->familyName = $familyName;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GroupMember>
+     */
+    public function getGroupMembers(): Collection
+    {
+        return $this->groupMembers;
+    }
+
+    public function addGroupMember(GroupMember $groupMember): static
+    {
+        if (!$this->groupMembers->contains($groupMember)) {
+            $this->groupMembers->add($groupMember);
+            $groupMember->setGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupMember(GroupMember $groupMember): static
+    {
+        $this->groupMembers->removeElement($groupMember);
+
+        return $this;
+    }
+
+    public function getDisplayLabel(): string
+    {
+        return trim($this->name.' '.$this->familyName);
+    }
+
+    /**
+     * @return Collection<int, UserBan>
+     */
+    public function getUserBans(): Collection
+    {
+        return $this->userBans;
+    }
+
+    /**
+     * @return Collection<int, GroupRequest>
+     */
+    public function getGroupRequests(): Collection
+    {
+        return $this->groupRequests;
+    }
+
+    public function addGroupRequest(GroupRequest $groupRequest): static
+    {
+        if (!$this->groupRequests->contains($groupRequest)) {
+            $this->groupRequests->add($groupRequest);
+            $groupRequest->setRelatedGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupRequest(GroupRequest $groupRequest): static
+    {
+        $this->groupRequests->removeElement($groupRequest);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+}

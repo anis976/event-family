@@ -1,0 +1,15 @@
+<div class="ef-messages__footer p-3 bg-white border rounded-4 shadow-sm mt-auto">
+    {{ form_start(form, { attr: { class: 'd-flex align-items-center gap-2', 'data-turbo': 'false' } }) }}
+        {{ form_widget(form.content, {
+            attr: {
+                class: 'form-control border-0 shadow-none p-0 bg-transparent',
+                placeholder: placeholder|default('Écrire un message…'),
+                rows: '1',
+                style: 'resize: none',
+            },
+        }) }}
+        <button type="submit" class="btn ef-messages__send-btn p-0 d-flex align-items-center justify-content-center" aria-label="Envoyer">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    {{ form_end(form) }}
+</div>

@@ -4,38 +4,179 @@
 
 {% block body_class %} ef-signIn{% endblock %}
 
+{% block auth_flash %}{% endblock %}
+
 {% block body %}
-    <div class="container-fluid ef-main-wrapper ef-signIn d-flex align-items-center justify-content-center min-vh-100 p-4">
-        <div class="card shadow-lg p-4 p-lg-5" style="max-width: 420px; width: 100%;">
-            <h1 class="fw-bold mb-3">Connexion</h1>
-            <p class="text-muted small">Page de connexion — maquette HTML/SCSS à venir.</p>
-
-            {% if error %}
-                <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            {% endif %}
-
-            <form method="post" action="{{ path('app_login') }}">
-                {% if csrf_token('authenticate') %}
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                {% endif %}
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold small" for="username">Adresse e-mail</label>
-                    <input type="email" id="username" name="_username" class="form-control" value="{{ last_username }}" autocomplete="email" required>
+    <div class="container-fluid ef-main-wrapper ef-signIn">
+        <div class="container">
+            <div class="row align-items-center justify-content-center g-4">
+                <div class="col-lg-6 d-none d-lg-block text-center">
+                    <img
+                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+                        class="img-fluid illustration-img"
+                        alt="Illustration connexion"
+                        width="500"
+                        height="450"
+                    >
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold small" for="password">Mot de passe</label>
-                    <input type="password" id="password" name="_password" class="form-control" autocomplete="current-password" required>
+                <div class="col-12 col-md-7 col-lg-5 col-xl-5 offset-xl-1 ef-signIn__column">
+                    <div class="ef-signIn__alerts">
+                        {% include 'components/_ef_flash_messages.html.twig' %}
+                    </div>
+
+                    <form
+                        method="post"
+                        action="{{ path('app_login') }}"
+                        class="card shadow-lg p-4 p-sm-5 ef-auth__form-card"
+                        data-turbo="false"
+                    >
+                        <h1 class="text-center fw-bold mb-4 mt-2 h2">Connexion à EventFamily</h1>
+
+                        {% if error %}
+                            {% include 'components/_ef_alert.html.twig' with {
+                                type: 'danger',
+                                title: 'Connexion impossible',
+                                message: error.messageKey|trans(error.messageData, 'security'),
+                                dismissible: true,
+                                show_title: true,
+                            } only %}
+                        {% endif %}
+
+                        <button
+                            type="button"
+                            class="btn btn-lg w-100 btn-google-custom d-flex align-items-center justify-content-center mb-4 fw-semibold"
+                            aria-disabled="true"
+                            title="Bientôt disponible"
+                            data-ef-google-soon
+                        >
+                            <i class="bi bi-google me-2" aria-hidden="true"></i>
+                            <span>Se connecter avec Google</span>
+                        </button>
+
+                        <div class="divider d-flex align-items-center my-4">
+                            <p class="text-center fw-bold mx-3 mb-0 text-muted small">OU</p>
+                        </div>
+
+                        <input
+                            type="hidden"
+                            name="_csrf_token"
+                            value="{{ csrf_token('authenticate') }}"
+                            data-controller="csrf-protection"
+                        >
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="username">Adresse e-mail</label>
+                            <input
+                                type="email"
+                                id="username"
+                                name="_username"
+                                class="form-control form-control-lg{{ error ? ' is-invalid' : '' }}"
+                                value="{{ last_username }}"
+                                placeholder="nom@exemple.com"
+                                autocomplete="email"
+                                required
+                            >
+                            {% if error %}
+                                <div class="ef-form-errors invalid-feedback d-block">
+                                    <div class="ef-form-errors__item">
+                                        <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                                        <span>Vérifie ton adresse e-mail.</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold" for="password">Mot de passe</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="_password"
+                                class="form-control form-control-lg{{ error ? ' is-invalid' : '' }}"
+                                placeholder="••••••••"
+                                autocomplete="current-password"
+                                required
+                            >
+                            {% if error %}
+                                <div class="ef-form-errors invalid-feedback d-block">
+                                    <div class="ef-form-errors__item">
+                                        <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+                                        <span>Vérifie ton mot de passe.</span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="btn btn-submit-custom btn-lg w-100 mb-4 shadow-sm fw-bold"
+                        >
+                            Continuer
+                        </button>
+
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    name="_remember_me"
+                                    id="rememberMe"
+                                    value="on"
+                                    checked
+                                >
+                                <label class="form-check-label text-muted small" for="rememberMe">
+                                    Se souvenir de moi
+                                </label>
+                            </div>
+                            <a
+                                href="{{ path('app_forgot_password') }}"
+                                class="ef-link-orange text-decoration-none small"
+                            >
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
+
+                        <p class="text-center text-muted mb-3 small">
+                            Pas encore de compte ?
+                            <a href="{{ path('app_register') }}" class="ef-link-orange fw-bold text-decoration-none">
+                                S'inscrire
+                            </a>
+                        </p>
+                    </form>
+
+                    <div class="card border-0 p-3 p-sm-4 mt-3 ef-auth__form-card ef-signIn__resend-panel">
+                        <p class="small text-muted mb-2 ef-signIn__resend-title">
+                            <i class="bi bi-envelope-exclamation me-1" aria-hidden="true"></i>
+                            Pas reçu l'e-mail d'activation ?
+                        </p>
+                        <p class="small text-muted mb-3 ef-signIn__resend-hint">
+                            Vérifie d'abord ta boîte de réception et le dossier <strong>spam / courrier indésirable</strong>.
+                            Attends quelques minutes avant de demander un nouvel envoi (5 demandes max. toutes les 15&nbsp;min.).
+                        </p>
+                        <form method="post" action="{{ path('app_resend_verification_email') }}" data-turbo="false">
+                            <input type="hidden" name="_token" value="{{ csrf_token('resend_verification') }}">
+                            <div class="mb-2">
+                                <label class="form-label fw-semibold small" for="resend-email">Ton adresse e-mail</label>
+                                <input
+                                    type="email"
+                                    id="resend-email"
+                                    name="email"
+                                    class="form-control form-control-sm"
+                                    value="{{ last_username }}"
+                                    placeholder="nom@exemple.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                            </div>
+                            <button type="submit" class="btn btn-google-custom btn-sm w-100 fw-semibold">
+                                <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>
+                                Renvoyer l'e-mail d'activation
+                            </button>
+                        </form>
+                    </div>
                 </div>
-
-                <button type="submit" class="btn btn-submit-custom w-100 mb-3">Se connecter</button>
-            </form>
-
-            <p class="text-center mb-0 small">
-                Pas encore de compte ?
-                <a href="{{ path('app_register') }}" class="ef-link-orange fw-bold text-decoration-none">S'inscrire</a>
-            </p>
+            </div>
         </div>
     </div>
 {% endblock %}

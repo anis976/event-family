@@ -4,6 +4,8 @@
 
 {% block body_class %} ef-signUp{% endblock %}
 
+{% block auth_flash %}{% endblock %}
+
 {% block body %}
     <div class="container-fluid ef-main-wrapper ef-signUp">
         <div class="container">
@@ -18,16 +20,23 @@
                     >
                 </div>
 
-                <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+                <div class="col-12 col-md-7 col-lg-5 col-xl-5 offset-xl-1 ef-signUp__column">
+                    <div class="ef-signUp__alerts">
+                        {% include 'components/_ef_flash_messages.html.twig' %}
+                    </div>
+
                     {{ form_start(registrationForm, {
-                        attr: { class: 'card shadow-lg p-4 p-lg-5', novalidate: 'novalidate' }
+                        attr: {
+                            class: 'card shadow-lg p-4 p-sm-5 ef-auth__form-card',
+                            novalidate: 'novalidate',
+                            'data-turbo': 'false',
+                        }
                     }) }}
 
-                    <h1 class="fw-bold mb-3">Créer un compte</h1>
+                    <h1 class="text-center fw-bold mb-3 mt-0 h2 ef-signUp__title">Créer un compte</h1>
 
-                    {% for message in app.flashes('success') %}
-                        <div class="alert alert-success" role="alert">{{ message }}</div>
-                    {% endfor %}
+                    {% include 'components/_ef_form_validation_summary.html.twig' with { form: registrationForm } only %}
+                    {{ form_errors(registrationForm) }}
 
                     {# aria-disabled (pas disabled) : le navigateur bloque :hover sur disabled #}
                     <button
@@ -83,14 +92,14 @@
                         </div>
                     </div>
 
-                    <div class="form-check mb-3">
+                    <div class="ef-terms-check mb-3">
                         {{ form_widget(registrationForm.agreeTerms, { attr: { class: 'form-check-input' } }) }}
-                        <label class="form-check-label small" for="{{ registrationForm.agreeTerms.vars.id }}">
+                        <label class="ef-terms-check__label small mb-0" for="{{ registrationForm.agreeTerms.vars.id }}">
                             J'accepte les
-                            <a href="#" class="ef-link-orange fw-bold text-decoration-none">Conditions d'utilisation</a>
+                            <a href="{{ path('app_cgu') }}" class="ef-link-orange fw-bold text-decoration-none" target="_blank" rel="noopener">Conditions d'utilisation</a>
                         </label>
-                        {{ form_errors(registrationForm.agreeTerms) }}
                     </div>
+                    {{ form_errors(registrationForm.agreeTerms) }}
 
                     <button type="submit" class="btn btn-submit-custom mb-3">S'inscrire</button>
 

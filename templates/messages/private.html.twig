@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Messages privés{% endblock %}
+{% block page_title %}Messages privés{% endblock %}
+
+{% block body %}
+<div class="ef-messages container-fluid py-3 py-md-4" data-ef-read-url-base="{{ path('app_messages_read', { id: 0 })|slice(0, -1) }}">
+    <div class="mb-4">
+        <a href="{{ path('app_messages') }}" class="btn btn-outline-secondary btn-sm mb-3">
+            <i class="bi bi-arrow-left"></i> Retour au hub
+        </a>
+        <h2 class="fw-bold fs-3">Messages privés</h2>
+    </div>
+
+    <div class="ef-messages__thread-container d-flex flex-column gap-4">
+        {% for thread in private_threads %}
+            {% if thread.parent is null %}
+                {% include 'messages/_thread.html.twig' with { thread: thread, unread_ids: unread_ids } %}
+            {% endif %}
+        {% else %}
+            <p class="text-muted text-center my-5">Aucun message privé pour le moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block body_class %} ef-page-messages{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" src="{{ asset('js/ef-messages.js') }}"></script>
+{% endblock %}

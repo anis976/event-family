@@ -1,0 +1,125 @@
+@use '../base/variables' as *;
+
+.ef-flash-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.ef-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border: none;
+    border-left: 4px solid transparent;
+    border-radius: $border-radius-lg;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0;
+
+    &__icon {
+        flex-shrink: 0;
+        font-size: 1.25rem;
+        margin-top: 0.1rem;
+    }
+
+    &__content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__title {
+        display: block;
+        margin-bottom: 0.15rem;
+    }
+
+    &__message {
+        line-height: 1.45;
+    }
+
+    &--compact {
+        padding: 0.75rem 1rem;
+    }
+
+    &--success {
+        border-left-color: #198754;
+        background-color: rgba(25, 135, 84, 0.1);
+
+        .ef-alert__icon {
+            color: #198754;
+        }
+    }
+
+    &--danger {
+        border-left-color: #dc3545;
+        background-color: rgba(220, 53, 69, 0.08);
+
+        .ef-alert__icon {
+            color: #dc3545;
+        }
+    }
+
+    &--warning {
+        border-left-color: $ef-primary-orange;
+        background-color: rgba($ef-primary-orange, 0.12);
+
+        .ef-alert__icon {
+            color: $ef-active-hover-orange;
+        }
+    }
+
+    &--info {
+        border-left-color: $ef-primary-blue;
+        background-color: rgba($ef-primary-blue, 0.1);
+
+        .ef-alert__icon {
+            color: $ef-primary-blue;
+        }
+    }
+
+    @include color-mode(dark) {
+        &--success {
+            background-color: rgba(25, 135, 84, 0.2);
+        }
+
+        &--danger {
+            background-color: rgba(220, 53, 69, 0.15);
+        }
+
+        &--warning {
+            background-color: rgba($ef-primary-orange-dark, 0.15);
+        }
+
+        &--info {
+            background-color: rgba($ef-primary-blue, 0.2);
+        }
+    }
+}
+
+.ef-form-errors {
+    &__item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.35rem;
+        color: #dc3545;
+        font-size: 0.875rem;
+        line-height: 1.35;
+
+        .bi {
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+    }
+
+    &__list {
+        padding-left: 1.1rem;
+        margin-top: 0.25rem;
+    }
+}
+
+.ef-auth-page,
+.ef-main {
+    .ef-flash-stack {
+        max-width: 100%;
+    }
+}

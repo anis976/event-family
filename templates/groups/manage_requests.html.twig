@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Demandes — {{ group.name }}{% endblock %}
+{% block page_title %}Demandes d'adhésion{% endblock %}
+
+{% block body %}
+<div class="container py-5 ef-GroupShow">
+    <nav aria-label="Fil d'Ariane" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups') }}">Mes groupes</a></li>
+            <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups_show', { id: group.id }) }}">{{ group.name }}</a></li>
+            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">Demandes</li>
+        </ol>
+    </nav>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 py-4 px-4">
+            <h2 class="h5 mb-0">Demandes en attente <span class="badge bg-secondary ms-2">{{ requests|length }}</span></h2>
+        </div>
+
+        {% if requests is empty %}
+            <div class="card-body text-center py-5 text-muted">
+                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                Aucune demande en attente pour le moment.
+            </div>
+        {% else %}
+            <div class="table-responsive px-2 pb-3">
+                <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
+                    <thead>
+                        <tr>
+                            <th class="ps-4 py-3 border-0">Membre</th>
+                            <th class="py-3 border-0">Date</th>
+                            <th class="py-3 border-0 text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in requests %}
+                            {% set applicant = request.user %}
+                            <tr>
+                                <td class="ps-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="ef-avatar-circle me-3">{{ applicant.firstName|first|upper }}</div>
+                                        <div>
+                                            <div class="ef-GroupShow__card-table-name">{{ applicant.firstName|capitalize }} {{ applicant.lastName|upper }}</div>
+                                            <div class="ef-GroupShow__card-table-pseudo">@{{ applicant.pseudo }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-3 text-muted small">{{ request.createdAt|date('d/m/Y H:i') }}</td>
+                                <td class="text-end pe-4 py-3">
+                                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                        <form action="{{ path('app_groups_accept_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('accept-join' ~ request.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-lg me-1"></i> Accepter
+                                            </button>
+                                        </form>
+                                        <form action="{{ path('app_groups_refuse_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('refuse-join' ~ request.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-x-lg me-1"></i> Refuser
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn btn-light">
+            <i class="bi bi-arrow-left me-1"></i> Retour au groupe
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="light">
+<html lang="fr" data-bs-theme="light" data-turbo="false">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,6 +31,12 @@
 </head>
 <body class="ef-body ef-auth-page{% block body_class %}{% endblock %}">
     {% include 'layout/_auth_theme.html.twig' %}
+
+    {% block auth_flash %}
+        <div class="ef-auth__flash container-fluid px-3 pt-3">
+            {% include 'components/_ef_flash_messages.html.twig' %}
+        </div>
+    {% endblock %}
 
     {% block body %}{% endblock %}
 </body>

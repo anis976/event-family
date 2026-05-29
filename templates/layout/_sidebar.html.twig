@@ -29,20 +29,20 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link ef-sidebar__nav-link">
-                    <i class="bi bi-people me-2" aria-hidden="true"></i> Groups
+                <a href="{{ path('app_groups') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') starts with 'app_groups' ? ' active' : '' }}">
+                    <i class="bi bi-people me-2" aria-hidden="true"></i> Groupes
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center">
+                <a href="{{ path('app_invitations_index') }}" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center{{ app.request.attributes.get('_route') starts with 'app_invitations' ? ' active' : '' }}">
                     <span><i class="bi bi-envelope-check me-2" aria-hidden="true"></i> Invitations</span>
-                    <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg">2</span>
+                    <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg{% if ef_invitation_count <= 0 %} d-none{% endif %}" data-ef-badge="invitations">{{ ef_invitation_count }}</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center">
+                <a href="{{ path('app_messages') }}" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center{{ app.request.attributes.get('_route') starts with 'app_messages' ? ' active' : '' }}">
                     <span><i class="bi bi-chat-left me-2" aria-hidden="true"></i> Messages</span>
-                    <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg">2</span>
+                    <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg{% if ef_message_count <= 0 %} d-none{% endif %}" data-ef-badge="messages">{{ ef_message_count }}</span>
                 </a>
             </li>
             <li>
@@ -76,8 +76,8 @@
             {% if app.user %}
                 <i class="bi bi-person-circle fs-4 me-3" aria-hidden="true"></i>
                 <div class="overflow-hidden">
-                    <p class="mb-0 text-truncate ef-sidebar__settings-name">{{ app.user.userIdentifier }}</p>
-                    <small class="text-truncate d-block ef-sidebar__settings-email text-muted">Connecté</small>
+                    <p class="mb-0 text-truncate ef-sidebar__settings-name">{{ app.user.displayName }}</p>
+                    <small class="text-truncate d-block ef-sidebar__settings-email text-muted">{{ app.user.email }}</small>
                 </div>
             {% else %}
                 <i class="bi bi-gear fs-4 me-3" aria-hidden="true"></i>
@@ -91,14 +91,17 @@
         <ul class="dropdown-menu dropdown-menu-up shadow border-0 mb-2 rounded-4 p-2 ef-sidebar__settings-dropdown">
             {% if app.user %}
                 <li>
-                    <a class="dropdown-item rounded-3 py-2 ef-sidebar__settings-link" href="#">
+                    <a class="dropdown-item rounded-3 py-2 ef-sidebar__settings-link{{ app.request.attributes.get('_route') starts with 'app_profile' ? ' active' : '' }}" href="{{ path('app_profile') }}">
                         <i class="bi bi-person me-2" aria-hidden="true"></i> Mon profil
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item rounded-3 py-2 ef-sidebar__settings-link ef-sidebar__settings-link-auth" href="{{ path('app_logout') }}">
-                        <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Déconnexion
-                    </a>
+                    <form action="{{ path('app_logout') }}" method="post" data-turbo="false" class="m-0">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                        <button type="submit" class="dropdown-item rounded-3 py-2 ef-sidebar__settings-link ef-sidebar__settings-link-auth w-100 text-start border-0 bg-transparent">
+                            <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Déconnexion
+                        </button>
+                    </form>
                 </li>
             {% else %}
                 <li>

@@ -10,9 +10,19 @@
         z-index: 1050;
     }
 
-    .card {
+    .ef-auth__flash {
+        position: relative;
+        z-index: 1040;
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .card,
+    .ef-auth__form-card {
         background-color: var(--bs-body-bg);
         border: none;
+        border-radius: 1.5rem;
         transition: transform 0.3s ease;
 
         @include color-mode(dark) {

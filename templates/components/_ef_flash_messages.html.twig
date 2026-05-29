@@ -1,0 +1,15 @@
+{% set flashes = app.flashes %}
+{% if flashes|length > 0 %}
+    <div class="ef-flash-stack" aria-live="polite" aria-atomic="true">
+        {% for label, messages in flashes %}
+            {% for message in messages %}
+                {% include 'components/_ef_alert.html.twig' with {
+                    type: label,
+                    message: message,
+                    dismissible: true,
+                    show_title: true,
+                } only %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}

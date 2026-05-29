@@ -15,19 +15,38 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            user_checker: App\Security\UserChecker
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             form_login:
                 login_path: app_login
                 check_path: app_login
                 enable_csrf: true
+                csrf_parameter: _csrf_token
+                csrf_token_id: authenticate
                 default_target_path: app_home
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
             logout:
                 path: app_logout
                 target: app_home
+                enable_csrf: true
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/mot-de-passe-oublie, roles: PUBLIC_ACCESS }
+        - { path: ^/reinitialiser-mot-de-passe, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/verify-email, roles: PUBLIC_ACCESS }
+        - { path: ^/profil/mot-de-passe/confirmer, roles: PUBLIC_ACCESS }
+        - { path: ^/profil/suppression/confirmer, roles: PUBLIC_ACCESS }
+        - { path: ^/verification/resend, roles: PUBLIC_ACCESS }
+        - { path: ^/cgu, roles: PUBLIC_ACCESS }
+        - { path: ^/mentions-legales, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:

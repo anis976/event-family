@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Invitations{% endblock %}
+{% block page_title %}Invitations{% endblock %}
+
+{% block body %}
+<div class="container py-5 ef-Invitations">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-transparent border-0 py-4 px-4">
+                    <h2 class="h5 mb-1 fw-bold"><i class="bi bi-envelope-heart me-2 text-primary"></i>Mes invitations reçues</h2>
+                    <p class="text-muted small mb-0">Invitations personnelles pour rejoindre un groupe.</p>
+                </div>
+
+                {% if receivedInvitations is empty %}
+                    <div class="card-body text-center py-5 text-muted">
+                        <i class="bi bi-envelope-open fs-1 d-block mb-3"></i>
+                        Aucune invitation en attente.
+                    </div>
+                {% else %}
+                    <div class="list-group list-group-flush">
+                        {% for invitation in receivedInvitations %}
+                            {% set group = invitation.relatedGroup %}
+                            <div class="list-group-item px-4 py-4">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                                    <div>
+                                        <h3 class="h6 mb-1 fw-bold">{{ group.name }}</h3>
+                                        <p class="text-muted small mb-1">{{ group.familyName }}</p>
+                                        <p class="text-muted small mb-0">Reçue le {{ invitation.createdAt|date('d/m/Y H:i') }}</p>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <form action="{{ path('app_groups_accept_invitation', { id: group.id, requestId: invitation.id }) }}" method="POST" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('accept-invitation' ~ invitation.id) }}">
+                                            <input type="hidden" name="redirect_route" value="app_invitations">
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-lg me-1"></i> Accepter
+                                            </button>
+                                        </form>
+                                        <form action="{{ path('app_groups_refuse_invitation', { id: group.id, requestId: invitation.id }) }}" method="POST" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('refuse-invitation' ~ invitation.id) }}">
+                                            <input type="hidden" name="redirect_route" value="app_invitations">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-x-lg me-1"></i> Refuser
+                                            </button>
+                                        </form>
+                                        <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn btn-sm btn-light">
+                                            Voir le groupe
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if isStaffAnywhere %}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-transparent border-0 py-4 px-4">
+                        <h2 class="h5 mb-1 fw-bold"><i class="bi bi-inbox me-2 text-primary"></i>Demandes d'adhésion à mes groupes</h2>
+                        <p class="text-muted small mb-0">Visible en tant que chef ou modérateur. Une demande traitée disparaît pour toute l'équipe.</p>
+                    </div>
+
+                    {% if staffJoinRequests is empty %}
+                        <div class="card-body text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                            Aucune demande en attente.
+                        </div>
+                    {% else %}
+                        <div class="table-responsive px-2 pb-3">
+                            <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4 py-3 border-0">Groupe</th>
+                                        <th class="py-3 border-0">Demandeur</th>
+                                        <th class="py-3 border-0">Date</th>
+                                        <th class="py-3 border-0 text-end pe-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for request in staffJoinRequests %}
+                                        {% set applicant = request.user %}
+                                        {% set group = request.relatedGroup %}
+                                        <tr>
+                                            <td class="ps-4 py-3 fw-bold">{{ group.name }}</td>
+                                            <td class="py-3">
+                                                <div class="ef-GroupShow__card-table-name">{{ applicant.firstName|capitalize }} {{ applicant.lastName|upper }}</div>
+                                                <div class="ef-GroupShow__card-table-pseudo">@{{ applicant.pseudo }}</div>
+                                            </td>
+                                            <td class="py-3 text-muted small">{{ request.createdAt|date('d/m/Y H:i') }}</td>
+                                            <td class="text-end pe-4 py-3">
+                                                <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                                    <form action="{{ path('app_groups_accept_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('accept-join' ~ request.id) }}">
+                                                        <input type="hidden" name="redirect_route" value="app_invitations">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-check-lg me-1"></i> Accepter
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ path('app_groups_refuse_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('refuse-join' ~ request.id) }}">
+                                                        <input type="hidden" name="redirect_route" value="app_invitations">
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="bi bi-x-lg me-1"></i> Refuser
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block body_class %} ef-page-invitations{% endblock %}

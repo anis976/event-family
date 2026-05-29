@@ -1,0 +1,139 @@
+<div class="card border-0 shadow-sm ef-GroupShow__card-member">
+    <div class="card-header bg-transparent border-0 py-4 px-4 d-flex justify-content-between align-items-center">
+        <h3 class="mb-0 h5">Membres du cercle <span class="badge bg-secondary ms-2">{{ group.groupMembers|length }}</span></h3>
+    </div>
+
+    <div class="table-responsive px-2">
+        <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
+            <thead class="d-none d-md-table-header-group">
+                <tr>
+                    <th class="ps-4 py-3 border-0">Membre</th>
+                    <th class="py-3 border-0">Rôle</th>
+                    <th class="py-3 border-0 text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in group.groupMembers %}
+                    {% set is_banned = isMember and bannedUserIds[member.user.id] is defined %}
+                    {% set is_self = member.user.id == app.user.id %}
+                    {% set is_target_owner = member.role.value == 'OWNER' %}
+                    {% set can_staff_ban = isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
+                    <tr class="ef-member-row{% if is_banned %} opacity-50 bg-light{% endif %}">
+                        <td class="ps-4 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="ef-avatar-circle me-3">
+                                    {{ member.user.firstName|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="ef-GroupShow__card-table-name">{{ member.user.firstName|capitalize }} {{ member.user.lastName|upper }}</div>
+                                    <div class="ef-GroupShow__card-table-pseudo">@{{ member.user.pseudo }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td class="ef-GroupShow__card-table-badge py-3">
+                            {% if is_banned %}
+                                <span class="badge ef-badge-role-banni"><i class="bi bi-slash-circle me-1"></i>BANNI</span>
+                            {% elseif is_target_owner %}
+                                <span class="badge ef-badge-role-chef"><i class="bi bi-star-fill me-1"></i>CHEF</span>
+                            {% elseif member.role.value == 'MODERATOR' %}
+                                <span class="badge ef-badge-role-modo"><i class="bi bi-shield-check me-1"></i>MODO</span>
+                            {% else %}
+                                <span class="badge ef-badge-role-member">MEMBRE</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end pe-4 py-3">
+                            {% if not is_banned %}
+                                <div class="dropdown d-inline-block">
+                                    <button class="ef-GroupShow__btn-three-dots" type="button" data-bs-toggle="dropdown" aria-label="Actions membre">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('app_profile_show', { id: member.user.id }) }}">
+                                                <i class="bi bi-person me-2"></i>Voir profil
+                                            </a>
+                                        </li>
+
+                                        {% if isOwner and not is_self and not is_target_owner %}
+                                            <li>
+                                                <form action="{{ path('app_groups_toggle_modo', { memberId: member.id }) }}" method="POST" data-turbo="false">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle-modo' ~ member.id) }}">
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="bi bi-shield-check me-2"></i>
+                                                        {{ member.role.value == 'MODERATOR' ? 'Retirer modérateur' : 'Passer modérateur' }}
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if can_staff_ban %}
+                                            <li>
+                                                <form action="{{ path('app_groups_ban_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('ban' ~ member.id) }}">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-slash-circle me-2"></i>Bannir
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if isOwner and not is_self and not is_target_owner %}
+                                            <li>
+                                                <form action="{{ path('app_groups_kick_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('kick' ~ member.id) }}">
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="bi bi-person-x me-2"></i>Exclure
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if not is_self %}
+                                            <li>
+                                                <button
+                                                    type="button"
+                                                    class="dropdown-item"
+                                                    data-ef-toggle-message-row="message-row-{{ member.user.id }}"
+                                                >
+                                                    <i class="bi bi-chat-dots me-2 text-primary"></i>Envoyer un message
+                                                </button>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            {% elseif isStaff %}
+                                <form action="{{ path('app_groups_unban_member', { memberId: member.id }) }}" method="POST" data-turbo="false" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('unban' ~ member.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-check-circle me-1"></i> Débannir
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if not is_banned and not is_self %}
+                        <tr id="message-row-{{ member.user.id }}" class="d-none ef-GroupShow__message-row">
+                            <td colspan="3" class="p-3">
+                                <form action="{{ path('app_messages_send_direct') }}" method="POST" class="card border-0 shadow-sm p-3" data-turbo="false">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('send_direct_message') }}">
+                                    <input type="hidden" name="recipient_id" value="{{ member.user.id }}">
+                                    <input type="hidden" name="redirect_route" value="app_groups_show">
+                                    <input type="hidden" name="redirect_id" value="{{ group.id }}">
+                                    <div class="d-flex flex-column flex-sm-row gap-2">
+                                        <input type="text" name="content" class="form-control" placeholder="Votre message…" required>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">Envoyer</button>
+                                            <button type="button" class="btn btn-light" data-ef-close-message-row="message-row-{{ member.user.id }}">Annuler</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

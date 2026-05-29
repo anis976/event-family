@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Créer un groupe{% endblock %}
+{% block page_title %}Créer un groupe{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/groups-form-page.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="ef-main-content-padding ef-groups ef-groups--form-page">
+    <nav aria-label="Fil d'Ariane" class="ef-groups__breadcrumb">
+        <a href="{{ path('app_groups') }}" class="ef-groups__breadcrumb-link text-decoration-none">Groupes</a>
+        <span class="ef-groups__breadcrumb-sep" aria-hidden="true">/</span>
+        <span class="ef-groups__breadcrumb-current" aria-current="page">Nouveau</span>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-9 col-xl-7">
+            <div class="card ef-groups-form__card border-0 shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 fw-bold mb-1">Créer un groupe</h2>
+                    <p class="text-muted mb-4">Un seul groupe peut être créé par compte.</p>
+
+                    {{ form_start(groupForm, { attr: { class: 'ef-groups-form', novalidate: 'novalidate' } }) }}
+                        <div class="mb-3">
+                            {{ form_label(groupForm.name, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+                            {{ form_widget(groupForm.name) }}
+                            {{ form_errors(groupForm.name) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(groupForm.familyName, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+                            {{ form_widget(groupForm.familyName) }}
+                            {{ form_errors(groupForm.familyName) }}
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                {{ form_label(groupForm.description, null, { label_attr: { class: 'form-label fw-medium mb-0' } }) }}
+                                <small class="js-counter text-muted fw-bold">0 / 500</small>
+                            </div>
+                            {{ form_widget(groupForm.description) }}
+                            {{ form_errors(groupForm.description) }}
+                        </div>
+
+                        <div class="d-flex flex-column flex-sm-row gap-2 pt-3">
+                            <button type="submit" class="btn btn-save-profile flex-grow-1 py-2 fw-bold shadow-sm">
+                                <i class="bi bi-check-all fs-5 me-2" aria-hidden="true"></i>
+                                Créer le groupe
+                            </button>
+                            <a href="{{ path('app_groups') }}" class="btn ef-groups-form__btn-cancel px-4 py-2">Annuler</a>
+                        </div>
+                    {{ form_end(groupForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" src="{{ asset('js/ef-groups.js') }}"></script>
+{% endblock %}

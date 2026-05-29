@@ -1,0 +1,186 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+.ef-GroupShow {
+    &__nav-link {
+        font-size: 15px;
+        color: $gray-600;
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        &.active {
+            font-weight: 700;
+            color: $ef-primary-orange-dark;
+        }
+    }
+
+    &__card-body {
+        span.ef-badge-role-chef,
+        span.ef-badge-role-modo {
+            color: $ef-primary-orange-dark;
+            background: rgba($ef-primary-blue-dark, 0.08);
+        }
+
+        h2,
+        h6 {
+            color: #3f3f46;
+            font-weight: 500;
+
+            @include color-mode(dark) {
+                color: #aaa;
+            }
+        }
+    }
+
+    &__createdAt {
+        font-size: 0.75em;
+        font-weight: 400;
+        color: $gray-600;
+    }
+
+    &__desc-full {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: $gray-600;
+    }
+
+    &__btn-edit,
+    &__btn-three-dots {
+        background-color: rgba(243, 141, 30, 0.15);
+        color: $ef-primary-orange;
+        border: none;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        transition: 0.3s;
+
+        @include media-breakpoint-down(md) {
+            font-size: 0.9rem;
+        }
+
+        &:hover {
+            background-color: $ef-primary-orange;
+            color: white;
+        }
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-primary-orange, 0.1);
+            border: 1px solid $ef-primary-orange;
+            color: $ef-primary-orange;
+            backdrop-filter: blur(5px);
+
+            &:hover {
+                background-color: $ef-primary-orange;
+                color: white;
+            }
+        }
+    }
+
+    &__btn-three-dots {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+
+        @include color-mode(dark) {
+            box-shadow: none;
+        }
+
+        i {
+            line-height: 1;
+        }
+    }
+
+    &__card-member {
+        .card-header h3 {
+            color: #3f3f46;
+            font-weight: 500;
+
+            @include color-mode(dark) {
+                color: #aaa;
+            }
+
+            span {
+                background: $ef-primary-orange-dark;
+            }
+        }
+    }
+
+    &__card-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        thead {
+            background-color: #f8f9fa;
+
+            th {
+                padding: 12px 15px;
+                font-size: 0.75rem;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+                color: $ef-primary-orange-dark;
+                border-bottom: 2px solid #e9ecef;
+            }
+        }
+
+        &-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #18181b;
+            display: block;
+
+            @include color-mode(dark) {
+                color: #e4e4e7;
+            }
+        }
+
+        &-pseudo {
+            font-size: 0.85rem;
+            color: $gray-600;
+        }
+
+        &-badge {
+            padding: 15px;
+            vertical-align: middle;
+
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 0.4em 0.8em;
+                font-size: 0.7rem;
+                font-weight: 600;
+                border-radius: 6px;
+                text-transform: uppercase;
+            }
+        }
+    }
+}
+
+.ef-card-info {
+    z-index: 10 !important;
+}
+
+.dropdown-menu {
+    z-index: 1060 !important;
+}
+
+.table-responsive {
+    overflow: visible !important;
+}
+
+.dropdown-item {
+    transition: background 0.2s;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f8f9fa;
+    }
+
+    &.text-danger:hover {
+        background-color: #fff5f5 !important;
+    }
+}

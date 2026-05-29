@@ -23,11 +23,51 @@
             <i class="bi bi-search fs-5" aria-hidden="true"></i>
         </button>
 
-        <div class="px-2 position-relative ef-topbar__notification" role="presentation">
-            <i class="bi bi-bell fs-5" aria-hidden="true"></i>
-            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ef-topbar__notification-badge">
-                9
-            </span>
+        <div class="dropdown">
+            <button
+                type="button"
+                class="btn border-0 px-2 position-relative ef-topbar__notification"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Notifications{% if ef_notification_count > 0 %} ({{ ef_notification_count }} en attente){% endif %}"
+            >
+                <i class="bi bi-bell fs-5" aria-hidden="true"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ef-topbar__notification-badge{% if ef_notification_count <= 0 %} d-none{% endif %}" data-ef-badge="notifications">{{ ef_notification_count }}</span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end ef-topbar__notification-menu shadow rounded-4 border-0 p-2">
+                <li><h6 class="dropdown-header px-3 py-2">Notifications</h6></li>
+
+                {% if ef_notification_count <= 0 %}
+                    <li><span class="dropdown-item-text text-muted small px-3 py-2">Aucune notification en attente</span></li>
+                {% endif %}
+
+                <li>
+                    <a class="dropdown-item rounded-3 py-2 d-flex justify-content-between align-items-center ef-topbar__notification-menu-item" href="{{ path('app_invitations_index') }}">
+                        <span><i class="bi bi-envelope-check me-2"></i> Invitations</span>
+                        {% if ef_invitation_count > 0 %}
+                            <span class="badge bg-danger rounded-pill" data-ef-badge="invitations">{{ ef_invitation_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item rounded-3 py-2 d-flex justify-content-between align-items-center ef-topbar__notification-menu-item" href="{{ path('app_messages') }}">
+                        <span><i class="bi bi-chat-left me-2"></i> Messages</span>
+                        {% if ef_message_count > 0 %}
+                            <span class="badge bg-danger rounded-pill" data-ef-badge="messages">{{ ef_message_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+
+                {% if ef_notification_count > 0 %}
+                    <li><hr class="dropdown-divider my-1"></li>
+                    <li>
+                        <a class="dropdown-item rounded-3 py-2 small text-muted ef-topbar__notification-menu-item" href="{{ path(ef_notification_target_route) }}">
+                            Voir en priorité
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
 
         <div class="dropdown">

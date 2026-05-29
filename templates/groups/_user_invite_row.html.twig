@@ -1,0 +1,30 @@
+<tr>
+    <td class="ps-4 py-3">
+        <div class="d-flex align-items-center">
+            <div class="ef-avatar-circle me-3">{{ user.firstName|first|upper }}</div>
+            <span class="fw-bold">{{ user.firstName|capitalize }} {{ user.lastName|upper }}</span>
+        </div>
+    </td>
+    <td class="py-3">
+        <span class="badge bg-light text-dark border px-2 py-1">@{{ user.pseudo }}</span>
+    </td>
+    <td class="text-end pe-4 py-3">
+        {% if rules.refused_count >= 3 %}
+            <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2 fw-bold">
+                <i class="bi bi-x-circle-fill me-1"></i> Bloqué (3 rejets)
+            </span>
+        {% elseif rules.pending_or_invited %}
+            <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-medium" disabled>
+                <i class="bi bi-hourglass-split me-1"></i> En attente
+            </button>
+        {% else %}
+            <form action="{{ path('app_groups_invite_user', { id: group.id, userId: user.id }) }}" method="POST" class="d-inline" data-turbo="false">
+                <input type="hidden" name="_token" value="{{ csrf_token('invite' ~ user.id) }}">
+                <input type="hidden" name="q" value="{{ searchQuery|default('') }}">
+                <button type="submit" class="btn btn-outline-success btn-sm px-3 rounded-pill fw-medium">
+                    <i class="bi bi-send me-1"></i> Inviter
+                </button>
+            </form>
+        {% endif %}
+    </td>
+</tr>

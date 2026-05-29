@@ -31,6 +31,9 @@ final class RegistrationFormType extends AbstractType
                     'placeholder' => 'nom@exemple.com',
                     'autocomplete' => 'email',
                 ],
+                'constraints' => [
+                    new NotBlank(message: 'L\'adresse e-mail est obligatoire.'),
+                ],
             ])
             ->add('firstName', TextType::class, [
                 'label' => false,
@@ -38,12 +41,18 @@ final class RegistrationFormType extends AbstractType
                     'placeholder' => 'Prénom',
                     'autocomplete' => 'given-name',
                 ],
+                'constraints' => [
+                    new NotBlank(message: 'Le prénom est obligatoire.'),
+                ],
             ])
             ->add('lastName', TextType::class, [
                 'label' => false,
                 'attr' => [
                     'placeholder' => 'Nom',
                     'autocomplete' => 'family-name',
+                ],
+                'constraints' => [
+                    new NotBlank(message: 'Le nom est obligatoire.'),
                 ],
             ])
             ->add('pseudo', TextType::class, [
@@ -64,8 +73,11 @@ final class RegistrationFormType extends AbstractType
                         'autocomplete' => 'new-password',
                     ],
                     'constraints' => [
-                        new NotBlank(message: 'Please enter a password'),
-                        new Length(min: 8, minMessage: 'Your password should be at least {{ limit }} characters'),
+                        new NotBlank(message: 'Le mot de passe est obligatoire.'),
+                        new Length(
+                            min: 8,
+                            minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.',
+                        ),
                     ],
                 ],
                 'second_options' => [
@@ -75,13 +87,13 @@ final class RegistrationFormType extends AbstractType
                         'autocomplete' => 'new-password',
                     ],
                 ],
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Les mots de passe ne correspondent pas.',
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'label' => false,
                 'constraints' => [
-                    new IsTrue(message: 'You must accept the terms of use.'),
+                    new IsTrue(message: 'Tu dois accepter les conditions d\'utilisation.'),
                 ],
             ]);
     }
@@ -90,6 +102,7 @@ final class RegistrationFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'validation_groups' => ['Default', 'Registration'],
         ]);
     }
 }

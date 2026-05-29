@@ -8,12 +8,15 @@ Plateforme Symfony 8 de gestion d'événements familiaux.
 - **Twig** · **Asset Mapper** · **Hotwire Turbo** · **Stimulus**
 - **Bootstrap** 5.3.8 (CDN) · **Bootstrap Icons** 1.11.3
 - **SASS** (dart-sass via `npm`, compilé par [symfonycasts/sass-bundle](https://github.com/symfonycasts/sass-bundle))
+- **Doctrine ORM** · MySQL (`ef_` préfixe tables)
 
 ## Démarrage
 
 ```bash
 composer install
 npm install
+cp .env .env.local   # puis DATABASE_URL, MAILER_DSN, etc.
+php bin/console doctrine:migrations:migrate
 php bin/console sass:build
 symfony server:start
 # ou : php -S localhost:8000 -t public
@@ -27,164 +30,169 @@ php bin/console sass:build
 php bin/console sass:build --watch
 ```
 
-**Les styles ne se mettent pas à jour ?** Lance une seule commande (supprime `public/assets/`, recompile Sass, vide le cache) :
+**Les styles ne se mettent pas à jour ?**
 
 ```bash
 composer assets:refresh
 ```
 
-Équivalent manuel sous PowerShell :
+Puis **Ctrl+F5**. Le CSS passe par `<link href="{{ asset('styles/app.scss') }}">` (compilé vers `var/sass/*.css`) — ne pas importer le SCSS dans `app.js`.
 
-```powershell
-Remove-Item -Recurse -Force public\assets
-php bin/console sass:build
-php bin/console cache:clear
-```
+### Mailer (dev)
 
-Puis recharge avec **Ctrl+F5**. Le message `Executing Sass` au build est normal (ce n’est pas une erreur).
+Dans `.env.local` : `MAILER_DSN`, `MAILER_FROM`, `DEFAULT_URI`.
 
-> **CSS** : chargé via `<link href="{{ asset('styles/app.scss') }}">` dans les layouts, compilé vers `var/sass/*.css`. Ne pas importer le SCSS depuis `app.js`.
+En dev, les e-mails partent en **synchrone** (`config/packages/messenger.yaml` → `SendEmailMessage: sync`) — pas besoin de worker Messenger pour tester l'inscription / la vérification.
 
-Ouvre [http://localhost:8000/](http://localhost:8000/).
+## Layouts
 
-## Layout global (socle)
-
-| Zone | Fichier Twig | Comportement |
-|------|----------------|--------------|
-| Base | `templates/base.html.twig` | Structure HTML, CDN, importmap, sidebar/topbar |
-| Auth | `templates/layout/auth.html.twig` | Pages login/register **sans** sidebar (thème en coin) |
-| Sidebar | `templates/layout/_sidebar.html.twig` | Fixe desktop · burger + overlay &lt; 992px |
-| Topbar | `templates/layout/_topbar.html.twig` | Sticky, titre dynamique (`{% block page_title %}`) |
-| Recherche | `templates/layout/_search_panel.html.twig` | Panneau repliable |
-| Footer | `templates/layout/_footer.html.twig` | 3 / 2 / 1 colonnes (lg / md / xs) |
+| Layout | Fichier | Usage |
+|--------|---------|--------|
+| Site | `templates/base.html.twig` | Sidebar, topbar, footer, flash |
+| Auth | `templates/layout/auth.html.twig` | Login / register (`data-turbo="false"`, thème en coin) |
+| Légal | `templates/layout/legal.html.twig` | CGU, mentions (sans sidebar, sans sélecteur thème) |
 
 ### Thème (clair / sombre / auto)
 
-- Préférence stockée dans `localStorage` (`ef-theme`)
-- Script anti-flash : `assets/js/ef-theme-init.js` (chargé dans `<head>`)
-- Logique UI : `assets/js/ef-layout.js` (`turbo:load`, dropdowns Bootstrap, bouton Google « bientôt »)
+- `localStorage` (`ef-theme`) · `assets/js/ef-theme-init.js` · `assets/js/ef-layout.js` (Turbo-safe)
 
-### JavaScript
+### SCSS (`assets/styles/`)
 
-- Point d'entrée : `assets/app.js`
-- Layout Turbo-safe : pas de double init + nettoyage sur `turbo:before-cache`
+- `@use` uniquement (pas `@import`) · classes **`ef-`**
+- Pages : `home`, `about`, `contact`, `sign-in`, `legal`, `profile`, `groups`, `group-show`, `messages`
+- Composants : `back-to-top`, `alerts`
 
-### Styles SCSS
-
-```
-assets/styles/
-  app.scss              # entrée unique (@use uniquement, pas @import)
-  base/                 # variables, mixins, globals
-  layout/               # sidebar, topbar, auth, footer…
-  components/           # back-to-top
-  pages/                # home, about, contact, sign-up
-```
-
-- Classes préfixées **`ef_`** (BEM : `ef-sidebar__nav-link`)
-- Chaque partial charge ses dépendances : `@use '../base/variables' as *;` + `mixins`
-- Auth partagé : `.ef-auth-page` dans `layout/_auth.scss` (boutons, champs, checkbox)
-- Inscription spécifique : `.ef-signUp` dans `pages/_sign-up.scss` (layout + illustration)
-
-## Routes
+## Routes principales
 
 | Route | Nom | Description |
 |-------|-----|-------------|
-| `/` | `app_home` | Accueil (démo layout) |
-| `/about` | `app_about` | À propos |
-| `/contact` | `app_contact` | Contact (formulaire UI, pas d’envoi backend) |
-| `/register` | `app_register` | Inscription (formulaire Symfony → `ef_users`) |
-| `/login` | `app_login` | Connexion (placeholder UI, maquette finale à intégrer) |
-| `/logout` | `app_logout` | Déconnexion |
+| `/` | `app_home` | Accueil |
+| `/login`, `/register`, `/logout` | — | Authentification |
+| `/profil` | `app_profile` | Mon espace |
+| `/profil/utilisateur/{id}` | `app_profile_show` | Profil public + MP |
+| `/groupes` | `app_groups` | Mes groupes |
+| `/groupes/{id}` | `app_groups_show` | Fiche groupe (membres, modération) |
+| `/groupes/{id}/demandes` | `app_groups_manage_requests` | Demandes d'adhésion (chef / mod) |
+| `/groupes/{id}/inviter` | `app_groups_invite_search` | Inviter des membres |
+| `/invitations` | `app_invitations_index` | Hub invitations (reçues + demandes staff) |
+| `/invitations/api/compteurs` | `app_invitations_counts` | API JSON badges (polling) |
+| `/messages` | `app_messages` | Hub messages (privés / groupe) |
+| `/messages/prives` | `app_messages_private` | Messages privés |
+| `/messages/groupe/{groupId}` | `app_messages_group` | Messages de groupe |
+| `POST /messages/direct` | `app_messages_send_direct` | Envoi MP direct |
+| `POST /messages/lire/{id}` | `app_messages_read` | Marquer lu (AJAX) |
 
-Liens sidebar (menu paramètres) : `app_login`, `app_register`, `app_logout`.
+Accès public : `/login`, `/register`, `/verify-email/*`, `/cgu`, `/mentions-legales`.  
+Le reste exige `ROLE_USER` (`config/packages/security.yaml`).
 
-## Base de données (local Laragon)
+## Notifications (sidebar + cloche)
 
-- **`.env.local`** (non versionné) : `DATABASE_URL` → MySQL `ef_base`
-- Tables préfixées **`ef_`** (ex. `ef_users`)
+| Emplacement | Compteur |
+|-------------|----------|
+| Sidebar **Invitations** | Invitations reçues + demandes staff non lues |
+| Sidebar **Messages** | MP + messages de groupe non lus |
+| **Cloche topbar** | Total (invitations + messages) |
 
-```bash
-php bin/console doctrine:database:create --if-not-exists
-php bin/console doctrine:migrations:migrate
-composer assets:refresh
-```
+- Polling automatique : `assets/js/ef-notifications.js` (30 s) + refresh après lecture d'un message
+- **Cloche** : menu déroulant (Invitations / Messages) — ne redirige plus systématiquement vers `/invitations`
+- Lien « Voir en priorité » : invitations si non lues, sinon hub messages
 
-### Entité `User` (`ef_users`)
+Services : `NotificationCountService`, extension Twig `NotificationExtension`.
 
-| Contrainte | Détail |
-|------------|--------|
-| E-mail | obligatoire, unique |
-| Prénom + nom | obligatoires, **couple unique** |
-| Pseudo | optionnel, **non** unique |
-| Rôles site | `ROLE_USER`, `ROLE_MODERATOR`, `ROLE_ADMIN` |
-| Rôles groupe | enum `GroupMemberRole` — sur `GroupMember` (à venir) |
+## Groupes
 
-**Règle métier** : 1 groupe créé max par user, membre de plusieurs groupes (relations `Group` / `GroupMember` à venir).
+| Fonctionnalité | Qui |
+|----------------|-----|
+| Créer un groupe | 1 max par utilisateur (owner) |
+| Modifier infos | Chef seul |
+| Passer / retirer modérateur | Chef seul (max 1 mod) |
+| Bannir / débannir | Chef + mod (mod → membres simples) |
+| Exclure un membre | Chef seul |
+| Gérer demandes / inviter | Chef + mod |
+
+Entités : `Group`, `GroupMember`, `GroupRequest`, `UserBan`.  
+Statuts demandes : `PENDING`, `INVITED`, `ACCEPTED`, `REFUSED`.
+
+## Messagerie
+
+Entités : `Message`, `MessageRead`.
+
+- **Privé** : auteur ↔ destinataire, max **2 réponses** par fil
+- **Groupe** : membres du groupe, formulaire en bas de page
+- **Lecture** : auto à l'affichage (Intersection Observer) → badge mis à jour
+- **Suppression** : hard delete (cascade réponses + lectures)
+- Règles MP : `DirectMessagePolicy` (ban groupe, pas de MP à soi-même)
+
+## Base de données
+
+- **`.env.local`** : `DATABASE_URL` → MySQL `ef_base` (Laragon)
+- Migrations : `php bin/console doctrine:migrations:migrate`
+
+### Tables
+
+| Table | Entité |
+|-------|--------|
+| `ef_users` | `User` |
+| `ef_groups` | `Group` |
+| `ef_group_members` | `GroupMember` |
+| `ef_group_requests` | `GroupRequest` |
+| `ef_user_bans` | `UserBan` |
+| `ef_messages` | `Message` |
+| `ef_message_reads` | `MessageRead` |
+
+### Horodatage (Europe/Paris)
+
+- `App\Util\ParisClock` + `TimestampableParisTrait`
 
 ## Authentification
 
 | Fonctionnalité | État |
 |----------------|------|
-| Inscription `/register` | OK — `RegistrationFormType`, validation, hash mot de passe |
-| Connexion `/login` | OK (Symfony Security) — **UI minimale** en attendant maquette HTML/SCSS |
-| Layout auth dédié | OK — `auth.html.twig`, styles partagés, animations boutons |
-| Google « S'inscrire avec Google » | Bouton UI + hover ; **OAuth à brancher avant déploiement** |
-| Google « Se connecter avec Google » | **À mettre en place avant déploiement** (même stack OAuth) |
-| E-mail (vérif / reset) | En attente `MAILER_DSN` (Ethereal en dev, SMTP en prod) |
-| Page profil | Plus tard |
+| Inscription + vérif. e-mail | OK |
+| Connexion + remember me | OK |
+| Mot de passe oublié / changement / suppression compte | OK |
+| Profil édition + profil public | OK |
+| Google OAuth | UI seulement — avant prod |
 
-> **OAuth Google** : prévu avant mise en production (inscription + connexion). En dev, le bouton inscription est en `aria-disabled` avec `data-ef-google-soon` (animation hover conservée, clic bloqué).
+## Messages & erreurs
 
-### Security (`config/packages/security.yaml`)
-
-- Provider Doctrine sur `email`
-- `form_login` → `/login`
-- Accès public : `/login`, `/register`
+- Contrôleurs : **`AbstractAppController`**
+- Flash : `components/_ef_flash_messages.html.twig`
+- Formulaires : `form/ef_form_theme.html.twig`
+- Traductions : `translations/*.fr.yaml`
 
 ## Déploiement (checklist)
 
 | Variable | Action |
 |----------|--------|
-| `APP_SECRET` | Nouvelle valeur aléatoire **unique** (64 caractères hex) |
-| `DATABASE_URL` | URL hébergeur (MySQL / MariaDB) |
-| `MAILER_DSN` | SMTP production |
+| `APP_SECRET` | Unique en prod |
+| `DATABASE_URL` | MySQL hébergeur |
+| `MAILER_DSN` | SMTP prod |
+| `DEFAULT_URI` | URL publique |
 | `APP_ENV` | `prod` |
-| **OAuth Google** | Client ID / secret + routes callback (login + register) |
-
-```bash
-php -r "echo bin2hex(random_bytes(32));"
-```
 
 ## Prochaines étapes
 
-1. **Login** — intégrer maquette HTML/SCSS (`_sign-in.scss` ou extension auth)
-2. **Pages métier** — Events, Groups, invitations, messages
-3. **Entités** — `Group`, `GroupMember`, `Event`, `Message`, etc.
-4. **Contact** — backend (entité, mailer, CSRF)
-5. **Sidebar** — afficher l’utilisateur connecté (`app.user` / `getDisplayName()`)
-6. **Modales** — compatibilité Turbo à valider
-7. **Tarteaucitron** · **i18n**
+1. Module **Events**
+2. OAuth Google · Contact fonctionnel
+3. Modales Turbo · Tarteaucitron · i18n
+4. Tests automatisés (PHPUnit)
 
 ## Changelog
 
-### 2026-05-28 — Auth inscription + layout auth
+### 2026-05-29 — Groupes, invitations, messagerie, notifications
 
-- Layout `auth.html.twig` (hors sidebar), thème coin, SCSS `_auth.scss` + `_sign-up.scss`
-- `RegistrationController` + formulaire (prénom, nom, pseudo, e-mail, mot de passe, CGU)
-- `SecurityController` + login fonctionnel (UI placeholder)
-- Bouton Google inscription : style + animation ; OAuth reporté avant prod
-- Sidebar : liens login / register / logout
-- Fix bouton Google : `aria-disabled` au lieu de `disabled` (hover CSS)
+- Module **Groupes** complet (CRUD, modération, demandes, invitations)
+- Hub **`/invitations`** + badges dynamiques sidebar / cloche
+- **Messagerie** privée et de groupe (`Message`, `MessageRead`)
+- Cloche topbar : menu déroulant cohérent (invitations + messages)
+- `NotificationCountService`, polling JS, lecture auto messages
 
-### 2026-05-28 — Entité User + MySQL
+### 2026-05-29 — Profil & auth
 
-- `.env.local` / `ef_base` (MySQL 8.4 Laragon)
-- Table `ef_users` + migration
-- Provider Security Doctrine
+- Profil, MP direct, `DirectMessagePolicy`, `UserBan`, `UserChecker`
+- Vérification e-mail, reset MDP, changement MDP, suppression compte
 
-### 2026-05-28 — Pages statiques + socle layout
+### 2026-05-28 — Socle
 
-- Home, About, Contact (templates + SCSS)
-- Layout responsive, thème persistant, Turbo-safe
-- Architecture SCSS modulaire `@use`, script `composer assets:refresh`
-- Fix CSS : SassBundle + lien Twig (plus d’import SCSS dans `app.js`)
+- Entités `User`, `Group`, `GroupMember`, layouts, SCSS modulaire, légal

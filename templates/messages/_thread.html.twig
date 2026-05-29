@@ -1,0 +1,99 @@
+{% set isUnread = unread_ids[thread.id] is defined %}
+{% set isGroup = thread.isGroupMessage %}
+
+<div class="ef-messages__thread">
+    <article
+        class="ef-messages__item ef-messages__item--received p-3 rounded-4 shadow-sm bg-white{% if isUnread %} ef-message--unread{% endif %}"
+        data-id="{{ thread.id }}"
+        data-group="{{ isGroup ? '1' : '0' }}"
+    >
+        <div class="d-flex justify-content-between mb-1">
+            <span class="fw-bold ef-messages__author">
+                {% if isGroup %}
+                    {{ thread.author ? thread.author.firstName ~ ' ' ~ thread.author.lastName : 'Utilisateur inconnu' }}
+                {% else %}
+                    {% set otherUser = (thread.author == app.user) ? thread.recipient : thread.author %}
+                    {{ otherUser ? otherUser.firstName ~ ' ' ~ otherUser.lastName : 'Utilisateur inconnu' }}
+                {% endif %}
+            </span>
+
+            <div class="d-flex align-items-center gap-2">
+                {% if isUnread %}
+                    <span class="ef-messages__unread-dot rounded-circle bg-danger d-inline-block" aria-hidden="true"></span>
+                {% endif %}
+                <time class="text-muted small">{{ thread.createdAt|date('d/m/Y H:i') }}</time>
+            </div>
+        </div>
+
+        <p class="mb-2 small">{{ thread.content }}</p>
+
+        <div class="d-flex gap-3 align-items-center flex-wrap">
+            {% if thread.replies|length < 2 %}
+                <button
+                    class="btn btn-sm btn-link p-0 text-decoration-none ef-messages__action"
+                    type="button"
+                    data-ef-toggle-reply="reply-form-{{ thread.id }}"
+                >
+                    <i class="bi bi-reply"></i> Répondre
+                </button>
+            {% else %}
+                <span class="text-muted small fst-italic">
+                    <i class="bi bi-lock"></i> Max 2 réponses
+                </span>
+            {% endif %}
+
+            {% if thread.author == app.user
+                or (not isGroup and thread.recipient == app.user)
+                or is_granted('ROLE_ADMIN')
+            %}
+                <form
+                    action="{{ path('app_messages_delete', { id: thread.id }) }}"
+                    method="POST"
+                    data-turbo="false"
+                    data-ef-confirm="Supprimer ce message définitivement ?"
+                >
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ thread.id) }}">
+                    <button type="submit" class="btn btn-sm btn-link p-0 text-danger text-decoration-none">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if thread.replies|length > 0 %}
+                <button
+                    class="btn btn-sm btn-link p-0 text-decoration-none text-muted"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#replies-{{ thread.id }}"
+                >
+                    <i class="bi bi-chat-dots me-1"></i>
+                    Voir {{ thread.replies|length }} réponse(s)
+                </button>
+            {% endif %}
+        </div>
+    </article>
+
+    <div id="reply-form-{{ thread.id }}" class="ef-messages__reply-form mt-2 d-none">
+        <form action="{{ path('app_messages_reply', { id: thread.id }) }}" method="POST" class="d-flex align-items-center gap-2" data-turbo="false">
+            <input type="hidden" name="_token" value="{{ csrf_token('reply' ~ thread.id) }}">
+            <input type="text" name="content" class="form-control form-control-sm" placeholder="Votre réponse…" required>
+            <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+        </form>
+    </div>
+
+    <div class="collapse ef-messages__replies ms-4 ms-md-5 mt-2" id="replies-{{ thread.id }}">
+        <div class="d-flex flex-column gap-3 pt-2">
+            {% for reply in thread.replies %}
+                {% set replyUnread = unread_ids[reply.id] is defined %}
+                <article
+                    class="ef-messages__item{% if reply.author == app.user %} ef-messages__item--sent border{% else %} ef-messages__item--received shadow-sm{% endif %} p-3 rounded-4{% if replyUnread %} ef-message--unread{% endif %}"
+                    data-id="{{ reply.id }}"
+                    data-group="{{ isGroup ? '1' : '0' }}"
+                >
+                    <span class="fw-bold d-block mb-1">{{ reply.author.firstName }} {{ reply.author.lastName }}</span>
+                    <p class="mb-0 small">{{ reply.content }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</div>
