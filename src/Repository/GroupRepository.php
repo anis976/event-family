@@ -81,4 +81,24 @@ class GroupRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function existsByFamilyName(string $familyName, ?int $excludeGroupId = null): bool
+    {
+        $normalized = mb_strtolower(trim($familyName));
+        if ('' === $normalized) {
+            return false;
+        }
+
+        $qb = $this->createQueryBuilder('g')
+            ->select('COUNT(g.id)')
+            ->andWhere('LOWER(g.familyName) = :familyName')
+            ->setParameter('familyName', $normalized);
+
+        if (null !== $excludeGroupId) {
+            $qb->andWhere('g.id != :excludeId')
+                ->setParameter('excludeId', $excludeGroupId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+    }
 }

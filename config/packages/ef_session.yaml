@@ -1,0 +1,8 @@
+parameters:
+    ef.session.idle_timeout: '%env(int:EF_SESSION_IDLE_TIMEOUT)%'
+    ef.session.idle_warning: '%env(int:EF_SESSION_IDLE_WARNING)%'
+
+twig:
+    globals:
+        ef_session_idle_timeout: '%ef.session.idle_timeout%'
+        ef_session_idle_warning: '%ef.session.idle_warning%'

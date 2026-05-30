@@ -21,6 +21,16 @@ class UserBanRepository extends ServiceEntityRepository
         parent::__construct($registry, UserBan::class);
     }
 
+    public function countTotalBansForUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->andWhere('b.bannedUser = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function findActiveBanForUserInGroup(User $user, Group $group): ?UserBan
     {
         $now = ParisClock::now();

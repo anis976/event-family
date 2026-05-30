@@ -1,0 +1,28 @@
+<div class="modal fade ef-session-idle-modal" id="ef-session-idle-modal" tabindex="-1" aria-labelledby="ef-session-idle-title" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="ef-session-idle-title">
+                    <i class="bi bi-clock-history me-2 text-warning" aria-hidden="true"></i>
+                    Inactivité détectée
+                </h5>
+            </div>
+            <div class="modal-body pt-3">
+                <p class="mb-2">Tu n'as effectué aucune action depuis un moment.</p>
+                <p class="mb-0">
+                    Déconnexion automatique dans
+                    <strong id="ef-session-idle-countdown" class="ef-session-idle-modal__countdown">60</strong>
+                    seconde(s) pour protéger ton compte.
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn ef-groups-form__btn-cancel" id="ef-session-idle-logout" data-ef-session-logout>
+                    Se déconnecter
+                </button>
+                <button type="button" class="btn btn-save-profile" id="ef-session-idle-stay">
+                    Rester connecté
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

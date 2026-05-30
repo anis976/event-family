@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — Message système — {{ group.name }}{% endblock %}
+{% block page_title %}Administration — Message système{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="Fil d'Ariane" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_messages_group', { groupId: group.id }) }}">Messages de groupe</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ group.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-1">Message système — {{ group.name }}</h2>
+                    <p class="text-muted small mb-4">
+                        Ce message est affiché en tête du fil pour tous les membres. Seul un administrateur peut le modifier ou le réinitialiser.
+                    </p>
+
+                    {{ form_start(form, { attr: { 'data-turbo': 'false' } }) }}
+                        {{ form_row(form.content) }}
+                        <div class="d-flex flex-wrap gap-2 pt-2">
+                            <button type="submit" class="btn btn-save-profile px-4 fw-bold">Enregistrer</button>
+                            <a href="{{ path('app_messages_group', { groupId: group.id }) }}" class="btn btn-light">Annuler</a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

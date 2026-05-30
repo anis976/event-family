@@ -15,12 +15,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 final class GroupMemberModerationService
 {
-    private const DEFAULT_BAN_REASON = 'Banni par la modération du groupe.';
-
     public function __construct(
         private readonly GroupAccessService $groupAccess,
         private readonly GroupMemberRepository $groupMemberRepository,
         private readonly UserBanRepository $userBanRepository,
+        private readonly BanEscalationService $banEscalation,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -54,7 +53,7 @@ final class GroupMemberModerationService
         $this->entityManager->flush();
     }
 
-    public function banMember(User $actor, GroupMember $targetMember, ?string $reason = null): void
+    public function banMember(User $actor, GroupMember $targetMember, string $reason): void
     {
         $group = $targetMember->getGroup();
 
@@ -69,14 +68,21 @@ final class GroupMemberModerationService
             throw new \DomainException('Ce membre est déjà banni.');
         }
 
+        $trimmedReason = trim($reason);
+        if ('' === $trimmedReason) {
+            throw new \DomainException('Le motif du bannissement est obligatoire.');
+        }
+
         $ban = (new UserBan())
             ->setBannedUser($targetMember->getUser())
             ->setRelatedGroup($group)
             ->setAuthor($actor)
-            ->setReason(trim($reason ?? '') !== '' ? trim($reason) : self::DEFAULT_BAN_REASON);
+            ->setReason($trimmedReason);
 
         $this->entityManager->persist($ban);
         $this->entityManager->flush();
+
+        $this->banEscalation->handleAfterGroupBan($ban);
     }
 
     public function unbanMember(User $actor, GroupMember $targetMember): void

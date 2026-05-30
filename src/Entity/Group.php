@@ -9,12 +9,15 @@ use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: 'ef_groups')]
 #[ORM\UniqueConstraint(name: 'uniq_ef_groups_owner', columns: ['owner_id'])]
+#[ORM\UniqueConstraint(name: 'uniq_ef_groups_name', columns: ['name'])]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['name'], message: 'Ce nom de groupe est déjà utilisé.')]
 class Group
 {
     use TimestampableParisTrait;
@@ -35,6 +38,13 @@ class Group
     #[ORM\Column(type: 'text', nullable: true)]
     #[Assert\Length(max: 500, maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $description = null;
+
+    /** Message système affiché en tête du fil de groupe (null = texte par défaut plateforme). */
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $systemNoticeContent = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $systemNoticeUpdatedAt = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -119,6 +129,30 @@ class Group
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getSystemNoticeContent(): ?string
+    {
+        return $this->systemNoticeContent;
+    }
+
+    public function setSystemNoticeContent(?string $systemNoticeContent): static
+    {
+        $this->systemNoticeContent = $systemNoticeContent;
+
+        return $this;
+    }
+
+    public function getSystemNoticeUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->systemNoticeUpdatedAt;
+    }
+
+    public function setSystemNoticeUpdatedAt(?\DateTimeImmutable $systemNoticeUpdatedAt): static
+    {
+        $this->systemNoticeUpdatedAt = $systemNoticeUpdatedAt;
 
         return $this;
     }

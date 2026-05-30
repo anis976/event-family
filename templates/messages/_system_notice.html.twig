@@ -1,0 +1,31 @@
+<div class="ef-messages__thread ef-messages__thread--system">
+    <article class="ef-messages__system-notice" aria-label="Message système du groupe">
+        <div class="ef-messages__system-notice-header">
+            <span class="ef-messages__system-notice-author">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                System
+            </span>
+            <span class="ef-messages__system-notice-badge">Info</span>
+        </div>
+
+        <div class="ef-messages__system-notice-body">
+            {{ content|nl2br }}
+        </div>
+
+        {% if is_granted('ROLE_ADMIN') and group is defined %}
+            <div class="ef-messages__system-notice-admin">
+                <a href="{{ path('app_admin_groups_system_notice_edit', { id: group.id }) }}" class="ef-messages__system-notice-admin-link">
+                    <i class="bi bi-pencil" aria-hidden="true"></i> Modifier
+                </a>
+                {% if system_notice_is_custom|default(false) %}
+                    <form action="{{ path('app_admin_groups_system_notice_reset', { id: group.id }) }}" method="POST" data-turbo="false" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reset-system-notice' ~ group.id) }}">
+                        <button type="submit" class="ef-messages__system-notice-admin-link ef-messages__system-notice-admin-link--danger">
+                            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Réinitialiser
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+    </article>
+</div>

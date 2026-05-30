@@ -6,6 +6,8 @@
 @use 'layout/footer';
 @use 'components/back-to-top';
 @use 'components/alerts';
+@use 'components/dropdowns';
+@use 'components/session-idle';
 @use 'pages/home';
 @use 'pages/about';
 @use 'pages/contact';

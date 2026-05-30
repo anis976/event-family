@@ -1,0 +1,36 @@
+{% set variant = thread.platformNoticeVariant.value|default('eventfamily') %}
+{% set isSystem = variant == 'system' %}
+
+<div class="ef-messages__thread ef-messages__thread--platform{% if isSystem %} ef-messages__thread--system{% else %} ef-messages__thread--staff{% endif %}">
+    <article
+        class="{% if isSystem %}ef-messages__system-notice{% else %}ef-messages__staff-announcement{% endif %}{% if isUnread|default(false) %} ef-message--unread{% endif %}"
+        aria-label="Message officiel EventFamily"
+        data-id="{{ thread.id }}"
+        data-group="0"
+    >
+        <div class="{% if isSystem %}ef-messages__system-notice-header{% else %}ef-messages__staff-announcement-header{% endif %}">
+            <span class="{% if isSystem %}ef-messages__system-notice-author{% else %}ef-messages__staff-announcement-author{% endif %}">
+                {% if isSystem %}
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    System
+                {% else %}
+                    <i class="bi bi-megaphone" aria-hidden="true"></i>
+                    EventFamily
+                {% endif %}
+            </span>
+            <div class="d-flex align-items-center gap-2">
+                {% if isUnread|default(false) %}
+                    <span class="ef-messages__unread-dot rounded-circle bg-danger d-inline-block" aria-hidden="true"></span>
+                {% endif %}
+                <span class="{% if isSystem %}ef-messages__system-notice-badge{% else %}ef-messages__staff-announcement-badge{% endif %}">
+                    {{ isSystem ? 'Info' : 'Annonce' }}
+                </span>
+                <time class="{% if isSystem %}text-muted small{% else %}ef-messages__staff-announcement-date{% endif %}">{{ thread.createdAt|date('d/m/Y H:i') }}</time>
+            </div>
+        </div>
+
+        <div class="{% if isSystem %}ef-messages__system-notice-body{% else %}ef-messages__staff-announcement-body{% endif %}">
+            {{ thread.content|nl2br }}
+        </div>
+    </article>
+</div>

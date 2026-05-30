@@ -157,24 +157,24 @@
 
     &__settings-link {
         text-decoration: none;
-        transition: all 0.2s ease;
 
-        @include color-mode(dark) {
-            color: #a0a0a0;
-        }
+        &-auth {
+            color: #b91c1c !important;
 
-        &:hover {
-            color: $ef-primary-orange;
-            background-color: rgba($ef-primary-orange, 0.1);
-            transform: translateX(3px);
-        }
-    }
+            @include color-mode(dark) {
+                color: #ef4444 !important;
+            }
 
-    &__settings-link-auth {
-        color: #b91c1c;
+            &:hover,
+            &:focus {
+                background-color: rgba(220, 53, 69, 0.12) !important;
+                color: #b91c1c !important;
 
-        @include color-mode(dark) {
-            color: #ef4444;
+                @include color-mode(dark) {
+                    background-color: rgba(239, 68, 68, 0.15) !important;
+                    color: #ef4444 !important;
+                }
+            }
         }
     }
 }

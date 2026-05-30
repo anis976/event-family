@@ -1,0 +1,108 @@
+@use '../base/variables' as *;
+
+// Menu déroulant / dropup EventFamily — à utiliser sur tout <ul class="dropdown-menu">.
+// Exceptions : signaler avant d'en créer une.
+.ef-dropdown-menu {
+    padding: 0.5rem !important;
+    border: 0 !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+
+    @include color-mode(dark) {
+        background-color: #252525 !important;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.35) !important;
+    }
+
+    .dropdown-header {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    .dropdown-item-text {
+        font-size: 0.875rem;
+        color: $gray-600;
+        padding: 0.5rem 1rem;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    .dropdown-item {
+        font-size: 15px;
+        font-weight: 500;
+        color: #3f3f46;
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        transition: 0.2s;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        text-align: left;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+
+        &:hover,
+        &:focus,
+        &.active,
+        &.ef-theme-active {
+            background-color: rgba($ef-primary-orange, 0.1) !important;
+            color: $ef-primary-orange !important;
+        }
+
+        &.text-danger {
+            color: var(--bs-danger) !important;
+
+            &:hover,
+            &:focus {
+                background-color: rgba(220, 53, 69, 0.12) !important;
+                color: var(--bs-danger) !important;
+            }
+
+            @include color-mode(dark) {
+                color: #ef4444 !important;
+
+                &:hover,
+                &:focus {
+                    background-color: rgba(239, 68, 68, 0.15) !important;
+                    color: #ef4444 !important;
+                }
+            }
+        }
+
+        .bi-check2 {
+            position: absolute;
+            right: 12px;
+            color: $ef-primary-orange;
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        &.ef-theme-active .bi-check2 {
+            display: block;
+        }
+    }
+
+    button.dropdown-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+    }
+
+    .dropdown-divider {
+        @include color-mode(dark) {
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+    }
+}

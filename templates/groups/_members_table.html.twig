@@ -49,7 +49,7 @@
                                     <button class="ef-GroupShow__btn-three-dots" type="button" data-bs-toggle="dropdown" aria-label="Actions membre">
                                         <i class="bi bi-three-dots"></i>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-2">
+                                    <ul class="dropdown-menu dropdown-menu-end ef-dropdown-menu">
                                         <li>
                                             <a class="dropdown-item" href="{{ path('app_profile_show', { id: member.user.id }) }}">
                                                 <i class="bi bi-person me-2"></i>Voir profil
@@ -70,12 +70,14 @@
 
                                         {% if can_staff_ban %}
                                             <li>
-                                                <form action="{{ path('app_groups_ban_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('ban' ~ member.id) }}">
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-slash-circle me-2"></i>Bannir
-                                                    </button>
-                                                </form>
+                                                <button
+                                                    type="button"
+                                                    class="dropdown-item text-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#ban-modal-{{ member.id }}"
+                                                >
+                                                    <i class="bi bi-slash-circle me-2"></i>Bannir
+                                                </button>
                                             </li>
                                         {% endif %}
 
@@ -137,3 +139,45 @@
         </table>
     </div>
 </div>
+
+{% for member in group.groupMembers %}
+    {% set is_self = member.user.id == app.user.id %}
+    {% set is_target_owner = member.role.value == 'OWNER' %}
+    {% set can_staff_ban = isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
+    {% if can_staff_ban %}
+        <div class="modal fade ef-GroupShow__ban-modal" id="ban-modal-{{ member.id }}" tabindex="-1" aria-labelledby="ban-modal-label-{{ member.id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <form action="{{ path('app_groups_ban_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
+                        <input type="hidden" name="_token" value="{{ csrf_token('ban' ~ member.id) }}">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="ban-modal-label-{{ member.id }}">
+                                Bannir {{ member.user.firstName }} {{ member.user.lastName }}
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted small mb-3">
+                                Le membre sera banni de ce groupe. EventFamily enverra automatiquement un avertissement (1/3, 2/3) ou supprimera le compte au 3e bannissement cumulé sur la plateforme.
+                            </p>
+                            <label for="ban-reason-{{ member.id }}" class="form-label fw-medium">Motif du bannissement <span class="text-danger">*</span></label>
+                            <textarea
+                                id="ban-reason-{{ member.id }}"
+                                name="reason"
+                                class="form-control ef-input ef-GroupShow__ban-textarea"
+                                rows="5"
+                                maxlength="2000"
+                                required
+                                placeholder="Décris clairement la raison du bannissement…"
+                            ></textarea>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-danger">Confirmer le bannissement</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}

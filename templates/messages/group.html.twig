@@ -5,7 +5,11 @@
 
 {% block body %}
 <div class="ef-messages container-fluid py-3 py-md-4" data-ef-read-url-base="{{ path('app_messages_read', { id: 0 })|slice(0, -1) }}">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="mb-4">
+        <a href="{{ path('app_messages') }}" class="btn btn-outline-secondary btn-sm mb-3">
+            <i class="bi bi-arrow-left"></i> Retour au hub
+        </a>
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
             <h2 class="fw-bold mb-0 fs-3 fs-md-2">Messages de groupe</h2>
             {% if current_group %}
@@ -13,44 +17,95 @@
             {% endif %}
         </div>
 
-        {% if user_has_group %}
+        {% if user_has_group and show_group_unread_dots %}
             <div class="dropdown">
                 <button class="btn btn-light btn-sm rounded-pill shadow-sm" type="button" data-bs-toggle="dropdown" aria-label="Choisir un groupe">
                     <i class="bi bi-three-dots-vertical"></i>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                <ul class="dropdown-menu dropdown-menu-end ef-dropdown-menu ef-messages__group-picker">
                     <li><h6 class="dropdown-header">Mes groupes</h6></li>
                     {% for group in user_groups %}
+                        {% set groupUnread = unread_by_group_id[group.id]|default(0) %}
+                        {% set isCurrent = current_group and current_group.id == group.id %}
                         <li>
-                            <a class="dropdown-item{% if current_group and current_group.id == group.id %} active{% endif %}"
+                            <a class="dropdown-item d-flex align-items-center justify-content-between gap-2{% if isCurrent %} active{% endif %}"
                                href="{{ path('app_messages_group', { groupId: group.id }) }}">
-                                {{ group.name }}
+                                <span class="text-truncate">{{ group.name }}</span>
+                                {% if groupUnread > 0 and not isCurrent %}
+                                    <span class="ef-messages__group-unread-dot flex-shrink-0" title="{{ groupUnread }} message(s) non lu(s)" aria-hidden="true"></span>
+                                {% endif %}
                             </a>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
+        {% elseif user_has_group and user_groups|length == 1 and not (is_site_staff and current_group and not is_member_of_current) %}
+            <span class="text-muted small">{{ user_groups[0].name }}</span>
+        {% elseif is_site_staff and current_group %}
+            <a href="{{ path('app_groups_show', { id: current_group.id }) }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i> Fiche groupe
+            </a>
         {% endif %}
+        </div>
     </div>
 
-    {% if user_has_group and current_group %}
-        <p class="text-muted small mb-4">{{ current_group.name }} — {{ current_group.familyName }}</p>
+    {% if current_group %}
+        <p class="text-muted small mb-3">{{ current_group.name }} — {{ current_group.familyName }}</p>
+
+        {% if is_site_staff and not is_member_of_current %}
+            <div class="ef-alert ef-alert--info ef-alert--compact mb-4" role="status">
+                <i class="bi bi-shield-check ef-alert__icon" aria-hidden="true"></i>
+                <div class="ef-alert__content">
+                    <span class="ef-alert__message">Consultation en tant que staff EventFamily. Tu peux publier des annonces officielles, mais pas de messages membre.</span>
+                </div>
+            </div>
+        {% endif %}
 
         <div class="ef-messages__thread-container d-flex flex-column gap-4 mb-4">
+            {% include 'messages/_system_notice.html.twig' with {
+                content: system_notice_content,
+                group: current_group,
+                system_notice_is_custom: system_notice_is_custom,
+            } %}
+
             {% for thread in group_threads %}
                 {% if thread.parent is null %}
-                    {% include 'messages/_thread.html.twig' with { thread: thread, unread_ids: unread_ids } %}
+                    {% if thread.staffAnnouncement %}
+                        {% include 'messages/_staff_announcement.html.twig' with {
+                            thread: thread,
+                            isUnread: unread_ids[thread.id] is defined,
+                        } %}
+                    {% else %}
+                        {% include 'messages/_thread.html.twig' with { thread: thread, unread_ids: unread_ids } %}
+                    {% endif %}
                 {% endif %}
             {% else %}
-                <p class="text-muted text-center my-5">Aucun message dans ce groupe.</p>
+                <p class="text-muted text-center my-3">Aucun message publié dans ce groupe pour le moment.</p>
             {% endfor %}
         </div>
 
-        <div class="ef-messages__footer mt-4">
-            {% include 'messages/_footer_form.html.twig' with { form: form, placeholder: 'Écrire un message au groupe…' } %}
-        </div>
+        {% if is_site_staff %}
+            <div class="ef-messages__footer mt-4 mb-3">
+                {% include 'messages/_staff_announcement_form.html.twig' with {
+                    staff_form: staff_form,
+                    form_action: path('app_messages_group', { groupId: current_group.id }),
+                } %}
+            </div>
+        {% endif %}
+
+        {% if is_member_of_current %}
+            <div class="ef-messages__footer mt-4">
+                {% include 'messages/_footer_form.html.twig' with {
+                    form: form,
+                    placeholder: 'Écrire un message au groupe…',
+                    form_action: path('app_messages_group', { groupId: current_group.id }),
+                } %}
+            </div>
+        {% endif %}
+    {% elseif user_has_group %}
+        <p class="text-muted text-center my-5">Sélectionne un groupe pour voir ses messages.</p>
     {% else %}
-        <p class="text-muted text-center my-5">Tu n'as aucun groupe.</p>
+        <p class="text-muted text-center my-5">Tu n'as aucun groupe. En tant que staff, accède aux messages depuis la fiche d'un groupe.</p>
     {% endif %}
 </div>
 {% endblock %}

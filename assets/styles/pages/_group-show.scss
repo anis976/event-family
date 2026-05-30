@@ -158,6 +158,23 @@
             }
         }
     }
+
+    &__ban-textarea {
+        resize: none;
+        min-height: 9.5rem;
+
+        &::placeholder {
+            opacity: 0.42;
+        }
+
+        &::-webkit-input-placeholder {
+            opacity: 0.42;
+        }
+
+        &::-moz-placeholder {
+            opacity: 0.42;
+        }
+    }
 }
 
 .ef-card-info {
@@ -170,17 +187,4 @@
 
 .table-responsive {
     overflow: visible !important;
-}
-
-.dropdown-item {
-    transition: background 0.2s;
-    cursor: pointer;
-
-    &:hover {
-        background-color: #f8f9fa;
-    }
-
-    &.text-danger:hover {
-        background-color: #fff5f5 !important;
-    }
 }

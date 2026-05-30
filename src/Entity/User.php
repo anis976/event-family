@@ -115,6 +115,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $lastLoginAt = null;
 
+    #[ORM\Column(options: ['default' => 0])]
+    private int $inactiveWarningCount = 0;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastInactiveWarningAt = null;
+
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
 
@@ -505,6 +511,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastLoginAt(?\DateTimeImmutable $lastLoginAt): static
     {
         $this->lastLoginAt = $lastLoginAt;
+
+        return $this;
+    }
+
+    public function getInactiveWarningCount(): int
+    {
+        return $this->inactiveWarningCount;
+    }
+
+    public function setInactiveWarningCount(int $inactiveWarningCount): static
+    {
+        $this->inactiveWarningCount = $inactiveWarningCount;
+
+        return $this;
+    }
+
+    public function getLastInactiveWarningAt(): ?\DateTimeImmutable
+    {
+        return $this->lastInactiveWarningAt;
+    }
+
+    public function setLastInactiveWarningAt(?\DateTimeImmutable $lastInactiveWarningAt): static
+    {
+        $this->lastInactiveWarningAt = $lastInactiveWarningAt;
+
+        return $this;
+    }
+
+    public function resetInactiveWarnings(): static
+    {
+        $this->inactiveWarningCount = 0;
+        $this->lastInactiveWarningAt = null;
 
         return $this;
     }

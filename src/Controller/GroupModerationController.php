@@ -192,9 +192,11 @@ final class GroupModerationController extends AbstractAppController
     #[Route('/membres/{memberId}/ban', name: '_ban_member', requirements: ['memberId' => '\d+'], methods: ['POST'])]
     public function banMember(int $memberId, Request $request): Response
     {
-        return $this->handleMemberAction($memberId, $request, 'ban', function (User $actor, GroupMember $member): void {
-            $this->memberModerationService->banMember($actor, $member);
-        }, 'Le membre a été banni.');
+        $reason = trim((string) $request->request->get('reason', ''));
+
+        return $this->handleMemberAction($memberId, $request, 'ban', function (User $actor, GroupMember $member) use ($reason): void {
+            $this->memberModerationService->banMember($actor, $member, $reason);
+        }, 'Le membre a été banni.', requiresReason: true, reason: $reason);
     }
 
     #[Route('/membres/{memberId}/debannir', name: '_unban_member', requirements: ['memberId' => '\d+'], methods: ['POST'])]
@@ -222,6 +224,8 @@ final class GroupModerationController extends AbstractAppController
         string $csrfPrefix,
         callable $action,
         string $successMessage,
+        bool $requiresReason = false,
+        string $reason = '',
     ): Response {
         $actor = $this->requireUser();
         $member = $this->groupMemberRepository->findOneWithGroupAndUser($memberId);
@@ -237,6 +241,12 @@ final class GroupModerationController extends AbstractAppController
 
         if (!$this->isCsrfTokenValid($csrfPrefix.$memberId, (string) $request->request->get('_token'))) {
             $this->addErrorFlash('Session expirée. Réessaie.');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        if ($requiresReason && '' === $reason) {
+            $this->addErrorFlash('Indique un motif de bannissement.');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
         }

@@ -174,4 +174,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
+
+    /**
+     * @return list<User>
+     */
+    public function findActiveUsersForInactiveReview(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.deletedAt IS NULL')
+            ->andWhere('u.isBanned = false')
+            ->orderBy('u.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

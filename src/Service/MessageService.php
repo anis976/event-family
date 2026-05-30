@@ -8,6 +8,7 @@ use App\Entity\Group;
 use App\Entity\Message;
 use App\Entity\MessageRead;
 use App\Entity\User;
+use App\Enum\PlatformNoticeVariant;
 use App\Repository\GroupMemberRepository;
 use App\Repository\MessageReadRepository;
 use App\Repository\MessageRepository;
@@ -21,6 +22,7 @@ final class MessageService
         private readonly GroupMemberRepository $groupMemberRepository,
         private readonly GroupAccessService $groupAccess,
         private readonly DirectMessagePolicy $directMessagePolicy,
+        private readonly SiteStaffService $siteStaff,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -64,6 +66,41 @@ final class MessageService
         return $message;
     }
 
+    public function sendStaffAnnouncement(User $author, Group $group, string $content): Message
+    {
+        if (!$this->siteStaff->isSiteStaff($author)) {
+            throw new \DomainException('Seuls les modérateurs et administrateurs du site peuvent publier une annonce officielle.');
+        }
+
+        $message = (new Message())
+            ->setAuthor($author)
+            ->setRelatedGroup($group)
+            ->setContent(trim($content))
+            ->setIsStaffAnnouncement(true);
+
+        $this->entityManager->persist($message);
+        $this->entityManager->flush();
+
+        return $message;
+    }
+
+    public function sendPlatformPrivateNotice(
+        User $recipient,
+        string $content,
+        PlatformNoticeVariant $variant = PlatformNoticeVariant::EventFamily,
+    ): Message {
+        $message = (new Message())
+            ->setRecipient($recipient)
+            ->setContent(trim($content))
+            ->setIsPlatformNotice(true)
+            ->setPlatformNoticeVariant($variant);
+
+        $this->entityManager->persist($message);
+        $this->entityManager->flush();
+
+        return $message;
+    }
+
     public function reply(User $author, Message $thread, string $content): Message
     {
         $root = $thread->isRoot() ? $thread : $thread->getParent();
@@ -73,6 +110,14 @@ final class MessageService
 
         if ($root->getReplies()->count() >= Message::MAX_REPLIES) {
             throw new \DomainException('Ce fil a déjà atteint le maximum de '.Message::MAX_REPLIES.' réponses.');
+        }
+
+        if ($root->isStaffAnnouncement()) {
+            throw new \DomainException('Les annonces officielles EventFamily ne peuvent pas recevoir de réponses.');
+        }
+
+        if ($root->isPlatformNotice()) {
+            throw new \DomainException('Ce message officiel ne peut pas recevoir de réponses.');
         }
 
         if ($root->isGroupMessage()) {
@@ -109,7 +154,7 @@ final class MessageService
             throw new \DomainException('Accès refusé.');
         }
 
-        if ($message->getAuthor()->getId() === $user->getId()) {
+        if ($message->getAuthor()?->getId() === $user->getId()) {
             return;
         }
 
@@ -137,8 +182,12 @@ final class MessageService
 
     public function isUnreadFor(Message $message, User $user): bool
     {
-        if ($message->getAuthor()->getId() === $user->getId()) {
+        if ($message->getAuthor()?->getId() === $user->getId()) {
             return false;
+        }
+
+        if ($message->isPlatformNotice()) {
+            return $message->getRecipient()?->getId() === $user->getId();
         }
 
         if (!$this->canUserViewMessage($user, $message)) {
@@ -150,6 +199,37 @@ final class MessageService
         }
 
         return null === $this->messageReadRepository->findOneForMessageAndUser($message, $user);
+    }
+
+    /**
+     * @param list<int> $groupIds
+     *
+     * @return array<int, int>
+     */
+    public function getUnreadCountByGroupIds(User $user, array $groupIds): array
+    {
+        return $this->messageRepository->countUnreadGroupMessagesByGroupIds($user, $groupIds);
+    }
+
+    public function markGroupMessagesAsViewed(User $user, Group $group): void
+    {
+        if (!$this->groupAccess->isMember($user, $group)) {
+            return;
+        }
+
+        foreach ($this->messageRepository->findUnreadGroupMessagesForUserInGroup($user, $group) as $message) {
+            if (null !== $this->messageReadRepository->findOneForMessageAndUser($message, $user)) {
+                continue;
+            }
+
+            $this->entityManager->persist(
+                (new MessageRead())
+                    ->setMessage($message)
+                    ->setUser($user),
+            );
+        }
+
+        $this->entityManager->flush();
     }
 
     /**
@@ -188,7 +268,10 @@ final class MessageService
         if ($message->isGroupMessage()) {
             $group = $message->getRelatedGroup();
 
-            return null !== $group && $this->groupAccess->isMember($user, $group);
+            return null !== $group && (
+                $this->groupAccess->isMember($user, $group)
+                || $this->siteStaff->isSiteStaff($user)
+            );
         }
 
         $root = $message->getParent() ?? $message;
@@ -202,6 +285,14 @@ final class MessageService
             return true;
         }
 
+        if ($message->isPlatformNotice()) {
+            return false;
+        }
+
+        if ($message->isStaffAnnouncement() && $this->siteStaff->isSiteStaff($user)) {
+            return $message->getAuthor()?->getId() === $user->getId();
+        }
+
         if ($message->isPrivateMessage() || null !== $message->getParent() && !$message->isGroupMessage()) {
             $root = $message->getParent() ?? $message;
 
@@ -209,10 +300,10 @@ final class MessageService
         }
 
         if ($message->isGroupMessage()) {
-            return $message->getAuthor()->getId() === $user->getId();
+            return $message->getAuthor()?->getId() === $user->getId();
         }
 
-        return $message->getAuthor()->getId() === $user->getId()
+        return $message->getAuthor()?->getId() === $user->getId()
             || $message->getRecipient()?->getId() === $user->getId();
     }
 
@@ -225,13 +316,17 @@ final class MessageService
 
     private function isPrivateParticipant(User $user, Message $root): bool
     {
-        return $root->getAuthor()->getId() === $user->getId()
+        if ($root->isPlatformNotice()) {
+            return $root->getRecipient()?->getId() === $user->getId();
+        }
+
+        return $root->getAuthor()?->getId() === $user->getId()
             || $root->getRecipient()?->getId() === $user->getId();
     }
 
     private function resolvePrivateCounterpart(User $author, Message $root): User
     {
-        if ($root->getAuthor()->getId() === $author->getId()) {
+        if ($root->getAuthor()?->getId() === $author->getId()) {
             $recipient = $root->getRecipient();
             if (null === $recipient) {
                 throw new \DomainException('Destinataire introuvable.');
@@ -240,6 +335,11 @@ final class MessageService
             return $recipient;
         }
 
-        return $root->getAuthor();
+        $author = $root->getAuthor();
+        if (null === $author) {
+            throw new \DomainException('Auteur introuvable.');
+        }
+
+        return $author;
     }
 }

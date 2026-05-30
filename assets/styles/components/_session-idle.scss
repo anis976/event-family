@@ -1,0 +1,14 @@
+@use '../base/variables' as *;
+
+.ef-session-idle-modal {
+    &__countdown {
+        color: $ef-primary-orange;
+        font-size: 1.1em;
+    }
+
+    .modal-content {
+        @include color-mode(dark) {
+            background-color: #252525;
+        }
+    }
+}

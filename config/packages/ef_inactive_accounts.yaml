@@ -1,0 +1,6 @@
+parameters:
+    ef.inactive.connected.warn1_seconds: '%env(int:EF_INACTIVE_CONNECTED_WARN1_SECONDS)%'
+    ef.inactive.connected.warn2_seconds: '%env(int:EF_INACTIVE_CONNECTED_WARN2_SECONDS)%'
+    ef.inactive.connected.delete_seconds: '%env(int:EF_INACTIVE_CONNECTED_DELETE_SECONDS)%'
+    ef.inactive.unverified.warn_seconds: '%env(int:EF_INACTIVE_UNVERIFIED_WARN_SECONDS)%'
+    ef.inactive.unverified.delete_seconds: '%env(int:EF_INACTIVE_UNVERIFIED_DELETE_SECONDS)%'

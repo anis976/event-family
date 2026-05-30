@@ -15,6 +15,7 @@ use App\Repository\GroupRequestRepository;
 use App\Repository\UserBanRepository;
 use App\Service\GroupAccessService;
 use App\Service\GroupRequestService;
+use App\Service\SiteStaffService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,7 @@ final class GroupController extends AbstractAppController
         private readonly GroupRequestRepository $groupRequestRepository,
         private readonly GroupRequestService $groupRequestService,
         private readonly UserBanRepository $userBanRepository,
+        private readonly SiteStaffService $siteStaff,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -84,6 +86,13 @@ final class GroupController extends AbstractAppController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($this->groupRepository->existsByFamilyName($group->getFamilyName())) {
+                $this->addWarningFlash(sprintf(
+                    'Un groupe représente déjà la famille « %s ». Tu peux quand même créer le tien.',
+                    $group->getFamilyName(),
+                ));
+            }
+
             $group->setAuthor($user);
             $group->setOwner($user);
 
@@ -170,6 +179,7 @@ final class GroupController extends AbstractAppController
             'isChef' => $isOwner,
             'isModerator' => $isModerator,
             'isStaff' => $isStaff,
+            'isSiteStaff' => $this->siteStaff->isSiteStaff($user),
             'currentMember' => $currentMember,
             'bannedUserIds' => $bannedUserIds,
             'joinState' => $joinState,

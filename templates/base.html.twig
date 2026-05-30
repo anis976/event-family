@@ -37,7 +37,11 @@
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
     {% endif %}
 </head>
-<body class="ef-body{% block body_class %}{% endblock %}"{% if app.user %} data-ef-counts-url="{{ path('app_invitations_counts') }}"{% endif %}>
+<body class="ef-body{% block body_class %}{% endblock %}"{% if app.user %}
+    data-ef-counts-url="{{ path('app_invitations_counts') }}"
+    data-ef-session-idle="{{ ef_session_idle_timeout }}"
+    data-ef-session-warning="{{ ef_session_idle_warning }}"
+{% endif %}>
     <div class="ef-main-wrapper d-flex">
         {% include 'layout/_sidebar.html.twig' %}
 
@@ -64,5 +68,16 @@
     </button>
 
     <button type="button" id="sidebarOverlay" class="ef-sidebar-overlay" aria-label="Fermer le menu"></button>
+
+    {% if app.user %}
+        {% include 'components/_session_idle_modal.html.twig' %}
+        <form id="ef-session-logout-form" action="{{ path('app_logout') }}" method="post" data-turbo="false" class="d-none" aria-hidden="true">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+            <input type="hidden" name="_idle" value="1">
+        </form>
+        <form id="ef-session-activity-form" action="{{ path('app_session_activity') }}" method="post" data-turbo="false" class="d-none" aria-hidden="true">
+            <input type="hidden" name="_token" value="{{ csrf_token('session_activity') }}">
+        </form>
+    {% endif %}
 </body>
 </html>

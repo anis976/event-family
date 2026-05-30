@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\PlatformNoticeVariant;
 use App\Repository\MessageRepository;
 use App\Util\ParisClock;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,9 +28,8 @@ class Message
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'authoredMessages')]
-    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    #[Assert\NotNull]
-    private User $author;
+    #[ORM\JoinColumn(name: 'author_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
+    private ?User $author = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedMessages')]
     #[ORM\JoinColumn(name: 'recipient_id', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
@@ -54,6 +54,15 @@ class Message
     #[Assert\NotBlank]
     #[Assert\Length(max: 5000)]
     private string $content = '';
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isStaffAnnouncement = false;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isPlatformNotice = false;
+
+    #[ORM\Column(length: 20, nullable: true, enumType: PlatformNoticeVariant::class)]
+    private ?PlatformNoticeVariant $platformNoticeVariant = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -81,12 +90,12 @@ class Message
         return $this->id;
     }
 
-    public function getAuthor(): User
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
-    public function setAuthor(User $author): static
+    public function setAuthor(?User $author): static
     {
         $this->author = $author;
 
@@ -170,6 +179,42 @@ class Message
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function isStaffAnnouncement(): bool
+    {
+        return $this->isStaffAnnouncement;
+    }
+
+    public function setIsStaffAnnouncement(bool $isStaffAnnouncement): static
+    {
+        $this->isStaffAnnouncement = $isStaffAnnouncement;
+
+        return $this;
+    }
+
+    public function isPlatformNotice(): bool
+    {
+        return $this->isPlatformNotice;
+    }
+
+    public function setIsPlatformNotice(bool $isPlatformNotice): static
+    {
+        $this->isPlatformNotice = $isPlatformNotice;
+
+        return $this;
+    }
+
+    public function getPlatformNoticeVariant(): ?PlatformNoticeVariant
+    {
+        return $this->platformNoticeVariant;
+    }
+
+    public function setPlatformNoticeVariant(?PlatformNoticeVariant $platformNoticeVariant): static
+    {
+        $this->platformNoticeVariant = $platformNoticeVariant;
 
         return $this;
     }

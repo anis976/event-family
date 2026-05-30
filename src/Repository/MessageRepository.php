@@ -150,7 +150,7 @@ class MessageRepository extends ServiceEntityRepository
 
         $unread = [];
         foreach ($messages as $message) {
-            if ($message->getAuthor()->getId() === $user->getId()) {
+            if ($message->getAuthor()?->getId() === $user->getId()) {
                 continue;
             }
 
@@ -165,5 +165,63 @@ class MessageRepository extends ServiceEntityRepository
         }
 
         return $unread;
+    }
+
+    /**
+     * @param list<int> $groupIds
+     *
+     * @return array<int, int> groupId => unread count
+     */
+    public function countUnreadGroupMessagesByGroupIds(User $user, array $groupIds): array
+    {
+        if ([] === $groupIds) {
+            return [];
+        }
+
+        $rows = $this->getEntityManager()->createQueryBuilder()
+            ->select('IDENTITY(m.relatedGroup) AS groupId', 'COUNT(m.id) AS unreadCount')
+            ->from(Message::class, 'm')
+            ->leftJoin(
+                MessageRead::class,
+                'mr',
+                'WITH',
+                'mr.message = m AND mr.user = :user',
+            )
+            ->andWhere('m.relatedGroup IN (:groups)')
+            ->andWhere('m.author != :user')
+            ->andWhere('mr.id IS NULL')
+            ->setParameter('user', $user)
+            ->setParameter('groups', $groupIds)
+            ->groupBy('m.relatedGroup')
+            ->getQuery()
+            ->getScalarResult();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int) $row['groupId']] = (int) $row['unreadCount'];
+        }
+
+        return $map;
+    }
+
+    /**
+     * @return list<Message>
+     */
+    public function findUnreadGroupMessagesForUserInGroup(User $user, \App\Entity\Group $group): array
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin(
+                MessageRead::class,
+                'mr',
+                'WITH',
+                'mr.message = m AND mr.user = :user',
+            )
+            ->andWhere('m.relatedGroup = :group')
+            ->andWhere('m.author != :user')
+            ->andWhere('mr.id IS NULL')
+            ->setParameter('user', $user)
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getResult();
     }
 }

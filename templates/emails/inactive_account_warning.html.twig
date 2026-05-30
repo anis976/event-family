@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Compte inactif</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.6; color: #333;">
+    <p>Bonjour {{ user.firstName }},</p>
+
+    {% if not isVerifiedAccount %}
+        <p>Ton compte EventFamily <strong>n'a pas encore été activé</strong>.</p>
+        <p>Confirme ton adresse e-mail en cliquant sur le lien reçu lors de l'inscription. Sans activation, ton compte sera supprimé automatiquement.</p>
+    {% elseif step == 1 %}
+        <p>Ton compte EventFamily est <strong>inactif depuis longtemps</strong>. Il s'agit de ton <strong>premier rappel (1/2)</strong>.</p>
+        <p>Connecte-toi pour conserver ton compte, tes groupes et tes messages.</p>
+    {% else %}
+        <p>Ton compte EventFamily est <strong>toujours inactif</strong>. Il s'agit de ton <strong>dernier rappel (2/2)</strong>.</p>
+        <p style="color: #c00;"><strong>Sans connexion prochainement, ton compte sera supprimé et tu seras retiré de tes groupes.</strong></p>
+    {% endif %}
+
+    {% if isVerifiedAccount %}
+        <p style="font-size: 0.9rem; color: #666;">Tu trouveras aussi ce message dans tes messages privés EventFamily.</p>
+    {% endif %}
+</body>
+</html>

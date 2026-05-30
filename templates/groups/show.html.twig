@@ -14,17 +14,24 @@
         </ol>
     </nav>
 
-    {% if isStaff %}
+    {% if isStaff or isSiteStaff %}
         <div class="d-flex flex-wrap gap-2 mb-4 ef-GroupShow__staff-actions">
-            <a href="{{ path('app_groups_manage_requests', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit">
-                <i class="bi bi-inbox me-2"></i> Gérer les demandes
-                {% if pendingRequestsCount > 0 %}
-                    <span class="badge bg-danger ms-1">{{ pendingRequestsCount }}</span>
-                {% endif %}
-            </a>
-            <a href="{{ path('app_groups_invite_search', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit">
-                <i class="bi bi-person-plus me-2"></i> Inviter des membres
-            </a>
+            {% if isStaff %}
+                <a href="{{ path('app_groups_manage_requests', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit">
+                    <i class="bi bi-inbox me-2"></i> Gérer les demandes
+                    {% if pendingRequestsCount > 0 %}
+                        <span class="badge bg-danger ms-1">{{ pendingRequestsCount }}</span>
+                    {% endif %}
+                </a>
+                <a href="{{ path('app_groups_invite_search', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit">
+                    <i class="bi bi-person-plus me-2"></i> Inviter des membres
+                </a>
+            {% endif %}
+            {% if isSiteStaff %}
+                <a href="{{ path('app_messages_group', { groupId: group.id }) }}" class="btn ef-GroupShow__btn-edit">
+                    <i class="bi bi-megaphone me-2"></i> Messages du groupe
+                </a>
+            {% endif %}
         </div>
     {% endif %}
 

@@ -7,11 +7,15 @@ namespace App\Controller;
 use App\Entity\Group;
 use App\Entity\User;
 use App\Form\GroupMessageFormType;
+use App\Form\StaffAnnouncementFormType;
 use App\Repository\GroupMemberRepository;
 use App\Repository\GroupRepository;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
+use App\Service\GroupAccessService;
+use App\Service\GroupSystemNoticeService;
 use App\Service\MessageService;
+use App\Service\SiteStaffService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,6 +32,9 @@ final class MessageController extends AbstractAppController
         private readonly GroupRepository $groupRepository,
         private readonly GroupMemberRepository $groupMemberRepository,
         private readonly UserRepository $userRepository,
+        private readonly GroupSystemNoticeService $systemNoticeService,
+        private readonly GroupAccessService $groupAccess,
+        private readonly SiteStaffService $siteStaff,
     ) {
     }
 
@@ -53,30 +60,76 @@ final class MessageController extends AbstractAppController
         ]);
     }
 
-    #[Route('/groupe/{groupId?}', name: '_group', requirements: ['groupId' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route('/groupe/{groupId?}', name: '_group', requirements: ['groupId' => '\d+'], methods: ['GET', 'POST'], defaults: ['groupId' => null])]
     public function groupMessages(Request $request, ?int $groupId = null): Response
     {
         $user = $this->requireUser();
         $userGroups = $this->groupMemberRepository->findGroupsForUser($user);
         $userHasGroup = [] !== $userGroups;
+        $showGroupUnreadDots = \count($userGroups) > 1;
+        $isSiteStaff = $this->siteStaff->isSiteStaff($user);
 
         $currentGroup = null;
-        if ($userHasGroup) {
-            if (null !== $groupId) {
-                foreach ($userGroups as $group) {
-                    if ($group->getId() === $groupId) {
-                        $currentGroup = $group;
-                        break;
-                    }
+        $isMemberOfCurrent = false;
+
+        if (null !== $groupId) {
+            foreach ($userGroups as $group) {
+                if ($group->getId() === $groupId) {
+                    $currentGroup = $group;
+                    $isMemberOfCurrent = true;
+                    break;
                 }
             }
-            $currentGroup ??= $userGroups[0];
+
+            if (null === $currentGroup && $isSiteStaff) {
+                $currentGroup = $this->groupRepository->find($groupId);
+                if (null === $currentGroup) {
+                    $this->addErrorFlash('Groupe introuvable.');
+
+                    return $this->redirectToRoute('app_messages_group');
+                }
+
+                $isMemberOfCurrent = $this->groupAccess->isMember($user, $currentGroup);
+            } elseif (null === $currentGroup) {
+                $this->addErrorFlash('Groupe introuvable ou inaccessible.');
+
+                return $this->redirectToRoute('app_messages_group');
+            }
+        } elseif ($userHasGroup) {
+            $currentGroup = $userGroups[0];
+            $isMemberOfCurrent = true;
         }
 
         $form = $this->createForm(GroupMessageFormType::class);
+        $staffForm = $this->createForm(StaffAnnouncementFormType::class);
+
         $form->handleRequest($request);
+        $staffForm->handleRequest($request);
+
+        if ($staffForm->isSubmitted() && $staffForm->isValid() && null !== $currentGroup) {
+            if (!$isSiteStaff) {
+                throw $this->createAccessDeniedException();
+            }
+
+            try {
+                $this->messageService->sendStaffAnnouncement(
+                    $user,
+                    $currentGroup,
+                    (string) $staffForm->get('content')->getData(),
+                );
+                $this->addSuccessFlash('Annonce officielle publiée.');
+            } catch (\DomainException $e) {
+                $this->addErrorFlash($e->getMessage());
+            }
+
+            return $this->redirectToRoute('app_messages_group', ['groupId' => $currentGroup->getId()]);
+        }
 
         if ($form->isSubmitted() && $form->isValid() && null !== $currentGroup) {
+            if (!$isMemberOfCurrent) {
+                throw $this->createAccessDeniedException();
+            }
+
             try {
                 $this->messageService->sendGroupMessage(
                     $user,
@@ -91,17 +144,36 @@ final class MessageController extends AbstractAppController
             return $this->redirectToRoute('app_messages_group', ['groupId' => $currentGroup->getId()]);
         }
 
+        if ($request->isMethod('GET') && null !== $currentGroup && $isMemberOfCurrent) {
+            $this->messageService->markGroupMessagesAsViewed($user, $currentGroup);
+        }
+
         $groupThreads = null !== $currentGroup
             ? $this->messageRepository->findGroupRootThreads($currentGroup)
+            : [];
+
+        $groupIds = array_map(static fn (Group $g): int => (int) $g->getId(), $userGroups);
+        $unreadByGroupId = $showGroupUnreadDots
+            ? $this->messageService->getUnreadCountByGroupIds($user, $groupIds)
             : [];
 
         return $this->render('messages/group.html.twig', [
             'user_groups' => $userGroups,
             'user_has_group' => $userHasGroup,
+            'show_group_unread_dots' => $showGroupUnreadDots,
+            'unread_by_group_id' => $unreadByGroupId,
             'current_group' => $currentGroup,
+            'is_member_of_current' => $isMemberOfCurrent,
+            'is_site_staff' => $isSiteStaff,
             'group_threads' => $groupThreads,
             'unread_ids' => array_flip($this->messageService->collectUnreadIds($user, $groupThreads)),
             'form' => $form,
+            'staff_form' => $staffForm,
+            'system_notice_content' => null !== $currentGroup
+                ? $this->systemNoticeService->getContent($currentGroup)
+                : '',
+            'system_notice_is_custom' => null !== $currentGroup
+                && $this->systemNoticeService->isCustomized($currentGroup),
         ]);
     }
 

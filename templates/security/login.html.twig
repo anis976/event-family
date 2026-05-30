@@ -33,6 +33,16 @@
                     >
                         <h1 class="text-center fw-bold mb-4 mt-2 h2">Connexion à EventFamily</h1>
 
+                        {% if app.request.query.get('idle') %}
+                            {% include 'components/_ef_alert.html.twig' with {
+                                type: 'warning',
+                                title: 'Session expirée',
+                                message: 'Tu as été déconnecté(e) après une période d\'inactivité. Reconnecte-toi pour continuer.',
+                                dismissible: true,
+                                show_title: true,
+                            } only %}
+                        {% endif %}
+
                         {% if error %}
                             {% include 'components/_ef_alert.html.twig' with {
                                 type: 'danger',
@@ -123,7 +133,6 @@
                                     name="_remember_me"
                                     id="rememberMe"
                                     value="on"
-                                    checked
                                 >
                                 <label class="form-check-label text-muted small" for="rememberMe">
                                     Se souvenir de moi

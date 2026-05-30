@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Compte supprimé</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.6; color: #333;">
+    <p>Bonjour,</p>
+    <p>Ton compte EventFamily a été <strong>supprimé définitivement</strong> après {{ banCount }} bannissement(s) enregistré(s) sur la plateforme.</p>
+
+    {% if group %}
+        <p><strong>Dernier groupe concerné :</strong> {{ group.name }} ({{ group.familyName }})</p>
+    {% endif %}
+
+    <p><strong>Motif du bannissement :</strong></p>
+    <p style="background: #f8f9fa; padding: 12px; border-left: 4px solid #dc3545;">{{ reason|nl2br }}</p>
+
+    <p style="font-size: 0.85rem; color: #c00;">
+        Si tu penses qu'il s'agit d'une erreur, contacte l'administration du site.
+    </p>
+</body>
+</html>

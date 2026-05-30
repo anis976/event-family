@@ -28,18 +28,20 @@
         <p class="mb-2 small">{{ thread.content }}</p>
 
         <div class="d-flex gap-3 align-items-center flex-wrap">
-            {% if thread.replies|length < 2 %}
-                <button
-                    class="btn btn-sm btn-link p-0 text-decoration-none ef-messages__action"
-                    type="button"
-                    data-ef-toggle-reply="reply-form-{{ thread.id }}"
-                >
-                    <i class="bi bi-reply"></i> Répondre
-                </button>
-            {% else %}
-                <span class="text-muted small fst-italic">
-                    <i class="bi bi-lock"></i> Max 2 réponses
-                </span>
+            {% if not thread.platformNotice and not thread.staffAnnouncement %}
+                {% if thread.replies|length < 2 %}
+                    <button
+                        class="btn btn-sm btn-link p-0 text-decoration-none ef-messages__action"
+                        type="button"
+                        data-ef-toggle-reply="reply-form-{{ thread.id }}"
+                    >
+                        <i class="bi bi-reply"></i> Répondre
+                    </button>
+                {% else %}
+                    <span class="text-muted small fst-italic">
+                        <i class="bi bi-lock"></i> Max 2 réponses
+                    </span>
+                {% endif %}
             {% endif %}
 
             {% if thread.author == app.user

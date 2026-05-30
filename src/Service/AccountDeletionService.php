@@ -14,7 +14,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class AccountDeletionService
@@ -28,7 +27,7 @@ final class AccountDeletionService
         private readonly UserRepository $userRepository,
         private readonly GroupRepository $groupRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly UserAccountSoftDeleteService $accountSoftDelete,
         private readonly UrlGeneratorInterface $urlGenerator,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
@@ -122,23 +121,7 @@ final class AccountDeletionService
 
         $originalEmail = $user->getEmail();
 
-        $user->setDeletedAt(ParisClock::now());
-        $user->setEmail(sprintf(
-            'deleted_%d_%s@deleted.invalid',
-            $user->getId() ?? 0,
-            bin2hex(random_bytes(6)),
-        ));
-        $user->setPassword($this->passwordHasher->hashPassword($user, bin2hex(random_bytes(32))));
-        $user->setPseudo(null);
-        // Couple prénom/nom unique (contrainte uniq_ef_users_full_name).
-        $user->setFirstName('Compte');
-        $user->setLastName(sprintf('Supprimé_%d', $user->getId() ?? 0));
-        $user->setIsVerified(false);
-        $user->clearPasswordReset();
-        $user->clearPendingPasswordChange();
-        $user->clearAccountDeletion();
-
-        $this->entityManager->flush();
+        $this->accountSoftDelete->softDelete($user);
 
         $this->sendDeletionDoneNotification($originalEmail, $user);
     }
