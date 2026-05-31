@@ -94,6 +94,7 @@ final class ProfileAvatarController extends AbstractAppController
 
         $avatarService->deleteAvatar($user);
         $entityManager->flush();
+        $entityManager->refresh($user);
 
         $this->addSuccessFlash('Photo de profil supprimée.');
 
@@ -123,8 +124,9 @@ final class ProfileAvatarController extends AbstractAppController
 
         $response = new BinaryFileResponse($path);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'avatar-'.$id);
-        $response->setPublic();
+        $response->setPrivate();
         $response->setMaxAge(3600);
+        $response->headers->addCacheControlDirective('must-revalidate');
 
         return $response;
     }

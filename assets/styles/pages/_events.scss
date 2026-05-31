@@ -1,0 +1,413 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+.ef-events {
+    &__title {
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+
+            @include media-breakpoint-up(md) {
+                font-size: 1.75rem;
+            }
+
+            @include media-breakpoint-up(lg) {
+                font-size: 2rem;
+            }
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+            }
+        }
+
+        .btn {
+            color: #404040;
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            font-weight: 600;
+            @include custom-btn($bg-opacity: 0.5);
+
+            @include media-breakpoint-down(md) {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+                background-color: rgba($ef-primary-orange, 0.3);
+
+                &:hover {
+                    background-color: $ef-primary-orange;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    &__nav {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 0.35rem;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        .btn {
+            color: #404040;
+            @include custom-btn();
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+            text-decoration: none;
+
+            &.active {
+                background: $ef-primary-orange;
+                color: #131926;
+                font-weight: 600;
+
+                @include color-mode(dark) {
+                    color: white;
+                }
+            }
+
+            @include media-breakpoint-down(md) {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+    }
+
+    &__empty-event {
+        border: 2px dashed #dee2e6;
+        border-radius: 1rem;
+
+        @include color-mode(dark) {
+            border: 2px dashed $ef-white-color-dark;
+        }
+    }
+
+    &__empty-body {
+        min-height: 200px;
+    }
+
+    &__article {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: $box-shadow-lg !important;
+        }
+
+        &--past {
+            opacity: 0.85;
+
+            .ef-events__article-img {
+                filter: grayscale(1);
+                transition: filter 0.35s ease;
+            }
+
+            .card-title {
+                color: #6c757d !important;
+            }
+
+            .bi {
+                color: #6c757d !important;
+            }
+
+            &:hover .ef-events__article-img {
+                filter: grayscale(0);
+            }
+        }
+    }
+
+    &__article-img {
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    &__kind-badge {
+        background: rgba($ef-primary-orange, 0.12);
+        color: $ef-primary-orange-dark;
+        border: 1px solid rgba($ef-primary-orange, 0.25);
+        font-weight: 600;
+
+        @include color-mode(dark) {
+            background: rgba($ef-soft-gold, 0.15);
+            color: $ef-soft-gold;
+            border-color: rgba($ef-soft-gold, 0.35);
+        }
+    }
+
+    &__visibility-badge {
+        background: rgba(13, 110, 253, 0.12);
+        color: #0d6efd;
+        border: 1px solid rgba(13, 110, 253, 0.25);
+
+        &--group {
+            background: rgba($ef-primary-orange-dark, 0.12);
+            color: $ef-primary-orange-dark;
+            border-color: rgba($ef-primary-orange-dark, 0.25);
+        }
+    }
+
+    &__paginate {
+        .pagination {
+            border: none;
+            gap: 0.35rem;
+
+            .page-item .page-link {
+                border: none;
+                background: transparent;
+                border-radius: 0.5rem;
+                color: #666;
+                padding: 0.6rem 1rem;
+                font-weight: 600;
+                transition: all 0.2s ease;
+                min-width: 42px;
+
+                &:hover {
+                    background-color: rgba($ef-primary-orange, 0.1);
+                    color: $ef-primary-orange;
+                }
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+
+            .page-item.active .page-link {
+                @include custom-btn($bg-opacity: 1, $padding: 0.6rem 1rem);
+                color: white !important;
+                box-shadow: 0 4px 10px rgba($ef-primary-orange, 0.2);
+            }
+
+            .page-item.disabled .page-link {
+                opacity: 0.5;
+                color: #ccc;
+                background: transparent;
+                cursor: not-allowed;
+            }
+        }
+
+        @include color-mode(dark) {
+            .page-item .page-link {
+                color: #aaa;
+
+                &:hover {
+                    background-color: rgba($ef-primary-orange, 0.2);
+                }
+            }
+        }
+    }
+
+    &__modal {
+        .bi {
+            color: $ef-primary-orange;
+            font-size: 1.2rem;
+        }
+    }
+
+    &__modal-img {
+        max-height: 280px;
+        object-fit: cover;
+
+        &--detail {
+            max-height: 220px;
+        }
+
+        &--past {
+            filter: grayscale(1);
+            transition: filter 0.35s ease;
+
+            &:hover {
+                filter: grayscale(0);
+            }
+        }
+    }
+
+    &__btn-delete {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: transparent;
+        border: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.5rem;
+        border-radius: 6px;
+        color: #dc3545;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        i {
+            color: #dc3545;
+            font-size: 1.1rem;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+            background-color: rgba(220, 53, 69, 0.08);
+            color: #a71d2a;
+
+            i {
+                color: #a71d2a;
+            }
+        }
+    }
+
+    &__btn-edit {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 500;
+        border-radius: 12px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        background-color: rgba($ef-primary-orange, 0.08);
+        color: $ef-primary-orange;
+        text-decoration: none;
+
+        &:hover {
+            background-color: rgba($ef-primary-orange, 0.15);
+            transform: translateY(-2px);
+            color: $ef-primary-orange;
+        }
+    }
+
+    &--form-page {
+        padding-top: 1.25rem;
+    }
+
+    &__breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-bottom: 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    &__breadcrumb-link {
+        color: $ef-primary-orange;
+        text-decoration: none;
+
+        &:hover {
+            color: $ef-active-hover-orange;
+        }
+    }
+
+    &__breadcrumb-sep {
+        color: $gray-500;
+    }
+
+    &__breadcrumb-current {
+        color: $gray-600;
+        font-weight: 500;
+    }
+}
+
+.ef-event {
+    &__modal {
+        border: none;
+        border-radius: 1rem;
+
+        @include color-mode(dark) {
+            background-color: #212529;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    }
+
+    &__label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-bottom: 0.3rem;
+    }
+
+    &__textarea {
+        border-radius: 0.5rem;
+        min-height: 120px;
+    }
+
+    &__btn-cancel {
+        @include custom-btn($bg-opacity: 0, $padding: 0.6rem 1.2rem, $light-color: #666, $dark-color: #aaa);
+        border: 1px solid #ddd;
+        border-radius: 0.5rem;
+        background: transparent;
+    }
+}
+
+.ef-events-form__card {
+    border-radius: 12px;
+}
+
+.ef-event-show {
+    &__nav-link {
+        color: $ef-primary-orange;
+        text-decoration: none;
+
+        &:hover {
+            color: $ef-active-hover-orange;
+            text-decoration: underline;
+        }
+    }
+
+    &__hero {
+        max-height: 420px;
+        object-fit: cover;
+
+        &--past {
+            filter: grayscale(1);
+            transition: filter 0.35s ease;
+
+            &:hover {
+                filter: grayscale(0);
+            }
+        }
+    }
+
+    &__description {
+        white-space: pre-wrap;
+        line-height: 1.6;
+    }
+
+    &__meta {
+        dt {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: $gray-600;
+            margin-bottom: 0.25rem;
+            margin-top: 0.75rem;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+
+        dd {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+    }
+}
+
+.ef-btn-viewAllEvent {
+    background: rgba($ef-primary-orange, 0.1);
+    color: $ef-primary-orange-dark;
+    border: 1px solid rgba($ef-primary-orange, 0.25);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+        background: $ef-primary-orange;
+        color: #fff;
+        border-color: $ef-primary-orange;
+    }
+}

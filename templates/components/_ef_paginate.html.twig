@@ -1,5 +1,5 @@
 {% if pagination.total_pages > 1 %}
-<nav class="mt-4 d-flex justify-content-center" aria-label="Pagination">
+<nav class="{{ wrapper_class|default('mt-4 d-flex justify-content-center') }}" aria-label="Pagination">
     <ul class="pagination mb-0">
         <li class="page-item{{ pagination.page <= 1 ? ' disabled' : '' }}">
             <a class="page-link" href="{{ pagination.page <= 1 ? '#' : path(route_name, route_params|merge({ page: pagination.page - 1 })) }}" aria-label="Page précédente">

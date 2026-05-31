@@ -87,7 +87,7 @@ final class UserAvatarService
         }
 
         $this->ensureStorageDir();
-        $this->removeAvatarFiles($user);
+        $this->deleteAvatarFiles($user);
 
         $uuid = bin2hex(random_bytes(16));
         $originalFilename = sprintf('%s_orig.%s', $uuid, $extension);
@@ -115,18 +115,27 @@ final class UserAvatarService
 
     public function deleteAvatar(User $user): void
     {
-        $this->removeAvatarFiles($user);
+        if (!$user->hasAvatar() && null === $user->getAvatarOriginal()) {
+            $user->clearAvatar();
+
+            return;
+        }
+
+        $this->deleteAvatarFiles($user);
         $user->clearAvatar();
     }
 
-    public function removeAvatarFiles(User $user): void
+    public function deleteAvatarFiles(User $user): void
     {
-        foreach ([$user->getAvatar(), $user->getAvatarOriginal()] as $filename) {
-            if (null === $filename || '' === $filename) {
-                continue;
-            }
+        $filenames = array_values(array_unique(array_filter([
+            $user->getAvatar(),
+            $user->getAvatarOriginal(),
+        ], static fn (?string $name): bool => null !== $name && '' !== $name)));
 
+        foreach ($filenames as $filename) {
+            $this->assertSafeFilename($filename);
             $path = $this->storageDir.'/'.$filename;
+
             if (is_file($path)) {
                 $this->filesystem->remove($path);
             }
@@ -151,5 +160,12 @@ final class UserAvatarService
 
         return \in_array($detected, $this->imageProcessor->allowedMimeTypes(), true)
             && $detected === $expectedMime;
+    }
+
+    private function assertSafeFilename(string $filename): void
+    {
+        if (str_contains($filename, '..') || str_contains($filename, '/') || str_contains($filename, '\\')) {
+            throw new \InvalidArgumentException('Nom de fichier avatar invalide.');
+        }
     }
 }

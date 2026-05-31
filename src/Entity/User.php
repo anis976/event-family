@@ -184,6 +184,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $authoredMessages;
 
     /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'author')]
+    private Collection $authoredEvents;
+
+    /**
      * @var Collection<int, Message>
      */
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'recipient', orphanRemoval: true)]
@@ -202,6 +208,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->authoredBans = new ArrayCollection();
         $this->groupRequests = new ArrayCollection();
         $this->authoredMessages = new ArrayCollection();
+        $this->authoredEvents = new ArrayCollection();
         $this->receivedMessages = new ArrayCollection();
     }
 
@@ -657,6 +664,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getAuthoredGroups(): Collection
     {
         return $this->authoredGroups;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getAuthoredEvents(): Collection
+    {
+        return $this->authoredEvents;
     }
 
     /**

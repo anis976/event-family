@@ -484,6 +484,7 @@
 
         textarea {
             min-height: 2.5rem;
+            resize: none;
         }
 
         @include color-mode(dark) {

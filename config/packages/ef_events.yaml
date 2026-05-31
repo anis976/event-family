@@ -1,0 +1,11 @@
+parameters:
+    ef.events.storage_dir: '%kernel.project_dir%/var/storage/events'
+    ef.events.max_bytes: 5242880
+    ef.events.purge_retention_months: 10
+    ef.events.placeholders:
+        - 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80&auto=format&fit=crop'
+        - 'https://images.unsplash.com/photo-1464366400600-7168b8d9d042?w=800&q=80&auto=format&fit=crop'
+        - 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80&auto=format&fit=crop'
+        - 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80&auto=format&fit=crop'
+        - 'https://images.unsplash.com/photo-1467810563316-b5472a030f24?w=800&q=80&auto=format&fit=crop'
+        - 'https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800&q=80&auto=format&fit=crop'

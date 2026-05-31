@@ -9,10 +9,13 @@ use App\Entity\GroupMember;
 use App\Entity\User;
 use App\Enum\GroupMemberRole;
 use App\Form\GroupFormType;
+use App\Enum\EventTimeFilter;
+use App\Repository\EventRepository;
 use App\Repository\GroupMemberRepository;
 use App\Repository\GroupRepository;
 use App\Repository\GroupRequestRepository;
 use App\Repository\UserBanRepository;
+use App\Service\EventAccessService;
 use App\Service\GroupAccessService;
 use App\Service\GroupRequestService;
 use App\Service\SiteStaffService;
@@ -31,7 +34,9 @@ final class GroupController extends AbstractAppController
     public function __construct(
         private readonly GroupRepository $groupRepository,
         private readonly GroupMemberRepository $groupMemberRepository,
+        private readonly EventRepository $eventRepository,
         private readonly GroupAccessService $groupAccess,
+        private readonly EventAccessService $eventAccess,
         private readonly GroupRequestRepository $groupRequestRepository,
         private readonly GroupRequestService $groupRequestService,
         private readonly UserBanRepository $userBanRepository,
@@ -184,6 +189,9 @@ final class GroupController extends AbstractAppController
             'bannedUserIds' => $bannedUserIds,
             'joinState' => $joinState,
             'pendingRequestsCount' => $pendingRequestsCount,
+            'groupEvents' => $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Upcoming) : [],
+            'can_create_event' => $isMember && $this->eventAccess->canCreateInGroup($user, $group),
+            'is_regular_member' => $isMember && !$this->eventAccess->canCreateInGroup($user, $group),
         ]);
     }
 

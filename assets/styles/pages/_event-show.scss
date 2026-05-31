@@ -1,0 +1,15 @@
+@use '../base/variables' as *;
+
+.ef-events-form__preview {
+    max-width: 220px;
+    max-height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+.ef-event-show {
+    &__detail {
+        max-height: 320px;
+        object-fit: cover;
+    }
+}

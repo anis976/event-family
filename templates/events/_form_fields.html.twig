@@ -1,0 +1,88 @@
+<div class="mb-3">
+    {{ form_label(eventForm.relatedGroup, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+    {{ form_widget(eventForm.relatedGroup) }}
+    {{ form_errors(eventForm.relatedGroup) }}
+</div>
+<div class="mb-3">
+    {{ form_label(eventForm.title, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+    {{ form_widget(eventForm.title) }}
+    {{ form_errors(eventForm.title) }}
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        {{ form_label(eventForm.kind, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+        {{ form_widget(eventForm.kind) }}
+        {{ form_errors(eventForm.kind) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_label(eventForm.visibility, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+        {{ form_widget(eventForm.visibility) }}
+        {{ form_errors(eventForm.visibility) }}
+    </div>
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        {{ form_label(eventForm.startDate, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+        {{ form_widget(eventForm.startDate) }}
+        {{ form_errors(eventForm.startDate) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_label(eventForm.endDate, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+        {{ form_widget(eventForm.endDate) }}
+        {{ form_errors(eventForm.endDate) }}
+    </div>
+</div>
+<div class="mb-3">
+    {{ form_label(eventForm.location, null, { label_attr: { class: 'form-label fw-medium' } }) }}
+    {{ form_widget(eventForm.location) }}
+    {{ form_errors(eventForm.location) }}
+</div>
+<div class="mb-3" data-ef-char-count>
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        {{ form_label(eventForm.description, null, { label_attr: { class: 'form-label fw-medium mb-0 ef-event__label' } }) }}
+        <small class="js-counter text-muted fw-bold" data-max="2000">0 / 2000</small>
+    </div>
+    {{ form_widget(eventForm.description) }}
+    {{ form_errors(eventForm.description) }}
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        {{ form_label(eventForm.photoCoverFile, null, { label_attr: { class: 'form-label fw-medium ef-event__label' } }) }}
+        {{ form_widget(eventForm.photoCoverFile) }}
+        {{ form_errors(eventForm.photoCoverFile) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_label(eventForm.photoDetailFile, null, { label_attr: { class: 'form-label fw-medium ef-event__label' } }) }}
+        {{ form_widget(eventForm.photoDetailFile) }}
+        {{ form_errors(eventForm.photoDetailFile) }}
+    </div>
+</div>
+<p class="form-text small text-muted mb-3">
+    JPG, PNG ou WebP — max. 5 Mo chacune. Sans photo, une image libre de droits aléatoire sera affichée.
+</p>
+{% if event is defined and eventForm.removePhotoCover is defined %}
+    {% if event.hasPhotoCover %}
+        <div class="mb-2">
+            <p class="small text-muted mb-1">Couverture actuelle</p>
+            <img src="{{ event_cover_url(event) }}" alt="" class="rounded-3 ef-events-form__preview" loading="lazy">
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                {{ form_widget(eventForm.removePhotoCover, { attr: { class: 'form-check-input' } }) }}
+                {{ form_label(eventForm.removePhotoCover, null, { label_attr: { class: 'form-check-label' } }) }}
+            </div>
+        </div>
+    {% endif %}
+    {% if event.hasPhotoDetail %}
+        <div class="mb-2">
+            <p class="small text-muted mb-1">Lieu / détail actuel</p>
+            <img src="{{ event_detail_url(event) }}" alt="" class="rounded-3 ef-events-form__preview" loading="lazy">
+        </div>
+        <div class="mb-3">
+            <div class="form-check">
+                {{ form_widget(eventForm.removePhotoDetail, { attr: { class: 'form-check-input' } }) }}
+                {{ form_label(eventForm.removePhotoDetail, null, { label_attr: { class: 'form-check-label' } }) }}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

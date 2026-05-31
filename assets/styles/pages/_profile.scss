@@ -90,51 +90,81 @@
     }
 }
 
-.ef-profile-avatar {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 12px;
+// Tailles avatar : variables CSS pour un responsive fiable + transition visible au redimensionnement
+.ef-profile-avatar-wrap,
+.ef-profile-avatar-fallback {
+    --ef-avatar-size: 89px;
+    --ef-avatar-icon-size: 2.2rem;
+
+    @include media-breakpoint-up(md) {
+        --ef-avatar-size: 98px;
+        --ef-avatar-icon-size: 2.35rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+        --ef-avatar-size: 119px;
+        --ef-avatar-icon-size: 2.85rem;
+    }
+}
+
+.ef-profile-avatar-wrap {
+    width: var(--ef-avatar-size);
+    height: var(--ef-avatar-size);
+    border-radius: 50%;
+    overflow: hidden;
     flex-shrink: 0;
-    display: block;
-    background-color: var(--bs-secondary-bg);
+    transition: width 0.2s ease, height 0.2s ease;
 
-    @media (min-width: 768px) {
-        width: 56px;
-        height: 56px;
+    .ef-profile-avatar {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        object-fit: cover;
+        display: block;
+        border: 0;
+        border-radius: 0;
+    }
+}
+
+.ef-profile-avatar-fallback {
+    width: var(--ef-avatar-size);
+    height: var(--ef-avatar-size);
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $ef-primary-orange-dark;
+    transition: width 0.2s ease, height 0.2s ease;
+
+    .bi {
+        color: #fff;
+        font-size: var(--ef-avatar-icon-size);
+        line-height: 1;
+        transition: font-size 0.2s ease;
     }
 
-    @media (min-width: 992px) {
-        width: 60px;
-        height: 60px;
-    }
+    @include color-mode(dark) {
+        background-color: rgba($ef-soft-gold, 0.1);
+        border: 1px solid rgba($ef-soft-gold, 0.3);
 
-    &--preview {
-        width: 88px;
-        height: 88px;
-
-        @media (min-width: 768px) {
-            width: 96px;
-            height: 96px;
+        .bi {
+            color: $ef-soft-gold;
         }
     }
 }
 
 .ef-profile-avatar-manager {
     &__crop-area {
-        max-height: min(60vh, 420px);
+        max-height: min(50vh, 320px);
         overflow: hidden;
         background: #111;
+        border-radius: 8px;
 
         img {
             display: block;
             max-width: 100%;
         }
-    }
-
-    &__placeholder {
-        width: 88px;
-        height: 88px;
     }
 }
 

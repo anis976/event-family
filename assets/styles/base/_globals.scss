@@ -44,3 +44,8 @@
 .ef-main__flash {
     flex-shrink: 0;
 }
+
+// Tous les textarea : pas de redimensionnement (exception : .ef-textarea--resizable)
+textarea:not(.ef-textarea--resizable) {
+    resize: none;
+}

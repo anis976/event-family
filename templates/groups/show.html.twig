@@ -101,6 +101,35 @@
         </div>
 
         <div class="col-lg-8">
+            {% if isMember %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="h5 fw-bold mb-0">Événements à venir</h3>
+                        {% if can_create_event %}
+                            <a href="{{ path('app_events_new', { groupe: group.id }) }}" class="btn btn-sm ef-GroupShow__btn-edit" data-turbo="false">
+                                <i class="bi bi-plus-lg me-1"></i> Créer
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    {% if is_regular_member %}
+                        <div class="alert alert-info border-0 small py-2 mb-3" role="status">
+                            Pour ajouter un événement, demande au <strong>chef</strong> ou au <strong>modérateur</strong> de ce groupe.
+                        </div>
+                    {% endif %}
+
+                    {% if groupEvents is empty %}
+                        {% include 'events/_empty.html.twig' with { message: 'Aucun événement à venir pour ce groupe.' } %}
+                    {% else %}
+                        <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+                            {% for event in groupEvents %}
+                                {% include 'events/_article_card.html.twig' with { event: event, is_past: false, use_modal: false } %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
             {% include 'groups/_members_table.html.twig' %}
         </div>
     </div>

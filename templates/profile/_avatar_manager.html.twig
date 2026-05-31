@@ -4,23 +4,23 @@
     <div class="d-flex flex-column flex-sm-row align-items-start gap-3 p-3 border rounded-3 bg-light-subtle">
         <div class="ef-profile-avatar-manager__preview-wrap">
             {% if profile_avatar_visible(user) %}
-                <img
-                    src="{{ path('app_profile_avatar_show', { id: user.id }) }}"
-                    alt="Ta photo de profil"
-                    class="ef-profile-avatar ef-profile-avatar--preview"
-                    width="512"
-                    height="512"
-                >
+                <div class="ef-profile-avatar-wrap ef-profile-avatar-wrap--preview">
+                    <img
+                        src="{{ path('app_profile_avatar_show', { id: user.id, v: user.updatedAt.timestamp }) }}"
+                        alt="Ta photo de profil"
+                        class="ef-profile-avatar"
+                    >
+                </div>
             {% else %}
-                <div class="ef-icon-box ef-profile-avatar-manager__placeholder" aria-hidden="true">
-                    <i class="bi bi-person-circle fs-2"></i>
+                <div class="ef-profile-avatar-fallback ef-profile-avatar-wrap--preview" aria-hidden="true">
+                    <i class="bi bi-person-fill" aria-hidden="true"></i>
                 </div>
             {% endif %}
         </div>
 
         <div class="flex-grow-1">
             <p class="small text-muted mb-3">
-                JPG, PNG ou WebP — max. 4 Mo. Recadre ta photo en carré.
+                JPG, PNG ou WebP — max. 4 Mo. Recadre la zone utile (affichée en rond).
                 {% if user.hasAvatar %}
                     {% if user.avatarVisibility.value == 'private' %}
                         <span class="d-block mt-1">Visibilité actuelle : <strong>privée</strong> (membres de tes groupes uniquement).</span>

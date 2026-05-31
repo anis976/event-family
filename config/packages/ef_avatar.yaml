@@ -1,4 +1,4 @@
 parameters:
     ef.avatar.storage_dir: '%kernel.project_dir%/var/storage/avatars'
     ef.avatar.max_bytes: 4194304
-    ef.avatar.output_size: 512
+    ef.avatar.output_size: 256

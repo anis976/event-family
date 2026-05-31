@@ -84,12 +84,19 @@ class Group
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'relatedGroup', orphanRemoval: true)]
     private Collection $messages;
 
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'relatedGroup', orphanRemoval: true)]
+    private Collection $events;
+
     public function __construct()
     {
         $this->groupMembers = new ArrayCollection();
         $this->userBans = new ArrayCollection();
         $this->groupRequests = new ArrayCollection();
         $this->messages = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -260,5 +267,13 @@ class Group
     public function getMessages(): Collection
     {
         return $this->messages;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
     }
 }

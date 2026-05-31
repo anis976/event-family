@@ -95,6 +95,27 @@ class GroupMemberRepository extends ServiceEntityRepository
         return [] !== $this->findStaffGroupIdsForUser($user);
     }
 
+    /**
+     * @return list<Group>
+     */
+    public function findStaffGroupsForUser(User $user): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g', 'allGm', 'memberUser', 'owner')
+            ->from(Group::class, 'g')
+            ->innerJoin('g.groupMembers', 'gm')
+            ->leftJoin('g.groupMembers', 'allGm')
+            ->leftJoin('allGm.user', 'memberUser')
+            ->leftJoin('g.owner', 'owner')
+            ->andWhere('gm.user = :user')
+            ->andWhere('g.owner = :user OR gm.role IN (:staffRoles)')
+            ->setParameter('user', $user)
+            ->setParameter('staffRoles', [GroupMemberRole::Owner, GroupMemberRole::Moderator])
+            ->orderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findOneWithGroupAndUser(int $id): ?GroupMember
     {
         return $this->createQueryBuilder('gm')

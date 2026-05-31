@@ -1,0 +1,121 @@
+<div
+    class="modal fade ef-events__modal"
+    id="modal-event-{{ event.id }}"
+    tabindex="-1"
+    aria-labelledby="modal-event-label-{{ event.id }}"
+    aria-hidden="true"
+    data-turbo-permanent
+>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 d-flex flex-column align-items-start position-relative pb-0">
+                <h2 class="modal-title fw-bold h5" id="modal-event-label-{{ event.id }}">{{ event.title }}</h2>
+                <span class="badge rounded-pill px-3 mt-1 ef-events__kind-badge">{{ event.kind.label }}</span>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+
+            <div class="modal-body d-flex flex-column gap-3">
+                <img
+                    src="{{ event_cover_url(event) }}"
+                    alt=""
+                    class="rounded-3 w-100 ef-events__modal-img{% if is_past|default(false) %} ef-events__modal-img--past{% endif %}"
+                    loading="lazy"
+                >
+                <figure class="mb-0">
+                    <img
+                        src="{{ event_detail_url(event) }}"
+                        alt=""
+                        class="rounded-3 w-100 ef-events__modal-img ef-events__modal-img--detail{% if is_past|default(false) %} ef-events__modal-img--past{% endif %}"
+                        loading="lazy"
+                    >
+                    <figcaption class="small text-muted mt-1">Lieu / détail</figcaption>
+                </figure>
+
+                <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
+                    <li class="d-flex align-items-center gap-2 text-secondary">
+                        <i class="bi bi-calendar4" aria-hidden="true"></i>
+                        Début : {{ event.startDate|date('d/m/Y H:i') }}
+                    </li>
+                    {% if event.endDate %}
+                        <li class="d-flex align-items-center gap-2 text-secondary">
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                            Fin : {{ event.endDate|date('d/m/Y H:i') }}
+                        </li>
+                    {% endif %}
+                    {% if event.location %}
+                        <li class="d-flex align-items-center gap-2 text-secondary">
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i>{{ event.location }}
+                        </li>
+                    {% endif %}
+                    <li class="d-flex align-items-center gap-2 text-secondary">
+                        <i class="bi bi-people" aria-hidden="true"></i>{{ event.relatedGroup.displayLabel }}
+                    </li>
+                    {% if event.author %}
+                        <li class="d-flex align-items-center gap-2 text-secondary">
+                            <i class="bi bi-person-check" aria-hidden="true"></i>{{ event.author.displayName }}
+                        </li>
+                    {% endif %}
+                    <li class="d-flex align-items-center gap-2 text-secondary">
+                        <i class="bi bi-eye" aria-hidden="true"></i>{{ event.visibility.label }}
+                    </li>
+                </ul>
+
+                <div>
+                    <h3 class="fw-bold h6">Description</h3>
+                    <p class="text-secondary lh-base mb-0">{{ event.description|default('Aucune description fournie.')|nl2br }}</p>
+                </div>
+            </div>
+
+            <hr class="mx-auto my-2 opacity-10" style="width: 95%">
+
+            <div class="modal-footer border-0 justify-content-between pt-0 flex-wrap gap-2">
+                <div class="d-flex flex-wrap gap-2">
+                    {% if event_can_delete(event) %}
+                        <button
+                            type="button"
+                            class="btn btn-link text-decoration-none ef-events__btn-delete p-0"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modal-delete-event-{{ event.id }}"
+                            data-turbo="false"
+                        >
+                            <i class="bi bi-trash3 me-1"></i> Supprimer
+                        </button>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex flex-wrap gap-2 ms-auto">
+                    <a href="{{ path('app_events_show', { id: event.id }) }}" class="btn btn-outline-secondary btn-sm" data-turbo="false">
+                        Voir plus <i class="bi bi-arrow-right-short"></i>
+                    </a>
+                    {% if event_can_edit(event) %}
+                        <a href="{{ path('app_events_edit', { id: event.id }) }}" class="btn ef-events__btn-edit btn-sm" data-turbo="false">
+                            <i class="bi bi-pencil-square me-1"></i> Modifier
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if event_can_delete(event) %}
+    <div class="modal fade" id="modal-delete-event-{{ event.id }}" tabindex="-1" aria-hidden="true" data-turbo-permanent>
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3" aria-hidden="true"></i>
+                    <h3 class="fw-bold h5">Supprimer ?</h3>
+                    <p class="text-secondary small">Voulez-vous vraiment supprimer « {{ event.title }} » ?</p>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
+                        <form action="{{ path('app_events_delete', { id: event.id }) }}" method="post" data-turbo="false" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-event' ~ event.id) }}">
+                            <input type="hidden" name="vue" value="{{ current_filter.value }}">
+                            <button type="submit" class="btn btn-danger btn-sm px-3">Confirmer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}

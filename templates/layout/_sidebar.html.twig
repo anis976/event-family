@@ -24,8 +24,8 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link ef-sidebar__nav-link">
-                    <i class="bi bi-calendar-event me-2" aria-hidden="true"></i> Events
+                <a href="{{ path('app_events') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') starts with 'app_events' ? ' active' : '' }}">
+                    <i class="bi bi-calendar-event me-2" aria-hidden="true"></i> Événements
                 </a>
             </li>
             <li>

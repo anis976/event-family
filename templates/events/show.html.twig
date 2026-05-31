@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EventFamily — {{ event.title }}{% endblock %}
+{% block page_title %}{{ event.title }}{% endblock %}
+
+{% block body %}
+<div class="container py-5 ef-event-show">
+    <nav aria-label="Fil d'Ariane" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_events') }}" class="ef-event-show__nav-link">Événements</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ event.title }}</li>
+        </ol>
+    </nav>
+
+    {% if can_edit or can_delete %}
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            {% if can_edit %}
+                <a href="{{ path('app_events_edit', { id: event.id }) }}" class="btn ef-events__btn-edit" data-turbo="false">
+                    <i class="bi bi-pencil-square me-2"></i> Modifier
+                </a>
+            {% endif %}
+            {% if can_delete %}
+                <button type="button" class="btn ef-events__btn-delete" data-bs-toggle="modal" data-bs-target="#modal-delete-event-show" data-turbo="false">
+                    <i class="bi bi-trash3 me-2"></i> Supprimer
+                </button>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm ef-card overflow-hidden mb-4">
+                <img
+                    src="{{ event_cover_url(event) }}"
+                    alt=""
+                    class="w-100 ef-event-show__hero{% if is_past %} ef-event-show__hero--past{% endif %}"
+                    loading="lazy"
+                >
+                <figure class="mb-0 px-4 pt-3">
+                    <img
+                        src="{{ event_detail_url(event) }}"
+                        alt=""
+                        class="w-100 rounded-3 ef-event-show__detail{% if is_past %} ef-event-show__hero--past{% endif %}"
+                        loading="lazy"
+                    >
+                    <figcaption class="small text-muted mt-2 mb-0">Lieu / détail</figcaption>
+                </figure>
+                <div class="card-body p-4">
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge ef-events__kind-badge">{{ event.kind.label }}</span>
+                        <span class="badge ef-events__visibility-badge{% if event.visibility.value != 'public' %} ef-events__visibility-badge--group{% endif %}">
+                            {{ event.visibility.label }}
+                        </span>
+                    </div>
+
+                    <h1 class="h3 fw-bold mb-4">{{ event.title }}</h1>
+
+                    <div class="mb-0">
+                        <h2 class="text-uppercase text-muted small h6">Description</h2>
+                        <p class="ef-event-show__description mb-0">{{ event.description|default('Aucune description fournie.')|nl2br }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if can_contact_staff and staff_contacts is not empty %}
+                <div class="card border-0 shadow-sm ef-card p-4">
+                    <h2 class="h6 fw-bold mb-2">Proposer un événement au groupe</h2>
+                    <p class="text-muted small mb-3">
+                        Seuls le chef et le modérateur peuvent publier ou modifier un événement. Envoie-leur un message privé.
+                    </p>
+
+                    {% for contact in staff_contacts %}
+                        <form action="{{ path('app_events_contact_staff', { id: event.id }) }}" method="post" data-turbo="false" class="mb-3 pb-3 border-bottom">
+                            <input type="hidden" name="_token" value="{{ csrf_token('contact-event-staff' ~ event.id) }}">
+                            <input type="hidden" name="recipient_id" value="{{ contact.user.id }}">
+                            <div class="visually-hidden" aria-hidden="true">
+                                <label for="website-{{ contact.user.id }}">Ne pas remplir</label>
+                                <input type="text" name="website" id="website-{{ contact.user.id }}" tabindex="-1" autocomplete="off">
+                            </div>
+                            <label class="form-label small fw-medium" for="content-{{ contact.user.id }}">Message à {{ contact.label }} ({{ contact.user.displayName }})</label>
+                            <textarea
+                                name="content"
+                                id="content-{{ contact.user.id }}"
+                                class="form-control ef-input mb-2"
+                                rows="3"
+                                minlength="15"
+                                maxlength="1000"
+                                required
+                                placeholder="Décris l'événement que tu souhaites proposer…"
+                            ></textarea>
+                            <button type="submit" class="btn btn-save-profile btn-sm">
+                                <i class="bi bi-send me-1"></i> Envoyer un message privé
+                            </button>
+                        </form>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm ef-card-info p-4 sticky-top ef-event-show__sidebar" style="top: 80px;">
+                <h2 class="h6 text-uppercase text-muted mb-3">Informations</h2>
+
+                <dl class="ef-event-show__meta mb-4">
+                    <dt><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>Début</dt>
+                    <dd>{{ event.startDate|date('d/m/Y à H:i') }}</dd>
+
+                    {% if event.endDate %}
+                        <dt><i class="bi bi-calendar-check me-2" aria-hidden="true"></i>Fin</dt>
+                        <dd>{{ event.endDate|date('d/m/Y à H:i') }}</dd>
+                    {% endif %}
+
+                    {% if event.location %}
+                        <dt><i class="bi bi-geo-alt me-2" aria-hidden="true"></i>Lieu</dt>
+                        <dd>{{ event.location }}</dd>
+                    {% endif %}
+
+                    <dt><i class="bi bi-people me-2" aria-hidden="true"></i>Groupe</dt>
+                    <dd>
+                        <a href="{{ path('app_groups_show', { id: event.relatedGroup.id }) }}" class="ef-event-show__nav-link">
+                            {{ event.relatedGroup.displayLabel }}
+                        </a>
+                    </dd>
+
+                    {% if event.author %}
+                        <dt><i class="bi bi-person me-2" aria-hidden="true"></i>Publié par</dt>
+                        <dd>{{ event.author.displayName }}</dd>
+                    {% endif %}
+
+                    <dt><i class="bi bi-clock me-2" aria-hidden="true"></i>Publié le</dt>
+                    <dd>{{ event.createdAt|date('d/m/Y') }}</dd>
+                </dl>
+
+                {% if can_edit %}
+                    <a href="{{ path('app_events_new', { groupe: event.relatedGroup.id }) }}" class="btn w-100 ef-events__btn-edit" data-turbo="false">
+                        <i class="bi bi-plus-lg me-2"></i> Nouvel événement dans ce groupe
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if can_delete %}
+    <div class="modal fade" id="modal-delete-event-show" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3" aria-hidden="true"></i>
+                    <h3 class="fw-bold h5">Supprimer ?</h3>
+                    <p class="text-secondary small">Cette action est définitive.</p>
+                    <div class="d-flex gap-2 justify-content-center mt-4">
+                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
+                        <form action="{{ path('app_events_delete', { id: event.id }) }}" method="post" data-turbo="false" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-event' ~ event.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm px-3">Confirmer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="module" src="{{ asset('js/ef-events.js') }}"></script>
+{% endblock %}

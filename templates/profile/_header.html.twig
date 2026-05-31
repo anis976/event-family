@@ -1,6 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{# Remplace ef-icon-box dans le header #}
+{# Partial : en-tête profil avec avatar ou icône #}
 <div class="d-flex align-items-center mb-3 ps-1 ef-profile__header">
     {% include 'profile/_avatar_portrait.html.twig' with { profileUser: profileUser|default(null) } %}
     <div>
