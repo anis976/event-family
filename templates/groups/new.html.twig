@@ -34,10 +34,10 @@
                             {{ form_widget(groupForm.familyName) }}
                             {{ form_errors(groupForm.familyName) }}
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" data-ef-char-count>
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 {{ form_label(groupForm.description, null, { label_attr: { class: 'form-label fw-medium mb-0' } }) }}
-                                <small class="js-counter text-muted fw-bold">0 / 500</small>
+                                <small class="js-counter text-muted fw-bold" data-max="500">0 / 500</small>
                             </div>
                             {{ form_widget(groupForm.description) }}
                             {{ form_errors(groupForm.description) }}

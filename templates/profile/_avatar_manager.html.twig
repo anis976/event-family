@@ -1,0 +1,113 @@
+<div class="ef-profile-avatar-manager mb-4">
+    <label class="form-label small fw-bold text-uppercase opacity-50 mb-2">Photo de profil <span class="text-muted fw-normal">(optionnelle)</span></label>
+
+    <div class="d-flex flex-column flex-sm-row align-items-start gap-3 p-3 border rounded-3 bg-light-subtle">
+        <div class="ef-profile-avatar-manager__preview-wrap">
+            {% if profile_avatar_visible(user) %}
+                <img
+                    src="{{ path('app_profile_avatar_show', { id: user.id }) }}"
+                    alt="Ta photo de profil"
+                    class="ef-profile-avatar ef-profile-avatar--preview"
+                    width="512"
+                    height="512"
+                >
+            {% else %}
+                <div class="ef-icon-box ef-profile-avatar-manager__placeholder" aria-hidden="true">
+                    <i class="bi bi-person-circle fs-2"></i>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="flex-grow-1">
+            <p class="small text-muted mb-3">
+                JPG, PNG ou WebP — max. 4 Mo. Recadre ta photo en carré.
+                {% if user.hasAvatar %}
+                    {% if user.avatarVisibility.value == 'private' %}
+                        <span class="d-block mt-1">Visibilité actuelle : <strong>privée</strong> (membres de tes groupes uniquement).</span>
+                    {% else %}
+                        <span class="d-block mt-1">Visibilité actuelle : <strong>publique</strong>.</span>
+                    {% endif %}
+                {% endif %}
+            </p>
+
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="ef-avatar-choose-btn">
+                    <i class="bi bi-camera me-1" aria-hidden="true"></i>
+                    {{ user.hasAvatar ? 'Changer la photo' : 'Ajouter une photo' }}
+                </button>
+
+                {% if user.hasAvatar %}
+                    <form action="{{ path('app_profile_avatar_delete') }}" method="post" data-turbo="false" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('profile_avatar_delete') }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Supprimer ta photo de profil ?');">
+                            <i class="bi bi-trash me-1" aria-hidden="true"></i>
+                            Supprimer
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <input
+                type="file"
+                id="ef-avatar-file-input"
+                class="d-none"
+                accept="image/jpeg,image/png,image/webp"
+            >
+        </div>
+    </div>
+</div>
+
+<form
+    id="ef-avatar-upload-form"
+    action="{{ path('app_profile_avatar_upload') }}"
+    method="post"
+    enctype="multipart/form-data"
+    data-turbo="false"
+    class="d-none"
+>
+    <input type="hidden" name="_token" value="{{ csrf_token('profile_avatar_upload') }}">
+    <input type="hidden" name="cropX" id="ef-avatar-crop-x">
+    <input type="hidden" name="cropY" id="ef-avatar-crop-y">
+    <input type="hidden" name="cropWidth" id="ef-avatar-crop-w">
+    <input type="hidden" name="cropHeight" id="ef-avatar-crop-h">
+    <input type="hidden" name="visibility" id="ef-avatar-visibility" value="private">
+</form>
+
+<div class="modal fade" id="ef-avatar-crop-modal" tabindex="-1" aria-labelledby="ef-avatar-crop-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ef-avatar-crop-modal-label">Recadrer ta photo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <div class="ef-profile-avatar-manager__crop-area mb-3">
+                    <img id="ef-avatar-crop-image" src="" alt="" class="w-100">
+                </div>
+
+                <fieldset class="border-0 p-0 m-0">
+                    <legend class="form-label fw-medium fs-6 mb-2">Qui peut voir cette photo ?</legend>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="ef_avatar_visibility_choice" id="ef-avatar-vis-public" value="public">
+                        <label class="form-check-label" for="ef-avatar-vis-public">
+                            <strong>Publique</strong> — visible par tous les membres du site
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="ef_avatar_visibility_choice" id="ef-avatar-vis-private" value="private" checked>
+                        <label class="form-check-label" for="ef-avatar-vis-private">
+                            <strong>Privée</strong> — visible uniquement par les membres de ton groupe (les autres voient l'icône par défaut)
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-save-profile" id="ef-avatar-crop-save">
+                    <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

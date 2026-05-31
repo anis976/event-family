@@ -1,0 +1,23 @@
+{# Portrait profil : avatar si visible, sinon icône par défaut #}
+{% set subject = profileUser|default(null) %}
+{% if subject %}
+    {% if profile_avatar_visible(subject) %}
+        <img
+            src="{{ path('app_profile_avatar_show', { id: subject.id }) }}"
+            alt="Photo de {{ subject.displayName }}"
+            class="ef-profile-avatar me-3"
+            width="512"
+            height="512"
+            loading="lazy"
+            decoding="async"
+        >
+    {% else %}
+        <div class="ef-icon-box me-3" aria-hidden="true">
+            <i class="bi bi-person-circle fs-3"></i>
+        </div>
+    {% endif %}
+{% else %}
+    <div class="ef-icon-box me-3" aria-hidden="true">
+        <i class="bi bi-person-circle fs-3"></i>
+    </div>
+{% endif %}

@@ -1,25 +1,77 @@
+function bindCharCounter(input, counter) {
+    const max = Number(input.getAttribute('maxlength') || counter.dataset.max || 500);
+
+    const update = () => {
+        counter.textContent = `${input.value.length} / ${max}`;
+    };
+
+    if (input._efCountHandler) {
+        input.removeEventListener('input', input._efCountHandler);
+    }
+
+    input._efCountHandler = update;
+    input.addEventListener('input', update);
+    update();
+}
+
 function initDescriptionCounters(root = document) {
+    root.querySelectorAll('[data-ef-char-count]').forEach((wrap) => {
+        const input = wrap.querySelector('.js-input-count');
+        const counter = wrap.querySelector('.js-counter');
+
+        if (!input || !counter) {
+            return;
+        }
+
+        bindCharCounter(input, counter);
+    });
+
     root.querySelectorAll('.js-input-count').forEach((input) => {
+        if (input.closest('[data-ef-char-count]')) {
+            return;
+        }
+
         const counter = input.closest('.mb-3')?.querySelector('.js-counter');
 
         if (!counter) {
             return;
         }
 
-        const max = Number(input.getAttribute('maxlength') || 500);
-
-        const update = () => {
-            counter.textContent = `${input.value.length} / ${max}`;
-        };
-
-        if (input._efCountHandler) {
-            input.removeEventListener('input', input._efCountHandler);
-        }
-
-        input._efCountHandler = update;
-        input.addEventListener('input', update);
-        update();
+        bindCharCounter(input, counter);
     });
+}
+
+function handleCharCounterInput(event) {
+    const target = event.target;
+
+    if (!(target instanceof HTMLTextAreaElement || target instanceof HTMLInputElement)) {
+        return;
+    }
+
+    if (!target.classList.contains('js-input-count')) {
+        return;
+    }
+
+    const wrap = target.closest('[data-ef-char-count]') ?? target.closest('.mb-3');
+    const counter = wrap?.querySelector('.js-counter');
+
+    if (!counter) {
+        return;
+    }
+
+    const max = Number(target.getAttribute('maxlength') || counter.dataset.max || 500);
+    counter.textContent = `${target.value.length} / ${max}`;
+}
+
+let charCounterDelegationBound = false;
+
+function ensureCharCounterDelegation() {
+    if (charCounterDelegationBound) {
+        return;
+    }
+
+    charCounterDelegationBound = true;
+    document.addEventListener('input', handleCharCounterInput);
 }
 
 function closeAllMessageRows(exceptId = null) {
@@ -68,6 +120,7 @@ function initGroupMessageRows() {
 }
 
 function initGroupsPage() {
+    ensureCharCounterDelegation();
     initDescriptionCounters();
     initGroupMessageRows();
 }
@@ -80,4 +133,4 @@ if (document.readyState !== 'loading') {
     document.addEventListener('DOMContentLoaded', initGroupsPage);
 }
 
-export { initDescriptionCounters, initGroupMessageRows, initGroupsPage };
+export { initDescriptionCounters, ensureCharCounterDelegation, initGroupMessageRows, initGroupsPage };

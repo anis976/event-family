@@ -6,6 +6,11 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
+!/var/storage/
+/var/storage/*
+!/var/storage/avatars/
+/var/storage/avatars/*
+!/var/storage/avatars/.gitkeep
 /vendor/
 ###< symfony/framework-bundle ###
 

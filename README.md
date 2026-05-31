@@ -81,7 +81,9 @@ En dev, les e-mails partent en **synchrone** (`config/packages/messenger.yaml` �
 | `/messages/groupe/{groupId}` | `app_messages_group` | Messages de groupe |
 | `POST /messages/direct` | `app_messages_send_direct` | Envoi MP direct |
 | `POST /messages/lire/{id}` | `app_messages_read` | Marquer lu (AJAX) |
-| `/admin/groupes/{id}/message-system` | `app_admin_groups_system_notice_edit` | Message système (admin) |
+| `/contact` | `app_contact` | Formulaire contact (connecté) |
+| `POST /profil/avatar` | `app_profile_avatar_upload` | Upload avatar |
+| `GET /profil/avatar/{id}` | `app_profile_avatar_show` | Affichage avatar (selon visibilité) |
 
 Accès public : `/login`, `/register`, `/verify-email/*`, `/cgu`, `/mentions-legales`.  
 `/admin/*` exige `ROLE_ADMIN`. Le reste exige `ROLE_USER`.
@@ -232,6 +234,8 @@ Entités : `Message`, `MessageRead`.
 | Escalade 3 bans → suppression | OK |
 | Mot de passe oublié / changement / suppression compte | OK |
 | Profil édition + profil public | OK |
+| Avatar profil (upload, crop, public/privé) | OK |
+| Formulaire contact | OK |
 | Google OAuth | UI seulement — avant prod |
 
 ## Messages & erreurs
@@ -243,23 +247,69 @@ Entités : `Message`, `MessageRead`.
 
 ## Déploiement (checklist)
 
+### Variables d'environnement (`.env.local` prod)
+
 | Variable | Action |
 |----------|--------|
-| `APP_SECRET` | Unique en prod |
-| `DATABASE_URL` | MySQL hébergeur |
-| `MAILER_DSN` | SMTP prod |
-| `DEFAULT_URI` | URL publique |
 | `APP_ENV` | `prod` |
-| Cron | `app:users:purge-inactive` quotidien |
+| `APP_SECRET` | Secret unique (≠ dev) |
+| `DATABASE_URL` | MySQL hébergeur |
+| `MAILER_DSN` | SMTP production |
+| `MAILER_FROM` | E-mail expéditeur vérifié |
+| `DEFAULT_URI` | URL publique HTTPS (ex. `https://eventfamily.fr`) |
+| `CONTACT_RECIPIENT` | E-mail de réception du formulaire contact |
+| `RECAPTCHA_SITE_KEY` | Clé site reCAPTCHA v3 ([Google Admin](https://www.google.com/recaptcha/admin)) |
+| `RECAPTCHA_SECRET_KEY` | Clé secrète reCAPTCHA v3 — **obligatoire en prod** pour le contact |
+
+### Infrastructure & commandes
+
+| Tâche | Action |
+|-------|--------|
+| Migrations | `php bin/console doctrine:migrations:migrate --no-interaction` |
+| Assets CSS | `php bin/console sass:build` (+ `asset-map:compile` si prod) |
+| Cache prod | `APP_ENV=prod php bin/console cache:clear` |
+| Cron quotidien | `php bin/console app:users:purge-inactive --env=prod` (ex. 3 h) |
+| Dossier avatars | `var/storage/avatars/` writable par PHP |
+| Extension PHP | **GD** activée (avatars + recadrage serveur) |
+
+### Fonctionnalités à finaliser avant prod
+
+| Élément | État |
+|---------|------|
+| **Google OAuth** | UI seulement — brancher ou masquer le bouton |
+| **reCAPTCHA v3** | Configurer les clés (formulaire contact) |
+| **WhatsApp / tel. contact** | Numéros placeholder dans `/contact` |
+| **E-mail admin contact** | Vérifier `CONTACT_RECIPIENT` et `admin@eventfamily.com` affiché |
+| **Messenger async** | En prod, configurer worker si e-mails async |
+| **HTTPS** | Obligatoire (cookies session, remember-me) |
+| **Sauvegardes BDD** | Planifier backups `ef_base` |
+
+### Contact (anti-spam)
+
+- Limites : **5 / heure**, **20 / jour** par compte
+- Honeypot + délai minimum 3 s + reCAPTCHA v3 (si clés)
+- Message min. 20 caractères, max. 2000
+
+### Avatars
+
+- Stockage : `var/storage/avatars/` (original + version 512×512 WebP/JPEG)
+- Visibilité : publique (tous les membres) ou privée (membres d'un groupe commun)
+- Fichiers renommés en UUID — jamais le nom d'origine
 
 ## Prochaines étapes
 
 1. Module **Events** (cœur du projet)
-2. OAuth Google · Contact fonctionnel
+2. OAuth Google · finaliser contact (numéros réels)
 3. Modales Turbo · Tarteaucitron · i18n
 4. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-01 — Contact + avatars profil
+
+- **Formulaire contact** fonctionnel (e-mail, limites 5/h & 20/j, honeypot, reCAPTCHA v3 optionnel)
+- **Avatar profil** : upload, recadrage Cropper.js, original conservé, sortie 512 px, public/privé
+- Compteur caractères contact corrigé après erreur validation
 
 ### 2026-05-31 — Session idle, purge inactivité, bans, UI
 

@@ -101,4 +101,39 @@ class GroupRepository extends ServiceEntityRepository
 
         return (int) $qb->getQuery()->getSingleScalarResult() > 0;
     }
+
+    public function usersShareAtLeastOneGroup(User $first, User $second): bool
+    {
+        if ($first->getId() === $second->getId()) {
+            return true;
+        }
+
+        $firstGroupIds = $this->resolveGroupIdsForUser($first);
+        $secondGroupIds = $this->resolveGroupIdsForUser($second);
+
+        return [] !== array_intersect($firstGroupIds, $secondGroupIds);
+    }
+
+    /**
+     * @return list<int>
+     */
+    private function resolveGroupIdsForUser(User $user): array
+    {
+        $memberIds = $this->getEntityManager()->createQueryBuilder()
+            ->select('IDENTITY(gm.group)')
+            ->from(\App\Entity\GroupMember::class, 'gm')
+            ->andWhere('gm.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        $ownedIds = $this->createQueryBuilder('g')
+            ->select('g.id')
+            ->andWhere('g.owner = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        return array_values(array_unique(array_map('intval', [...$memberIds, ...$ownedIds])));
+    }
 }

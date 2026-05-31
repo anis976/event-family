@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% form_theme contactForm 'form/ef_form_theme.html.twig' %}
+
 {% block title %}EventFamily — Contact{% endblock %}
 
 {% block page_title %}Contact{% endblock %}
@@ -9,52 +11,65 @@
         <div class="p-4 d-flex justify-content-center container-fluid ef-contact__content">
             <div class="col-md-10 ef-contact__content-col">
                 <div class="text-center ef-contact__content-col-title">
-                    <h2 class="fw-bold mb-3">Contact Us</h2>
-                    <p class="mb-5">Have a question? Don't hesitate to contact us</p>
+                    <h2 class="fw-bold mb-3">Nous contacter</h2>
+                    <p class="mb-5">Une question ? N'hésite pas à nous écrire.</p>
                 </div>
 
                 <div class="row g-4 justify-content-center ef-contact__row">
                     <div class="col-lg-6 col-md-12 ef-contact__col">
                         <div class="card h-100 p-1 border-0 ef-contact__row-card">
                             <div class="card-body ef-contact__row-card-body">
-                                <h5 class="card-title mb-4">Send</h5>
-                                {# TODO: brancher formulaire Symfony (validation, BDD, envoi mail) #}
-                                <form data-ef-contact-form novalidate>
+                                <h5 class="card-title mb-4">Envoyer un message</h5>
+
+                                {% include 'components/_ef_form_validation_summary.html.twig' with { form: contactForm } only %}
+
+                                {{ form_start(contactForm, { attr: { novalidate: 'novalidate' } }) }}
+                                    <div class="ef-contact__honeypot-wrap" aria-hidden="true">
+                                        {{ form_widget(contactForm.companyWebsite) }}
+                                    </div>
+                                    {{ form_widget(contactForm._startedAt) }}
+                                    {% if contactForm.recaptchaToken is defined %}
+                                        {{ form_widget(contactForm.recaptchaToken) }}
+                                    {% endif %}
                                     <div class="mb-3">
-                                        <label for="contact-name" class="form-label">Name</label>
+                                        <label for="contact-display-name" class="form-label fw-medium">Nom</label>
                                         <input
                                             type="text"
-                                            class="form-control"
-                                            id="contact-name"
-                                            name="name"
-                                            placeholder="your name"
-                                            autocomplete="name"
+                                            id="contact-display-name"
+                                            class="form-control ef-input ef-contact__readonly"
+                                            value="{{ user.firstName }} {{ user.lastName }}"
+                                            readonly
+                                            aria-readonly="true"
+                                            tabindex="-1"
                                         >
                                     </div>
                                     <div class="mb-3">
-                                        <label for="contact-email" class="form-label">Email address</label>
+                                        <label for="contact-display-email" class="form-label fw-medium">Adresse e-mail</label>
                                         <input
                                             type="email"
-                                            class="form-control"
-                                            id="contact-email"
-                                            name="email"
-                                            placeholder="your email"
-                                            autocomplete="email"
+                                            id="contact-display-email"
+                                            class="form-control ef-input ef-contact__readonly"
+                                            value="{{ user.email }}"
+                                            readonly
+                                            aria-readonly="true"
+                                            tabindex="-1"
                                         >
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="contact-message" class="form-label">Message</label>
-                                        <textarea
-                                            class="form-control ef-contact__textarea"
-                                            id="contact-message"
-                                            name="message"
-                                            rows="5"
-                                        ></textarea>
+                                    <div class="mb-3" data-ef-char-count>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            {{ form_label(contactForm.message, null, { label_attr: { class: 'form-label fw-medium mb-0' } }) }}
+                                            <small class="js-counter text-muted fw-bold" data-max="{{ constant('App\\Form\\ContactFormType::MESSAGE_MAX_LENGTH') }}">0 / {{ constant('App\\Form\\ContactFormType::MESSAGE_MAX_LENGTH') }}</small>
+                                        </div>
+                                        {{ form_widget(contactForm.message) }}
+                                        {{ form_errors(contactForm.message) }}
+                                        <div class="form-text text-muted">
+                                            Minimum {{ constant('App\\Form\\ContactFormType::MESSAGE_MIN_LENGTH') }} caractères pour décrire ta demande.
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn col-12">
-                                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>Send
+                                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>Envoyer
                                     </button>
-                                </form>
+                                {{ form_end(contactForm) }}
                             </div>
                         </div>
                     </div>
@@ -63,7 +78,7 @@
                         <div class="card mb-3 p-1 border-0 ef-contact__email">
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>Email
+                                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>E-mail
                                 </h5>
                                 <p class="card-text mb-0">admin@eventfamily.com</p>
                             </div>

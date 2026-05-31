@@ -70,6 +70,16 @@
         color: #fff;
     }
 
+    @media (min-width: 768px) {
+        width: 56px;
+        height: 56px;
+    }
+
+    @media (min-width: 992px) {
+        width: 60px;
+        height: 60px;
+    }
+
     @include color-mode(dark) {
         background-color: rgba($ef-soft-gold, 0.1);
         border: 1px solid rgba($ef-soft-gold, 0.3);
@@ -77,6 +87,54 @@
         .bi {
             color: $ef-soft-gold;
         }
+    }
+}
+
+.ef-profile-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: block;
+    background-color: var(--bs-secondary-bg);
+
+    @media (min-width: 768px) {
+        width: 56px;
+        height: 56px;
+    }
+
+    @media (min-width: 992px) {
+        width: 60px;
+        height: 60px;
+    }
+
+    &--preview {
+        width: 88px;
+        height: 88px;
+
+        @media (min-width: 768px) {
+            width: 96px;
+            height: 96px;
+        }
+    }
+}
+
+.ef-profile-avatar-manager {
+    &__crop-area {
+        max-height: min(60vh, 420px);
+        overflow: hidden;
+        background: #111;
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+    }
+
+    &__placeholder {
+        width: 88px;
+        height: 88px;
     }
 }
 

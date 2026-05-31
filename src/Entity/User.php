@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Trait\TimestampableParisTrait;
+use App\Enum\AvatarVisibility;
 use App\Repository\UserRepository;
 use App\Util\ParisClock;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -126,6 +127,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatarOriginal = null;
+
+    #[ORM\Column(length: 20, nullable: true, enumType: AvatarVisibility::class)]
+    private ?AvatarVisibility $avatarVisibility = null;
+
+    /** @var array{x: int, y: int, width: int, height: int}|null */
+    #[ORM\Column(nullable: true)]
+    private ?array $avatarCropData = null;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $isBanned = false;
@@ -567,6 +578,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar(?string $avatar): static
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getAvatarOriginal(): ?string
+    {
+        return $this->avatarOriginal;
+    }
+
+    public function setAvatarOriginal(?string $avatarOriginal): static
+    {
+        $this->avatarOriginal = $avatarOriginal;
+
+        return $this;
+    }
+
+    public function getAvatarVisibility(): ?AvatarVisibility
+    {
+        return $this->avatarVisibility;
+    }
+
+    public function setAvatarVisibility(?AvatarVisibility $avatarVisibility): static
+    {
+        $this->avatarVisibility = $avatarVisibility;
+
+        return $this;
+    }
+
+    /**
+     * @return array{x: int, y: int, width: int, height: int}|null
+     */
+    public function getAvatarCropData(): ?array
+    {
+        return $this->avatarCropData;
+    }
+
+    /**
+     * @param array{x: int, y: int, width: int, height: int}|null $avatarCropData
+     */
+    public function setAvatarCropData(?array $avatarCropData): static
+    {
+        $this->avatarCropData = $avatarCropData;
+
+        return $this;
+    }
+
+    public function hasAvatar(): bool
+    {
+        return null !== $this->avatar && '' !== $this->avatar;
+    }
+
+    public function clearAvatar(): static
+    {
+        $this->avatar = null;
+        $this->avatarOriginal = null;
+        $this->avatarVisibility = null;
+        $this->avatarCropData = null;
 
         return $this;
     }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact EventFamily</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.6; color: #333;">
+    <p><strong>Nouveau message via le formulaire de contact</strong></p>
+    <ul style="list-style: none; padding: 0;">
+        <li><strong>Nom :</strong> {{ user.firstName }} {{ user.lastName }}</li>
+        <li><strong>E-mail :</strong> {{ user.email }}</li>
+        {% if user.pseudo %}
+            <li><strong>Pseudo :</strong> @{{ user.pseudo }}</li>
+        {% endif %}
+        <li><strong>Compte n° :</strong> {{ user.id }}</li>
+        <li><strong>Envoyé le :</strong> {{ sentAt|date('d/m/Y H:i') }} (Paris)</li>
+    </ul>
+    <hr>
+    <p style="white-space: pre-wrap;">{{ message }}</p>
+    <p style="font-size: 0.85rem; color: #999;">Répondre à cet e-mail contactera directement l'utilisateur.</p>
+</body>
+</html>

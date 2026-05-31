@@ -14,6 +14,7 @@ final class UserAccountSoftDeleteService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly UserAvatarService $userAvatarService,
     ) {
     }
 
@@ -24,6 +25,8 @@ final class UserAccountSoftDeleteService
         }
 
         $originalEmail = $user->getEmail();
+
+        $this->userAvatarService->deleteAvatar($user);
 
         $user->setDeletedAt(ParisClock::now());
         $user->setEmail(sprintf(
