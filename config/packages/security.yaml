@@ -8,9 +8,13 @@ security:
                 class: App\Entity\User
                 property: email
 
+    role_hierarchy:
+        ROLE_MODERATOR: ROLE_USER
+        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_USER]
+
     firewalls:
         dev:
-            pattern: ^/(_profiler|_wdt|assets|build)/
+            pattern: ^/(_profiler|_wdt|assets|build|_error)/
             security: false
         main:
             lazy: true
@@ -45,7 +49,10 @@ security:
         - { path: ^/verification/resend, roles: PUBLIC_ACCESS }
         - { path: ^/cgu, roles: PUBLIC_ACCESS }
         - { path: ^/mentions-legales, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/about, roles: PUBLIC_ACCESS }
+        - { path: ^/locale/switch, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^%ef.admin.path%, roles: ROLE_MODERATOR }
         - { path: ^/, roles: ROLE_USER }
 
 when@test:

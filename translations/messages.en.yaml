@@ -1,0 +1,1190 @@
+auth:
+  register_success: "Your account has been created. You can now sign in."
+  register_check_email: "Account created. Check your inbox (and spam) to activate your account before signing in."
+  resend_verification_sent: "If an inactive account exists with this address, a new confirmation email has been sent. Also check your spam folder."
+  resend_verification_rate_limited: "Too many resend requests. Wait a few minutes, check your spam, then try again."
+  register_invalid: "The form contains errors. Fix the highlighted fields."
+  register_duplicate: "An account already exists with this email or first/last name. Sign in or update your details."
+  login_invalid: "Incorrect email address or password."
+  already_logged_in: "You are already signed in."
+  password_reset_email_sent: "If an active account exists with this address, a reset email has been sent. Also check spam (link valid for 1 h)."
+  password_reset_email_failed: "Unable to send the email right now. Try again later."
+  password_reset_rate_limited: "Too many attempts. Try again in a few minutes."
+  password_reset_invalid_token: "This reset link is invalid, expired, or already used. Request a new one."
+  password_reset_done: "Your password has been reset. You can sign in."
+  password_reset_done_no_notify: "Your password has been reset, but the notification email could not be sent."
+
+profile:
+  updated: "Your profile has been updated."
+  duplicate_fields: "This username or first/last name is already used by another account."
+  password_updated: "Your password has been updated."
+  password_change_email_sent: "A confirmation email has been sent. Click the link to apply the new password (also check spam)."
+  password_change_email_failed: "Unable to send the confirmation email. Check MAILER_DSN or try again later."
+  password_change_confirmed: "Your password has been updated. You can sign in with the new password."
+  password_change_invalid_token: "This confirmation link is invalid or expired. Request again from your profile."
+  account_deletion_email_sent: "Email sent. You are signed out to avoid tab conflicts. Click the link received (1 h) to finalize deletion. Do not register a new account before email confirmation."
+  account_deletion_email_failed: "Unable to send the confirmation email. Try again later."
+  account_deletion_rate_limited: "Too many deletion requests. Try again in a few minutes."
+  account_deletion_invalid_token: "This confirmation link is invalid, expired, or already used."
+  account_deletion_done: "Your account has been deleted. See you soon."
+  account_deletion_done_no_notify: "Your account has been deleted, but the notification email could not be sent."
+  account_deletion_blocked_groups: "You cannot delete your account while you are a group owner. Successor management will arrive with the Groups module."
+
+messages:
+  direct_coming_soon: "Message validated. Sending will be enabled once messaging is connected."
+  recipient_not_found: "Recipient not found."
+
+ui:
+  brand:
+    tagline: Family Events
+  nav:
+    home: Home
+    events: Events
+    groups: Groups
+    invitations: Invitations
+    messages: Messages
+    admin: Administration
+    about: About
+    contact: Contact
+  sidebar:
+    guest: Guest
+    not_connected: Not signed in
+    my_profile: My profile
+    logout: Sign out
+    login: Sign in
+    register: Sign up
+    language: Language
+    switch_to: Switch to %language%
+    close_menu: Close menu
+    main_nav: Main navigation
+  topbar:
+    open_menu: Open menu
+    search: Search
+    search_events: Search an event by title or location
+    notifications: Notifications
+    notifications_pending: Notifications (%count% pending)
+    no_notifications: No pending notifications
+    view_priority: View priority items
+    theme: Choose theme
+    theme_light: Light
+    theme_dark: Dark
+    theme_auto: Auto
+  search:
+    placeholder: Search for an event…
+  footer:
+    tagline: Family event management platform
+    report_issue: Report an issue
+    quick_links: Quick links
+    legal: Legal notice
+    cgu: Terms & privacy
+    manage_cookies: Manage cookies
+    support: Support the project
+    donate: Donate
+    copyright: © %year% EventFamily. All rights reserved.
+  common:
+    back_to_top: Back to top
+    close: Close
+    save: Save
+    cancel: Cancel
+    confirm: Confirm
+    send: Send
+    accept: Accept
+    refuse: Decline
+    edit: Edit
+    delete: Delete
+    create: Create
+    view: View
+    pagination_aria: Pagination
+    pagination_prev: Previous page
+    pagination_next: Next page
+    view_all: View all
+    search: Search
+    date: Date
+    group: Group
+    description: Description
+    no_description: No description provided.
+    or: OR
+    coming_soon: Coming soon
+  home:
+    title: Home
+    page_title: EventFamily — Home
+    welcome: Welcome to EventFamily
+    lead: The platform that brings your family events together
+    feature_groups_title: Create family groups
+    feature_groups_text: Join us to create and share your family moments
+    feature_events_title: Organize events
+    feature_events_text: Discover upcoming events
+    feature_connect_title: Stay connected
+    feature_connect_text: Keep in touch with your family
+    upcoming_events: Upcoming events
+    view_all_events: View all events
+    no_public_events: No public upcoming events at the moment.
+    guest_page_title: EventFamily — Organize your family events
+    guest_welcome: EventFamily, your private family space
+    guest_lead: Create groups, plan events, and stay in touch — content access is for registered members only.
+    guest_how_title: How it works
+    guest_step1_title: Create an account
+    guest_step1_text: Sign up for free to join or create a family group.
+    guest_step2_title: Join a group
+    guest_step2_text: The group owner invites you; you then access the group’s events and messages.
+    guest_step3_title: Share your moments
+    guest_step3_text: Publish events, chat with members, and stay connected day to day.
+    guest_private_notice: Events, groups, and messages are only visible after sign-in. EventFamily is a private space, not a public directory.
+    guest_cta_register: Create an account
+    guest_cta_login: Sign in
+    guest_about_cta: Learn more about the project
+  events:
+    title: Events
+    page_title: EventFamily — Events
+    create: Create an event
+    member_notice: To publish an event, join a group and contact its owner.
+    view_groups: View groups
+    search_results: 'Results for « %query% » — category %category%'
+    clear_search: Clear search
+    filters_aria: Event categories
+    search_empty: 'No events match « %query% » in this category.'
+    filter:
+      upcoming: Upcoming
+      ongoing: Ongoing
+      past: Past
+    empty:
+      upcoming: No upcoming events at the moment.
+      ongoing: No ongoing events at the moment.
+      past: No past events at the moment.
+    breadcrumb: Events
+    breadcrumb_aria: Breadcrumb
+    breadcrumb_new: New
+    breadcrumb_edit: Edit
+    create_form_title: Create an event
+    create_form_hint: Publish an event for one of your groups.
+    publish: Publish event
+    edit_form_title: Edit event
+    edit_page_title: EventFamily — Edit event
+    show:
+      page_title: EventFamily — %title%
+      breadcrumb_aria: Breadcrumb
+      location_detail: Location / detail
+      propose_title: Suggest an event to the group
+      propose_hint: Only the group owner can publish events. Contact them via private message.
+      honeypot_label: Do not fill in
+      message_to_staff: Message to %role% (%name%)
+      propose_placeholder: Describe the event you would like to suggest…
+      send_private: Send a private message
+      info_title: Details
+      meta_start: Start
+      meta_end: End
+      meta_location: Location
+      meta_group: Group
+      meta_author: Published by
+      meta_published: Published on
+      new_in_group: New event in this group
+      delete_title: Delete?
+      delete_irreversible: This action cannot be undone.
+      staff_contact_owner: Group owner
+      staff_contact_moderator: Moderator
+    modal:
+      view_more: View more
+      delete_confirm_named: Are you sure you want to delete « %title% »?
+  groups:
+    breadcrumb_aria: Breadcrumb
+    back_to_group: Back to group
+    title: Groups
+    page_title: EventFamily — Groups
+    my_groups: My groups
+    create: Create a group
+    create_first: Create my first group
+    empty_my: You don't belong to any group yet.
+    all_groups: All groups
+    empty_others: No other groups to discover at the moment.
+    pagination_my_aria: My groups pagination
+    pagination_others_aria: All groups pagination
+    role:
+      leader_badge: Owner
+    member_count: '{0} no members|{1} %count% member|]1,Inf[ %count% members'
+    breadcrumb: Groups
+    breadcrumb_new: New
+    breadcrumb_edit: Edit
+    create_page_title: EventFamily — Create a group
+    create_limit_hint: Only one group can be created per account.
+    submit_create: Create group
+    edit_page_title: EventFamily — Edit group
+    edit_title: Edit group
+    edit_info_heading: Edit information
+    show:
+      my_groups_breadcrumb: My groups
+      manage_requests: Manage requests
+      invite_members: Invite members
+      group_messages: Group messages
+      role_owner: OWNER
+      role_moderator: MODERATOR
+      created_on: Created on %date%
+      edit_info: Edit information
+      invitation_received: You received an invitation to join this group.
+      accept_invitation: Accept invitation
+      refuse_invitation: Decline invitation
+      request_pending: Request pending
+      join_blocked: You can no longer request to join this group.
+      request_join: Request to join
+      group_events: Group events
+      member_event_notice: To add an event, contact the group owner.
+      filter_ongoing: Ongoing
+      filter_upcoming: Upcoming
+      no_group_events: No upcoming or ongoing events for this group.
+    members:
+      title: Circle members
+      pagination_aria: Group members pagination
+      column_member: Member
+      column_role: Role
+      column_actions: Actions
+      actions_aria: Member actions
+      view_profile: View profile
+      remove_moderator: Remove moderator
+      make_moderator: Make moderator
+      ban: Ban
+      kick: Remove from group
+      send_message: Send a message
+      unban: Unban
+      message_placeholder: Your message…
+      role_banned: BANNED
+      role_owner: OWNER
+      role_moderator: MOD
+      role_member: MEMBER
+      ban_modal_title: Ban %name%
+      ban_modal_hint: The member will be banned from this group. EventFamily will automatically send a warning (1/3, 2/3) or delete the account on the 3rd platform-wide ban.
+      ban_reason_label: Reason for ban
+      ban_reason_placeholder: Clearly describe the reason for the ban…
+      ban_confirm: Confirm ban
+    manage_requests:
+      page_title: EventFamily — Requests — %name%
+      page_heading: Join requests
+      breadcrumb: Requests
+      pending_title: Pending requests
+      empty: No pending requests at the moment.
+      column_date: Date
+    invite:
+      page_title: EventFamily — Invite — %name%
+      page_heading: Invite members
+      breadcrumb: Invite
+      search_heading: Search for a member
+      search_placeholder: First name, last name, username or email…
+      results_for: 'Results for « %query% »'
+      no_search_results: No users found for this search.
+      browse_heading: Site users
+      browse_hint: Eligible members outside your group
+      browse_shown: '%shown% shown of %total%'
+      browse_count: '(%count%)'
+      browse_empty: No users available to invite at the moment.
+      column_name: Name
+      column_pseudo: Username
+      column_action: Action
+      status_blocked: Blocked (3 declines)
+      status_pending: Pending
+      invite_button: Invite
+  messages:
+    title: Messages
+    page_title: EventFamily — Messages
+    hub_title: Messages hub
+    private:
+      title: Private messages
+      subtitle: One-to-one conversations with your contacts
+      page_title: EventFamily — Private messages
+      empty: No private messages yet.
+      showing_count: '{0} No conversations shown|{1} %visible% conversation shown of %total%|]1,Inf[ %visible% conversations shown of %total%'
+      load_older: Load older conversations
+      max_visible_hint: Only the %max% most recent conversations can be shown here. Older ones are automatically removed after 12 months.
+    group:
+      title: Group messages
+      subtitle: Discussions in your groups
+      page_title: EventFamily — Group messages
+      picker_aria: Choose a group
+      picker_header: My groups
+      unread_count: '{1} %count% unread message|]1,Inf[ %count% unread messages'
+      group_sheet: Group page
+      staff_readonly: Viewing as EventFamily staff. You can publish official announcements, but not member messages.
+      empty: No messages published in this group yet.
+      showing_count: '{0} No threads shown|{1} %visible% thread shown of %total%|]1,Inf[ %visible% threads shown of %total%'
+      load_older: Load older messages
+      max_visible_hint: Only the %max% most recent threads can be shown here. Older ones are automatically removed after 12 months.
+      select_prompt: Select a group to view the conversation.
+      no_groups_staff: You have no groups. As staff, open a group from its page to view messages.
+      placeholder_group: Write a message to the group…
+    thread:
+      unknown_user: Unknown user
+      closed_notice: This conversation is closed. A participant hid it from their inbox. You can still read it, but replies are no longer possible.
+      reply: Reply
+      max_replies: Max 2 replies
+      delete_group: Delete
+      hide_private: Hide
+      confirm_delete_group: Permanently delete this message for the whole group?
+      confirm_hide_private: Hide this conversation from your inbox?
+      view_replies: '{1} View %count% reply|]1,Inf[ View %count% replies'
+      reply_placeholder: Your reply…
+    back_to_hub: Back to hub
+    placeholder: Write a message…
+    send_aria: Send
+    staff:
+      form_label: Official EventFamily announcement
+      no_reply: — no replies allowed
+      placeholder: Write an announcement for this group…
+      publish_aria: Publish announcement
+      announcement_aria: Official EventFamily announcement
+      badge: Announcement
+      confirm_delete: Delete this official announcement?
+    system:
+      notice_aria: Group system message
+      author: System
+      badge: Info
+      reset: Reset
+    platform:
+      notice_aria: Official EventFamily message
+    form:
+      content_required: Message cannot be empty.
+      content_max: Message cannot exceed {{ limit }} characters.
+  invitations:
+    title: Invitations
+    page_title: EventFamily — Invitations
+    received:
+      title: Invitations received
+      subtitle: Personal invitations to join a group.
+      empty: No pending invitations.
+      date: Received on %date%
+    view_group: View group
+    staff:
+      title: Join requests for my groups
+      subtitle: Visible as group owner or moderator. A processed request disappears for the whole team.
+      empty: No pending requests.
+    applicant: Applicant
+    actions: Actions
+  session:
+    idle:
+      title: Inactivity detected
+      message: You haven't performed any action for a while.
+      countdown_prefix: Automatic sign-out in
+      countdown_suffix: second(s) to protect your account.
+      logout: Sign out
+      stay: Stay signed in
+  about:
+    title: About
+    page_title: EventFamily — About
+    subtitle: Family event management platform
+    intro: EventFamily is a platform designed to bring families closer together and facilitate the organization of family events.
+    feature_groups_title: Create family groups
+    feature_groups_text: Gather your family in private groups for better organization.
+    feature_events_title: Organize events
+    feature_events_text: Plan and share your events with all your family members.
+    feature_connect_title: Stay connected
+    feature_connect_text: Communicate easily with group members through integrated messaging.
+    mission_title: Our Mission
+    mission_text: We believe that family is at the heart of our lives. Our mission is to create simple and effective tools to keep family bonds strong, regardless of distance.
+  contact:
+    title: Contact
+    page_title: EventFamily — Contact
+    heading: Contact us
+    subtitle: Have a question? Feel free to write to us.
+    form_title: Send a message
+    field_name: Name
+    field_email: Email address
+    message_min: At least %min% characters to describe your request.
+    channel_email: Email
+    channel_whatsapp: WhatsApp
+    alert_recaptcha_unavailable: Anti-spam verification unavailable. Reload the page and try again.
+    alert_recaptcha_v3_required: These keys are not reCAPTCHA v3 compatible. Create a "Score (v3)" site in Google reCAPTCHA and update RECAPTCHA_SITE_KEY / RECAPTCHA_SECRET_KEY.
+    recaptcha_legal: 'This site is protected by reCAPTCHA v3 (invisible verification, no checkbox). Google <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">Privacy Policy</a> and <a href="https://policies.google.com/terms" rel="noopener noreferrer" target="_blank">Terms of Service</a> apply.'
+    form:
+      message_label: Message
+      message_placeholder: Describe your request in detail…
+      honeypot_label: Company website
+      validation:
+        message_required: Message is required.
+        message_max: Message cannot exceed {{ limit }} characters.
+        message_min: 'Describe your request in at least %min% characters (avoid messages like just « hi » or « hello »).'
+  auth:
+    login:
+      page_title: EventFamily — Sign in
+      title: Sign in to EventFamily
+      idle_title: Session expired
+      idle_message: You were signed out after a period of inactivity. Sign in again to continue.
+      suspended_title: Account suspended
+      suspended_message: Your account was suspended by EventFamily moderation. Check the email you received for the reason and next steps.
+      suspended_contact: 'To contest this decision, email <a href="mailto:%email%" class="ef-link-orange">%email%</a> from your EventFamily email address.'
+      error_title: Sign-in failed
+      google: Sign in with Google
+      verify_email: Check your email address.
+      verify_password: Check your password.
+      submit: Continue
+      remember_me: Remember me
+      forgot_password: Forgot password?
+      no_account: Don't have an account yet?
+      register_link: Sign up
+      illustration_alt: Sign-in illustration
+    field:
+      email: Email address
+      password: Password
+      first_name: First name
+      last_name: Last name
+      pseudo: Username
+      confirm_password: Confirm
+    placeholder:
+      email: name@example.com
+      password: '••••••••'
+    resend:
+      title: Didn't receive the activation email?
+      hint: Check your inbox and spam folder first. Wait a few minutes before requesting a new email (max. 5 requests every 15 min.).
+      email_label: Your email address
+      submit: Resend activation email
+    register:
+      page_title: EventFamily — Sign up
+      title: Create an account
+      google: Sign up with Google
+      accept_terms_prefix: I accept the
+      accept_terms_link: Terms of use
+      submit: Sign up
+      has_account: Already have an account?
+      login_link: Sign in
+      illustration_alt: Sign-up illustration
+    forgot:
+      page_title: EventFamily — Forgot password
+      title: Forgot password
+      hint: Enter your account email address. If it is recognized, you will receive a secure link (valid for 1 h). Otherwise, ignore the email.
+      submit: Send reset link
+      back_to_login: Back to sign in
+    reset:
+      page_title: EventFamily — New password
+      title: New password
+      hint: Choose a strong password (at least 8 characters). This link is single-use.
+      submit: Save password
+    form:
+      validation:
+        email_required: Email address is required.
+        email_invalid: This email address is not valid.
+        first_name_required: First name is required.
+        last_name_required: Last name is required.
+        password_required: Password is required.
+        password_min: Password must be at least {{ limit }} characters.
+        password_mismatch: Passwords do not match.
+        terms_required: You must accept the terms of use.
+      placeholder:
+        pseudo_optional: Username (optional)
+  form:
+    validation:
+      title: Incomplete form
+      error_title: Error
+      message: Check the highlighted fields below and try again.
+  alert:
+    success: Success
+    error: Error
+    warning: Warning
+    info: Information
+  legal:
+    back_home: Back to home
+    cgu_title: Terms & Privacy Policy
+    mentions_title: Legal notice
+  error:
+    not_found:
+      page_title: EventFamily — Page not found
+      code: '404'
+      title: Page not found
+      message: The page you are looking for does not exist or has been moved.
+      hint: Check the address in your browser bar or return to the home page.
+      back_home: Back to home
+      contact: Contact us
+  profile:
+    my_space: My space
+    my_space_page_title: EventFamily — My space
+    personal_space_title: My personal space
+    personal_space_subtitle: Manage your private account information
+    username: Username
+    email_private: Email address (private)
+    not_defined: Not set
+    first_name: First name
+    first_name_placeholder: Your first name
+    last_name: Last name
+    last_name_placeholder: Your last name
+    pseudo: Username
+    pseudo_optional: Optional
+    security: Security
+    password: Password
+    password_hint: Secure access to your account
+    danger_zone: Danger zone
+    delete_account_title: Delete account
+    delete_account_warning: 'Warning: this action is irreversible and will delete all your data.'
+    delete_account_btn: Delete my account
+    update_profile: Update my profile
+    show:
+      page_title: EventFamily — %name%'s profile
+      page_heading: Member profile
+      title: Member profile
+      subtitle: View circle member information
+      full_name: First & last name
+      member_since: Member since
+      display_name: Display name
+      send_private: Send a private message
+      message_placeholder: Write a private message to %name%…
+      send_now: Send now
+      not_set: Not provided
+    message_denial:
+      self: You cannot send a message to yourself.
+      banned_in_group: You cannot message an owner or moderator of a group you are banned from.
+    avatar:
+      label: Profile photo
+      optional: (optional)
+      alt_self: Your profile photo
+      alt_user: Photo of %name%
+      hint: JPG, PNG or WebP — max. 4 MB. Crop the useful area (shown as a circle).
+      visibility_private: 'Current visibility: private (your group members only).'
+      visibility_public: 'Current visibility: public.'
+      change: Change photo
+      add: Add a photo
+      delete_confirm: Delete your profile photo?
+      crop_title: Crop your photo
+      visibility_question: Who can see this photo?
+      visibility_public_label: Public — visible to all site members
+      visibility_private_label: Private — visible only to your group members (others see the default icon)
+      alert_invalid_format: 'Unsupported format. Use JPG, PNG or WebP.'
+      alert_max_size: The photo must not exceed 4 MB.
+      alert_cropper_unavailable: Cropping tool unavailable. Reload the page.
+      alert_upload_failed: Unable to upload the photo. Try again.
+    password_change:
+      page_title: EventFamily — Change password
+      page_heading: Account security
+      back_aria: Back
+      hint: Choose a strong password (at least 8 characters). A confirmation email will be sent; the change only takes effect after you click the link. If this wasn't you, ignore the email.
+      submit: Update my password
+    delete_account:
+      page_title: EventFamily — Delete my account
+      page_heading: Account deletion
+      heading: Delete my account
+      alert: 'This is permanent. After submitting, you will be signed out: open the link in the email (1 h) to confirm. Close other EventFamily tabs and do not register a new account before confirming.'
+      submit: Receive confirmation email
+    delete_blocked:
+      page_title: EventFamily — Deletion unavailable
+      heading: Account deletion temporarily unavailable
+      intro: 'You own at least one family group. Before deleting your account, you must either:'
+      option_successor: designate a successor (group owner),
+      option_delete: delete the group with no successor (a moderator will take over automatically).
+      coming_soon: This step will be available with the Groups module (coming soon).
+      back: Back to my space
+    form:
+      validation:
+        first_name_required: First name is required.
+        last_name_required: Last name is required.
+        pseudo_help: Shown instead of your first and last name when set.
+        current_password_required: Current password is required.
+        current_password_invalid: Current password is incorrect.
+        new_password_required: New password is required.
+        new_password_min: Password must be at least {{ limit }} characters.
+        password_mismatch: New passwords do not match.
+        confirm_phrase_required: Confirmation phrase is required.
+        confirm_phrase_exact: You must type the word SUPPRIMER exactly.
+        agree_deletion: You must confirm that you understand the consequences.
+      label:
+        current_password: Current password
+        new_password: New password
+        confirm_new_password: Confirm new password
+        confirm_phrase: Confirmation
+        confirm_phrase_help: Type the word SUPPRIMER in uppercase to confirm.
+        agree_deletion: I understand this action is permanent and irreversible.
+
+event:
+  contact:
+    message_body: |
+      Hello,
+
+      I would like to propose or discuss an event for the group "%group%".
+
+      Event: "%title%"
+
+      %content%
+  form:
+    group: Group
+    group_placeholder: Choose a group…
+    title: Title
+    title_placeholder: e.g. Julie & Marc's wedding
+    kind: Type
+    start_date: Start date and time
+    end_date: End date and time (optional)
+    location: Location
+    location_placeholder: e.g. Versailles
+    visibility: Visibility
+    description: Description
+    description_placeholder: Describe the event…
+    photo_cover: Cover photo (optional)
+    photo_detail: Location / detail photo (optional)
+    photo_help: JPG, PNG or WebP — max. 5 MB each. If omitted, a random royalty-free image is used.
+    current_cover: Current cover
+    current_detail: Current location / detail
+    remove_cover: Remove cover photo
+    remove_detail: Remove location / detail photo
+    validation:
+      group_required: Group is required.
+      title_required: Title is required.
+      start_required: Start date is required.
+      description_max: Description cannot exceed {{ limit }} characters.
+  kind:
+    wedding: Wedding
+    birthday: Birthday
+    party: Party
+    gathering: Family gathering
+    other: Other
+  visibility:
+    public: Public (all site users)
+    group: Private (group members only)
+
+message:
+  form:
+    system_label: System message
+    system_placeholder: Message shown at the top of group messages…
+
+group:
+  system_notice:
+    default: |
+      Welcome to this group's message space.
+
+      Respect other members, stay courteous and report inappropriate behaviour to the group owner or moderator. EventFamily platform rules apply here.
+  form:
+    name: Group name
+    name_placeholder: e.g. The Smiths
+    family_name: Family name
+    family_name_placeholder: e.g. Smith family
+    description: Description
+    description_placeholder: Describe your group…
+    validation:
+      name_required: Group name is required.
+      family_name_required: Family name is required.
+      description_max: Description cannot exceed {{ limit }} characters.
+
+email:
+  common:
+    greeting: Hello %name%,
+    greeting_anonymous: Hello,
+    link_fallback: 'If the button does not work, copy this link into your browser:'
+    link_direct: 'Direct link:'
+    expires_hours: 'link valid for %hours% h'
+    single_use: single use
+    ignore_if_not_you: If you did not initiate this action, ignore this email.
+    paris_time: Paris time
+    also_in_messages: You will also find this message in your EventFamily private messages.
+  verification:
+    subject: EventFamily — Activate your account
+    title: EventFamily activation
+    thanks: Thank you for signing up on <strong>EventFamily</strong>.
+    cta_intro: 'Click the button below to activate your account (%expires%):'
+    cta: Activate my account
+    ignore: If you did not create an account, ignore this email.
+  password_reset:
+    subject: EventFamily — Reset your password
+    title: Password reset
+    intro: A <strong>password reset</strong> request was received for your EventFamily account.
+    cta_intro: 'If this was you, click the button below (%expires%, <strong>%single_use%</strong>):'
+    cta: Reset my password
+    ignore: 'If you did not request this reset, <strong>ignore this email</strong> and check that you can still sign in. Your password will not change without clicking the link.'
+  password_reset_done:
+    subject: EventFamily — Your password was changed
+    title: Password changed
+    success: Your EventFamily password was <strong>successfully changed</strong> on %date% (%timezone%).
+    no_action: If you made this change, no further action is needed.
+    alert: '<strong>If you did not request this change</strong>, contact the site administrator immediately and try to recover access to your account.'
+  password_change:
+    subject: EventFamily — Confirm password change
+    title: Confirm password change
+    intro: A <strong>password change</strong> was requested on your EventFamily account.
+    cta_intro: 'If this was you, click the button below to confirm (%expires%):'
+    cta: Confirm new password
+    ignore: 'If you did not request this change, <strong>ignore this email</strong>: your current password will remain unchanged.'
+  account_deletion_confirm:
+    subject: EventFamily — Confirm account deletion
+    title: Confirm account deletion
+    intro: A request to <strong>permanently delete</strong> your EventFamily account was recorded.
+    cta_intro: 'If this was you, click the button below (%expires%, <strong>%single_use%</strong>):'
+    cta: Confirm deletion of my account
+    ignore: 'If you did not request this deletion, <strong>ignore this email</strong>. Your account will remain active.'
+  account_deletion_done:
+    subject: EventFamily — Your account was deleted
+    title: Account deleted
+    body: Your EventFamily account was <strong>permanently deleted</strong> on %date% (%timezone%).
+    alert: If you did not initiate this action, contact the site administrator immediately.
+  inactive_warning:
+    subject_unverified: EventFamily — Activate your account before deletion
+    subject_step1: 'EventFamily — Inactivity: first reminder (1/2)'
+    subject_step2: 'EventFamily — Inactivity: final reminder (2/2)'
+    title: Inactive account
+    unverified: Your EventFamily account <strong>has not been activated yet</strong>.
+    unverified_hint: Confirm your email address using the link received when you signed up. Without activation, your account will be deleted automatically.
+    step1: Your EventFamily account has been <strong>inactive for a long time</strong>. This is your <strong>first reminder (1/2)</strong>.
+    step1_hint: Sign in to keep your account, groups and messages.
+    step2: Your EventFamily account is <strong>still inactive</strong>. This is your <strong>final reminder (2/2)</strong>.
+    step2_alert: '<strong>Without signing in soon, your account will be deleted and you will be removed from your groups.</strong>'
+  inactive_deleted:
+    subject: EventFamily — Your account was deleted due to inactivity
+    title: Account deleted
+    body: Your EventFamily account was <strong>automatically deleted</strong> on %date% (%timezone%) due to prolonged inactivity.
+    verified_hint: You were removed from all your groups. Your messages remain anonymised on the platform.
+    unverified_hint: The account had never been activated after registration.
+    footer: You can create a new account at any time if you wish to return.
+  ban_warning:
+    subject_step1: EventFamily — Warning 1/3 after a ban
+    subject_step2: EventFamily — Final warning 2/3
+    subject_step3: EventFamily — Your account was deleted (3/3)
+    title: Ban warning
+    step1: 'You were <strong>banned from a group</strong> on EventFamily. This is your <strong>first warning (1/%max%)</strong>.'
+    step2: 'You were <strong>banned from a group again</strong>. This is your <strong>final warning (2/%max%)</strong>.'
+    step2_alert: '<strong>On the next ban, your account will be permanently deleted.</strong>'
+    group: 'Group: %name% (%family%)'
+    reason_label: 'Reason for ban:'
+  ban_deleted:
+    subject: EventFamily — Your account was deleted
+    title: Account deleted
+    body: Your EventFamily account was <strong>permanently deleted</strong> after %count% ban(s) recorded on the platform.
+    last_group: 'Last group concerned: %name% (%family%)'
+    reason_label: 'Reason for ban:'
+    contact: If you believe this is an error, contact the site administration.
+  platform_ban:
+    subject: EventFamily — Your account was suspended
+    title: Account suspended
+    intro: Your EventFamily account was <strong>suspended by moderation</strong>. You cannot sign in while this suspension is active.
+    contact: 'To contest this decision, email <a href="mailto:%email%">%email%</a> from your EventFamily email address.'
+    footer: Include your EventFamily email address in your message so moderation can identify you.
+  platform_unban:
+    subject: EventFamily — Suspension lifted
+    title: Account reactivated
+    intro: The suspension on your EventFamily account has been <strong>lifted</strong>. You can sign in again.
+  contact:
+    subject: 'EventFamily — Contact from %name%'
+    title: EventFamily contact
+    heading: New message via the contact form
+    name: 'Name:'
+    email: 'Email:'
+    pseudo: 'Username:'
+    account_id: 'Account #:'
+    sent_at: 'Sent on:'
+    reply_hint: Replying to this email will contact the user directly.
+
+flash:
+  session_expired: Session expired. Please try again.
+  contact:
+    spam_failed: Anti-spam verification failed. Reload the page and try again.
+    spam_failed_debug: 'Anti-spam verification failed — %detail%'
+    spam_hostname_mismatch: "The hostname does not match your reCAPTCHA domains (127.0.0.1 ≠ localhost). In Google, add a line 127.0.0.1 (no http or /contact), or open http://localhost:8000."
+    spam_token_missing: Anti-spam verification did not run (JavaScript blocked or stale page). Reload the page and try again.
+    send_failed: Unable to send your message at the moment. Please try again later.
+    sent: Your message was sent. We will reply as soon as possible.
+    rate_hourly: You have reached the limit of 5 messages per hour. Try again in a few minutes.
+    rate_daily: You have reached the limit of 20 messages today. Please try again tomorrow.
+  avatar:
+    choose_required: Choose a photo to upload.
+    save_failed: Unable to save your photo. Try again with another image.
+    updated: Profile photo updated.
+    deleted: Profile photo removed.
+    invalid_file: Invalid file.
+    max_size: Photo must not exceed 4 MB.
+    invalid_format: 'Unsupported format. Use JPG, PNG or WebP.'
+    invalid_image: The file is not a valid image.
+  verification:
+    email_send_failed: Unable to send the email at the moment. Please try again later.
+    invalid_link: Invalid verification link.
+    confirmed: Your email is confirmed. You can now sign in.
+    expired: This verification link is invalid or expired. Sign up again or contact support.
+  registration:
+    post_create_error: An error occurred after account creation. Try again or contact support.
+    email_failed: Account created, but the confirmation email could not be sent. Check mail configuration or try again later.
+  group:
+    family_name_exists: A group already represents the "%family%" family. You can still create your own.
+    create_limit: You have already created a group. Only one group per account is allowed.
+    created: Your group was created successfully.
+    updated: Group information was updated.
+    user_not_found: User not found.
+    invite_sent: Invitation sent to %name%.
+    join_request_sent: Your join request was sent.
+    request_accepted: The request was accepted.
+    request_refused: The request was declined.
+    invitation_joined: You have joined the group.
+    invitation_declined: Invitation declined.
+    moderator_updated: Moderator role was updated.
+    member_banned: The member was banned.
+    member_unbanned: The member was unbanned.
+    member_kicked: The member was removed from the group.
+    ban_reason_required: Enter a reason for the ban.
+    system_notice_updated: System message updated.
+    system_notice_reset: Default system message restored.
+    already_member: You are already a member of this group.
+    banned: You are banned from this group.
+    join_limit: You have reached the request limit for this group.
+    pending_invitation: You already have a pending invitation for this group.
+    staff_only_invite: Only the owner or a moderator can invite.
+    target_already_member: This user is already a member of the group.
+    target_banned: This user is banned from this group.
+    target_pending_request: A join request is already pending for this user.
+    target_pending_invitation: This user already has a pending invitation.
+    request_not_pending: This request is no longer pending.
+    request_already_handled: This request was already handled by another moderator.
+    access_denied: Access denied.
+    invitation_not_for_you: This invitation is not for you.
+    invitation_invalid: This invitation is no longer valid.
+    owner_only_moderator: Only the group owner can manage moderators.
+    owner_cannot_change: The group owner cannot be changed.
+    single_moderator: This group can only have one moderator.
+    staff_only_ban: Only the owner and moderator can ban a member.
+    already_banned: This member is already banned.
+    ban_reason_required_service: A reason for the ban is required.
+    staff_only_unban: Only the owner and moderator can unban a member.
+    not_banned: This member is not banned.
+    owner_only_kick: Only the group owner can remove a member.
+    owner_cannot_kick: The group owner cannot be removed.
+    self_action: You cannot perform this action on your own account.
+    owner_cannot_ban: The group owner cannot be banned.
+    moderator_ban_member_only: A moderator can only ban regular members.
+  message:
+    group_not_found: Group not found.
+    group_inaccessible: Group not found or inaccessible.
+    staff_published: Official announcement published.
+    published: Message published.
+    recipient_not_found: Recipient not found.
+    empty: Message cannot be empty.
+    sent: Message sent.
+    reply_sent: Reply sent.
+    deleted_group: Message deleted.
+    hidden_private: Conversation hidden from your inbox.
+    must_be_member: You must be a group member to post a message.
+    banned_in_group: You are banned from this group.
+    staff_only_announcement: Only site moderators and administrators can publish an official announcement.
+    thread_not_found: Conversation thread not found.
+    max_replies: This thread has already reached the maximum number of replies.
+    no_reply_staff: Official EventFamily announcements cannot receive replies.
+    no_reply_platform: This official message cannot receive replies.
+    thread_closed: This conversation is closed. You can still read it, but replies are no longer possible.
+    access_denied: Access denied.
+    cannot_delete: You cannot delete this message.
+    platform_cannot_delete: This official message cannot be deleted.
+    hide_root_only: Only the main conversation can be hidden.
+    counterpart_not_found: Recipient not found.
+    author_not_found: Author not found.
+    admin_system_only: Only a site administrator can manage this message.
+  event:
+    image_invalid_file: Invalid file.
+    image_max_size: Photo must not exceed 5 MB.
+    image_invalid_format: 'Unsupported format (JPG, PNG or WebP only).'
+    image_gd_required: The PHP GD extension is required to process event photos.
+    image_read_failed: Unable to read the source image.
+    image_resize_failed: Unable to resize the image.
+    image_save_failed: Unable to save the image.
+    publish_staff_only: Only the group owner can publish events. Contact your group owner.
+    published: The event was published.
+    updated: The event was updated.
+    deleted: The event was deleted.
+    contact_min_length: Message must be at least 15 characters.
+    contact_max_length: Message cannot exceed 1000 characters.
+    contact_invalid_recipient: Invalid recipient.
+    contact_sent: Message sent to the group owner.
+
+notice:
+  inactive:
+    unverified: "Your EventFamily account has not been activated yet.\n\nSign in and confirm your email address before your account is automatically deleted for inactivity."
+    step1: "Your EventFamily account has been inactive for a long time. This is your first reminder (1/2).\n\nSign in to keep your account. Without signing in, you will receive a final reminder then your account will be automatically deleted."
+    step2: "Your EventFamily account is still inactive. This is your final reminder (2/2).\n\nSign in soon. Without action, your account will be automatically deleted and you will be removed from your groups."
+  ban:
+    group_line: 'Group concerned: %name% (%family%).'
+    group_unknown: 'Group concerned: not specified.'
+    step1: "You were banned from a group on EventFamily. This is your first warning (1/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nFurther bans on the platform may lead to additional sanctions, up to permanent account deletion on the 3rd ban."
+    step2: "You were banned from a group again on EventFamily. This is your final warning (2/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nOn the next ban, your EventFamily account will be permanently deleted."
+    step3: "You have reached your 3rd ban on EventFamily. Your account will be permanently deleted.\n\n%group_line%\n\nReason for ban:\n%reason%\n\nYou will no longer be able to sign in with this account. A confirmation email has also been sent to you."
+    platform_admin: "EventFamily moderation has suspended your account.\n\nReason:\n%reason%\n\nDetails of this decision were sent to you by email. To contest it, email %contact% from your EventFamily email address."
+
+legal:
+  cgu:
+    privacy:
+      title: Personal data protection
+      intro: In accordance with GDPR, we are committed to protecting our users' privacy.
+      collection_title: Data collection
+      collection_body: 'We collect the following data: email address, username, city of residence, as well as text and images related to created events.'
+      adsense_title: Data use (AdSense)
+      adsense_body: The site displays ads via Google AdSense to fund hosting costs. Third-party cookies are used to show relevant ads. You can manage your consent via the dedicated banner.
+      retention_title: Retention and rights
+      retention_body: 'Your data is kept for the lifetime of your account. If you delete your account, data is permanently erased within 3 months. You can request access or deletion of your data by contacting the administrator at:'
+    terms:
+      title: Terms of Use
+      purpose_title: Purpose of the service
+      purpose_body: EventFamily is a family networking platform. It allows publishing events (weddings, parties, etc.). Access is strictly reserved for signed-in users.
+      user_resp_title: User responsibility
+      user_resp_body: Users are solely responsible for the content they publish. Hateful, defamatory content or content violating other family members' privacy is prohibited.
+      publisher_resp_title: Publisher responsibility
+      publisher_resp_body: SOUFFOUMADI Anissoir cannot be held liable for false information published by members, nor for indirect damages resulting from use of the site.
+      ip_title: Intellectual property
+      ip_body: Photos and texts published remain the property of the user. By publishing, the user grants EventFamily the right to display this content on the platform for authorised members only.
+  mentions:
+    editor:
+      title: 1. Site publisher
+      intro: 'Under Article 6 of French law no. 2004-575 of 21 June 2004 on confidence in the digital economy, users of <strong>EventFamily</strong> are informed of the identity of those involved in creating and maintaining the site:'
+      owner: 'Owner & Publisher:'
+      contact: 'Contact:'
+      director: 'Publication director:'
+    hosting:
+      title: 2. Hosting
+      intro: 'The site is hosted by:'
+      provider: 'Provider:'
+      provider_placeholder: '[Hosting provider name — e.g. OVH Cloud]'
+      address: 'Registered office:'
+      address_placeholder: '[Full hosting provider address]'
+      contact: 'Contact:'
+      contact_placeholder: '[Hosting provider phone or website]'
+    ip:
+      title: 3. Intellectual property
+      body: SOUFFOUMADI Anissoir owns intellectual property rights on the site structure (logos, graphics, icons). Any reproduction, representation, modification, publication or adaptation of all or part of the site elements is prohibited without prior written authorisation.
+
+admin:
+  dashboard:
+    title: EventFamily Administration
+    open_site: Open site
+    intro: Area reserved for site administrators and moderators. Deletion actions require the administrator role.
+    users_title: Users
+    users_desc: Full profiles, roles, account status and passwords.
+    users_btn: Manage users
+    groups_title: Groups
+    groups_desc: Name, owner, description and system message.
+    groups_btn: Manage groups
+    events_title: Events
+    events_desc: Dates, visibility, group and event content.
+    events_btn: Manage events
+    messages_title: Messages
+    messages_desc: 'View messages (private, group, notices). Deletion: admin only.'
+    messages_btn: View messages
+    bans_title: Bans
+    bans_desc: 'Ban history (site and groups). Deletion: admin only.'
+    bans_btn: View bans
+    idle_notice: This area signs out automatically after %seconds% seconds of inactivity.
+  access:
+    session_changed: You are signed in with an account that cannot access administration. Returning to EventFamily.
+  system_notice:
+    page_title: EventFamily — System message — %name%
+    page_heading: Groups — System message
+    breadcrumb_aria: Breadcrumb
+    breadcrumb_messages: Group messages
+    title: System message — %name%
+    hint: This message is shown at the top of the thread for all members. Only an administrator can edit or reset it.
+  title: EventFamily — Administration
+  page:
+    index: Administration
+    new: Create
+    edit: Edit
+    detail: Detail
+  menu:
+    dashboard: Dashboard
+    users: Users
+    groups: Groups
+    events: Events
+    messages: Messages
+    bans: Bans
+    back_to_site: Back to site
+  section:
+    content: Content
+    site: Site
+  crud:
+    common:
+      created_at: Created at
+      updated_at: Updated at
+      deleted_at: Deleted at
+    user:
+      entity_singular: user
+      entity_plural: users
+      fieldset_identity: Identity
+      fieldset_access: Access
+      fieldset_profile: Profile
+      field_first_name: First name
+      field_last_name: Last name
+      field_roles: Site roles
+      field_password: Password
+      field_verified: Verified account
+      field_banned: Account suspended (site)
+      help_banned: The user will no longer be able to sign in. An email with the reason will be sent.
+      field_ban_reason: Reason for suspension
+      help_ban_reason: Required when enabling suspension. Sent to the user by email.
+      error_ban_reason_required: Please provide a reason for the suspension before saving.
+      error_already_banned: This account is already suspended.
+      error_self_ban: You cannot suspend yourself.
+      field_group_bans: Group bans (escalation)
+      ban_summary: '%total% / %max% total — %active% active in a group'
+      field_avatar_visibility: Avatar visibility
+      field_last_login: Last login
+      role_user: User
+      role_moderator: Site moderator
+      role_admin: Administrator
+      avatar_public: Public
+      avatar_private: Private
+      help_password_edit: Leave empty to keep the current password.
+      help_password_new: At least 8 characters.
+      help_verified_new: 'If unchecked, an activation email is sent automatically (same as self-registration). Check to activate the account without email.'
+      verification_email_sent: Activation email sent to the user.
+      verification_email_failed: 'Account created, but the activation email could not be sent. The user can request a new one from the sign-in page.'
+      error_delete_owner_flash: '<div class="ef-admin-owner-block"><p class="mb-2"><strong>Deletion blocked</strong> — <span class="ef-admin-owner-block__user">%user%</span> still leads %count% group(s):</p><ul class="ef-admin-owner-block__list mb-0">%items%</ul></div>'
+      error_delete_owner_flash_item: '<li class="ef-admin-owner-block__item"><span class="ef-admin-owner-block__group">%group%</span><span class="ef-admin-owner-block__hint">%hint%</span><a href="%url%" class="btn btn-sm ef-admin-owner-block__btn">%btn%</a></li>'
+      error_delete_owner_flash_btn: Reassign owner
+      error_delete_owner_hint_suggested: 'Suggested successor: %name%'
+      error_delete_owner_hint_pick: Choose another group member as the new owner.
+      error_admin_target: Only an administrator can act on an administrator account.
+    group:
+      entity_singular: group
+      entity_plural: groups
+      fieldset_group: Group
+      fieldset_owners: Owners
+      fieldset_system_notice: System message
+      field_name: Name
+      field_family_name: Family name
+      field_description: Description
+      field_owner: Owner
+      field_author: Creator
+      field_system_notice: Custom system message
+      field_system_notice_updated: System message updated at
+      no_owner: Group without owner
+      help_owner: A user can only be owner of one group.
+      help_owner_reassign: 'Reassignment: prefer the group moderator, otherwise another member. Leave empty = group without owner. The new owner must already be a group member.'
+      error_owner_not_member: The owner must be a member of the group.
+      error_owner_already_leads: This user already owns another group.
+      error_owner_deleted: A deleted account cannot be assigned as owner.
+    event:
+      entity_singular: event
+      entity_plural: events
+      fieldset_event: Event
+      fieldset_dates: Dates
+      fieldset_visibility: Visibility & link
+      fieldset_media: Media
+      field_title: Title
+      field_description: Description
+      field_kind: Type
+      field_location: Location
+      field_start: Start
+      field_end: End
+      field_visibility: Visibility
+      field_group: Group
+      field_author: Author
+      field_photo_cover: Cover photo
+      field_photo_detail: Detail photo
+    message:
+      entity_singular: message
+      entity_plural: messages
+      page_detail: 'Message #%id% — %channel%'
+      fieldset_content: Content
+      fieldset_thread: Conversation thread (dispute)
+      fieldset_metadata: Metadata
+      field_content_full: Full content
+      field_content_excerpt: Excerpt
+      field_thread_context: Full context
+      field_author: Author
+      field_recipient: Recipient
+      field_group: Group
+      field_parent: Parent message
+      field_staff_announcement: Staff announcement
+      field_platform_notice: Platform notice
+      field_notice_variant: Notice variant
+      field_hidden_by_author: Hidden by author at
+      field_hidden_by_recipient: Hidden by recipient at
+      field_replies_closed: Thread closed at
+      filter_staff_announcement: Staff announcement
+      filter_platform_notice: Platform notice
+      channel:
+        platform_notice: Platform notice
+        staff_announcement: Staff announcement
+        group_reply: Reply (group)
+        group: Group message
+        private_reply: Reply (DM)
+        private: Private message
+        other: Other
+      notice_variant:
+        system: System
+        eventfamily: EventFamily
+      thread:
+        parent: Parent message
+        viewed: Viewed message
+        reply: Reply
+        unknown_author: Unknown user
+        author: Author
+        date: Date
+        state: 'Status:'
+        hidden_by_author: hidden by author %date%
+        hidden_by_recipient: hidden by recipient %date%
+        thread_closed: thread closed %date%
+    ban:
+      entity_singular: ban
+      entity_plural: bans
+      fieldset_ban: Ban
+      fieldset_context: Context
+      field_banned_user: Banned user
+      field_reason: Reason
+      field_group: Group
+      field_author: Ban author
+      field_ends_at: End / status
+      field_escalation: Step (group)
+      escalation_step: '%step% / %max%'
+      platform: Site suspension (admin)
+      status:
+        expired: Expired
+        active_open: Active (no end date)
+        active_until: Active until %date%
+  delete_confirm: Do you confirm permanent deletion of this item? This action cannot be undone.
+  idle:
+    modal_title: Admin session expired
+    modal_body_security: For security, the administration area signs out quickly after inactivity.
+    modal_body_countdown: 'Automatic sign-out in <strong id="ef-admin-idle-countdown">10</strong> seconds.'
+    logout: Sign out
+    stay: Stay signed in
+
+cookie:
+  banner:
+    title: Your privacy matters
+    description: We use cookies required for the site to work. With your consent, audience measurement cookies (Google Analytics) and, later, advertising cookies (Google AdSense) may be enabled.
+    privacy_link: Learn more
+    reject_all: Reject all
+    customize: Customize
+    accept_all: Accept all
+    actions_aria: Cookie consent choices
+  preferences:
+    title: Cookie preferences
+    subtitle: Manage your choices at any time
+    intro: You can accept or reject non-essential cookies. Strictly necessary cookies cannot be disabled because they keep the site working.
+    essential_details: View necessary cookie details
+    analytics_details: View audience measurement cookie details
+    reject_all: Reject all
+    save: Save my choices
+  category:
+    necessary:
+      badge: Always on
+      title: Strictly necessary cookies
+      description: Required for sign-in, security, and your language preference. They do not require your consent.
+    analytics:
+      badge: Optional
+      title: Audience measurement cookies
+      description: Measure site traffic via Google Analytics (page views, anonymized navigation).
+      hint: Off by default. No Google Analytics script is loaded until you accept this category.
+    marketing:
+      badge: Optional
+      title: Advertising cookies
+      description: Allow relevant ads via Google AdSense (feature coming soon).
+      hint: Off by default. No advertising script is loaded until you accept this category.
+  optional:
+    analytics_ga:
+      name: _ga / _ga_*
+      purpose: Anonymous visit identifier (Google Analytics).
+      duration: Up to 13 months
+    analytics_gid:
+      name: _gid
+      purpose: Distinguishes visitors over a short period (Google Analytics).
+      duration: 24 hours
+  essential:
+    session:
+      name: Session cookie
+      purpose: Keeps you signed in and secures your browsing.
+      duration: Session length or until sign-out.
+    csrf:
+      name: Security cookies (CSRF)
+      purpose: Protects forms against cross-site attacks.
+      duration: Session or short-lived depending on the action.
+    locale:
+      name: ef_locale
+      purpose: Remembers your language choice (French / English).
+      duration: 1 year
+    remember:
+      name: REMEMBERME
+      purpose: Remembers your sign-in when you check "Remember me".
+      duration: According to site settings (extended sign-in).
+    consent:
+      name: ef_consent
+      purpose: Stores your cookie consent choices.
+      duration: 6 months

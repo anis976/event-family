@@ -1,9 +1,9 @@
-<nav class="ef-sidebar" id="ef-sidebar" aria-label="Navigation principale">
+<nav class="ef-sidebar{% if not app.user %} ef-sidebar--guest{% endif %}" id="ef-sidebar" aria-label="{{ 'ui.sidebar.main_nav'|trans }}">
     <button
         type="button"
         class="btn-close d-lg-none ms-auto mb-2"
         id="close-sidebar"
-        aria-label="Fermer le menu"
+        aria-label="{{ 'ui.sidebar.close_menu'|trans }}"
     ></button>
 
     <div class="ef-sidebar__nav-top mb-auto">
@@ -13,55 +13,61 @@
             </div>
             <div class="ms-3">
                 <h5 class="mb-0 fw-bold">EventFamily</h5>
-                <small class="text-muted">Family Events</small>
+                <small class="text-muted">{{ 'ui.brand.tagline'|trans }}</small>
             </div>
         </div>
 
         <ul class="nav flex-column">
             <li>
                 <a href="{{ path('app_home') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') == 'app_home' ? ' active' : '' }}">
-                    <i class="bi bi-house-door me-2" aria-hidden="true"></i> Home
+                    <i class="bi bi-house-door me-2" aria-hidden="true"></i> {{ 'ui.nav.home'|trans }}
                 </a>
             </li>
-            <li>
-                <a href="{{ path('app_events') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') starts with 'app_events' ? ' active' : '' }}">
-                    <i class="bi bi-calendar-event me-2" aria-hidden="true"></i> Événements
-                </a>
-            </li>
-            <li>
-                <a href="{{ path('app_groups') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') starts with 'app_groups' ? ' active' : '' }}">
-                    <i class="bi bi-people me-2" aria-hidden="true"></i> Groupes
-                </a>
-            </li>
-            <li>
-                <a href="{{ path('app_invitations_index') }}" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center{{ app.request.attributes.get('_route') starts with 'app_invitations' ? ' active' : '' }}">
-                    <span><i class="bi bi-envelope-check me-2" aria-hidden="true"></i> Invitations</span>
-                    <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg{% if ef_invitation_count <= 0 %} d-none{% endif %}" data-ef-badge="invitations">{{ ef_invitation_count }}</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ path('app_messages') }}" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center{{ app.request.attributes.get('_route') starts with 'app_messages' ? ' active' : '' }}">
-                    <span><i class="bi bi-chat-left me-2" aria-hidden="true"></i> Messages</span>
-                    <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg{% if ef_message_count <= 0 %} d-none{% endif %}" data-ef-badge="messages">{{ ef_message_count }}</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link ef-sidebar__nav-link">
-                    <i class="bi bi-shield-check me-2" aria-hidden="true"></i> Administration
-                </a>
-            </li>
+            {% if app.user %}
+                <li>
+                    <a href="{{ path('app_events') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') starts with 'app_events' ? ' active' : '' }}">
+                        <i class="bi bi-calendar-event me-2" aria-hidden="true"></i> {{ 'ui.nav.events'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_groups') }}" class="nav-link ef-sidebar__nav-link{{ app.request.attributes.get('_route') starts with 'app_groups' ? ' active' : '' }}">
+                        <i class="bi bi-people me-2" aria-hidden="true"></i> {{ 'ui.nav.groups'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_invitations_index') }}" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center{{ app.request.attributes.get('_route') starts with 'app_invitations' ? ' active' : '' }}">
+                        <span><i class="bi bi-envelope-check me-2" aria-hidden="true"></i> {{ 'ui.nav.invitations'|trans }}</span>
+                        <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg d-none" data-ef-badge="invitations">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('app_messages') }}" class="nav-link ef-sidebar__nav-link d-flex justify-content-between align-items-center{{ app.request.attributes.get('_route') starts with 'app_messages' ? ' active' : '' }}">
+                        <span><i class="bi bi-chat-left me-2" aria-hidden="true"></i> {{ 'ui.nav.messages'|trans }}</span>
+                        <span class="badge bg-danger rounded-pill ef-sidebar__badge-msg d-none" data-ef-badge="messages">0</span>
+                    </a>
+                </li>
+                {% if ef_is_site_staff and ef_admin_dashboard_url %}
+                <li>
+                    <a href="{{ ef_admin_dashboard_url }}" class="nav-link ef-sidebar__nav-link" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-shield-check me-2" aria-hidden="true"></i> {{ 'ui.nav.admin'|trans }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endif %}
         </ul>
     </div>
 
     <div class="ef-sidebar__info py-3">
         <a
             href="{{ path('app_about') }}"
-            class="ef-sidebar__info-link mb-1 d-block{{ app.request.attributes.get('_route') == 'app_about' ? ' ef-sidebar__info-link--active' : '' }}"
-        >About</a>
+            class="ef-sidebar__info-link d-block{{ app.request.attributes.get('_route') == 'app_about' ? ' ef-sidebar__info-link--active' : '' }}{{ app.user ? ' mb-1' : '' }}"
+        >{{ 'ui.nav.about'|trans }}</a>
+        {% if app.user %}
         <a
             href="{{ path('app_contact') }}"
             class="ef-sidebar__info-link d-block{{ app.request.attributes.get('_route') == 'app_contact' ? ' ef-sidebar__info-link--active' : '' }}"
-        >Contact</a>
+        >{{ 'ui.nav.contact'|trans }}</a>
+        {% endif %}
     </div>
 
     <div class="mt-auto bg-transparent dropup ef-sidebar__settings">
@@ -82,8 +88,8 @@
             {% else %}
                 <i class="bi bi-gear fs-4 me-3" aria-hidden="true"></i>
                 <div class="overflow-hidden">
-                    <p class="mb-0 text-truncate ef-sidebar__settings-name">Invité</p>
-                    <small class="text-truncate d-block ef-sidebar__settings-email">Non connecté</small>
+                    <p class="mb-0 text-truncate ef-sidebar__settings-name">{{ 'ui.sidebar.guest'|trans }}</p>
+                    <small class="text-truncate d-block ef-sidebar__settings-email">{{ 'ui.sidebar.not_connected'|trans }}</small>
                 </div>
             {% endif %}
         </div>
@@ -92,33 +98,38 @@
             {% if app.user %}
                 <li>
                     <a class="dropdown-item ef-sidebar__settings-link{{ app.request.attributes.get('_route') starts with 'app_profile' ? ' active' : '' }}" href="{{ path('app_profile') }}">
-                        <i class="bi bi-person me-2" aria-hidden="true"></i> Mon profil
+                        <i class="bi bi-person me-2" aria-hidden="true"></i> {{ 'ui.sidebar.my_profile'|trans }}
                     </a>
                 </li>
                 <li>
                     <form action="{{ path('app_logout') }}" method="post" data-turbo="false" class="m-0">
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
                         <button type="submit" class="dropdown-item ef-sidebar__settings-link ef-sidebar__settings-link-auth w-100 text-start border-0 bg-transparent">
-                            <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> Déconnexion
+                            <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i> {{ 'ui.sidebar.logout'|trans }}
                         </button>
                     </form>
                 </li>
             {% else %}
                 <li>
                     <a class="dropdown-item ef-sidebar__settings-link" href="{{ path('app_login') }}">
-                        <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i> Connexion
+                        <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i> {{ 'ui.sidebar.login'|trans }}
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item ef-sidebar__settings-link" href="{{ path('app_register') }}">
-                        <i class="bi bi-person-plus me-2" aria-hidden="true"></i> Inscription
+                        <i class="bi bi-person-plus me-2" aria-hidden="true"></i> {{ 'ui.sidebar.register'|trans }}
                     </a>
                 </li>
             {% endif %}
             <li><hr class="dropdown-divider"></li>
             <li>
-                <a class="dropdown-item ef-sidebar__settings-link" href="#">
-                    <i class="bi bi-globe me-2" aria-hidden="true"></i> Français
+                <a
+                    class="dropdown-item ef-sidebar__settings-link"
+                    href="{{ path('app_locale_switch') }}"
+                    data-turbo="false"
+                    title="{{ 'ui.sidebar.switch_to'|trans({'%language%': ef_locale_switch_label}) }}"
+                >
+                    <i class="bi bi-globe me-2" aria-hidden="true"></i> {{ ef_locale_switch_label }}
                 </a>
             </li>
         </ul>

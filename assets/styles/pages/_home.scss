@@ -1,4 +1,5 @@
 @use '../base/variables' as *;
+@use '../base/mixins' as *;
 
 .ef-hero-section {
     position: relative;
@@ -171,6 +172,278 @@
 .ef-home {
     &__section-title {
         font-size: 1.1rem;
+    }
+
+    &--guest {
+        .ef-main-content-padding > .row.g-4 {
+            margin-bottom: 2.5rem !important;
+        }
+    }
+}
+
+// Vitrine invité (accueil public — examen AdSense)
+.ef-home-guest {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-top: 0.5rem;
+
+    &__how {
+        margin-bottom: 2.5rem;
+    }
+
+    &__how-title {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: $ef-text-gray;
+        position: relative;
+        padding-bottom: 1rem;
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 4rem;
+            height: 3px;
+            border-radius: 2px;
+            background: linear-gradient(90deg, transparent, $ef-primary-orange, transparent);
+        }
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+
+            &::after {
+                background: linear-gradient(90deg, transparent, $ef-primary-orange-dark, transparent);
+            }
+        }
+    }
+
+    &__steps {
+        --bs-gutter-x: 1.5rem;
+        --bs-gutter-y: 1.5rem;
+    }
+
+    &__step {
+        height: 100%;
+        text-align: center;
+        padding: 1.75rem 1.25rem 1.5rem;
+        border-radius: 15px;
+        background-color: #fff;
+        box-shadow: $box-shadow;
+        border: 1px solid rgba($ef-border-color, 0.6);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: $box-shadow-lg;
+            border-color: rgba($ef-primary-orange, 0.35);
+        }
+
+        @include color-mode(dark) {
+            background-color: #252525;
+            border-color: rgba($ef-white-color-dark, 0.12);
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+
+            &:hover {
+                border-color: rgba($ef-soft-gold, 0.45);
+                box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.45);
+            }
+        }
+    }
+
+    &__step-num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #fff;
+        background: linear-gradient(135deg, $ef-primary-orange 0%, $ef-soft-gold 100%);
+        box-shadow: 0 4px 14px rgba($ef-primary-orange, 0.35);
+
+        @include color-mode(dark) {
+            background: linear-gradient(135deg, $ef-primary-orange-dark 0%, $ef-soft-gold 100%);
+            box-shadow: 0 4px 16px rgba($ef-primary-orange-dark, 0.25);
+            border: 1px solid rgba($ef-soft-gold, 0.35);
+        }
+    }
+
+    &__step-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 0.65rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__step-text {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        margin: 0;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__notice {
+        max-width: 40rem;
+        margin: 0 auto 2rem;
+        padding: 1rem 1.25rem 1rem 1.35rem;
+        text-align: center;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: $gray-700;
+        background-color: $ef-mission-card-bg;
+        border-radius: $border-radius-lg;
+        border-left: 4px solid $ef-primary-orange;
+        box-shadow: 0 2px 8px rgba($ef-primary-orange, 0.08);
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+            background-color: $ef-mission-card-dark-bg;
+            border-left-color: $ef-primary-orange-dark;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+        }
+    }
+
+    &__cta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.85rem;
+        margin-bottom: 1.75rem;
+
+        @include media-breakpoint-up(md) {
+            flex-direction: row;
+            gap: 1rem;
+        }
+    }
+
+    &__cta-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 12.5rem;
+        padding: 0.65rem 1.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            background-color 0.25s ease,
+            color 0.25s ease,
+            border-color 0.25s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid $ef-primary-orange;
+            outline-offset: 2px;
+        }
+
+        &--primary {
+            color: #fff;
+            background: linear-gradient(135deg, $ef-primary-orange 0%, darken($ef-soft-gold, 6%) 100%);
+            box-shadow: 0 4px 16px rgba($ef-primary-orange, 0.35);
+            border: none;
+
+            &:hover {
+                color: #fff;
+                box-shadow: 0 6px 22px rgba($ef-primary-orange, 0.45);
+                background: linear-gradient(135deg, darken($ef-primary-orange, 4%) 0%, $ef-soft-gold 100%);
+            }
+
+            @include color-mode(dark) {
+                background: linear-gradient(135deg, $ef-primary-orange-dark 0%, $ef-soft-gold 100%);
+                box-shadow: 0 4px 18px rgba($ef-primary-orange-dark, 0.3);
+
+                &:hover {
+                    background: linear-gradient(135deg, $ef-primary-orange 0%, $ef-primary-orange-dark 100%);
+                }
+
+                &:focus-visible {
+                    outline-color: $ef-soft-gold;
+                }
+            }
+        }
+
+        &--secondary {
+            @include custom-btn($bg-opacity: 0.12, $padding: 0.65rem 1.75rem);
+            min-width: 12.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: $ef-primary-orange !important;
+            border: 1px solid rgba($ef-primary-orange, 0.45) !important;
+
+            &:hover {
+                color: #131926 !important;
+            }
+
+            @include color-mode(dark) {
+                color: $ef-primary-orange-dark !important;
+                border-color: rgba($ef-primary-orange-dark, 0.55) !important;
+
+                &:hover {
+                    color: #131926 !important;
+                }
+            }
+        }
+    }
+
+    &__about {
+        text-align: center;
+        margin: 0;
+    }
+
+    &__about-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: $ef-primary-orange;
+        text-decoration: none;
+        transition: color 0.25s ease, gap 0.25s ease;
+
+        .bi {
+            transition: transform 0.25s ease;
+        }
+
+        &:hover {
+            color: $ef-active-hover-orange;
+
+            .bi {
+                transform: translateX(4px);
+            }
+        }
+
+        @include color-mode(dark) {
+            color: $ef-primary-orange-dark;
+
+            &:hover {
+                color: $ef-soft-gold;
+            }
+        }
     }
 }
 

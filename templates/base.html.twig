@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="light">
+<html lang="{{ app.request.locale }}" data-bs-theme="light" data-ef-consent-choice="{{ ef_consent.hasChoice ? '1' : '0' }}" data-ef-consent-marketing="{{ ef_consent.marketing ? '1' : '0' }}" data-ef-consent-analytics="{{ ef_consent.analytics ? '1' : '0' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {# Évite d’afficher un aperçu en cache pendant le chargement (effet « retour en arrière ») #}
+    <meta name="turbo-cache-control" content="no-preview">
     <title>{% block title %}EventFamily{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📅</text></svg>">
 
@@ -39,17 +41,21 @@
 </head>
 <body class="ef-body{% block body_class %}{% endblock %}"{% if app.user %}
     data-ef-counts-url="{{ path('app_invitations_counts') }}"
+    data-ef-notification-aria="{{ 'ui.topbar.notifications'|trans }}"
+    data-ef-notification-pending-aria="{{ 'ui.topbar.notifications_pending'|trans }}"
     data-ef-session-idle="{{ ef_session_idle_timeout }}"
     data-ef-session-warning="{{ ef_session_idle_warning }}"
 {% endif %}>
+    {% include 'components/_ef_cookie_consent.html.twig' %}
+
     <div class="ef-main-wrapper d-flex">
         {% include 'layout/_sidebar.html.twig' %}
 
         <div class="ef-main">
-            {% embed 'layout/_topbar.html.twig' %}
-                {% block page_title %}Home{% endblock %}
-            {% endembed %}
-            {% include 'layout/_search_panel.html.twig' %}
+            {% include 'layout/_topbar.html.twig' with { page_title: block('page_title')|default('ui.nav.home'|trans) } %}
+            {% if app.user %}
+                {% include 'layout/_search_panel.html.twig' %}
+            {% endif %}
 
             <div class="ef-main__flash container-fluid px-4 pt-3">
                 {% include 'components/_ef_flash_messages.html.twig' %}
@@ -63,11 +69,11 @@
         </div>
     </div>
 
-    <button type="button" id="backToTop" class="ef-btn-back-to-top shadow" aria-label="Retour en haut">
+    <button type="button" id="backToTop" class="ef-btn-back-to-top shadow" aria-label="{{ 'ui.common.back_to_top'|trans }}">
         <i class="bi bi-arrow-up" aria-hidden="true"></i>
     </button>
 
-    <button type="button" id="sidebarOverlay" class="ef-sidebar-overlay" aria-label="Fermer le menu"></button>
+    <button type="button" id="sidebarOverlay" class="ef-sidebar-overlay" aria-label="{{ 'ui.sidebar.close_menu'|trans }}"></button>
 
     {% if app.user %}
         {% include 'components/_session_idle_modal.html.twig' %}

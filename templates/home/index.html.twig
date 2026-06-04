@@ -1,16 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block page_title %}Home{% endblock %}
+{% block body_class %} ef-home{% if not app.user %} ef-home--guest{% endif %}{% endblock %}
 
-{% block title %}EventFamily — Accueil{% endblock %}
+{% block page_title %}{{ app.user ? 'ui.home.title'|trans : 'ui.home.guest_page_title'|trans }}{% endblock %}
+
+{% block title %}{{ app.user ? 'ui.home.page_title'|trans : 'ui.home.guest_page_title'|trans }}{% endblock %}
 
 {% block body %}
     <section class="ef-hero-section">
         <div class="ef-hero-section__overlay" aria-hidden="true"></div>
 
         <div class="position-relative text-center ef-hero-section__content">
-            <h1 class="display-4 fw-bold">Welcome to EventFamily</h1>
-            <p class="lead mb-0">The platform that brings your family events together</p>
+            <h1 class="display-4 fw-bold">
+                {{ app.user ? 'ui.home.welcome'|trans : 'ui.home.guest_welcome'|trans }}
+            </h1>
+            <p class="lead mb-0">
+                {{ app.user ? 'ui.home.lead'|trans : 'ui.home.guest_lead'|trans }}
+            </p>
         </div>
 
         <div class="ef-hero-section__wave-container">
@@ -31,8 +37,8 @@
                     <div class="ef-icon-box mx-auto mb-3">
                         <i class="bi bi-people fs-3" aria-hidden="true"></i>
                     </div>
-                    <h5 class="fw-bold">Create family groups</h5>
-                    <p class="text-muted small mb-0">Join us to create and share your family moments</p>
+                    <h2 class="h5 fw-bold">{{ 'ui.home.feature_groups_title'|trans }}</h2>
+                    <p class="text-muted small mb-0">{{ 'ui.home.feature_groups_text'|trans }}</p>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4">
@@ -40,8 +46,8 @@
                     <div class="ef-icon-box mx-auto mb-3">
                         <i class="bi bi-calendar-event fs-3" aria-hidden="true"></i>
                     </div>
-                    <h5 class="fw-bold">Organize events</h5>
-                    <p class="text-muted small mb-0">Discover our events</p>
+                    <h2 class="h5 fw-bold">{{ 'ui.home.feature_events_title'|trans }}</h2>
+                    <p class="text-muted small mb-0">{{ 'ui.home.feature_events_text'|trans }}</p>
                 </div>
             </div>
             <div class="col-12 col-md-6 col-lg-4">
@@ -49,28 +55,77 @@
                     <div class="ef-icon-box mx-auto mb-3">
                         <i class="bi bi-stars fs-3" aria-hidden="true"></i>
                     </div>
-                    <h5 class="fw-bold">Stay connected</h5>
-                    <p class="text-muted small mb-0">Keep in touch with your family</p>
+                    <h2 class="h5 fw-bold">{{ 'ui.home.feature_connect_title'|trans }}</h2>
+                    <p class="text-muted small mb-0">{{ 'ui.home.feature_connect_text'|trans }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold h4 mb-0 text-body text-truncate me-2 ef-home__section-title">
-                Upcoming Events
-            </h2>
-            <a href="{{ path('app_events') }}" class="btn ef-btn-viewAllEvent btn-sm rounded-pill px-3 shadow-sm flex-shrink-0 text-nowrap">
-                View all events <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
-            </a>
-        </div>
+        {% if app.user %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold h4 mb-0 text-body text-truncate me-2 ef-home__section-title">
+                    {{ 'ui.home.upcoming_events'|trans }}
+                </h2>
+                <a href="{{ path('app_events') }}" class="btn ef-btn-viewAllEvent btn-sm rounded-pill px-3 shadow-sm flex-shrink-0 text-nowrap">
+                    {{ 'ui.home.view_all_events'|trans }} <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
+                </a>
+            </div>
 
-        {% if upcomingPublicEvents is empty %}
-            {% include 'events/_empty.html.twig' with { message: 'No upcoming public events found' } %}
+            {% if upcomingPublicEvents is empty %}
+                {% include 'events/_empty.html.twig' with { message: 'ui.home.no_public_events'|trans } %}
+            {% else %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-3">
+                    {% for event in upcomingPublicEvents %}
+                        {% include 'events/_article_card.html.twig' with { event: event, is_past: false, use_modal: false } %}
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% else %}
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-3">
-                {% for event in upcomingPublicEvents %}
-                    {% include 'events/_article_card.html.twig' with { event: event, is_past: false, use_modal: false } %}
-                {% endfor %}
+            <div class="ef-home-guest">
+                <section class="ef-home-guest__how" aria-labelledby="ef-home-guest-how-title">
+                    <h2 id="ef-home-guest-how-title" class="ef-home-guest__how-title">{{ 'ui.home.guest_how_title'|trans }}</h2>
+                    <div class="row g-4 ef-home-guest__steps">
+                        <div class="col-12 col-md-4">
+                            <article class="ef-home-guest__step">
+                                <span class="ef-home-guest__step-num" aria-hidden="true">1</span>
+                                <h3 class="ef-home-guest__step-title">{{ 'ui.home.guest_step1_title'|trans }}</h3>
+                                <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step1_text'|trans }}</p>
+                            </article>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <article class="ef-home-guest__step">
+                                <span class="ef-home-guest__step-num" aria-hidden="true">2</span>
+                                <h3 class="ef-home-guest__step-title">{{ 'ui.home.guest_step2_title'|trans }}</h3>
+                                <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step2_text'|trans }}</p>
+                            </article>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <article class="ef-home-guest__step">
+                                <span class="ef-home-guest__step-num" aria-hidden="true">3</span>
+                                <h3 class="ef-home-guest__step-title">{{ 'ui.home.guest_step3_title'|trans }}</h3>
+                                <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step3_text'|trans }}</p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <p class="ef-home-guest__notice" role="note">{{ 'ui.home.guest_private_notice'|trans }}</p>
+
+                <div class="ef-home-guest__cta">
+                    <a href="{{ path('app_register') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
+                        {{ 'ui.home.guest_cta_register'|trans }}
+                    </a>
+                    <a href="{{ path('app_login') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                        {{ 'ui.home.guest_cta_login'|trans }}
+                    </a>
+                </div>
+
+                <p class="ef-home-guest__about">
+                    <a href="{{ path('app_about') }}" class="ef-home-guest__about-link">
+                        {{ 'ui.home.guest_about_cta'|trans }}
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </p>
             </div>
         {% endif %}
     </div>

@@ -1,26 +1,42 @@
-<footer class="ef-footer border-top">
+<footer class="ef-footer border-top{% if not app.user %} ef-footer--guest{% endif %}">
     <div class="container-fluid">
+        {% if app.user %}
         <div class="row ef-footer__row g-3 g-md-4">
             <div class="col-12 col-md-4 ef-footer__col">
                 <h6 class="fw-bold">EventFamily</h6>
-                <p class="text-muted small mb-0">Plateforme de gestion d'événements familiaux</p>
+                <p class="text-muted small mb-2">{{ 'ui.footer.tagline'|trans }}</p>
+                <a href="{{ path('app_contact') }}" class="ef-footer__btn-report">{{ 'ui.footer.report_issue'|trans }}</a>
             </div>
             <div class="col-12 col-md-4 ef-footer__col">
-                <h6 class="fw-bold">Liens rapides</h6>
+                <h6 class="fw-bold">{{ 'ui.footer.quick_links'|trans }}</h6>
                 <ul class="list-unstyled mb-0">
-                    <li><a href="{{ path('app_about') }}" class="ef-footer-link small">About</a></li>
-                    <li><a href="{{ path('app_contact') }}" class="ef-footer-link small">Contact</a></li>
-                    <li><a href="{{ path('app_mentions') }}" class="ef-footer-link small">Mentions légales</a></li>
-                    <li><a href="{{ path('app_cgu') }}" class="ef-footer-link small">CGU &amp; confidentialité</a></li>
+                    <li><a href="{{ path('app_about') }}" class="ef-footer-link small">{{ 'ui.nav.about'|trans }}</a></li>
+                    <li><a href="{{ path('app_contact') }}" class="ef-footer-link small">{{ 'ui.nav.contact'|trans }}</a></li>
+                    <li><a href="{{ path('app_mentions') }}" class="ef-footer-link small">{{ 'ui.footer.legal'|trans }}</a></li>
+                    <li><a href="{{ path('app_cgu') }}" class="ef-footer-link small">{{ 'ui.footer.cgu'|trans }}</a></li>
+                    <li>
+                        <button type="button" class="ef-footer-link small ef-consent-manage-link ef-consent-manage-trigger{% if not ef_consent.hasChoice %} d-none{% endif %}" data-ef-consent-manage>
+                            {{ 'ui.footer.manage_cookies'|trans }}
+                        </button>
+                    </li>
                 </ul>
             </div>
             <div class="col-12 col-md-4 ef-footer__col">
-                <h6 class="fw-bold">Soutenir le projet</h6>
-                <button type="button" class="btn ef-btn-donate px-4">Donate</button>
+                <h6 class="fw-bold">{{ 'ui.footer.support'|trans }}</h6>
+                <button type="button" class="btn ef-btn-donate px-4">{{ 'ui.footer.donate'|trans }}</button>
             </div>
         </div>
+        {% else %}
+        <nav class="d-flex flex-wrap justify-content-center gap-3 gap-md-4 py-2" aria-label="{{ 'ui.footer.quick_links'|trans }}">
+            <a href="{{ path('app_cgu') }}" class="ef-footer-link small">{{ 'ui.footer.cgu'|trans }}</a>
+            <a href="{{ path('app_mentions') }}" class="ef-footer-link small">{{ 'ui.footer.legal'|trans }}</a>
+            <button type="button" class="ef-footer-link small ef-consent-manage-link ef-consent-manage-trigger border-0 bg-transparent p-0{% if not ef_consent.hasChoice %} d-none{% endif %}" data-ef-consent-manage>
+                {{ 'ui.footer.manage_cookies'|trans }}
+            </button>
+        </nav>
+        {% endif %}
         <div class="text-center mt-3 pt-3 border-top">
-            <p class="text-muted small mb-0">© {{ 'now'|date('Y') }} EventFamily. Tous droits réservés.</p>
+            <p class="text-muted small mb-0">{{ 'ui.footer.copyright'|trans({'%year%': 'now'|date('Y')}) }}</p>
         </div>
     </div>
 </footer>
