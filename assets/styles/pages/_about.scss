@@ -1,4 +1,5 @@
 @use '../base/variables' as *;
+@use '../base/mixins' as *;
 
 .ef-about {
     flex: 1;
@@ -69,10 +70,108 @@
                     padding: 0.5rem !important;
                 }
 
+                h4,
                 h5 {
                     font-weight: 700;
                     margin-top: 1rem;
+
+                    @include color-mode(dark) {
+                        color: $ef-white-color-dark;
+                    }
                 }
+
+                .card-text {
+                    color: $gray-600;
+
+                    @include color-mode(dark) {
+                        color: $gray-600-dark;
+                    }
+                }
+
+                @include color-mode(dark) {
+                    background-color: #252525;
+                    border: 1px solid rgba($ef-white-color-dark, 0.1);
+                }
+            }
+        }
+    }
+
+    &__section {
+        padding: 0 0.25rem;
+
+        &-title {
+            margin-bottom: 0.85rem;
+            color: $ef-text-gray;
+
+            i {
+                color: $ef-primary-orange;
+            }
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+
+                i {
+                    color: $ef-primary-orange-dark;
+                }
+            }
+        }
+
+        &-text {
+            font-size: 1rem;
+            line-height: 1.65;
+            color: $gray-700;
+
+            a {
+                color: $ef-primary-orange;
+                font-weight: 500;
+                text-decoration: none;
+
+                &:hover {
+                    color: $ef-active-hover-orange;
+                    text-decoration: underline;
+                }
+            }
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+
+                a {
+                    color: $ef-primary-orange-dark;
+
+                    &:hover {
+                        color: $ef-soft-gold;
+                    }
+                }
+            }
+        }
+
+        &--highlight {
+            padding: 1.15rem 1.25rem;
+            border-radius: $border-radius-lg;
+            background-color: $ef-mission-card-bg;
+            border-left: 4px solid $ef-primary-orange;
+
+            @include color-mode(dark) {
+                background-color: $ef-mission-card-dark-bg;
+                border-left-color: $ef-primary-orange-dark;
+            }
+        }
+
+        &--list .ef-about__list {
+            padding-left: 1.25rem;
+            color: $gray-700;
+
+            li {
+                margin-bottom: 0.5rem;
+                line-height: 1.55;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            @include color-mode(dark) {
+                color: $gray-600-dark;
             }
         }
     }
@@ -109,6 +208,77 @@
         &-text {
             font-size: $ef-font-size-sm;
             line-height: 1.7;
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+            }
+        }
+    }
+
+    &__guest-cta {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.85rem;
+        padding-top: 0.5rem;
+        padding-bottom: 1rem;
+
+        @include media-breakpoint-up(md) {
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+
+    &__guest-cta-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 12.5rem;
+        padding: 0.65rem 1.75rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            background-color 0.25s ease,
+            color 0.25s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        &--primary {
+            color: #fff;
+            background: linear-gradient(135deg, $ef-primary-orange 0%, $ef-soft-gold 100%);
+            box-shadow: 0 4px 16px rgba($ef-primary-orange, 0.35);
+
+            &:hover {
+                color: #fff;
+                box-shadow: 0 6px 22px rgba($ef-primary-orange, 0.45);
+            }
+
+            @include color-mode(dark) {
+                background: linear-gradient(135deg, $ef-primary-orange-dark 0%, $ef-soft-gold 100%);
+            }
+        }
+
+        &--secondary {
+            @include custom-btn($bg-opacity: 0.12, $padding: 0.65rem 1.75rem);
+            min-width: 12.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: $ef-primary-orange !important;
+            border: 1px solid rgba($ef-primary-orange, 0.45) !important;
+
+            &:hover {
+                color: #131926 !important;
+            }
+
+            @include color-mode(dark) {
+                color: $ef-primary-orange-dark !important;
+            }
         }
     }
 }

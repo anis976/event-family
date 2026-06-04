@@ -537,7 +537,7 @@ php bin/console cache:warmup
 
 ## Prochaines étapes
 
-> **Suite** : **1.** (optionnel) enrichir `/about` pour AdSense · **2.** Déploiement prod + demande AdSense · **3.** Checklist [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md).
+> **Suite** : **1.** Déploiement prod + demande AdSense · **2.** Checklist [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md).
 
 ### Accueil public & AdSense
 
@@ -574,26 +574,20 @@ Réponse au mur de connexion sur `/` (bloquant l’examen AdSense). Comportement
 
 **AdSense (scripts)** : pas encore branchés — catégorie **marketing** du bandeau prête ; balises **après** approbation du site et mise en prod HTTPS.
 
-#### Optionnel — enrichir `/about` (pas encore fait)
+#### Livré — enrichissement `/about` (juin 2026)
 
-> Décision **en attente** : utile pour réduire un éventuel refus Google « contenu insuffisant », mais **non obligatoire** si la home publique + CGU suffisent. On peut abandonner cette piste sans toucher à la vitrine déjà livrée.
+Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités membres (liste), confidentialité, transparence (pas d’annuaire public), contact/éditeur (mentions + e-mail), CTA inscription/connexion pour invités.
 
-Pistes de contenu **à ajouter seulement si vous validez** (FR + EN, `ui.about.*`) :
-
-| Bloc suggéré | Objectif reviewer |
-|--------------|-------------------|
-| **Public visé** | Familles, groupes privés, pas un réseau social ouvert |
-| **Fonctionnalités concrètes** | Groupes, événements, messagerie — toujours derrière compte |
-| **Confidentialité** | Données membres non exposées aux visiteurs |
-| **Contact / éditeur** | E-mail ou renvoi vers mentions légales (contact formulaire reste connecté) |
-| **Pas de fausses promesses** | Pas de « annuaire public » ni d’événements visibles sans inscription |
-
-Implémentation prévue le cas échéant : sections dans `templates/about/index.html.twig` + clés YAML — **sans** ouvrir de nouvelles routes publiques.
+| Fichier | Rôle |
+|---------|------|
+| `templates/about/index.html.twig` | Nouvelles sections + CTA invité |
+| `translations/messages.{fr,en}.yaml` | Clés `audience_*`, `features_member_*`, `privacy_*`, `transparency_*`, `contact_public_*`, `guest_cta_*` |
+| `assets/styles/pages/_about.scss` | Styles sections, encart, liens, CTA (clair / sombre) |
 
 #### Critères AdSense (rappel)
 
 - Site **consultable sans compte** sur accueil + about + légal — **OK côté technique**
-- Texte **original** — home invité + about actuel ; enrichissement about = **optionnel**
+- Texte **original** — home invité + about enrichi (public visé, confidentialité, transparence)
 - CGU / confidentialité (`#privacy`, mention AdSense) — **OK**
 - Demande sur **URL prod HTTPS** ; mentions légales complètes (hébergeur, éditeur) avant soumission
 
@@ -606,7 +600,7 @@ Implémentation prévue le cas échéant : sections dans `templates/about/index.
 | **WhatsApp** | Numéro placeholder sur `/contact` | **v1** : numéro réel + lien `wa.me` (aucune clé). **v2** : WhatsApp Business API si contact bidirectionnel depuis le site |
 | **Contact en dev** | **Opérationnel** sans reCAPTCHA (honeypot + rate limit + e-mail Ethereal) | Tester l’envoi ; reCAPTCHA prod activé automatiquement quand la clé secrète est renseignée |
 | **Analytics** | Bandeau cookies sans case analytics pour l’instant | **1.** Créer le compte (GA4 / Matomo / autre) · **2.** Ajouter catégorie opt-in + chargement conditionnel des scripts — voir [Cookies et consentement](#cookies-et-consentement-rgpd--cnil) |
-| **AdSense** | Vitrine publique livrée ; scripts pub **non** branchés | Prod HTTPS → demande d’examen → balises si `marketing: true` ; enrichissement `/about` **optionnel** (voir ci-dessus) |
+| **AdSense** | Vitrine + `/about` enrichi livrés ; scripts pub **non** branchés | Prod HTTPS → demande d’examen → balises si `marketing: true` |
 
 ### Court terme
 

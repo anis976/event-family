@@ -376,6 +376,21 @@ ui:
     feature_connect_text: Communicate easily with group members through integrated messaging.
     mission_title: Our Mission
     mission_text: We believe that family is at the heart of our lives. Our mission is to create simple and effective tools to keep family bonds strong, regardless of distance.
+    audience_title: Who is EventFamily for?
+    audience_text: EventFamily is for families and close relatives who want to organize shared moments in an online space reserved for invited people. It is not an open social network open to everyone—each group is private and managed by its owner.
+    features_member_title: Features for registered members
+    features_member_intro: 'After creating an account and joining a family group by invitation, you can:'
+    features_member_groups: create or join private family groups;
+    features_member_events: plan events (birthdays, reunions, celebrations…) visible to group members;
+    features_member_messages: chat through built-in messaging (group threads and private messages between members).
+    privacy_title: Privacy
+    privacy_text: Events, member lists, and conversations are not available to visitors who are not signed in. Only this information page, the public home page, legal pages, and sign-in or registration screens are visible without an account.
+    transparency_title: What this site is not
+    transparency_text: EventFamily does not publish a public event directory, does not sell family data, and does not display group content on the open web. Public pages exist only to present the service and allow registration.
+    contact_public_title: Contact and publisher
+    contact_public_html: 'Publisher details are in the <a href="%mentions_url%">legal notice</a>. For a general inquiry, email <a href="%email%">%email%</a>. The <a href="%contact_url%">contact form</a> is available to signed-in members only.'
+    guest_cta_register: Create an account
+    guest_cta_login: Sign in
   contact:
     title: Contact
     page_title: EventFamily — Contact
