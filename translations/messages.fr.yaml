@@ -378,16 +378,16 @@ ui:
     mission_title: Notre mission
     mission_text: Nous croyons que la famille est au cœur de notre vie. Notre mission est de créer des outils simples et efficaces pour maintenir les liens familiaux, quelle que soit la distance.
     audience_title: Pour qui est fait EventFamily ?
-    audience_text: EventFamily s'adresse aux familles et aux proches qui souhaitent organiser leurs moments ensemble dans un espace en ligne réservé aux personnes invitées. Ce n'est pas un réseau social ouvert au grand public : chaque groupe est privé et géré par son responsable.
+    audience_text: "EventFamily s'adresse aux familles et aux proches qui souhaitent organiser leurs moments ensemble dans un espace en ligne réservé aux personnes invitées. Ce n'est pas un réseau social ouvert au grand public : chaque groupe est privé et géré par son responsable."
     features_member_title: Fonctionnalités pour les membres inscrits
     features_member_intro: 'Après création de compte et invitation dans un groupe familial, tu peux notamment :'
     features_member_groups: créer ou rejoindre des groupes familiaux privés ;
     features_member_events: planifier des événements (anniversaires, réunions, fêtes…) visibles par les membres du groupe ;
     features_member_messages: échanger via la messagerie intégrée (groupe et messages privés entre membres).
     privacy_title: Respect de la vie privée
-    privacy_text: Les événements, listes de membres et conversations ne sont pas accessibles aux visiteurs non connectés. Seules cette page d'information, l'accueil public, les pages légales et les écrans d'inscription ou de connexion sont visibles sans compte.
-    transparency_title: Ce que le site n'est pas
-    transparency_text: EventFamily ne publie pas d'annuaire public d'événements, ne vend pas de données familiales et n'affiche pas le contenu des groupes sur Internet. Les pages publiques servent uniquement à présenter le service et à permettre l'inscription.
+    privacy_text: "Les événements, listes de membres et conversations ne sont pas accessibles aux visiteurs non connectés. Seules cette page d'information, l'accueil public, les pages légales et les écrans d'inscription ou de connexion sont visibles sans compte."
+    transparency_title: "Ce que le site n'est pas"
+    transparency_text: "EventFamily ne publie pas d'annuaire public d'événements, ne vend pas de données familiales et n'affiche pas le contenu des groupes sur Internet. Les pages publiques servent uniquement à présenter le service et à permettre l'inscription."
     contact_public_title: Contact et éditeur
     contact_public_html: 'Les informations sur l''éditeur du site figurent dans les <a href="%mentions_url%">mentions légales</a>. Pour une question générale, tu peux écrire à <a href="mailto:%email%">%email%</a>. Le <a href="%contact_url%">formulaire de contact</a> est réservé aux membres connectés.'
     guest_cta_register: Créer un compte
