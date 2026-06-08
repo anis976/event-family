@@ -4,7 +4,7 @@
     <div class="ef-profile-avatar-wrap me-3">
         <img
             src="{{ path('app_profile_avatar_show', { id: subject.id, v: subject.updatedAt.timestamp }) }}"
-            alt="Photo de {{ subject.displayName }}"
+            alt="{{ 'ui.profile.avatar.alt_user'|trans({'%name%': subject.displayName}) }}"
             class="ef-profile-avatar"
             loading="lazy"
             decoding="async"

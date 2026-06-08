@@ -1,0 +1,29 @@
+user.email.unique: This email address is already in use.
+user.full_name.unique: This first and last name is already associated with an account.
+user.pseudo.unique: This username is already used by another account.
+user.full_name.unique_profile: This first and last name is already associated with another account.
+user.pseudo.unique_profile: This username is already used by another account.
+
+group.name.unique: This group name is already in use.
+group.name.required: Group name is required.
+group.family_name.required: Family name is required.
+group.description.max: Description cannot exceed {{ limit }} characters.
+
+group_member.user_group.unique: This user is already a member of this group.
+
+event.title.required: Title is required.
+event.description.max: Description cannot exceed {{ limit }} characters.
+event.group.required: Group is required.
+event.end_date.before_start: End date must be on or after the start date.
+
+user_ban.banned_user.required: Banned user is required.
+user_ban.reason.required: Ban reason is required.
+user_ban.reason.max: Reason cannot exceed {{ limit }} characters.
+
+"This value should not be blank.": "This field is required."
+"This value is not a valid email address.": "This email address is not valid."
+"This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.": "This value is too short (minimum {{ limit }} characters)."
+"The password fields must match.": "The passwords do not match."
+"You must accept the terms of use.": "You must accept the terms of use."
+"This email is already registered.": "This email address is already in use."
+"This first and last name combination is already registered.": "This first and last name is already associated with an account."

@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Suppression impossible{% endblock %}
+{% block title %}{{ 'ui.profile.delete_blocked.page_title'|trans }}{% endblock %}
 
-{% block page_title %}Suppression du compte{% endblock %}
+{% block page_title %}{{ 'ui.profile.delete_account.page_heading'|trans }}{% endblock %}
 
 {% block body %}
     <section class="ef-profile-section py-3 py-lg-5">
@@ -11,19 +11,19 @@
                 <div class="col-12 col-md-8 col-lg-6">
                     <div class="card ef-profile-card border-0 shadow-sm">
                         <div class="card-body p-4 p-md-5">
-                            <h2 class="h5 text-danger fw-bold mb-3">Suppression temporairement impossible</h2>
+                            <h1 class="h5 text-danger fw-bold mb-3">{{ 'ui.profile.delete_blocked.heading'|trans }}</h1>
                             <p class="mb-3">
-                                Tu es propriétaire d'au moins un groupe familial. Avant de supprimer ton compte, il faudra soit :
+                                {{ 'ui.profile.delete_blocked.intro'|trans }}
                             </p>
                             <ul class="small text-muted mb-4">
-                                <li>désigner un successeur (chef de groupe),</li>
-                                <li>soit supprimer le groupe sans successeur (le modérateur prendra le relais automatiquement).</li>
+                                <li>{{ 'ui.profile.delete_blocked.option_successor'|trans }}</li>
+                                <li>{{ 'ui.profile.delete_blocked.option_delete'|trans }}</li>
                             </ul>
                             <p class="small text-muted mb-4">
-                                Cette étape sera disponible avec le module <strong>Groupes</strong> (prochainement).
+                                {{ 'ui.profile.delete_blocked.coming_soon'|trans }}
                             </p>
                             <a href="{{ path('app_profile') }}" class="btn btn-save-profile w-100 py-2 fw-bold">
-                                Retour à mon espace
+                                {{ 'ui.profile.delete_blocked.back'|trans }}
                             </a>
                         </div>
                     </div>

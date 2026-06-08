@@ -4,23 +4,23 @@
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold" id="ef-session-idle-title">
                     <i class="bi bi-clock-history me-2 text-warning" aria-hidden="true"></i>
-                    Inactivité détectée
+                    {{ 'ui.session.idle.title'|trans }}
                 </h5>
             </div>
             <div class="modal-body pt-3">
-                <p class="mb-2">Tu n'as effectué aucune action depuis un moment.</p>
+                <p class="mb-2">{{ 'ui.session.idle.message'|trans }}</p>
                 <p class="mb-0">
-                    Déconnexion automatique dans
+                    {{ 'ui.session.idle.countdown_prefix'|trans }}
                     <strong id="ef-session-idle-countdown" class="ef-session-idle-modal__countdown">60</strong>
-                    seconde(s) pour protéger ton compte.
+                    {{ 'ui.session.idle.countdown_suffix'|trans }}
                 </p>
             </div>
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn ef-groups-form__btn-cancel" id="ef-session-idle-logout" data-ef-session-logout>
-                    Se déconnecter
+                    {{ 'ui.session.idle.logout'|trans }}
                 </button>
                 <button type="button" class="btn btn-save-profile" id="ef-session-idle-stay">
-                    Rester connecté
+                    {{ 'ui.session.idle.stay'|trans }}
                 </button>
             </div>
         </div>

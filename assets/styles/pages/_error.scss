@@ -1,0 +1,179 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+.ef-error-page {
+    background-color: $ef-bg-light;
+    min-height: 100vh;
+    transition: background-color 0.3s ease;
+
+    @include color-mode(dark) {
+        background-color: #121212;
+    }
+
+    &__main {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.25rem;
+    }
+
+    &__inner {
+        width: 100%;
+        max-width: 28rem;
+    }
+
+    &__card {
+        border-radius: 1.25rem;
+        background-color: white;
+        border: 1px solid $ef-border-color;
+        box-shadow: $box-shadow;
+        padding: 2.5rem 1.75rem;
+
+        @include color-mode(dark) {
+            background-color: #1e1e1e;
+            border-color: rgba($ef-white-color-dark, 0.1);
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    &__code {
+        margin: 0 0 0.5rem;
+        font-size: clamp(3.5rem, 18vw, 5.5rem);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        background: linear-gradient(135deg, $ef-primary-orange 0%, $ef-primary-blue 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+
+        @include color-mode(dark) {
+            background: linear-gradient(135deg, $ef-primary-orange-dark 0%, #5b7fd4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+    }
+
+    &__icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.5rem;
+        height: 3.5rem;
+        margin-bottom: 1rem;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        color: $ef-primary-orange;
+        background-color: rgba($ef-primary-orange, 0.12);
+
+        @include color-mode(dark) {
+            color: $ef-primary-orange-dark;
+            background-color: rgba($ef-primary-orange-dark, 0.15);
+        }
+    }
+
+    &__title {
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__message {
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        line-height: 1.6;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: rgba($ef-white-color-dark, 0.85);
+        }
+    }
+
+    &__hint {
+        margin-bottom: 1.75rem;
+        font-size: $ef-font-size-sm;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        @include media-breakpoint-up(md) {
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.3s;
+
+        &--primary {
+            @include custom-btn(
+                $bg-opacity: 0.15,
+                $light-color: $ef-primary-orange,
+                $dark-color: $ef-primary-orange-dark
+            );
+            color: $ef-active-hover-orange;
+
+            @include color-mode(dark) {
+                color: $ef-primary-orange-dark;
+            }
+        }
+
+        &--secondary {
+            @include custom-btn(
+                $bg-opacity: 0.08,
+                $light-color: $ef-primary-blue,
+                $dark-color: $ef-primary-blue
+            );
+            color: $ef-primary-blue-dark;
+
+            @include color-mode(dark) {
+                color: #6b8fd4;
+            }
+        }
+    }
+
+    &__brand {
+        margin: 1.5rem 0 0;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    &__brand-link {
+        color: $gray-600;
+        text-decoration: none;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: $ef-primary-orange;
+        }
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+
+            &:hover {
+                color: $ef-primary-orange-dark;
+            }
+        }
+    }
+}

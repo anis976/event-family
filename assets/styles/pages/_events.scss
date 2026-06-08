@@ -64,6 +64,10 @@
             padding: 0.4rem 0.8rem;
             text-decoration: none;
 
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+            }
+
             &.active {
                 background: $ef-primary-orange;
                 color: #131926;
@@ -114,6 +118,10 @@
 
             .card-title {
                 color: #6c757d !important;
+
+                @include color-mode(dark) {
+                    color: $gray-600-dark !important;
+                }
             }
 
             .bi {
@@ -145,6 +153,16 @@
         }
     }
 
+    &__article-trigger {
+        cursor: pointer;
+        border-radius: 15px 15px 0 0;
+
+        &:focus-visible {
+            outline: 2px solid $ef-primary-orange;
+            outline-offset: 2px;
+        }
+    }
+
     &__visibility-badge {
         background: rgba(13, 110, 253, 0.12);
         color: #0d6efd;
@@ -155,72 +173,61 @@
             color: $ef-primary-orange-dark;
             border-color: rgba($ef-primary-orange-dark, 0.25);
         }
-    }
-
-    &__paginate {
-        .pagination {
-            border: none;
-            gap: 0.35rem;
-
-            .page-item .page-link {
-                border: none;
-                background: transparent;
-                border-radius: 0.5rem;
-                color: #666;
-                padding: 0.6rem 1rem;
-                font-weight: 600;
-                transition: all 0.2s ease;
-                min-width: 42px;
-
-                &:hover {
-                    background-color: rgba($ef-primary-orange, 0.1);
-                    color: $ef-primary-orange;
-                }
-
-                &:focus {
-                    box-shadow: none;
-                }
-            }
-
-            .page-item.active .page-link {
-                @include custom-btn($bg-opacity: 1, $padding: 0.6rem 1rem);
-                color: white !important;
-                box-shadow: 0 4px 10px rgba($ef-primary-orange, 0.2);
-            }
-
-            .page-item.disabled .page-link {
-                opacity: 0.5;
-                color: #ccc;
-                background: transparent;
-                cursor: not-allowed;
-            }
-        }
 
         @include color-mode(dark) {
-            .page-item .page-link {
-                color: #aaa;
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, 0.3);
 
-                &:hover {
-                    background-color: rgba($ef-primary-orange, 0.2);
-                }
+            &--group {
+                background: rgba($ef-soft-gold, 0.12);
+                color: $ef-soft-gold;
+                border-color: rgba($ef-soft-gold, 0.3);
             }
         }
     }
 
     &__modal {
+        .modal-content {
+            @include color-mode(dark) {
+                background-color: #212529;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+        }
+
         .bi {
             color: $ef-primary-orange;
             font-size: 1.2rem;
         }
     }
 
+    &__btn-more {
+        background-color: rgba(243, 141, 30, 0.15);
+        color: $ef-primary-orange;
+        border: none;
+        text-decoration: none;
+        transition: background-color 0.3s, color 0.3s;
+
+        &:hover {
+            background-color: $ef-primary-orange;
+            color: white;
+        }
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-primary-orange, 0.1);
+            border: 1px solid $ef-primary-orange;
+            color: $ef-primary-orange;
+
+            &:hover {
+                background-color: $ef-primary-orange;
+                color: white;
+            }
+        }
+    }
+
     &__modal-img {
         max-height: 280px;
         object-fit: cover;
-
-        &--detail {
-            max-height: 220px;
-        }
 
         &--past {
             filter: grayscale(1);
@@ -295,105 +302,89 @@
     }
 
     &__breadcrumb-link {
-        color: $ef-primary-orange;
+        color: #5c5b5b;
         text-decoration: none;
 
         &:hover {
-            color: $ef-active-hover-orange;
+            color: $ef-primary-orange;
+        }
+
+        @include color-mode(dark) {
+            color: #a0a0a0;
         }
     }
 
     &__breadcrumb-sep {
         color: $gray-500;
-    }
-
-    &__breadcrumb-current {
-        color: $gray-600;
-        font-weight: 500;
-    }
-}
-
-.ef-event {
-    &__modal {
-        border: none;
-        border-radius: 1rem;
 
         @include color-mode(dark) {
-            background-color: #212529;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #666;
         }
     }
 
-    &__label {
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 0.3rem;
+    &__breadcrumb-current {
+        color: $ef-primary-orange-dark;
+        font-weight: 600;
+
+        @include color-mode(dark) {
+            color: $ef-soft-gold;
+        }
+    }
+}
+
+.ef-events-form {
+    &__card {
+        background-color: var(--bs-card-bg);
+        border-radius: 1.25rem;
+        transition: background 0.3s ease;
+
+        @include color-mode(dark) {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
     }
 
-    &__textarea {
-        border-radius: 0.5rem;
+    .ef-input {
+        &::placeholder {
+            opacity: 0.42;
+        }
+
+        &::-webkit-input-placeholder {
+            opacity: 0.42;
+        }
+
+        &::-moz-placeholder {
+            opacity: 0.42;
+        }
+    }
+
+    .ef-event__textarea {
         min-height: 120px;
     }
 
     &__btn-cancel {
-        @include custom-btn($bg-opacity: 0, $padding: 0.6rem 1.2rem, $light-color: #666, $dark-color: #aaa);
-        border: 1px solid #ddd;
-        border-radius: 0.5rem;
-        background: transparent;
-    }
-}
-
-.ef-events-form__card {
-    border-radius: 12px;
-}
-
-.ef-event-show {
-    &__nav-link {
-        color: $ef-primary-orange;
+        background-color: #f8f9fa;
+        border: 1px solid var(--bs-border-color);
+        color: $gray-700;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
         text-decoration: none;
 
         &:hover {
-            color: $ef-active-hover-orange;
-            text-decoration: underline;
+            background-color: #e9ecef;
+            color: $gray-700;
         }
-    }
 
-    &__hero {
-        max-height: 420px;
-        object-fit: cover;
-
-        &--past {
-            filter: grayscale(1);
-            transition: filter 0.35s ease;
+        @include color-mode(dark) {
+            background-color: #2b2b2b;
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #c8c8c8;
 
             &:hover {
-                filter: grayscale(0);
+                background-color: #383838;
+                color: #e0e0e0;
             }
-        }
-    }
-
-    &__description {
-        white-space: pre-wrap;
-        line-height: 1.6;
-    }
-
-    &__meta {
-        dt {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            color: $gray-600;
-            margin-bottom: 0.25rem;
-            margin-top: 0.75rem;
-
-            &:first-child {
-                margin-top: 0;
-            }
-        }
-
-        dd {
-            margin-bottom: 0;
-            font-weight: 500;
         }
     }
 }

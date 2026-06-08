@@ -1,23 +1,34 @@
 {% if pagination.total_pages > 1 %}
-<nav class="{{ wrapper_class|default('mt-4 d-flex justify-content-center') }}" aria-label="Pagination">
-    <ul class="pagination mb-0">
-        <li class="page-item{{ pagination.page <= 1 ? ' disabled' : '' }}">
-            <a class="page-link" href="{{ pagination.page <= 1 ? '#' : path(route_name, route_params|merge({ page: pagination.page - 1 })) }}" aria-label="Page précédente">
-                <i class="bi bi-chevron-left"></i>
-            </a>
-        </li>
+    {# Pagination réutilisable (événements, groupes, membres…) #}
+    <div class="{{ wrapper_class|default('d-flex justify-content-center ef-paginate mt-5') }}">
+        <nav aria-label="{{ aria_label|default('ui.common.pagination_aria'|trans) }}">
+            <ul class="pagination gap-2 mb-0">
+                <li class="page-item{{ pagination.page <= 1 ? ' disabled' : '' }}">
+                    <a
+                        class="page-link"
+                        href="{{ pagination.page <= 1 ? '#' : path(route_name, route_params|merge({ (page_param|default('page')): pagination.page - 1 })) }}"
+                        aria-label="{{ 'ui.common.pagination_prev'|trans }}"
+                    >
+                        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+                    </a>
+                </li>
 
-        {% for p in 1..pagination.total_pages %}
-            <li class="page-item{{ p == pagination.page ? ' active' : '' }}">
-                <a class="page-link" href="{{ path(route_name, route_params|merge({ page: p })) }}">{{ p }}</a>
-            </li>
-        {% endfor %}
+                {% for p in 1..pagination.total_pages %}
+                    <li class="page-item{{ p == pagination.page ? ' active' : '' }}"{{ p == pagination.page ? ' aria-current="page"' : '' }}>
+                        <a class="page-link" href="{{ path(route_name, route_params|merge({ (page_param|default('page')): p })) }}">{{ p }}</a>
+                    </li>
+                {% endfor %}
 
-        <li class="page-item{{ pagination.page >= pagination.total_pages ? ' disabled' : '' }}">
-            <a class="page-link" href="{{ pagination.page >= pagination.total_pages ? '#' : path(route_name, route_params|merge({ page: pagination.page + 1 })) }}" aria-label="Page suivante">
-                <i class="bi bi-chevron-right"></i>
-            </a>
-        </li>
-    </ul>
-</nav>
+                <li class="page-item{{ pagination.page >= pagination.total_pages ? ' disabled' : '' }}">
+                    <a
+                        class="page-link"
+                        href="{{ pagination.page >= pagination.total_pages ? '#' : path(route_name, route_params|merge({ (page_param|default('page')): pagination.page + 1 })) }}"
+                        aria-label="{{ 'ui.common.pagination_next'|trans }}"
+                    >
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 {% endif %}

@@ -32,23 +32,51 @@ abstract class AbstractAppController extends AbstractController
         return $this->translator->trans($id, $parameters, $domain, $locale);
     }
 
-    protected function addSuccessFlash(string $message): void
+    /**
+     * @param array<string, int|float|string> $parameters
+     */
+    protected function addSuccessFlash(string $message, array $parameters = []): void
     {
-        $this->addFlash(FlashType::Success->value, $message);
+        $this->addFlash(FlashType::Success->value, $this->flashMessage($message, $parameters));
     }
 
-    protected function addErrorFlash(string $message): void
+    /**
+     * @param array<string, int|float|string> $parameters
+     */
+    protected function addErrorFlash(string $message, array $parameters = []): void
     {
-        $this->addFlash(FlashType::Danger->value, $message);
+        $this->addFlash(FlashType::Danger->value, $this->flashMessage($message, $parameters));
     }
 
-    protected function addWarningFlash(string $message): void
+    /**
+     * @param array<string, int|float|string> $parameters
+     */
+    protected function addWarningFlash(string $message, array $parameters = []): void
     {
-        $this->addFlash(FlashType::Warning->value, $message);
+        $this->addFlash(FlashType::Warning->value, $this->flashMessage($message, $parameters));
     }
 
-    protected function addInfoFlash(string $message): void
+    /**
+     * @param array<string, int|float|string> $parameters
+     */
+    protected function addInfoFlash(string $message, array $parameters = []): void
     {
-        $this->addFlash(FlashType::Info->value, $message);
+        $this->addFlash(FlashType::Info->value, $this->flashMessage($message, $parameters));
+    }
+
+    /**
+     * Traduit les clés messages (flash.*, ui.*, event.*, group.*, etc.) ; laisse le texte tel quel s'il n'y a pas de traduction.
+     *
+     * @param array<string, int|float|string> $parameters
+     */
+    private function flashMessage(string $message, array $parameters = []): string
+    {
+        if (!preg_match('/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/', $message)) {
+            return $message;
+        }
+
+        $translated = $this->translator->trans($message, $parameters, 'messages');
+
+        return $translated !== $message ? $translated : $message;
     }
 }

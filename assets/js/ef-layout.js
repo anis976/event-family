@@ -3,6 +3,7 @@
  */
 
 const STORAGE_THEME_KEY = 'ef-theme';
+const ADMIN_STORAGE_THEME_KEY = 'ea/colorScheme';
 const SCROLL_TOP_THRESHOLD = 300;
 
 const THEME_ICONS = {
@@ -38,6 +39,7 @@ export function applyTheme(preference) {
 
     document.documentElement.setAttribute('data-bs-theme', resolved);
     document.documentElement.dataset.efThemePreference = preference;
+    localStorage.setItem(ADMIN_STORAGE_THEME_KEY, preference);
 
     const icon = document.getElementById('theme-icon-main');
     if (icon) {
@@ -67,6 +69,12 @@ function disposeBootstrapDropdowns() {
     });
 }
 
+const CONSENT_PREFERENCES_MODAL_ID = 'ef-consent-preferences-modal';
+
+function isConsentPreferencesModal(element) {
+    return element instanceof HTMLElement && element.id === CONSENT_PREFERENCES_MODAL_ID;
+}
+
 function disposeBootstrapModals() {
     const bootstrap = getBootstrap();
     if (!bootstrap?.Modal) {
@@ -74,10 +82,18 @@ function disposeBootstrapModals() {
     }
 
     document.querySelectorAll('.modal.show').forEach((element) => {
+        if (isConsentPreferencesModal(element) && element.contains(document.activeElement)) {
+            document.activeElement?.blur();
+        }
+
         bootstrap.Modal.getInstance(element)?.hide();
     });
 
     document.querySelectorAll('.modal').forEach((element) => {
+        if (isConsentPreferencesModal(element)) {
+            return;
+        }
+
         bootstrap.Modal.getInstance(element)?.dispose();
     });
 
@@ -106,12 +122,33 @@ function toggleSidebar() {
     document.body.classList.toggle('ef-sidebar-open');
 }
 
+function updateSearchToggleState(isOpen) {
+    const toggle = document.getElementById('btnSearchToggle');
+    if (toggle) {
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    }
+}
+
 function closeSearchPanel() {
     document.getElementById('searchBarCollapse')?.classList.remove('ef-search-panel--open');
+    document.body.classList.remove('ef-search-open');
+    updateSearchToggleState(false);
 }
 
 function toggleSearchPanel() {
-    document.getElementById('searchBarCollapse')?.classList.toggle('ef-search-panel--open');
+    const panel = document.getElementById('searchBarCollapse');
+    if (!panel) {
+        return;
+    }
+
+    const isOpen = !panel.classList.contains('ef-search-panel--open');
+    panel.classList.toggle('ef-search-panel--open', isOpen);
+    document.body.classList.toggle('ef-search-open', isOpen);
+    updateSearchToggleState(isOpen);
+
+    if (isOpen) {
+        document.getElementById('searchInput')?.focus();
+    }
 }
 
 function updateBackToTopVisibility() {
@@ -144,6 +181,13 @@ function onThemeButtonClick(event) {
 }
 
 function onLayoutClick(event) {
+    if (document.body.classList.contains('ef-search-open')) {
+        if (!event.target.closest('#searchBarCollapse') && !event.target.closest('#btnSearchToggle')) {
+            closeSearchPanel();
+            return;
+        }
+    }
+
     if (event.target.closest('#mobile-toggle')) {
         toggleSidebar();
         return;
@@ -171,16 +215,6 @@ function onLayoutClick(event) {
 
     if (event.target.closest('[data-ef-theme]')) {
         onThemeButtonClick(event);
-    }
-
-    if (event.target.closest('[data-ef-google-soon]')) {
-        event.preventDefault();
-    }
-}
-
-function onFormSubmit(event) {
-    if (event.target instanceof HTMLFormElement && event.target.matches('[data-ef-contact-form]')) {
-        event.preventDefault();
     }
 }
 
@@ -216,7 +250,6 @@ export function initEventFamilyLayout() {
     layoutInitialized = true;
 
     document.addEventListener('click', onLayoutClick);
-    document.addEventListener('submit', onFormSubmit);
     document.addEventListener('turbo:before-cache', onTurboBeforeCache);
 
     scrollHandler = () => updateBackToTopVisibility();

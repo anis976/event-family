@@ -1,19 +1,19 @@
 <div class="card border-0 shadow-sm ef-GroupShow__card-member">
     <div class="card-header bg-transparent border-0 py-4 px-4 d-flex justify-content-between align-items-center">
-        <h3 class="mb-0 h5">Membres du cercle <span class="badge bg-secondary ms-2">{{ group.groupMembers|length }}</span></h3>
+        <h3 class="mb-0 h5">{{ 'ui.groups.members.title'|trans }} <span class="badge bg-secondary ms-2">{{ membersTotal }}</span></h3>
     </div>
 
     <div class="table-responsive px-2">
         <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
             <thead class="d-none d-md-table-header-group">
                 <tr>
-                    <th class="ps-4 py-3 border-0">Membre</th>
-                    <th class="py-3 border-0">Rôle</th>
-                    <th class="py-3 border-0 text-end pe-4">Actions</th>
+                    <th class="ps-4 py-3 border-0">{{ 'ui.groups.members.column_member'|trans }}</th>
+                    <th class="py-3 border-0">{{ 'ui.groups.members.column_role'|trans }}</th>
+                    <th class="py-3 border-0 text-end pe-4">{{ 'ui.groups.members.column_actions'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
-                {% for member in group.groupMembers %}
+                {% for member in groupMembers %}
                     {% set is_banned = isMember and bannedUserIds[member.user.id] is defined %}
                     {% set is_self = member.user.id == app.user.id %}
                     {% set is_target_owner = member.role.value == 'OWNER' %}
@@ -33,26 +33,26 @@
 
                         <td class="ef-GroupShow__card-table-badge py-3">
                             {% if is_banned %}
-                                <span class="badge ef-badge-role-banni"><i class="bi bi-slash-circle me-1"></i>BANNI</span>
+                                <span class="badge ef-badge-role-banni"><i class="bi bi-slash-circle me-1"></i>{{ 'ui.groups.members.role_banned'|trans }}</span>
                             {% elseif is_target_owner %}
-                                <span class="badge ef-badge-role-chef"><i class="bi bi-star-fill me-1"></i>CHEF</span>
+                                <span class="badge ef-badge-role-chef"><i class="bi bi-star-fill me-1"></i>{{ 'ui.groups.members.role_owner'|trans }}</span>
                             {% elseif member.role.value == 'MODERATOR' %}
-                                <span class="badge ef-badge-role-modo"><i class="bi bi-shield-check me-1"></i>MODO</span>
+                                <span class="badge ef-badge-role-modo"><i class="bi bi-shield-check me-1"></i>{{ 'ui.groups.members.role_moderator'|trans }}</span>
                             {% else %}
-                                <span class="badge ef-badge-role-member">MEMBRE</span>
+                                <span class="badge ef-badge-role-member">{{ 'ui.groups.members.role_member'|trans }}</span>
                             {% endif %}
                         </td>
 
                         <td class="text-end pe-4 py-3">
                             {% if not is_banned %}
                                 <div class="dropdown d-inline-block">
-                                    <button class="ef-GroupShow__btn-three-dots" type="button" data-bs-toggle="dropdown" aria-label="Actions membre">
-                                        <i class="bi bi-three-dots"></i>
+                                    <button class="ef-GroupShow__btn-three-dots" type="button" data-bs-toggle="dropdown" aria-label="{{ 'ui.groups.members.actions_aria'|trans({'%name%': member.user.displayName}) }}">
+                                        <i class="bi bi-three-dots" aria-hidden="true"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end ef-dropdown-menu">
                                         <li>
                                             <a class="dropdown-item" href="{{ path('app_profile_show', { id: member.user.id }) }}">
-                                                <i class="bi bi-person me-2"></i>Voir profil
+                                                <i class="bi bi-person me-2"></i>{{ 'ui.groups.members.view_profile'|trans }}
                                             </a>
                                         </li>
 
@@ -62,7 +62,7 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token('toggle-modo' ~ member.id) }}">
                                                     <button type="submit" class="dropdown-item">
                                                         <i class="bi bi-shield-check me-2"></i>
-                                                        {{ member.role.value == 'MODERATOR' ? 'Retirer modérateur' : 'Passer modérateur' }}
+                                                        {{ member.role.value == 'MODERATOR' ? 'ui.groups.members.remove_moderator'|trans : 'ui.groups.members.make_moderator'|trans }}
                                                     </button>
                                                 </form>
                                             </li>
@@ -76,7 +76,7 @@
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#ban-modal-{{ member.id }}"
                                                 >
-                                                    <i class="bi bi-slash-circle me-2"></i>Bannir
+                                                    <i class="bi bi-slash-circle me-2"></i>{{ 'ui.groups.members.ban'|trans }}
                                                 </button>
                                             </li>
                                         {% endif %}
@@ -86,7 +86,7 @@
                                                 <form action="{{ path('app_groups_kick_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('kick' ~ member.id) }}">
                                                     <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-person-x me-2"></i>Exclure
+                                                        <i class="bi bi-person-x me-2"></i>{{ 'ui.groups.members.kick'|trans }}
                                                     </button>
                                                 </form>
                                             </li>
@@ -99,7 +99,7 @@
                                                     class="dropdown-item"
                                                     data-ef-toggle-message-row="message-row-{{ member.user.id }}"
                                                 >
-                                                    <i class="bi bi-chat-dots me-2 text-primary"></i>Envoyer un message
+                                                    <i class="bi bi-chat-dots me-2 text-primary"></i>{{ 'ui.groups.members.send_message'|trans }}
                                                 </button>
                                             </li>
                                         {% endif %}
@@ -109,7 +109,7 @@
                                 <form action="{{ path('app_groups_unban_member', { memberId: member.id }) }}" method="POST" data-turbo="false" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('unban' ~ member.id) }}">
                                     <button type="submit" class="btn btn-sm btn-outline-success">
-                                        <i class="bi bi-check-circle me-1"></i> Débannir
+                                        <i class="bi bi-check-circle me-1"></i> {{ 'ui.groups.members.unban'|trans }}
                                     </button>
                                 </form>
                             {% endif %}
@@ -123,11 +123,23 @@
                                     <input type="hidden" name="recipient_id" value="{{ member.user.id }}">
                                     <input type="hidden" name="redirect_route" value="app_groups_show">
                                     <input type="hidden" name="redirect_id" value="{{ group.id }}">
+                                    {% if ef_is_site_staff %}
+                                        {% include 'messages/_direct_message_send_mode.html.twig' with {
+                                            id_prefix: 'group-msg-' ~ member.user.id,
+                                        } only %}
+                                    {% endif %}
                                     <div class="d-flex flex-column flex-sm-row gap-2">
-                                        <input type="text" name="content" class="form-control" placeholder="Votre message…" required>
+                                        <input
+                                            type="text"
+                                            name="content"
+                                            class="form-control ef-input"
+                                            placeholder="{{ 'ui.groups.members.message_placeholder'|trans }}"
+                                            aria-label="{{ 'ui.groups.members.message_label'|trans({'%name%': member.user.firstName|capitalize}) }}"
+                                            required
+                                        >
                                         <div class="d-flex gap-2">
-                                            <button type="submit" class="btn btn-primary">Envoyer</button>
-                                            <button type="button" class="btn btn-light" data-ef-close-message-row="message-row-{{ member.user.id }}">Annuler</button>
+                                            <button type="submit" class="btn ef-GroupShow__btn-send">{{ 'ui.common.send'|trans }}</button>
+                                            <button type="button" class="btn btn-light" data-ef-close-message-row="message-row-{{ member.user.id }}">{{ 'ui.common.cancel'|trans }}</button>
                                         </div>
                                     </div>
                                 </form>
@@ -138,9 +150,17 @@
             </tbody>
         </table>
     </div>
+
+    {% include 'components/_ef_paginate.html.twig' with {
+        pagination: membersPagination,
+        route_name: 'app_groups_show',
+        route_params: { id: group.id },
+        wrapper_class: 'd-flex justify-content-center ef-paginate mt-4 mb-2',
+        aria_label: 'ui.groups.members.pagination_aria'|trans,
+    } only %}
 </div>
 
-{% for member in group.groupMembers %}
+{% for member in groupMembers %}
     {% set is_self = member.user.id == app.user.id %}
     {% set is_target_owner = member.role.value == 'OWNER' %}
     {% set can_staff_ban = isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
@@ -152,15 +172,15 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('ban' ~ member.id) }}">
                         <div class="modal-header border-0">
                             <h5 class="modal-title" id="ban-modal-label-{{ member.id }}">
-                                Bannir {{ member.user.firstName }} {{ member.user.lastName }}
+                                {{ 'ui.groups.members.ban_modal_title'|trans({'%name%': member.user.firstName ~ ' ' ~ member.user.lastName}) }}
                             </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
                         </div>
                         <div class="modal-body">
                             <p class="text-muted small mb-3">
-                                Le membre sera banni de ce groupe. EventFamily enverra automatiquement un avertissement (1/3, 2/3) ou supprimera le compte au 3e bannissement cumulé sur la plateforme.
+                                {{ 'ui.groups.members.ban_modal_hint'|trans }}
                             </p>
-                            <label for="ban-reason-{{ member.id }}" class="form-label fw-medium">Motif du bannissement <span class="text-danger">*</span></label>
+                            <label for="ban-reason-{{ member.id }}" class="form-label fw-medium">{{ 'ui.groups.members.ban_reason_label'|trans }} <span class="text-danger">*</span></label>
                             <textarea
                                 id="ban-reason-{{ member.id }}"
                                 name="reason"
@@ -168,12 +188,12 @@
                                 rows="5"
                                 maxlength="2000"
                                 required
-                                placeholder="Décris clairement la raison du bannissement…"
+                                placeholder="{{ 'ui.groups.members.ban_reason_placeholder'|trans }}"
                             ></textarea>
                         </div>
                         <div class="modal-footer border-0">
-                            <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-danger">Confirmer le bannissement</button>
+                            <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'ui.groups.members.ban_confirm'|trans }}</button>
                         </div>
                     </form>
                 </div>

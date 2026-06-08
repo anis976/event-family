@@ -1,0 +1,49 @@
+{% for thread in private_threads %}
+    {% if thread.parent is null %}
+        {% if thread.platformNotice %}
+            {% include 'messages/_platform_private_notice.html.twig' with {
+                thread: thread,
+                isUnread: unread_ids[thread.id] is defined,
+            } %}
+        {% else %}
+            {% include 'messages/_thread.html.twig' with {
+                thread: thread,
+                unread_ids: unread_ids,
+                read_receipts: read_receipts|default({}),
+                thread_reply_totals: thread_reply_totals|default({}),
+                thread_replies_visible: thread_replies_visible|default({}),
+                private_replies_load_more: private_replies_load_more|default(30),
+                private_replies_max_visible: private_replies_max_visible|default(200),
+            } %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    <p class="text-muted text-center my-5">{{ 'ui.messages.private.empty'|trans }}</p>
+{% endfor %}
+
+{% if private_threads_total > 0 %}
+    <p class="text-muted text-center small mb-0 ef-messages__threads-count" role="status">
+        {{ 'ui.messages.private.showing_count'|trans({
+            '%count%': private_threads|length,
+            '%visible%': private_threads|length,
+            '%total%': private_threads_total,
+        }) }}
+    </p>
+{% endif %}
+
+{% if can_load_older_threads %}
+    <div class="text-center mt-3 mb-1" id="ef-messages-older">
+        <a
+            href="{{ path('app_messages_private', { show: next_threads_visible }) }}#ef-messages-older"
+            class="btn btn-outline-secondary btn-sm rounded-pill px-4 ef-messages__load-older"
+            data-turbo-action="advance"
+        >
+            <i class="bi bi-arrow-down-circle me-1" aria-hidden="true"></i>
+            {{ 'ui.messages.private.load_older'|trans }}
+        </a>
+    </div>
+{% elseif threads_max_visible_reached %}
+    <p class="text-muted text-center small mt-3 mb-0" role="status">
+        {{ 'ui.messages.private.max_visible_hint'|trans({ '%max%': threads_max_visible }) }}
+    </p>
+{% endif %}

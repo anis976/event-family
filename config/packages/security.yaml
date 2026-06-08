@@ -10,7 +10,8 @@ security:
 
     role_hierarchy:
         ROLE_MODERATOR: ROLE_USER
-        ROLE_ADMIN: [ROLE_MODERATOR, ROLE_USER]
+        ROLE_SUPER_MODERATOR: ROLE_MODERATOR
+        ROLE_ADMIN: [ROLE_SUPER_MODERATOR, ROLE_MODERATOR, ROLE_USER]
 
     firewalls:
         dev:
@@ -37,8 +38,12 @@ security:
                 path: app_logout
                 target: app_home
                 enable_csrf: true
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
 
     access_control:
+        - { path: ^/connect, roles: PUBLIC_ACCESS }
+        - { path: ^/inscription/google/terminer, roles: ROLE_USER }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/mot-de-passe-oublie, roles: PUBLIC_ACCESS }
         - { path: ^/reinitialiser-mot-de-passe, roles: PUBLIC_ACCESS }

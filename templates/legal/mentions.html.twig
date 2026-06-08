@@ -1,41 +1,52 @@
 {% extends 'layout/legal.html.twig' %}
 
-{% block title %}EventFamily — Mentions légales{% endblock %}
+{% block title %}{{ 'ui.legal.mentions_title'|trans }}{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="{{ 'ui.legal.mentions_meta_description'|trans }}">
+{% endblock %}
 
 {% block body %}
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-9">
                 <div class="card ef-legal-card border-0 shadow-sm p-4 p-md-5">
-                    <a href="{{ path('app_home') }}" class="btn-return mb-4">
-                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>Retour à l'accueil
+                    <a href="{{ path('app_home') }}" class="btn-return">
+                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>{{ 'ui.legal.back_home'|trans }}
                     </a>
 
-                    <h1 class="fw-bold mb-4">Mentions légales</h1>
+                    <h1 class="fw-bold mb-4">{{ 'ui.legal.mentions_title'|trans }}</h1>
 
-                    <section class="mb-5">
-                        <h2 class="h5 fw-bold text-uppercase opacity-75 mb-3">1. Édition du site</h2>
-                        <p>En vertu de l'article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique, il est précisé aux utilisateurs du site <strong>EventFamily</strong> l'identité des différents intervenants dans le cadre de sa réalisation et de son suivi :</p>
+                    <section class="mb-5" aria-labelledby="ef-legal-editor-title">
+                        <h2 id="ef-legal-editor-title" class="h5 fw-bold text-uppercase opacity-75 mb-3">{{ 'legal.mentions.editor.title'|trans }}</h2>
+                        <p>{{ 'legal.mentions.editor.intro'|trans|raw }}</p>
                         <ul class="list-unstyled ps-3 border-start border-3">
-                            <li><strong>Propriétaire &amp; Éditeur :</strong> SOUFFOUMADI Anissoir</li>
-                            <li><strong>Contact :</strong> <a href="mailto:anissoir976@gmail.com">anissoir976@gmail.com</a></li>
-                            <li><strong>Directeur de la publication :</strong> SOUFFOUMADI Anissoir</li>
+                            <li><strong>{{ 'legal.mentions.editor.owner'|trans }}</strong> {{ 'legal.mentions.editor.owner_name'|trans }}</li>
+                            <li><strong>{{ 'legal.mentions.editor.address'|trans }}</strong> {{ ef_publisher_address }}</li>
+                            <li><strong>{{ 'legal.mentions.editor.contact'|trans }}</strong> <a href="mailto:{{ ef_contact_recipient }}">{{ ef_contact_recipient }}</a></li>
+                            <li><strong>{{ 'legal.mentions.editor.director'|trans }}</strong> {{ 'legal.mentions.editor.director_name'|trans }}</li>
+                            <li><strong>{{ 'legal.mentions.editor.status'|trans }}</strong> {{ 'legal.mentions.editor.status_body'|trans }}</li>
                         </ul>
                     </section>
 
-                    <section class="mb-5">
-                        <h2 class="h5 fw-bold text-uppercase opacity-75 mb-3">2. Hébergement</h2>
-                        <p>Le site est hébergé par :</p>
+                    <section class="mb-5" aria-labelledby="ef-legal-nature-title">
+                        <h2 id="ef-legal-nature-title" class="h5 fw-bold text-uppercase opacity-75 mb-3">{{ 'legal.mentions.nature.title'|trans }}</h2>
+                        <p class="mb-0">{{ 'legal.mentions.nature.body'|trans }}</p>
+                    </section>
+
+                    <section class="mb-5" aria-labelledby="ef-legal-hosting-title">
+                        <h2 id="ef-legal-hosting-title" class="h5 fw-bold text-uppercase opacity-75 mb-3">{{ 'legal.mentions.hosting.title'|trans }}</h2>
+                        <p>{{ 'legal.mentions.hosting.intro'|trans }}</p>
                         <ul class="list-unstyled ps-3 border-start border-3">
-                            <li><strong>Prestataire :</strong> [Nom de l'hébergeur - ex: OVH Cloud]</li>
-                            <li><strong>Siège social :</strong> [Adresse complète de l'hébergeur]</li>
-                            <li><strong>Contact :</strong> [Téléphone ou site de l'hébergeur]</li>
+                            <li><strong>{{ 'legal.mentions.hosting.provider'|trans }}</strong> {{ 'legal.mentions.hosting.provider_placeholder'|trans }}</li>
+                            <li><strong>{{ 'legal.mentions.hosting.address'|trans }}</strong> {{ 'legal.mentions.hosting.address_placeholder'|trans }}</li>
+                            <li><strong>{{ 'legal.mentions.hosting.contact'|trans }}</strong> {{ 'legal.mentions.hosting.contact_placeholder'|trans }}</li>
                         </ul>
                     </section>
 
-                    <section>
-                        <h2 class="h5 fw-bold text-uppercase opacity-75 mb-3">3. Propriété intellectuelle</h2>
-                        <p>SOUFFOUMADI Anissoir est propriétaire des droits de propriété intellectuelle sur la structure du site (logos, graphismes, icônes). Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable.</p>
+                    <section aria-labelledby="ef-legal-ip-title">
+                        <h2 id="ef-legal-ip-title" class="h5 fw-bold text-uppercase opacity-75 mb-3">{{ 'legal.mentions.ip.title'|trans }}</h2>
+                        <p class="mb-0">{{ 'legal.mentions.ip.body'|trans }}</p>
                     </section>
                 </div>
             </div>

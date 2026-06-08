@@ -159,4 +159,30 @@
             color: $ef-white-color-dark;
         }
     }
+
+    .ef-auth__form-card {
+        padding: 2rem !important;
+
+        @include media-breakpoint-down(lg) {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+    }
+
+    .ef-auth__illustration {
+        filter: hue-rotate(165deg) saturate(1.5) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+        object-fit: contain;
+        max-width: 100%;
+        transition: filter 0.4s ease;
+
+        @include media-breakpoint-up(lg) {
+            max-height: min(450px, 55vh) !important;
+        }
+
+        @include color-mode(dark) {
+            filter: hue-rotate(165deg) brightness(0.8) saturate(1.2)
+                drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+        }
+    }
 }

@@ -8,25 +8,32 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Util\ParisClock;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class GroupSystemNoticeService
 {
-    public const DEFAULT_NOTICE = <<<'TEXT'
-Bienvenue dans l'espace messages de ce groupe.
-
-Respecte les autres membres, reste courtois et signale tout comportement inapproprié au chef ou au modérateur du groupe. Les règles de la plateforme EventFamily s'appliquent ici.
-TEXT;
-
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
-    public function getContent(Group $group): string
+    public function getContent(Group $group, ?string $locale = null): string
     {
         $custom = trim($group->getSystemNoticeContent() ?? '');
 
-        return '' !== $custom ? $custom : self::DEFAULT_NOTICE;
+        if ('' !== $custom) {
+            return $custom;
+        }
+
+        return $this->translator->trans(
+            'group.system_notice.default',
+            [],
+            'messages',
+            $this->resolveLocale($locale),
+        );
     }
 
     public function isCustomized(Group $group): bool
@@ -52,10 +59,19 @@ TEXT;
         $this->entityManager->flush();
     }
 
-    private function assertAdmin(User $user): void
+    private function assertAdmin(User $admin): void
     {
-        if (!\in_array(User::ROLE_ADMIN, $user->getRoles(), true)) {
-            throw new \DomainException('Seul un administrateur du site peut gérer ce message.');
+        if (!\in_array(User::ROLE_ADMIN, $admin->getRoles(), true)) {
+            throw new \DomainException('flash.message.admin_system_only');
         }
+    }
+
+    private function resolveLocale(?string $locale): string
+    {
+        $resolved = $locale
+            ?? $this->requestStack->getCurrentRequest()?->getLocale()
+            ?? 'fr';
+
+        return \in_array($resolved, ['fr', 'en'], true) ? $resolved : 'fr';
     }
 }

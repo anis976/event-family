@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Entity\Trait\TimestampableParisTrait;
 use App\Enum\GroupMemberRole;
 use App\Repository\GroupMemberRepository;
@@ -15,10 +17,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Table(name: 'ef_group_members')]
 #[ORM\UniqueConstraint(name: 'uniq_ef_group_members_user_group', columns: ['user_id', 'group_id'])]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: ['user', 'group'], message: 'Cet utilisateur est déjà membre de ce groupe.')]
-class GroupMember
+#[UniqueEntity(fields: ['user', 'group'], message: 'group_member.user_group.unique')]
+class GroupMember implements EfAdminLabelInterface
 {
     use TimestampableParisTrait;
+    use AdminLabelTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -128,5 +131,15 @@ class GroupMember
         $this->lastActivityAt = $lastActivityAt;
 
         return $this;
+    }
+
+    public function getAdminLabel(): string
+    {
+        return sprintf(
+            '%s — %s (%s)',
+            $this->user->getAdminLabel(),
+            $this->group->getAdminLabel(),
+            $this->role->value,
+        );
     }
 }

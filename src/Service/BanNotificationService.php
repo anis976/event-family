@@ -11,11 +11,14 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class BanNotificationService
 {
     public function __construct(
         private readonly MailerInterface $mailer,
+        private readonly TransactionalEmailHelper $emailHelper,
+        private readonly TranslatorInterface $translator,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
     ) {
@@ -26,12 +29,14 @@ final class BanNotificationService
      */
     public function sendWarningEmail(User $user, int $step, string $reason, ?Group $group): void
     {
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject($this->buildEmailSubject($step))
-            ->htmlTemplate('emails/ban_warning.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->buildEmailSubject($step, $user))
+                ->htmlTemplate('emails/ban_warning.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'step' => $step,
                 'maxSteps' => BanEscalationService::MAX_BANS_BEFORE_DELETION,
@@ -39,7 +44,8 @@ final class BanNotificationService
                 'group' => $group,
                 'isFinalWarning' => 2 === $step,
                 'isDeletion' => 3 === $step,
-            ]);
+            ],
+        );
 
         $this->mailer->send($email);
     }
@@ -47,72 +53,57 @@ final class BanNotificationService
     /**
      * @throws TransportExceptionInterface
      */
-    public function sendAccountDeletedEmail(string $originalEmail, string $reason, ?Group $group, int $banCount): void
+    public function sendAccountDeletedEmail(string $originalEmail, string $reason, ?Group $group, int $banCount, string $locale = 'fr'): void
     {
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($originalEmail)
-            ->subject('EventFamily — Ton compte a été supprimé')
-            ->htmlTemplate('emails/ban_account_deleted.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($originalEmail)
+                ->subject($this->emailHelper->trans('email.ban_deleted.subject', locale: $locale))
+                ->htmlTemplate('emails/ban_account_deleted.html.twig'),
+            locale: $locale,
+            context: [
                 'reason' => $reason,
                 'group' => $group,
                 'banCount' => $banCount,
-            ]);
+            ],
+        );
 
         $this->mailer->send($email);
     }
 
-    public function buildPrivateNoticeContent(int $step, string $reason, ?Group $group): string
+    public function buildPrivateNoticeContent(int $step, string $reason, ?Group $group, ?User $user = null): string
     {
+        $locale = $this->emailHelper->resolveLocale($user);
         $groupLine = null !== $group
-            ? sprintf('Groupe concerné : %s (%s).', $group->getName(), $group->getFamilyName())
-            : 'Groupe concerné : non précisé.';
+            ? $this->translator->trans('notice.ban.group_line', [
+                '%name%' => $group->getName() ?? '',
+                '%family%' => $group->getFamilyName() ?? '',
+            ], 'messages', $locale)
+            : $this->translator->trans('notice.ban.group_unknown', [], 'messages', $locale);
 
-        if (1 === $step) {
-            return <<<TEXT
-Tu as été banni d'un groupe sur EventFamily. Il s'agit de ton premier avertissement (1/3).
-
-{$groupLine}
-
-Motif du bannissement :
-{$reason}
-
-En cas de nouveaux bannissements sur la plateforme, des sanctions supplémentaires s'appliqueront, jusqu'à la suppression définitive de ton compte au 3e bannissement.
-TEXT;
-        }
-
-        if (2 === $step) {
-            return <<<TEXT
-Tu as de nouveau été banni d'un groupe sur EventFamily. Il s'agit de ton dernier avertissement (2/3).
-
-{$groupLine}
-
-Motif du bannissement :
-{$reason}
-
-Au prochain bannissement, ton compte EventFamily sera supprimé définitivement.
-TEXT;
-        }
-
-        return <<<TEXT
-Tu as atteint le 3e bannissement sur EventFamily. Ton compte va être supprimé définitivement.
-
-{$groupLine}
-
-Motif du bannissement :
-{$reason}
-
-Tu ne pourras plus te connecter avec ce compte. Un e-mail de confirmation t'a également été envoyé.
-TEXT;
+        return match ($step) {
+            1 => $this->translator->trans('notice.ban.step1', [
+                '%group_line%' => $groupLine,
+                '%reason%' => $reason,
+            ], 'messages', $locale),
+            2 => $this->translator->trans('notice.ban.step2', [
+                '%group_line%' => $groupLine,
+                '%reason%' => $reason,
+            ], 'messages', $locale),
+            default => $this->translator->trans('notice.ban.step3', [
+                '%group_line%' => $groupLine,
+                '%reason%' => $reason,
+            ], 'messages', $locale),
+        };
     }
 
-    private function buildEmailSubject(int $step): string
+    private function buildEmailSubject(int $step, User $user): string
     {
         return match ($step) {
-            1 => 'EventFamily — Avertissement 1/3 suite à un bannissement',
-            2 => 'EventFamily — Dernier avertissement 2/3',
-            default => 'EventFamily — Suppression de ton compte (3/3)',
+            1 => $this->emailHelper->trans('email.ban_warning.subject_step1', [], $user),
+            2 => $this->emailHelper->trans('email.ban_warning.subject_step2', [], $user),
+            default => $this->emailHelper->trans('email.ban_warning.subject_step3', [], $user),
         };
     }
 }

@@ -8,6 +8,8 @@
 @use 'components/alerts';
 @use 'components/dropdowns';
 @use 'components/session-idle';
+@use 'components/cookie-consent';
+@use 'components/paginate';
 @use 'pages/home';
 @use 'pages/about';
 @use 'pages/contact';

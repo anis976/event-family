@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Groupes{% endblock %}
-{% block page_title %}Groupes{% endblock %}
+{% block title %}{{ 'ui.groups.page_title'|trans }}{% endblock %}
+{% block page_title %}{{ 'ui.groups.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="ef-main-content-padding ef-groups">
+    <h1 class="visually-hidden">{{ 'ui.groups.title'|trans }}</h1>
+
     <div class="d-flex justify-content-between align-items-center mb-4 ef-groups__title">
-        <h2 class="mb-0">Mes groupes</h2>
+        <h2 class="mb-0">{{ 'ui.groups.my_groups'|trans }}</h2>
         {% if can_create %}
             <a href="{{ path('app_groups_new') }}" class="btn btn-save-profile px-4 py-2 fw-bold shadow-sm">
-                <i class="bi bi-plus-lg me-1"></i> Créer un groupe
+                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> {{ 'ui.groups.create'|trans }}
             </a>
         {% endif %}
     </div>
@@ -17,34 +19,44 @@
     {% if myGroups is empty %}
         <div class="card mb-5 ef-groups__empty border-dashed border-2 text-center py-5">
             <div class="card-body">
-                <i class="bi bi-people fs-1 text-muted mb-3 d-block"></i>
-                <p class="text-muted mb-0">Tu n'appartiens à aucun groupe pour le moment.</p>
+                <i class="bi bi-people fs-1 text-muted mb-3 d-block" aria-hidden="true"></i>
+                <p class="text-muted mb-0">{{ 'ui.groups.empty_my'|trans }}</p>
                 {% if can_create %}
                     <a href="{{ path('app_groups_new') }}" class="btn btn-save-profile px-4 py-2 fw-bold shadow-sm mt-3">
-                        <i class="bi bi-plus-lg me-1"></i> Créer mon premier groupe
+                        <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> {{ 'ui.groups.create_first'|trans }}
                     </a>
                 {% endif %}
             </div>
         </div>
     {% else %}
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
             {% for group in myGroups %}
                 {% include 'groups/_group_card.html.twig' with {
                     group: group,
                     card_href: path('app_groups_show', { id: group.id }),
+                    member_count: member_counts[group.id]|default(0),
                 } %}
             {% endfor %}
         </div>
+
+        {% include 'components/_ef_paginate.html.twig' with {
+            pagination: myGroupsPagination,
+            route_name: 'app_groups',
+            route_params: app.request.query.get('page') ? { page: app.request.query.getInt('page') } : {},
+            page_param: 'page_my',
+            wrapper_class: 'd-flex justify-content-center ef-paginate mt-2 mb-5',
+            aria_label: 'ui.groups.pagination_my_aria'|trans,
+        } %}
     {% endif %}
 
     <div class="d-flex justify-content-between align-items-center mb-4 ef-groups__title">
-        <h2 class="mb-0">Tous les groupes</h2>
+        <h2 class="mb-0">{{ 'ui.groups.all_groups'|trans }}</h2>
     </div>
 
     {% if otherGroups is empty %}
         <div class="card ef-groups__empty border-dashed border-2 text-center py-5">
             <div class="card-body">
-                <p class="text-muted mb-0">Aucun autre groupe à découvrir pour le moment.</p>
+                <p class="text-muted mb-0">{{ 'ui.groups.empty_others'|trans }}</p>
             </div>
         </div>
     {% else %}
@@ -53,14 +65,17 @@
                 {% include 'groups/_group_card.html.twig' with {
                     group: group,
                     card_href: path('app_groups_show', { id: group.id }),
+                    member_count: member_counts[group.id]|default(0),
                 } %}
             {% endfor %}
         </div>
 
         {% include 'components/_ef_paginate.html.twig' with {
-            pagination: pagination,
+            pagination: othersPagination,
             route_name: 'app_groups',
-            route_params: {},
+            route_params: app.request.query.get('page_my') ? { page_my: app.request.query.getInt('page_my') } : {},
+            wrapper_class: 'd-flex justify-content-center ef-paginate mt-5',
+            aria_label: 'ui.groups.pagination_others_aria'|trans,
         } %}
     {% endif %}
 </div>

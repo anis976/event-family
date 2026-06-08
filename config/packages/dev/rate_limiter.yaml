@@ -1,0 +1,14 @@
+framework:
+    rate_limiter:
+        contact_form_hourly:
+            limit: 100
+            interval: '1 hour'
+        contact_form_daily:
+            limit: 500
+            interval: '1 day'
+        private_message_hourly:
+            limit: 1000
+            interval: '1 hour'
+        group_message_hourly:
+            limit: 1000
+            interval: '1 hour'

@@ -58,12 +58,12 @@
     </div>
 </div>
 <p class="form-text small text-muted mb-3">
-    JPG, PNG ou WebP — max. 5 Mo chacune. Sans photo, une image libre de droits aléatoire sera affichée.
+    {{ 'event.form.photo_help'|trans }}
 </p>
 {% if event is defined and eventForm.removePhotoCover is defined %}
     {% if event.hasPhotoCover %}
         <div class="mb-2">
-            <p class="small text-muted mb-1">Couverture actuelle</p>
+            <p class="small text-muted mb-1">{{ 'event.form.current_cover'|trans }}</p>
             <img src="{{ event_cover_url(event) }}" alt="" class="rounded-3 ef-events-form__preview" loading="lazy">
         </div>
         <div class="mb-3">
@@ -75,7 +75,7 @@
     {% endif %}
     {% if event.hasPhotoDetail %}
         <div class="mb-2">
-            <p class="small text-muted mb-1">Lieu / détail actuel</p>
+            <p class="small text-muted mb-1">{{ 'event.form.current_detail'|trans }}</p>
             <img src="{{ event_detail_url(event) }}" alt="" class="rounded-3 ef-events-form__preview" loading="lazy">
         </div>
         <div class="mb-3">

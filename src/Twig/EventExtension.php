@@ -8,7 +8,6 @@ use App\Entity\Event;
 use App\Entity\User;
 use App\Enum\EventPhotoSlot;
 use App\Service\EventAccessService;
-use App\Service\EventPlaceholderService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
@@ -18,7 +17,6 @@ final class EventExtension extends AbstractExtension
 {
     public function __construct(
         private readonly EventAccessService $eventAccess,
-        private readonly EventPlaceholderService $placeholderService,
         private readonly Security $security,
         private readonly UrlGeneratorInterface $urlGenerator,
     ) {
@@ -48,18 +46,16 @@ final class EventExtension extends AbstractExtension
 
     private function getPhotoUrl(Event $event, EventPhotoSlot $slot): string
     {
+        $route = EventPhotoSlot::Cover === $slot ? 'app_events_photo_cover' : 'app_events_photo_detail';
         $hasPhoto = EventPhotoSlot::Cover === $slot ? $event->hasPhotoCover() : $event->hasPhotoDetail();
+        $version = $hasPhoto
+            ? ($event->getUpdatedAt()?->getTimestamp() ?? 0)
+            : (($event->getId() ?? 0) * 10) + (EventPhotoSlot::Detail === $slot ? 1 : 0);
 
-        if ($hasPhoto) {
-            $route = EventPhotoSlot::Cover === $slot ? 'app_events_photo_cover' : 'app_events_photo_detail';
-
-            return $this->urlGenerator->generate($route, [
-                'id' => $event->getId(),
-                'v' => $event->getUpdatedAt()?->getTimestamp() ?? 0,
-            ]);
-        }
-
-        return $this->placeholderService->getUrlForEvent($event, $slot);
+        return $this->urlGenerator->generate($route, [
+            'id' => $event->getId(),
+            'v' => $version,
+        ]);
     }
 
     public function canEdit(Event $event, ?User $user = null): bool

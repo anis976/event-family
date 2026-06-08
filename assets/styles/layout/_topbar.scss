@@ -1,6 +1,7 @@
 @use '../base/variables' as *;
 
 .ef-topbar {
+    min-height: var(--ef-topbar-height, 3.5rem);
     padding: 0.7rem 1.3rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     position: sticky;

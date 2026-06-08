@@ -1,0 +1,84 @@
+{% set notice_choices = staff_private_form.noticeVariant.vars.choices %}
+{% set selected_value = staff_private_form.noticeVariant.vars.value|default(notice_choices[0].value ?? '') %}
+{% set selected_label = '' %}
+{% for choice in notice_choices %}
+    {% if choice.value == selected_value %}
+        {% set selected_label = choice.label %}
+    {% endif %}
+{% endfor %}
+{% if selected_label == '' and notice_choices|length > 0 %}
+    {% set selected_label = notice_choices[0].label %}
+{% endif %}
+
+<div class="ef-messages__staff-private-form card border-0 shadow-sm">
+    <div class="card-body p-3 p-md-4">
+        <p class="ef-messages__staff-form-label mb-3">
+            <i class="bi bi-megaphone me-1" aria-hidden="true"></i>
+            {{ 'ui.messages.staff_private.form_title'|trans }}
+            <span class="text-muted fw-normal">{{ 'ui.messages.staff.no_reply'|trans }}</span>
+        </p>
+
+        {{ form_start(staff_private_form, {
+            attr: { class: 'ef-messages__staff-private-compose-form', 'data-turbo': 'false' },
+        }) }}
+            <div class="row g-3">
+                <div class="col-md-5">
+                    {{ form_label(staff_private_form.recipientQuery, null, { label_attr: { class: 'form-label small fw-medium' } }) }}
+                    {{ form_widget(staff_private_form.recipientQuery, { attr: { class: 'form-control ef-input' } }) }}
+                    {{ form_errors(staff_private_form.recipientQuery) }}
+                    <div class="form-text text-muted small">{{ 'ui.messages.staff_private.recipient_hint'|trans }}</div>
+                </div>
+                <div class="col-md-7">
+                    {{ form_label(staff_private_form.noticeVariant, null, { label_attr: { class: 'form-label small fw-medium' } }) }}
+                    <div class="dropdown ef-messages__staff-variant-picker" data-ef-staff-notice-picker>
+                        <button
+                            type="button"
+                            class="btn dropdown-toggle ef-messages__staff-variant-toggle w-100"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-haspopup="listbox"
+                        >
+                            <span data-ef-staff-notice-label>{{ selected_label }}</span>
+                        </button>
+                        <ul class="dropdown-menu w-100 ef-dropdown-menu ef-messages__staff-variant-menu" role="listbox">
+                            {% for choice in notice_choices %}
+                                {% set is_active = choice.value == selected_value or (selected_value is empty and loop.first) %}
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item{% if is_active %} ef-theme-active{% endif %}"
+                                        data-ef-staff-notice-variant="{{ choice.value }}"
+                                        data-ef-staff-notice-label="{{ choice.label }}"
+                                        role="option"
+                                        aria-selected="{{ is_active ? 'true' : 'false' }}"
+                                    >
+                                        {% if choice.value == 'staff_admin' %}
+                                            <i class="bi bi-megaphone me-2" aria-hidden="true"></i>
+                                        {% else %}
+                                            <i class="bi bi-shield me-2" aria-hidden="true"></i>
+                                        {% endif %}
+                                        {{ choice.label }}
+                                        <i class="bi bi-check2{% if not is_active %} d-none{% endif %}" aria-hidden="true"></i>
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {{ form_widget(staff_private_form.noticeVariant, { attr: { class: 'd-none', 'data-ef-staff-notice-input': '1' } }) }}
+                    </div>
+                    {{ form_errors(staff_private_form.noticeVariant) }}
+                </div>
+                <div class="col-12">
+                    {{ form_label(staff_private_form.content, null, { label_attr: { class: 'form-label small fw-medium' } }) }}
+                    {{ form_widget(staff_private_form.content, { attr: { class: 'form-control ef-input' } }) }}
+                    {{ form_errors(staff_private_form.content) }}
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn ef-messages__btn-send ef-messages__btn-send--compose">
+                        <i class="bi bi-megaphone-fill me-1" aria-hidden="true"></i>
+                        {{ 'ui.messages.staff_private.send'|trans }}
+                    </button>
+                </div>
+            </div>
+        {{ form_end(staff_private_form) }}
+    </div>
+</div>

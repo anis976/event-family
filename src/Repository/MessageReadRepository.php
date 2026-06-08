@@ -24,4 +24,42 @@ class MessageReadRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['message' => $message, 'user' => $user]);
     }
+
+    /**
+     * @param list<int> $messageIds
+     *
+     * @return array<int, \DateTimeImmutable> messageId => readAt (première lecture par le destinataire)
+     */
+    public function findReadAtForMessages(array $messageIds): array
+    {
+        $messageIds = array_values(array_unique(array_filter($messageIds, static fn (int $id): bool => $id > 0)));
+        if ([] === $messageIds) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('mr')
+            ->select('IDENTITY(mr.message) AS messageId', 'mr.readAt AS readAt')
+            ->andWhere('mr.message IN (:ids)')
+            ->setParameter('ids', $messageIds)
+            ->orderBy('mr.readAt', 'ASC')
+            ->getQuery()
+            ->getScalarResult();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $messageId = (int) $row['messageId'];
+            if (isset($map[$messageId])) {
+                continue;
+            }
+
+            $readAt = $row['readAt'];
+            if ($readAt instanceof \DateTimeImmutable) {
+                $map[$messageId] = $readAt;
+            } elseif (\is_string($readAt)) {
+                $map[$messageId] = new \DateTimeImmutable($readAt);
+            }
+        }
+
+        return $map;
+    }
 }

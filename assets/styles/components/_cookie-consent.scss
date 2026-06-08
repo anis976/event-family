@@ -1,0 +1,583 @@
+@use '../base/variables' as *;
+
+// Bandeau flottant dans #ef-consent-root (calque viewport, cf. _globals.scss)
+.ef-consent-banner {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 50%;
+    z-index: 1;
+    width: calc(100% - 2rem);
+    max-width: 44rem;
+    padding: 1.15rem 1.35rem;
+    border-radius: 1rem;
+    color: #f4f4f5;
+    background: rgba(12, 12, 14, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 4px 6px rgba(0, 0, 0, 0.08),
+        0 18px 48px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transform: translateX(-50%);
+    animation: ef-consent-banner-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+
+    @include color-mode(dark) {
+        background: rgba(8, 8, 10, 0.88);
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow:
+            0 4px 6px rgba(0, 0, 0, 0.2),
+            0 20px 52px rgba(0, 0, 0, 0.45);
+    }
+
+    &--hidden {
+        display: none !important;
+    }
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+
+    &__head {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    &__icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.35rem;
+        height: 2.35rem;
+        border-radius: 0.65rem;
+        font-size: 1.15rem;
+        color: $ef-primary-orange;
+        background: rgba(243, 122, 31, 0.18);
+    }
+
+    &__copy {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem;
+        letter-spacing: 0.01em;
+    }
+
+    &__text {
+        font-size: 0.8125rem;
+        line-height: 1.5;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.78);
+    }
+
+    &__link {
+        color: #ffb366;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+
+        &:hover {
+            color: #fff;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+        justify-content: flex-end;
+        padding-top: 0.15rem;
+    }
+
+    &__btn {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        padding: 0.4rem 0.9rem;
+        border-radius: 0.5rem;
+        transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            color 0.2s ease,
+            transform 0.15s ease;
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    &__btn-reject {
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        background: transparent;
+        color: #fff;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
+    }
+
+    &__btn-customize {
+        border: 0;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.92);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+        }
+    }
+
+    &__btn-accept {
+        border: 1px solid $ef-primary-orange;
+        background: $ef-primary-orange;
+        color: #fff;
+
+        &:hover {
+            background: $ef-primary-orange-dark;
+            border-color: $ef-primary-orange-dark;
+            color: #fff;
+        }
+    }
+
+    @media (min-width: 576px) {
+        padding: 1.25rem 1.5rem;
+
+        &__inner {
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        &__actions {
+            flex-shrink: 0;
+            flex-direction: column;
+            align-items: stretch;
+            padding-top: 0;
+            min-width: 9.5rem;
+        }
+
+        &__btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    @media (min-width: 768px) {
+        &__actions {
+            flex-direction: row;
+            flex-wrap: nowrap;
+            min-width: auto;
+            width: auto;
+        }
+
+        &__btn {
+            width: auto;
+            white-space: nowrap;
+        }
+    }
+}
+
+@keyframes ef-consent-banner-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(1.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.ef-consent-manage-link {
+    font-size: inherit;
+    color: inherit;
+    text-decoration: underline;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+
+    &:hover {
+        color: $ef-primary-orange;
+    }
+}
+
+// Modale préférences — fond statique (CNIL : pas de cookie wall ; refus explicite conservé)
+body:has(#ef-consent-preferences-modal.show) > .modal-backdrop {
+    opacity: 0.6;
+}
+
+.ef-consent-preferences-modal {
+    .modal-dialog {
+        max-width: 32rem;
+
+        @media (min-width: 576px) {
+            max-width: 36rem;
+        }
+    }
+
+    .modal-content {
+        overflow: hidden;
+        border-radius: 1rem;
+        border: 1px solid $ef-border-color;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+
+        @include color-mode(dark) {
+            background-color: #1e1e1e;
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    .modal-header {
+        padding: 1.25rem 1.35rem 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        background: linear-gradient(
+            145deg,
+            rgba($ef-primary-orange, 0.1) 0%,
+            rgba($ef-primary-blue, 0.06) 55%,
+            transparent 100%
+        );
+
+        @include color-mode(dark) {
+            border-bottom-color: rgba(255, 255, 255, 0.08);
+            background: linear-gradient(
+                145deg,
+                rgba($ef-primary-orange, 0.14) 0%,
+                rgba($ef-primary-blue, 0.08) 55%,
+                transparent 100%
+            );
+        }
+    }
+
+    .modal-header__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 0.65rem;
+        font-size: 1.2rem;
+        color: $ef-primary-orange;
+        background: rgba($ef-primary-orange, 0.15);
+        flex-shrink: 0;
+    }
+
+    .modal-title {
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+
+    .btn-close {
+        opacity: 0.55;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        @include color-mode(dark) {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+    }
+
+    .modal-body {
+        padding: 1rem 1.35rem 1.15rem;
+    }
+
+    .ef-consent-intro {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: $gray-600;
+        margin-bottom: 1.15rem;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    .ef-consent-category {
+        border: 1px solid $ef-border-color;
+        border-radius: $border-radius-lg;
+        padding: 1rem 1.1rem;
+        margin-bottom: 0.85rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        @include color-mode(dark) {
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &--locked {
+            background: $gray-100;
+
+            @include color-mode(dark) {
+                background: rgba(255, 255, 255, 0.04);
+            }
+        }
+
+        &--optional:focus-within {
+            border-color: rgba($ef-primary-orange, 0.45);
+            box-shadow: 0 0 0 3px rgba($ef-primary-orange, 0.12);
+        }
+
+        &__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            margin-bottom: 0.5rem;
+
+            &--required {
+                color: $ef-primary-blue-dark;
+                background: rgba($ef-primary-blue, 0.12);
+
+                @include color-mode(dark) {
+                    color: #6b8fe8;
+                    background: rgba($ef-primary-blue, 0.2);
+                }
+            }
+
+            &--optional {
+                color: #d96a10;
+                background: rgba($ef-primary-orange, 0.15);
+
+                @include color-mode(dark) {
+                    color: $ef-primary-orange;
+                }
+            }
+        }
+
+        &__title {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            margin: 0 0 0.35rem;
+        }
+
+        &__desc {
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: $gray-600;
+            margin: 0;
+
+            @include color-mode(dark) {
+                color: $gray-600-dark;
+            }
+        }
+
+        .form-check-input {
+            width: 2.5em;
+            height: 1.25em;
+            cursor: pointer;
+
+            &:checked {
+                background-color: $ef-primary-orange;
+                border-color: $ef-primary-orange;
+            }
+
+            &:focus {
+                border-color: rgba($ef-primary-orange, 0.6);
+                box-shadow: 0 0 0 0.2rem rgba($ef-primary-orange, 0.25);
+            }
+
+            &:disabled {
+                opacity: 0.85;
+                cursor: not-allowed;
+            }
+        }
+    }
+
+    .ef-consent-details {
+        margin-top: 0.75rem;
+        border-top: 1px dashed rgba(0, 0, 0, 0.1);
+        padding-top: 0.65rem;
+
+        @include color-mode(dark) {
+            border-top-color: rgba(255, 255, 255, 0.12);
+        }
+
+        summary {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: $ef-primary-blue;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+
+            @include color-mode(dark) {
+                color: #7a9aeb;
+            }
+
+            &::-webkit-details-marker {
+                display: none;
+            }
+
+            &::after {
+                content: '\F282';
+                font-family: bootstrap-icons;
+                font-size: 0.75rem;
+                transition: transform 0.2s ease;
+            }
+        }
+
+        &[open] summary::after {
+            transform: rotate(180deg);
+        }
+    }
+
+    .ef-consent-essential-list {
+        font-size: 0.8125rem;
+        margin: 0.65rem 0 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+            @include color-mode(dark) {
+                border-bottom-color: rgba(255, 255, 255, 0.08);
+            }
+
+            &:last-child {
+                border-bottom: 0;
+                padding-bottom: 0;
+            }
+        }
+
+        strong {
+            font-weight: 600;
+        }
+    }
+
+    .ef-consent-hint {
+        font-size: 0.75rem;
+        line-height: 1.45;
+        color: $gray-600;
+        margin: 0.65rem 0 0;
+        padding: 0.5rem 0.65rem;
+        border-radius: $border-radius;
+        background: rgba($ef-primary-orange, 0.08);
+        border-left: 3px solid $ef-primary-orange;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+            background: rgba($ef-primary-orange, 0.12);
+        }
+    }
+
+    .modal-footer {
+        padding: 0.85rem 1.35rem 1.2rem;
+        gap: 0.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+        background: $gray-100;
+
+        @include color-mode(dark) {
+            border-top-color: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .btn {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            padding: 0.45rem 0.95rem;
+        }
+    }
+
+    .ef-consent-modal__btn-reject {
+        border: 1px solid $ef-border-color;
+        background: transparent;
+        color: inherit;
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.04);
+
+            @include color-mode(dark) {
+                background: rgba(255, 255, 255, 0.08);
+            }
+        }
+    }
+
+    .ef-consent-modal__btn-save {
+        background: $ef-primary-orange;
+        border: 1px solid $ef-primary-orange;
+        color: #fff;
+
+        &:hover {
+            background: $ef-primary-orange-dark;
+            border-color: $ef-primary-orange-dark;
+            color: #fff;
+        }
+    }
+}
+
+html[data-ef-consent-choice='1'] .ef-consent-manage-trigger.ef-consent-manage-link {
+    display: inline !important;
+}
+
+.ef-consent-fab {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1rem;
+    z-index: 1;
+    display: none;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    border-radius: 999px;
+    padding: 0.35rem 0.75rem;
+    background: rgba(12, 12, 14, 0.82);
+    color: #f4f4f5;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+
+    &:hover {
+        background: rgba(20, 20, 24, 0.92);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    &__label {
+        @media (max-width: 575.98px) {
+            display: none;
+        }
+    }
+}
+
+body:not(.ef-auth-page):not(.ef-legal-page) .ef-consent-fab {
+    display: none !important;
+}
+
+html[data-ef-consent-choice='1'] body.ef-auth-page .ef-consent-fab:not(.d-none),
+html[data-ef-consent-choice='1'] body.ef-legal-page .ef-consent-fab:not(.d-none) {
+    display: inline-flex !important;
+}
+
+// Décale le bouton retour en haut quand le bandeau est visible
+html[data-ef-consent-choice='0'] .ef-btn-back-to-top.ef-btn-back-to-top--visible {
+    bottom: 7.5rem;
+
+    @media (min-width: 576px) {
+        bottom: 6.5rem;
+    }
+}

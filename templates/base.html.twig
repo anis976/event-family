@@ -6,9 +6,12 @@
     {# Évite d’afficher un aperçu en cache pendant le chargement (effet « retour en arrière ») #}
     <meta name="turbo-cache-control" content="no-preview">
     <title>{% block title %}EventFamily{% endblock %}</title>
+    {% block meta_description %}{% endblock %}
+    {% block meta_og %}{% endblock %}
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📅</text></svg>">
 
     <script src="{{ asset('js/ef-theme-init.js') }}"></script>
+    {% include 'components/_ef_theme_critical.html.twig' %}
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"

@@ -52,9 +52,7 @@ final class RegistrationController extends AbstractAppController
                     'registrationForm' => $form,
                 ], new Response(status: Response::HTTP_UNPROCESSABLE_ENTITY));
             } catch (TransportExceptionInterface $e) {
-                $this->addErrorFlash(
-                    'Compte créé, mais l\'e-mail de confirmation n\'a pas pu être envoyé. Vérifie MAILER_DSN dans .env.local.',
-                );
+                $this->addErrorFlash('flash.registration.email_failed');
 
                 return $this->redirectToRoute('app_login');
             } catch (\Throwable $e) {
@@ -62,7 +60,7 @@ final class RegistrationController extends AbstractAppController
                     throw $e;
                 }
 
-                $this->addErrorFlash('Une erreur est survenue après la création du compte. Réessaie ou contacte le support.');
+                $this->addErrorFlash('flash.registration.post_create_error');
 
                 return $this->redirectToRoute('app_login');
             }

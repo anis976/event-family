@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Enum\PlatformNoticeVariant;
 use App\Repository\MessageRepository;
 use App\Util\ParisClock;
@@ -18,9 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_ef_messages_private', columns: ['author_id', 'recipient_id'])]
 #[ORM\Index(name: 'idx_ef_messages_group', columns: ['related_group_id', 'created_at'])]
 #[ORM\HasLifecycleCallbacks]
-class Message
+class Message implements EfAdminLabelInterface
 {
-    public const int MAX_REPLIES = 2;
+    use AdminLabelTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -66,6 +68,15 @@ class Message
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $authorHiddenAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $recipientHiddenAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $repliesClosedAt = null;
 
     /**
      * @var Collection<int, MessageRead>
@@ -224,6 +235,66 @@ class Message
         return $this->createdAt;
     }
 
+    public function getAuthorHiddenAt(): ?\DateTimeImmutable
+    {
+        return $this->authorHiddenAt;
+    }
+
+    public function getRecipientHiddenAt(): ?\DateTimeImmutable
+    {
+        return $this->recipientHiddenAt;
+    }
+
+    public function getRepliesClosedAt(): ?\DateTimeImmutable
+    {
+        return $this->repliesClosedAt;
+    }
+
+    public function areRepliesClosed(): bool
+    {
+        return null !== $this->repliesClosedAt;
+    }
+
+    public function isHiddenFor(User $user): bool
+    {
+        $userId = $user->getId();
+        if (null === $userId) {
+            return false;
+        }
+
+        if ($this->author?->getId() === $userId) {
+            return null !== $this->authorHiddenAt;
+        }
+
+        if ($this->recipient?->getId() === $userId) {
+            return null !== $this->recipientHiddenAt;
+        }
+
+        return false;
+    }
+
+    public function hideFor(User $user): void
+    {
+        $now = ParisClock::now();
+        $userId = $user->getId();
+
+        if (null === $userId) {
+            return;
+        }
+
+        if ($this->author?->getId() === $userId) {
+            $this->authorHiddenAt = $now;
+        } elseif ($this->recipient?->getId() === $userId) {
+            $this->recipientHiddenAt = $now;
+        } else {
+            return;
+        }
+
+        if ($this->isPrivateMessage() && $this->isRoot()) {
+            $this->repliesClosedAt = $now;
+        }
+    }
+
     /**
      * @return Collection<int, MessageRead>
      */
@@ -231,4 +302,46 @@ class Message
     {
         return $this->reads;
     }
+
+    /** Clé de traduction admin (admin.crud.message.channel.*). */
+    public function getChannelLabelKey(): string
+    {
+        if ($this->isPlatformNotice) {
+            return 'admin.crud.message.channel.platform_notice';
+        }
+
+        if ($this->isStaffAnnouncement) {
+            return 'admin.crud.message.channel.staff_announcement';
+        }
+
+        if ($this->isGroupMessage()) {
+            return null !== $this->parent
+                ? 'admin.crud.message.channel.group_reply'
+                : 'admin.crud.message.channel.group';
+        }
+
+        if ($this->isPrivateMessage()) {
+            return null !== $this->parent
+                ? 'admin.crud.message.channel.private_reply'
+                : 'admin.crud.message.channel.private';
+        }
+
+        return 'admin.crud.message.channel.other';
+    }
+
+    /** Affichage admin EasyAdmin (fiche détail litige) — contenu fourni par MessageThreadContextFormatter. */
+    public function getThreadContext(): string
+    {
+        return '';
+    }
+
+    public function getAdminLabel(): string
+    {
+        $excerpt = mb_strlen($this->content) > 60
+            ? mb_substr($this->content, 0, 60).'…'
+            : $this->content;
+
+        return sprintf('#%s — %s', $this->id ?? '?', $excerpt);
+    }
+
 }

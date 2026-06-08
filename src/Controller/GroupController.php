@@ -19,6 +19,7 @@ use App\Service\EventAccessService;
 use App\Service\GroupAccessService;
 use App\Service\GroupRequestService;
 use App\Service\SiteStaffService;
+use App\Util\Pagination;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 final class GroupController extends AbstractAppController
 {
-    private const OTHERS_PER_PAGE = 9;
+    private const GROUPS_PER_PAGE = 9;
+
+    /** Membres affichés par page sur la fiche groupe (ajustable). */
+    private const MEMBERS_PER_PAGE = 12;
 
     public function __construct(
         private readonly GroupRepository $groupRepository,
@@ -49,29 +53,40 @@ final class GroupController extends AbstractAppController
     public function index(Request $request): Response
     {
         $user = $this->requireUser();
-        $myGroups = $this->groupMemberRepository->findGroupsForUser($user);
-        $memberGroupIds = array_flip($this->groupMemberRepository->findGroupIdsForUser($user));
+        $memberGroupIds = $this->groupMemberRepository->findGroupIdsForUser($user);
 
-        $page = max(1, $request->query->getInt('page', 1));
-        $totalOthers = $this->groupRepository->countOthers(array_keys($memberGroupIds));
-        $totalPages = max(1, (int) ceil($totalOthers / self::OTHERS_PER_PAGE));
-        if ($page > $totalPages) {
-            $page = $totalPages;
-        }
+        $myGroupsTotal = $this->groupMemberRepository->countGroupsForUser($user);
+        $myGroupsPagination = Pagination::create(
+            $request->query->getInt('page_my', 1),
+            $myGroupsTotal,
+            self::GROUPS_PER_PAGE,
+        );
+        $myGroups = $this->groupMemberRepository->findGroupsForUserPaginated(
+            $user,
+            $myGroupsPagination['page'],
+            self::GROUPS_PER_PAGE,
+        );
 
-        $otherGroups = $this->groupRepository->findOthersPaginated(array_keys($memberGroupIds), $page, self::OTHERS_PER_PAGE);
+        $totalOthers = $this->groupRepository->countOthers($memberGroupIds);
+        $othersPagination = Pagination::create(
+            $request->query->getInt('page', 1),
+            $totalOthers,
+            self::GROUPS_PER_PAGE,
+        );
+        $otherGroups = $this->groupRepository->findOthersPaginated(
+            $memberGroupIds,
+            $othersPagination['page'],
+            self::GROUPS_PER_PAGE,
+        );
 
         return $this->render('groups/index.html.twig', [
             'myGroups' => $myGroups,
+            'myGroupsPagination' => $myGroupsPagination,
             'otherGroups' => $otherGroups,
-            'memberGroupIds' => $memberGroupIds,
+            'member_counts' => $this->buildMemberCountsMap([...$myGroups, ...$otherGroups]),
+            'memberGroupIds' => array_flip($memberGroupIds),
             'can_create' => $this->groupAccess->canCreateGroup($user),
-            'pagination' => [
-                'page' => $page,
-                'total_pages' => $totalPages,
-                'total_items' => $totalOthers,
-                'per_page' => self::OTHERS_PER_PAGE,
-            ],
+            'othersPagination' => $othersPagination,
         ]);
     }
 
@@ -81,7 +96,7 @@ final class GroupController extends AbstractAppController
         $user = $this->requireUser();
 
         if (!$this->groupAccess->canCreateGroup($user)) {
-            $this->addErrorFlash('Tu as déjà créé un groupe. Un seul groupe par compte est autorisé.');
+            $this->addErrorFlash('flash.group.create_limit');
 
             return $this->redirectToRoute('app_groups');
         }
@@ -92,10 +107,9 @@ final class GroupController extends AbstractAppController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($this->groupRepository->existsByFamilyName($group->getFamilyName())) {
-                $this->addWarningFlash(sprintf(
-                    'Un groupe représente déjà la famille « %s ». Tu peux quand même créer le tien.',
-                    $group->getFamilyName(),
-                ));
+                $this->addWarningFlash('flash.group.family_name_exists', [
+                    '%family%' => $group->getFamilyName(),
+                ]);
             }
 
             $group->setAuthor($user);
@@ -109,7 +123,7 @@ final class GroupController extends AbstractAppController
             $this->entityManager->persist($group);
             $this->entityManager->flush();
 
-            $this->addSuccessFlash('Ton groupe a été créé avec succès.');
+            $this->addSuccessFlash('flash.group.created');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
         }
@@ -143,7 +157,7 @@ final class GroupController extends AbstractAppController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
-            $this->addSuccessFlash('Les informations du groupe ont été mises à jour.');
+            $this->addSuccessFlash('flash.group.updated');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
         }
@@ -155,10 +169,10 @@ final class GroupController extends AbstractAppController
     }
 
     #[Route('/{id}', name: '_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(int $id): Response
+    public function show(int $id, Request $request): Response
     {
         $user = $this->requireUser();
-        $group = $this->groupRepository->findOneWithMembers($id);
+        $group = $this->groupRepository->findOneForShow($id);
         if (null === $group) {
             throw $this->createNotFoundException();
         }
@@ -177,8 +191,19 @@ final class GroupController extends AbstractAppController
             ? $this->groupRequestRepository->countUnreadPendingByGroup($group)
             : 0;
 
+        $membersTotal = $this->groupMemberRepository->countByGroup($group);
+        $membersPagination = Pagination::create($request->query->getInt('page', 1), $membersTotal, self::MEMBERS_PER_PAGE);
+        $groupMembers = $this->groupMemberRepository->findByGroupPaginated(
+            $group,
+            $membersPagination['page'],
+            self::MEMBERS_PER_PAGE,
+        );
+
         return $this->render('groups/show.html.twig', [
             'group' => $group,
+            'groupMembers' => $groupMembers,
+            'membersTotal' => $membersTotal,
+            'membersPagination' => $membersPagination,
             'isMember' => $isMember,
             'isOwner' => $isOwner,
             'isChef' => $isOwner,
@@ -189,10 +214,29 @@ final class GroupController extends AbstractAppController
             'bannedUserIds' => $bannedUserIds,
             'joinState' => $joinState,
             'pendingRequestsCount' => $pendingRequestsCount,
-            'groupEvents' => $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Upcoming) : [],
+            'groupEventsUpcoming' => $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Upcoming) : [],
+            'groupEventsOngoing' => $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Ongoing) : [],
             'can_create_event' => $isMember && $this->eventAccess->canCreateInGroup($user, $group),
             'is_regular_member' => $isMember && !$this->eventAccess->canCreateInGroup($user, $group),
         ]);
+    }
+
+    /**
+     * @param list<Group> $groups
+     *
+     * @return array<int, int>
+     */
+    private function buildMemberCountsMap(array $groups): array
+    {
+        $ids = [];
+        foreach ($groups as $group) {
+            $id = $group->getId();
+            if (null !== $id) {
+                $ids[] = $id;
+            }
+        }
+
+        return $this->groupMemberRepository->countMembersByGroupIds($ids);
     }
 
     private function requireUser(): User

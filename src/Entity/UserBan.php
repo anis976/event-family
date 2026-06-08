@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Repository\UserBanRepository;
 use App\Util\ParisClock;
 use Doctrine\DBAL\Types\Types;
@@ -14,8 +16,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'ef_user_bans')]
 #[ORM\Index(name: 'idx_ef_user_bans_user_group', columns: ['banned_user_id', 'related_group_id'])]
 #[ORM\HasLifecycleCallbacks]
-class UserBan
+class UserBan implements EfAdminLabelInterface
 {
+    use AdminLabelTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,12 +27,12 @@ class UserBan
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'receivedBans')]
     #[ORM\JoinColumn(name: 'banned_user_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    #[Assert\NotNull(message: 'L\'utilisateur banni est obligatoire.')]
+    #[Assert\NotNull(message: 'user_ban.banned_user.required')]
     private User $bannedUser;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Le motif du bannissement est obligatoire.')]
-    #[Assert\Length(max: 2000, maxMessage: 'Le motif ne peut pas dépasser {{ limit }} caractères.')]
+    #[Assert\NotBlank(message: 'user_ban.reason.required')]
+    #[Assert\Length(max: 2000, maxMessage: 'user_ban.reason.max')]
     private string $reason = '';
 
     #[ORM\Column]
@@ -131,5 +135,10 @@ class UserBan
         }
 
         return $this->endsAt > $at;
+    }
+
+    public function getAdminLabel(): string
+    {
+        return sprintf('#%s — %s', $this->id ?? '?', $this->bannedUser->getAdminLabel());
     }
 }

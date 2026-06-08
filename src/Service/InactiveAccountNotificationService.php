@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class InactiveAccountNotificationService
 {
@@ -20,6 +21,8 @@ final class InactiveAccountNotificationService
         private readonly MailerInterface $mailer,
         private readonly MessageService $messageService,
         private readonly LoggerInterface $logger,
+        private readonly TransactionalEmailHelper $emailHelper,
+        private readonly TranslatorInterface $translator,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
     ) {
@@ -32,7 +35,7 @@ final class InactiveAccountNotificationService
         if ($isVerifiedAccount) {
             $this->messageService->sendPlatformPrivateNotice(
                 $user,
-                $this->buildPrivateNoticeContent($step, $isVerifiedAccount),
+                $this->buildPrivateNoticeContent($step, $isVerifiedAccount, $user),
                 PlatformNoticeVariant::EventFamily,
             );
         }
@@ -40,15 +43,20 @@ final class InactiveAccountNotificationService
 
     public function sendDeletionNotice(string $originalEmail, User $user, bool $wasVerified): void
     {
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($originalEmail)
-            ->subject('EventFamily — Ton compte a été supprimé pour inactivité')
-            ->htmlTemplate('emails/inactive_account_deleted.html.twig')
-            ->context([
+        $locale = $this->emailHelper->resolveLocale($user);
+
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($originalEmail)
+                ->subject($this->emailHelper->trans('email.inactive_deleted.subject', locale: $locale))
+                ->htmlTemplate('emails/inactive_account_deleted.html.twig'),
+            locale: $locale,
+            context: [
                 'deletedAt' => ParisClock::now(),
                 'wasVerified' => $wasVerified,
-            ]);
+            ],
+        );
 
         try {
             $this->mailer->send($email);
@@ -62,17 +70,20 @@ final class InactiveAccountNotificationService
 
     private function sendWarningEmail(User $user, int $step, bool $isVerifiedAccount): void
     {
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject($this->buildEmailSubject($step, $isVerifiedAccount))
-            ->htmlTemplate('emails/inactive_account_warning.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->buildEmailSubject($step, $isVerifiedAccount, $user))
+                ->htmlTemplate('emails/inactive_account_warning.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'step' => $step,
                 'isVerifiedAccount' => $isVerifiedAccount,
                 'isFinalWarning' => $isVerifiedAccount ? 2 === $step : true,
-            ]);
+            ],
+        );
 
         try {
             $this->mailer->send($email);
@@ -85,40 +96,29 @@ final class InactiveAccountNotificationService
         }
     }
 
-    private function buildEmailSubject(int $step, bool $isVerifiedAccount): string
+    private function buildEmailSubject(int $step, bool $isVerifiedAccount, User $user): string
     {
         if (!$isVerifiedAccount) {
-            return 'EventFamily — Active ton compte avant suppression';
+            return $this->emailHelper->trans('email.inactive_warning.subject_unverified', [], $user);
         }
 
         return match ($step) {
-            1 => 'EventFamily — Inactivité : premier rappel (1/2)',
-            default => 'EventFamily — Inactivité : dernier rappel (2/2)',
+            1 => $this->emailHelper->trans('email.inactive_warning.subject_step1', [], $user),
+            default => $this->emailHelper->trans('email.inactive_warning.subject_step2', [], $user),
         };
     }
 
-    private function buildPrivateNoticeContent(int $step, bool $isVerifiedAccount): string
+    public function buildPrivateNoticeContent(int $step, bool $isVerifiedAccount, ?User $user = null): string
     {
+        $locale = $this->emailHelper->resolveLocale($user);
+
         if (!$isVerifiedAccount) {
-            return <<<'TEXT'
-Ton compte EventFamily n'a pas encore été activé.
-
-Connecte-toi et confirme ton adresse e-mail avant la suppression automatique de ton compte pour inactivité.
-TEXT;
+            return $this->translator->trans('notice.inactive.unverified', [], 'messages', $locale);
         }
 
-        if (1 === $step) {
-            return <<<'TEXT'
-Ton compte EventFamily est inactif depuis longtemps. Il s'agit de ton premier rappel (1/2).
-
-Connecte-toi pour conserver ton compte. Sans connexion, tu recevras un dernier rappel puis ton compte sera supprimé automatiquement.
-TEXT;
-        }
-
-        return <<<'TEXT'
-Ton compte EventFamily est toujours inactif. Il s'agit de ton dernier rappel (2/2).
-
-Connecte-toi rapidement. Sans action de ta part, ton compte sera supprimé automatiquement et tu seras retiré de tes groupes.
-TEXT;
+        return match ($step) {
+            1 => $this->translator->trans('notice.inactive.step1', [], 'messages', $locale),
+            default => $this->translator->trans('notice.inactive.step2', [], 'messages', $locale),
+        };
     }
 }

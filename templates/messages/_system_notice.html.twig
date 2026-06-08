@@ -1,11 +1,11 @@
 <div class="ef-messages__thread ef-messages__thread--system">
-    <article class="ef-messages__system-notice" aria-label="Message système du groupe">
+    <article class="ef-messages__system-notice" aria-label="{{ 'ui.messages.system.notice_aria'|trans }}">
         <div class="ef-messages__system-notice-header">
             <span class="ef-messages__system-notice-author">
                 <i class="bi bi-shield-check" aria-hidden="true"></i>
-                System
+                {{ 'ui.messages.system.author'|trans }}
             </span>
-            <span class="ef-messages__system-notice-badge">Info</span>
+            <span class="ef-messages__system-notice-badge">{{ 'ui.messages.system.badge'|trans }}</span>
         </div>
 
         <div class="ef-messages__system-notice-body">
@@ -15,13 +15,13 @@
         {% if is_granted('ROLE_ADMIN') and group is defined %}
             <div class="ef-messages__system-notice-admin">
                 <a href="{{ path('app_admin_groups_system_notice_edit', { id: group.id }) }}" class="ef-messages__system-notice-admin-link">
-                    <i class="bi bi-pencil" aria-hidden="true"></i> Modifier
+                    <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'ui.common.edit'|trans }}
                 </a>
                 {% if system_notice_is_custom|default(false) %}
                     <form action="{{ path('app_admin_groups_system_notice_reset', { id: group.id }) }}" method="POST" data-turbo="false" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('reset-system-notice' ~ group.id) }}">
                         <button type="submit" class="ef-messages__system-notice-admin-link ef-messages__system-notice-admin-link--danger">
-                            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Réinitialiser
+                            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> {{ 'ui.messages.system.reset'|trans }}
                         </button>
                     </form>
                 {% endif %}

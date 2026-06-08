@@ -10,14 +10,14 @@ use Symfony\Component\RateLimiter\RateLimiterFactory;
 
 final class ContactSpamGuardService
 {
-    private const int MIN_SUBMIT_DELAY_SECONDS = 3;
-
     public function __construct(
         private readonly RecaptchaVerifierService $recaptcha,
         #[Autowire(service: 'limiter.contact_form_hourly')]
         private readonly RateLimiterFactory $hourlyLimiter,
         #[Autowire(service: 'limiter.contact_form_daily')]
         private readonly RateLimiterFactory $dailyLimiter,
+        #[Autowire('%ef.contact.min_submit_delay_seconds%')]
+        private readonly int $minSubmitDelaySeconds = 3,
     ) {
     }
 
@@ -39,12 +39,39 @@ final class ContactSpamGuardService
             return true;
         }
 
-        return (time() - $started) < self::MIN_SUBMIT_DELAY_SECONDS;
+        if ($this->minSubmitDelaySeconds <= 0) {
+            return false;
+        }
+
+        return (time() - $started) < $this->minSubmitDelaySeconds;
     }
 
     public function verifyRecaptcha(string $token, ?string $remoteIp): bool
     {
         return $this->recaptcha->verify($token, $remoteIp);
+    }
+
+    public function wasLastRecaptchaTokenEmpty(): bool
+    {
+        return $this->recaptcha->wasLastTokenEmpty();
+    }
+
+    public function hasRecaptchaHostnameMismatch(): bool
+    {
+        return $this->recaptcha->hasHostnameMismatch();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getLastRecaptchaErrorCodes(): array
+    {
+        return $this->recaptcha->getLastErrorCodes();
+    }
+
+    public function getLastRecaptchaDebugSummary(): string
+    {
+        return $this->recaptcha->getLastDebugSummary();
     }
 
     /**

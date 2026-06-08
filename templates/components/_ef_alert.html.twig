@@ -8,10 +8,10 @@
     info: 'bi-info-circle-fill',
 } %}
 {% set titles = {
-    success: 'Succès',
-    danger: 'Erreur',
-    warning: 'Attention',
-    info: 'Information',
+    success: 'ui.alert.success'|trans,
+    danger: 'ui.alert.error'|trans,
+    warning: 'ui.alert.warning'|trans,
+    info: 'ui.alert.info'|trans,
 } %}
 
 <div
@@ -26,6 +26,6 @@
         <div class="ef-alert__message{% if show_title|default(true) %} small{% endif %}">{{ message }}</div>
     </div>
     {% if dismissible %}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'ui.common.close'|trans }}"></button>
     {% endif %}
 </div>

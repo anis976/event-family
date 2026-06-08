@@ -1,0 +1,99 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}{{ 'admin.dashboard.title'|trans }}{% endblock %}
+
+{% block page_actions %}
+    <a href="{{ path('app_home') }}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+        <i class="fa fa-external-link-alt"></i> {{ 'admin.dashboard.open_site'|trans }}
+    </a>
+{% endblock %}
+
+{% block main %}
+    <div class="ef-admin-dashboard">
+        <p class="text-muted mb-4">
+            {{ 'admin.dashboard.intro'|trans }}
+        </p>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fa fa-users fa-2x text-primary me-3" aria-hidden="true"></span>
+                            <h2 class="h5 mb-0">{{ 'admin.dashboard.users_title'|trans }}</h2>
+                        </div>
+                        <p class="text-muted small">{{ 'admin.dashboard.users_desc'|trans }}</p>
+                        <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\UserCrudController').setAction('index').generateUrl() }}" class="ef-admin-card-btn ef-admin-card-btn--users">
+                            {{ 'admin.dashboard.users_btn'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fa fa-people-group fa-2x text-success me-3" aria-hidden="true"></span>
+                            <h2 class="h5 mb-0">{{ 'admin.dashboard.groups_title'|trans }}</h2>
+                        </div>
+                        <p class="text-muted small">{{ 'admin.dashboard.groups_desc'|trans }}</p>
+                        <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\GroupCrudController').setAction('index').generateUrl() }}" class="ef-admin-card-btn ef-admin-card-btn--groups">
+                            {{ 'admin.dashboard.groups_btn'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fa fa-calendar-days fa-2x text-warning me-3" aria-hidden="true"></span>
+                            <h2 class="h5 mb-0">{{ 'admin.dashboard.events_title'|trans }}</h2>
+                        </div>
+                        <p class="text-muted small">{{ 'admin.dashboard.events_desc'|trans }}</p>
+                        <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\EventCrudController').setAction('index').generateUrl() }}" class="ef-admin-card-btn ef-admin-card-btn--events">
+                            {{ 'admin.dashboard.events_btn'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fa fa-comments fa-2x me-3" aria-hidden="true"></span>
+                            <h2 class="h5 mb-0">{{ 'admin.dashboard.messages_title'|trans }}</h2>
+                        </div>
+                        <p class="text-muted small">{{ 'admin.dashboard.messages_desc'|trans }}</p>
+                        <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\MessageCrudController').setAction('index').generateUrl() }}" class="ef-admin-card-btn ef-admin-card-btn--messages">
+                            {{ 'admin.dashboard.messages_btn'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="fa fa-ban fa-2x text-danger me-3" aria-hidden="true"></span>
+                            <h2 class="h5 mb-0">{{ 'admin.dashboard.bans_title'|trans }}</h2>
+                        </div>
+                        <p class="text-muted small">{{ 'admin.dashboard.bans_desc'|trans }}</p>
+                        <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\UserBanCrudController').setAction('index').generateUrl() }}" class="ef-admin-card-btn ef-admin-card-btn--bans">
+                            {{ 'admin.dashboard.bans_btn'|trans }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-4 mb-0" role="alert">
+            <i class="fa fa-shield-halved me-2" aria-hidden="true"></i>
+            {{ 'admin.dashboard.idle_notice'|trans({'%seconds%': ef_admin_idle_timeout}) }}
+        </div>
+    </div>
+{% endblock %}

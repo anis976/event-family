@@ -1,0 +1,80 @@
+{% extends 'layout/auth.html.twig' %}
+
+{% block title %}{{ 'ui.auth.google_complete.page_title'|trans }}{% endblock %}
+
+{% block body_class %} ef-signUp{% endblock %}
+
+{% block auth_flash %}{% endblock %}
+
+{% block body %}
+    <div class="container-fluid ef-main-wrapper">
+        <div class="container">
+            <div class="row align-items-center justify-content-center g-4">
+                <div class="col-12 col-md-7 col-lg-5 col-xl-5 ef-signUp__column">
+                    <div class="ef-signUp__alerts">
+                        {% include 'components/_ef_flash_messages.html.twig' %}
+                    </div>
+
+                    {{ form_start(completeForm, {
+                        attr: {
+                            class: 'card shadow-lg p-4 p-sm-5 ef-auth__form-card',
+                            novalidate: 'novalidate',
+                            'data-turbo': 'false',
+                        }
+                    }) }}
+
+                    <h1 class="text-center fw-bold mb-3 h2">{{ 'ui.auth.google_complete.title'|trans }}</h1>
+                    <p class="text-muted text-center small mb-4">{{ 'ui.auth.google_complete.intro'|trans }}</p>
+
+                    {% include 'components/_ef_form_validation_summary.html.twig' with { form: completeForm } only %}
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            {{ form_label(completeForm.firstName, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(completeForm.firstName, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(completeForm.firstName) }}
+                        </div>
+                        <div class="col-6">
+                            {{ form_label(completeForm.lastName, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                            {{ form_widget(completeForm.lastName, { attr: { class: 'form-control' } }) }}
+                            {{ form_errors(completeForm.lastName) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(completeForm.pseudo, null, { label_attr: { class: 'form-label fw-semibold' } }) }}
+                        {{ form_widget(completeForm.pseudo, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(completeForm.pseudo) }}
+                    </div>
+
+                    <div class="ef-terms-check mb-4">
+                        {{ form_widget(completeForm.agreeTerms, { attr: { class: 'form-check-input' } }) }}
+                        <label class="ef-terms-check__label small mb-0" for="{{ completeForm.agreeTerms.vars.id }}">
+                            {{ 'ui.auth.register.accept_terms_prefix'|trans }}
+                            <a href="{{ path('app_cgu') }}" class="ef-link-orange fw-bold text-decoration-none" target="_blank" rel="noopener">{{ 'ui.auth.register.accept_terms_link'|trans }}</a>
+                        </label>
+                        {{ form_errors(completeForm.agreeTerms) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-submit-custom w-100 mb-3">
+                        {{ 'ui.auth.google_complete.submit'|trans }}
+                    </button>
+
+                    {{ form_end(completeForm) }}
+
+                    <form
+                        method="post"
+                        action="{{ path('app_google_oauth_cancel') }}"
+                        class="text-center"
+                        data-turbo="false"
+                    >
+                        <input type="hidden" name="_token" value="{{ csrf_token('google_oauth_cancel') }}">
+                        <button type="submit" class="btn btn-link ef-link-orange text-decoration-none small">
+                            {{ 'ui.auth.google_complete.cancel'|trans }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

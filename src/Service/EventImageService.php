@@ -37,17 +37,17 @@ final class EventImageService
     public function storeUploadedPhoto(Event $event, UploadedFile $uploadedFile, EventPhotoSlot $slot): void
     {
         if (!$uploadedFile->isValid()) {
-            throw new \InvalidArgumentException('Fichier invalide.');
+            throw new \InvalidArgumentException('flash.event.image_invalid_file');
         }
 
         if ($uploadedFile->getSize() > $this->maxBytes) {
-            throw new \InvalidArgumentException('La photo ne doit pas dépasser 5 Mo.');
+            throw new \InvalidArgumentException('flash.event.image_max_size');
         }
 
         $mimeType = $uploadedFile->getMimeType() ?? '';
         $extension = $this->imageProcessor->resolveExtensionForMime($mimeType);
         if (null === $extension) {
-            throw new \InvalidArgumentException('Format non supporté (JPG, PNG ou WebP uniquement).');
+            throw new \InvalidArgumentException('flash.event.image_invalid_format');
         }
 
         $this->filesystem->mkdir($this->storageDir);

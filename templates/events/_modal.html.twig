@@ -1,3 +1,5 @@
+{% set description_raw = event.description|default('')|trim %}
+{% set description_limit = 180 %}
 <div
     class="modal fade ef-events__modal"
     id="modal-event-{{ event.id }}"
@@ -10,8 +12,8 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header border-0 d-flex flex-column align-items-start position-relative pb-0">
                 <h2 class="modal-title fw-bold h5" id="modal-event-label-{{ event.id }}">{{ event.title }}</h2>
-                <span class="badge rounded-pill px-3 mt-1 ef-events__kind-badge">{{ event.kind.label }}</span>
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                <span class="badge rounded-pill px-3 mt-1 ef-events__kind-badge">{{ event.kind.label|trans }}</span>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
             </div>
 
             <div class="modal-body d-flex flex-column gap-3">
@@ -21,27 +23,12 @@
                     class="rounded-3 w-100 ef-events__modal-img{% if is_past|default(false) %} ef-events__modal-img--past{% endif %}"
                     loading="lazy"
                 >
-                <figure class="mb-0">
-                    <img
-                        src="{{ event_detail_url(event) }}"
-                        alt=""
-                        class="rounded-3 w-100 ef-events__modal-img ef-events__modal-img--detail{% if is_past|default(false) %} ef-events__modal-img--past{% endif %}"
-                        loading="lazy"
-                    >
-                    <figcaption class="small text-muted mt-1">Lieu / détail</figcaption>
-                </figure>
 
                 <ul class="list-unstyled d-flex flex-column gap-2 mb-0">
                     <li class="d-flex align-items-center gap-2 text-secondary">
                         <i class="bi bi-calendar4" aria-hidden="true"></i>
-                        Début : {{ event.startDate|date('d/m/Y H:i') }}
+                        {{ event.startDate|ef_datetime }}{% if event.endDate %} — {{ event.endDate|ef_datetime }}{% endif %}
                     </li>
-                    {% if event.endDate %}
-                        <li class="d-flex align-items-center gap-2 text-secondary">
-                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
-                            Fin : {{ event.endDate|date('d/m/Y H:i') }}
-                        </li>
-                    {% endif %}
                     {% if event.location %}
                         <li class="d-flex align-items-center gap-2 text-secondary">
                             <i class="bi bi-geo-alt" aria-hidden="true"></i>{{ event.location }}
@@ -50,19 +37,17 @@
                     <li class="d-flex align-items-center gap-2 text-secondary">
                         <i class="bi bi-people" aria-hidden="true"></i>{{ event.relatedGroup.displayLabel }}
                     </li>
-                    {% if event.author %}
-                        <li class="d-flex align-items-center gap-2 text-secondary">
-                            <i class="bi bi-person-check" aria-hidden="true"></i>{{ event.author.displayName }}
-                        </li>
-                    {% endif %}
-                    <li class="d-flex align-items-center gap-2 text-secondary">
-                        <i class="bi bi-eye" aria-hidden="true"></i>{{ event.visibility.label }}
-                    </li>
                 </ul>
 
                 <div>
-                    <h3 class="fw-bold h6">Description</h3>
-                    <p class="text-secondary lh-base mb-0">{{ event.description|default('Aucune description fournie.')|nl2br }}</p>
+                    <h3 class="fw-bold h6">{{ 'ui.common.description'|trans }}</h3>
+                    {% if description_raw is empty %}
+                        <p class="text-secondary lh-base mb-0">{{ 'ui.common.no_description'|trans }}</p>
+                    {% elseif description_raw|length <= description_limit %}
+                        <p class="text-secondary lh-base mb-0">{{ description_raw|nl2br }}</p>
+                    {% else %}
+                        <p class="text-secondary lh-base mb-0">{{ (description_raw|slice(0, description_limit) ~ '…')|nl2br }}</p>
+                    {% endif %}
                 </div>
             </div>
 
@@ -78,18 +63,18 @@
                             data-bs-target="#modal-delete-event-{{ event.id }}"
                             data-turbo="false"
                         >
-                            <i class="bi bi-trash3 me-1"></i> Supprimer
+                            <i class="bi bi-trash3 me-1"></i> {{ 'ui.common.delete'|trans }}
                         </button>
                     {% endif %}
                 </div>
 
                 <div class="d-flex flex-wrap gap-2 ms-auto">
-                    <a href="{{ path('app_events_show', { id: event.id }) }}" class="btn btn-outline-secondary btn-sm" data-turbo="false">
-                        Voir plus <i class="bi bi-arrow-right-short"></i>
+                    <a href="{{ path('app_events_show', { id: event.id }) }}" class="btn btn-sm ef-events__btn-more" data-turbo="false">
+                        {{ 'ui.events.modal.view_more'|trans }} <i class="bi bi-arrow-right-short"></i>
                     </a>
                     {% if event_can_edit(event) %}
                         <a href="{{ path('app_events_edit', { id: event.id }) }}" class="btn ef-events__btn-edit btn-sm" data-turbo="false">
-                            <i class="bi bi-pencil-square me-1"></i> Modifier
+                            <i class="bi bi-pencil-square me-1"></i> {{ 'ui.common.edit'|trans }}
                         </a>
                     {% endif %}
                 </div>
@@ -104,14 +89,14 @@
             <div class="modal-content border-0 shadow">
                 <div class="modal-body text-center p-4">
                     <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3" aria-hidden="true"></i>
-                    <h3 class="fw-bold h5">Supprimer ?</h3>
-                    <p class="text-secondary small">Voulez-vous vraiment supprimer « {{ event.title }} » ?</p>
+                    <h3 class="fw-bold h5">{{ 'ui.events.show.delete_title'|trans }}</h3>
+                    <p class="text-secondary small">{{ 'ui.events.modal.delete_confirm_named'|trans({'%title%': event.title}) }}</p>
                     <div class="d-flex gap-2 justify-content-center mt-4">
-                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
                         <form action="{{ path('app_events_delete', { id: event.id }) }}" method="post" data-turbo="false" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete-event' ~ event.id) }}">
                             <input type="hidden" name="vue" value="{{ current_filter.value }}">
-                            <button type="submit" class="btn btn-danger btn-sm px-3">Confirmer</button>
+                            <button type="submit" class="btn btn-danger btn-sm px-3">{{ 'ui.common.confirm'|trans }}</button>
                         </form>
                     </div>
                 </div>

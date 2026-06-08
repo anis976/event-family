@@ -12,42 +12,50 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends AbstractType<Group>
  */
 final class GroupFormType extends AbstractType
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $t = fn (string $id): string => $this->translator->trans($id);
+
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Nom du groupe',
-                'attr' => ['class' => 'form-control ef-input', 'placeholder' => 'Ex. Les Dupont'],
+                'label' => $t('group.form.name'),
+                'attr' => ['class' => 'form-control ef-input', 'placeholder' => $t('group.form.name_placeholder')],
                 'constraints' => [
-                    new NotBlank(message: 'Le nom du groupe est obligatoire.'),
+                    new NotBlank(message: $t('group.form.validation.name_required')),
                     new Length(max: 255),
                 ],
             ])
             ->add('familyName', TextType::class, [
-                'label' => 'Nom de famille',
-                'attr' => ['class' => 'form-control ef-input', 'placeholder' => 'Ex. Famille Dupont'],
+                'label' => $t('group.form.family_name'),
+                'attr' => ['class' => 'form-control ef-input', 'placeholder' => $t('group.form.family_name_placeholder')],
                 'constraints' => [
-                    new NotBlank(message: 'Le nom de famille est obligatoire.'),
+                    new NotBlank(message: $t('group.form.validation.family_name_required')),
                     new Length(max: 255),
                 ],
             ])
             ->add('description', TextareaType::class, [
                 'required' => false,
-                'label' => 'Description',
+                'label' => $t('group.form.description'),
                 'attr' => [
                     'class' => 'form-control ef-input ef-groups-form__textarea js-input-count',
                     'rows' => 6,
                     'maxlength' => 500,
-                    'placeholder' => 'Décris ton groupe…',
+                    'placeholder' => $t('group.form.description_placeholder'),
                 ],
                 'constraints' => [
-                    new Length(max: 500, maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.'),
+                    new Length(max: 500, maxMessage: $t('group.form.validation.description_max')),
                 ],
             ]);
     }

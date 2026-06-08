@@ -7,7 +7,7 @@
             <div class="ef-alert ef-alert--danger ef-alert--compact mb-3" role="alert">
                 <i class="ef-alert__icon bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                 <div class="ef-alert__content">
-                    <strong class="ef-alert__title">Erreur</strong>
+                    <strong class="ef-alert__title">{{ 'ui.form.validation.error_title'|trans }}</strong>
                     <ul class="ef-form-errors__list mb-0 small">
                         {%- for error in errors -%}
                             <li>{{ error.message }}</li>

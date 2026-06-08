@@ -1,0 +1,14 @@
+parameters:
+    ef.messages.purge_retention_months: 12
+    ef.messages.group_threads_initial: 30
+    ef.messages.group_threads_load_more: 30
+    ef.messages.group_threads_max_visible: 300
+    ef.messages.private_threads_initial: 60
+    ef.messages.private_threads_load_more: 60
+    ef.messages.private_threads_max_visible: 500
+    ef.messages.private_replies_initial: 30
+    ef.messages.private_replies_load_more: 30
+    ef.messages.private_replies_max_visible: 200
+    ef.messages.private_hourly_limit: 30
+    ef.messages.group_hourly_limit: 25
+    ef.messages.email_notify_throttle_minutes: 30

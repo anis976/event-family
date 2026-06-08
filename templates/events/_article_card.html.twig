@@ -7,11 +7,12 @@
                 data-bs-toggle="modal"
                 data-bs-target="#modal-event-{{ event.id }}"
                 data-turbo="false"
+                aria-label="{{ 'ui.events.card_modal_aria'|trans({'%title%': event.title}) }}"
             >
                 <img
                     src="{{ event_cover_url(event) }}"
                     class="card-img-top ef-events__article-img"
-                    alt=""
+                    alt="{{ event.title }}"
                     loading="lazy"
                     decoding="async"
                 >
@@ -21,7 +22,7 @@
                 <img
                     src="{{ event_cover_url(event) }}"
                     class="card-img-top ef-events__article-img"
-                    alt=""
+                    alt="{{ event.title }}"
                     loading="lazy"
                     decoding="async"
                 >
@@ -31,13 +32,13 @@
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start mb-3 gap-2">
                 <h3 class="card-title fw-bold fs-5 mb-0 text-body">{{ event.title }}</h3>
-                <span class="badge rounded-pill px-3 ef-events__kind-badge">{{ event.kind.label }}</span>
+                <span class="badge rounded-pill px-3 ef-events__kind-badge">{{ event.kind.label|trans }}</span>
             </div>
 
             <ul class="list-unstyled d-flex flex-column gap-1 mb-0">
                 <li class="d-flex align-items-center gap-2 text-secondary small">
                     <i class="bi bi-calendar4" aria-hidden="true"></i>
-                    <span>{{ event.startDate|date('d/m/Y H:i') }}{% if event.endDate %} — {{ event.endDate|date('d/m/Y H:i') }}{% endif %}</span>
+                    <span>{{ event.startDate|ef_datetime }}{% if event.endDate %} — {{ event.endDate|ef_datetime }}{% endif %}</span>
                 </li>
                 {% if event.location %}
                     <li class="d-flex align-items-center gap-2 text-secondary small">

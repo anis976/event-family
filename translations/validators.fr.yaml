@@ -1,4 +1,26 @@
-# Contraintes de validation Symfony (extraits utiles)
+# Domaine Symfony Validator (entités, contraintes custom)
+user.email.unique: Cette adresse e-mail est déjà utilisée.
+user.full_name.unique: Ce prénom et ce nom sont déjà associés à un compte.
+user.pseudo.unique: Ce pseudo est déjà utilisé par un autre compte.
+user.full_name.unique_profile: Ce prénom et ce nom sont déjà associés à un autre compte.
+user.pseudo.unique_profile: Ce pseudo est déjà utilisé par un autre compte.
+
+group.name.unique: Ce nom de groupe est déjà utilisé.
+group.name.required: Le nom du groupe est obligatoire.
+group.family_name.required: Le nom de famille est obligatoire.
+group.description.max: La description ne peut pas dépasser {{ limit }} caractères.
+
+group_member.user_group.unique: Cet utilisateur est déjà membre de ce groupe.
+
+event.title.required: Le titre est obligatoire.
+event.description.max: La description ne peut pas dépasser {{ limit }} caractères.
+event.group.required: Le groupe est obligatoire.
+event.end_date.before_start: La date de fin doit être postérieure ou égale à la date de début.
+
+user_ban.banned_user.required: L'utilisateur banni est obligatoire.
+user_ban.reason.required: Le motif du bannissement est obligatoire.
+user_ban.reason.max: Le motif ne peut pas dépasser {{ limit }} caractères.
+
 "This value should not be blank.": "Ce champ est obligatoire."
 "This value is not a valid email address.": "Cette adresse e-mail n'est pas valide."
 "This value is too short. It should have {{ limit }} character or more.|This value is too short. It should have {{ limit }} characters or more.": "Cette valeur est trop courte ({{ limit }} caractères minimum)."

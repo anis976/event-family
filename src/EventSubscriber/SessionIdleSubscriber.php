@@ -38,6 +38,8 @@ final class SessionIdleSubscriber implements EventSubscriberInterface
         private readonly UrlGeneratorInterface $urlGenerator,
         #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%ef.session.idle_timeout%')]
         private readonly int $idleTimeout,
+        #[\Symfony\Component\DependencyInjection\Attribute\Autowire('%ef.admin.path%')]
+        private readonly string $adminPath,
     ) {
     }
 
@@ -65,11 +67,15 @@ final class SessionIdleSubscriber implements EventSubscriberInterface
         }
 
         $session = $request->getSession();
-        if (!$session->isStarted()) {
+        $now = time();
+
+        if ($this->isAdminRequest($request)) {
+            // La zone admin a son propre délai ; on prolonge quand même la session site.
+            $session->set(self::SESSION_LAST_ACTIVITY_KEY, $now);
+
             return;
         }
 
-        $now = time();
         $lastActivity = $session->get(self::SESSION_LAST_ACTIVITY_KEY);
 
         if (\is_int($lastActivity) && ($now - $lastActivity) > $this->idleTimeout) {
@@ -93,6 +99,14 @@ final class SessionIdleSubscriber implements EventSubscriberInterface
 
         return str_starts_with($request->getPathInfo(), '/build/')
             || str_starts_with($request->getPathInfo(), '/assets/');
+    }
+
+    private function isAdminRequest(Request $request): bool
+    {
+        $path = $request->getPathInfo();
+
+        return str_starts_with($path, $this->adminPath.'/')
+            || $path === $this->adminPath;
     }
 
     private function logoutDueToIdle(RequestEvent $event): void

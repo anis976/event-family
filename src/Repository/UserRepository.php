@@ -55,6 +55,28 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->findOneBy(['accountDeletionTokenHash' => $hash]);
     }
 
+    public function findOneByGoogleId(string $googleId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.googleId = :googleId')
+            ->andWhere('u.deletedAt IS NULL')
+            ->setParameter('googleId', $googleId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findActiveByEmail(string $email): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('LOWER(u.email) = :email')
+            ->andWhere('u.deletedAt IS NULL')
+            ->setParameter('email', mb_strtolower(trim($email)))
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function findEligibleForPasswordReset(string $email): ?User
     {
         return $this->createQueryBuilder('u')
@@ -66,6 +88,61 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * Résout un destinataire actif à partir d'un pseudo, e-mail, identifiant ou recherche textuelle.
+     *
+     * @throws \DomainException flash.message.recipient_ambiguous | flash.message.recipient_not_found
+     */
+    public function resolveActiveRecipientFromQuery(string $query): User
+    {
+        $query = trim($query);
+        if ('' === $query) {
+            throw new \DomainException('flash.message.recipient_not_found');
+        }
+
+        if (filter_var($query, FILTER_VALIDATE_EMAIL)) {
+            $user = $this->findActiveByEmail($query);
+            if (null !== $user) {
+                return $user;
+            }
+
+            throw new \DomainException('flash.message.recipient_not_found');
+        }
+
+        if (ctype_digit($query)) {
+            $user = $this->findActiveById((int) $query);
+            if (null !== $user) {
+                return $user;
+            }
+
+            throw new \DomainException('flash.message.recipient_not_found');
+        }
+
+        $pseudo = ltrim($query, '@');
+        $user = $this->createQueryBuilder('u')
+            ->andWhere('u.pseudo = :pseudo')
+            ->andWhere('u.deletedAt IS NULL')
+            ->setParameter('pseudo', $pseudo)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($user instanceof User) {
+            return $user;
+        }
+
+        $results = $this->searchForGroupInvite([], $query, 2);
+        if (1 === \count($results)) {
+            return $results[0];
+        }
+
+        if (\count($results) > 1) {
+            throw new \DomainException('flash.message.recipient_ambiguous');
+        }
+
+        throw new \DomainException('flash.message.recipient_not_found');
     }
 
     public function findActiveById(int $id): ?User

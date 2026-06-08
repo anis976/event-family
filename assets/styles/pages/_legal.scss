@@ -2,8 +2,7 @@
 @use '../base/mixins' as *;
 
 // CGU + Mentions légales (même SCSS)
-.ef-legal-page,
-.ef-cgu-page {
+.ef-legal-page {
     background-color: $ef-bg-light;
     min-height: 100vh;
     transition: all 0.3s ease;

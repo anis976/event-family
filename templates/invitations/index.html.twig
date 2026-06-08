@@ -1,22 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Invitations{% endblock %}
-{% block page_title %}Invitations{% endblock %}
+{% block title %}{{ 'ui.invitations.page_title'|trans }}{% endblock %}
+{% block page_title %}{{ 'ui.invitations.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5 ef-Invitations">
+    <h1 class="visually-hidden">{{ 'ui.invitations.title'|trans }}</h1>
+
     <div class="row g-4">
         <div class="col-12">
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-transparent border-0 py-4 px-4">
-                    <h2 class="h5 mb-1 fw-bold"><i class="bi bi-envelope-heart me-2 text-primary"></i>Mes invitations reçues</h2>
-                    <p class="text-muted small mb-0">Invitations personnelles pour rejoindre un groupe.</p>
+                    <h2 class="h5 mb-1 fw-bold">
+                        <i class="bi bi-envelope-heart me-2 text-primary" aria-hidden="true"></i>{{ 'ui.invitations.received.title'|trans }}
+                        {% if receivedInvitations is not empty %}
+                            <span class="badge bg-secondary ms-2">{{ receivedInvitations|length }}</span>
+                        {% endif %}
+                    </h2>
+                    <p class="text-muted small mb-0">{{ 'ui.invitations.received.subtitle'|trans }}</p>
                 </div>
 
                 {% if receivedInvitations is empty %}
                     <div class="card-body text-center py-5 text-muted">
-                        <i class="bi bi-envelope-open fs-1 d-block mb-3"></i>
-                        Aucune invitation en attente.
+                        <i class="bi bi-envelope-open fs-1 d-block mb-3" aria-hidden="true"></i>
+                        {{ 'ui.invitations.received.empty'|trans }}
                     </div>
                 {% else %}
                     <div class="list-group list-group-flush">
@@ -26,26 +33,28 @@
                                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                                     <div>
                                         <h3 class="h6 mb-1 fw-bold">{{ group.name }}</h3>
-                                        <p class="text-muted small mb-1">{{ group.familyName }}</p>
-                                        <p class="text-muted small mb-0">Reçue le {{ invitation.createdAt|date('d/m/Y H:i') }}</p>
+                                        {% if group.familyName %}
+                                            <p class="text-muted small mb-1">{{ group.familyName }}</p>
+                                        {% endif %}
+                                        <p class="text-muted small mb-0">{{ 'ui.invitations.received.date'|trans({'%date%': invitation.createdAt|ef_datetime}) }}</p>
                                     </div>
                                     <div class="d-flex flex-wrap gap-2">
                                         <form action="{{ path('app_groups_accept_invitation', { id: group.id, requestId: invitation.id }) }}" method="POST" data-turbo="false">
                                             <input type="hidden" name="_token" value="{{ csrf_token('accept-invitation' ~ invitation.id) }}">
                                             <input type="hidden" name="redirect_route" value="app_invitations">
                                             <button type="submit" class="btn btn-sm btn-success">
-                                                <i class="bi bi-check-lg me-1"></i> Accepter
+                                                <i class="bi bi-check-lg me-1" aria-hidden="true"></i> {{ 'ui.common.accept'|trans }}
                                             </button>
                                         </form>
                                         <form action="{{ path('app_groups_refuse_invitation', { id: group.id, requestId: invitation.id }) }}" method="POST" data-turbo="false">
                                             <input type="hidden" name="_token" value="{{ csrf_token('refuse-invitation' ~ invitation.id) }}">
                                             <input type="hidden" name="redirect_route" value="app_invitations">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-x-lg me-1"></i> Refuser
+                                                <i class="bi bi-x-lg me-1" aria-hidden="true"></i> {{ 'ui.common.refuse'|trans }}
                                             </button>
                                         </form>
                                         <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn btn-sm btn-light">
-                                            Voir le groupe
+                                            {{ 'ui.invitations.view_group'|trans }}
                                         </a>
                                     </div>
                                 </div>
@@ -58,24 +67,29 @@
             {% if isStaffAnywhere %}
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-transparent border-0 py-4 px-4">
-                        <h2 class="h5 mb-1 fw-bold"><i class="bi bi-inbox me-2 text-primary"></i>Demandes d'adhésion à mes groupes</h2>
-                        <p class="text-muted small mb-0">Visible en tant que chef ou modérateur. Une demande traitée disparaît pour toute l'équipe.</p>
+                        <h2 class="h5 mb-1 fw-bold">
+                            <i class="bi bi-inbox me-2 text-primary" aria-hidden="true"></i>{{ 'ui.invitations.staff.title'|trans }}
+                            {% if staffJoinRequests is not empty %}
+                                <span class="badge bg-secondary ms-2">{{ staffJoinRequests|length }}</span>
+                            {% endif %}
+                        </h2>
+                        <p class="text-muted small mb-0">{{ 'ui.invitations.staff.subtitle'|trans }}</p>
                     </div>
 
                     {% if staffJoinRequests is empty %}
                         <div class="card-body text-center py-5 text-muted">
-                            <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                            Aucune demande en attente.
+                            <i class="bi bi-inbox fs-1 d-block mb-3" aria-hidden="true"></i>
+                            {{ 'ui.invitations.staff.empty'|trans }}
                         </div>
                     {% else %}
                         <div class="table-responsive px-2 pb-3">
                             <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
                                 <thead>
                                     <tr>
-                                        <th class="ps-4 py-3 border-0">Groupe</th>
-                                        <th class="py-3 border-0">Demandeur</th>
-                                        <th class="py-3 border-0">Date</th>
-                                        <th class="py-3 border-0 text-end pe-4">Actions</th>
+                                        <th class="ps-4 py-3 border-0">{{ 'ui.common.group'|trans }}</th>
+                                        <th class="py-3 border-0">{{ 'ui.invitations.applicant'|trans }}</th>
+                                        <th class="py-3 border-0">{{ 'ui.common.date'|trans }}</th>
+                                        <th class="py-3 border-0 text-end pe-4">{{ 'ui.invitations.actions'|trans }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,24 +99,29 @@
                                         <tr>
                                             <td class="ps-4 py-3 fw-bold">{{ group.name }}</td>
                                             <td class="py-3">
-                                                <div class="ef-GroupShow__card-table-name">{{ applicant.firstName|capitalize }} {{ applicant.lastName|upper }}</div>
-                                                <div class="ef-GroupShow__card-table-pseudo">@{{ applicant.pseudo }}</div>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="ef-avatar-circle me-3">{{ applicant.firstName|first|upper }}</div>
+                                                    <div>
+                                                        <div class="ef-GroupShow__card-table-name">{{ applicant.firstName|capitalize }} {{ applicant.lastName|upper }}</div>
+                                                        <div class="ef-GroupShow__card-table-pseudo">@{{ applicant.pseudo }}</div>
+                                                    </div>
+                                                </div>
                                             </td>
-                                            <td class="py-3 text-muted small">{{ request.createdAt|date('d/m/Y H:i') }}</td>
+                                            <td class="py-3 text-muted small">{{ request.createdAt|ef_datetime }}</td>
                                             <td class="text-end pe-4 py-3">
                                                 <div class="d-flex justify-content-end gap-2 flex-wrap">
                                                     <form action="{{ path('app_groups_accept_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
                                                         <input type="hidden" name="_token" value="{{ csrf_token('accept-join' ~ request.id) }}">
                                                         <input type="hidden" name="redirect_route" value="app_invitations">
                                                         <button type="submit" class="btn btn-sm btn-success">
-                                                            <i class="bi bi-check-lg me-1"></i> Accepter
+                                                            <i class="bi bi-check-lg me-1" aria-hidden="true"></i> {{ 'ui.common.accept'|trans }}
                                                         </button>
                                                     </form>
                                                     <form action="{{ path('app_groups_refuse_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
                                                         <input type="hidden" name="_token" value="{{ csrf_token('refuse-join' ~ request.id) }}">
                                                         <input type="hidden" name="redirect_route" value="app_invitations">
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                            <i class="bi bi-x-lg me-1"></i> Refuser
+                                                            <i class="bi bi-x-lg me-1" aria-hidden="true"></i> {{ 'ui.common.refuse'|trans }}
                                                         </button>
                                                     </form>
                                                 </div>

@@ -1,17 +1,17 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Compte supprimé</title>
-</head>
-<body style="font-family: sans-serif; line-height: 1.6; color: #333;">
-    <p>Bonjour,</p>
-    <p>Ton compte EventFamily a été <strong>supprimé automatiquement</strong> le {{ deletedAt|date('d/m/Y à H:i') }} (heure de Paris) pour cause d'inactivité prolongée.</p>
+{% extends 'emails/_base.html.twig' %}
+
+{% block email_title %}{{ 'email.inactive_deleted.title'|trans(locale=ef_email_locale) }}{% endblock %}
+
+{% block email_body %}
+    <p>{{ 'email.common.greeting_anonymous'|trans(locale=ef_email_locale) }}</p>
+    <p>{{ 'email.inactive_deleted.body'|trans({
+        '%date%': deletedAt|ef_datetime(ef_email_locale|default('fr')),
+        '%timezone%': 'email.common.paris_time'|trans(locale=ef_email_locale),
+    }, locale=ef_email_locale)|raw }}</p>
     {% if wasVerified %}
-        <p>Tu as été retiré de tous tes groupes. Tes messages restent anonymisés sur la plateforme.</p>
+        <p>{{ 'email.inactive_deleted.verified_hint'|trans(locale=ef_email_locale) }}</p>
     {% else %}
-        <p>Le compte n'avait jamais été activé après l'inscription.</p>
+        <p>{{ 'email.inactive_deleted.unverified_hint'|trans(locale=ef_email_locale) }}</p>
     {% endif %}
-    <p style="font-size: 0.85rem; color: #666;">Tu peux créer un nouveau compte à tout moment si tu souhaites revenir.</p>
-</body>
-</html>
+    <p style="font-size: 0.85rem; color: #666;">{{ 'email.inactive_deleted.footer'|trans(locale=ef_email_locale) }}</p>
+{% endblock %}

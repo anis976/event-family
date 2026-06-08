@@ -12,6 +12,9 @@ use App\Repository\UserBanRepository;
  */
 final class DirectMessagePolicy
 {
+    public const string DENIAL_SELF = 'ui.profile.message_denial.self';
+    public const string DENIAL_BANNED_IN_GROUP = 'ui.profile.message_denial.banned_in_group';
+
     public function __construct(
         private readonly UserBanRepository $userBanRepository,
         private readonly GroupBanGuard $groupBanGuard,
@@ -26,7 +29,7 @@ final class DirectMessagePolicy
     public function getDenialReason(User $sender, User $recipient): ?string
     {
         if ($sender->getId() === $recipient->getId()) {
-            return 'Tu ne peux pas t\'envoyer un message à toi-même.';
+            return self::DENIAL_SELF;
         }
 
         foreach ($this->userBanRepository->findActiveBansForUser($sender) as $ban) {
@@ -36,7 +39,7 @@ final class DirectMessagePolicy
             }
 
             if (!$this->groupBanGuard->canSendMessageToUserInGroup($sender, $recipient, $group)) {
-                return 'Tu ne peux pas envoyer de message à un responsable ou modérateur d\'un groupe dans lequel tu es banni.';
+                return self::DENIAL_BANNED_IN_GROUP;
             }
         }
 

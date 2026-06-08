@@ -2,7 +2,6 @@
 
 .ef-body {
     background-color: $ef-bg-light;
-    transition: background-color 0.3s ease;
 
     @include color-mode(dark) {
         background-color: #121212;
@@ -17,6 +16,8 @@
 
 .ef-main-wrapper {
     min-height: 100vh;
+    --ef-sidebar-width: 250px;
+    --ef-topbar-height: 3.5rem;
 }
 
 .ef-main {
@@ -30,6 +31,12 @@
         margin-left: 0 !important;
         width: 100% !important;
     }
+}
+
+// Barre de progression Turbo (plus visible pendant les requêtes lentes)
+.turbo-progress {
+    height: 3px;
+    background-color: var(--bs-primary);
 }
 
 .ef-main-content-padding {
@@ -48,4 +55,18 @@
 // Tous les textarea : pas de redimensionnement (exception : .ef-textarea--resizable)
 textarea:not(.ef-textarea--resizable) {
     resize: none;
+}
+
+// Conteneur cookies : calque fixe viewport (indépendant du scroll de page)
+#ef-consent-root {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    pointer-events: none;
+
+    .ef-consent-banner,
+    .ef-consent-fab,
+    .modal {
+        pointer-events: auto;
+    }
 }

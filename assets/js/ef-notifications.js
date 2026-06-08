@@ -1,5 +1,6 @@
 /**
- * EventFamily — badges invitations / notifications (polling + Turbo).
+ * EventFamily — badges invitations / messages (AJAX + polling + Turbo).
+ * Les compteurs ne sont plus calculés côté serveur à chaque page HTML.
  */
 
 const POLL_INTERVAL_MS = 30_000;
@@ -14,14 +15,60 @@ function updateBadge(name, count) {
     });
 }
 
+function updateBellButton(total) {
+    const button = document.getElementById('ef-notification-bell-btn');
+    if (!button) {
+        return;
+    }
+
+    const value = Math.max(0, Number(total) || 0);
+    const pendingTemplate = document.body.dataset.efNotificationPendingAria || '';
+    const defaultAria = document.body.dataset.efNotificationAria || '';
+
+    if (value > 0 && pendingTemplate) {
+        button.setAttribute('aria-label', pendingTemplate.replace('%count%', String(value)));
+    } else if (defaultAria) {
+        button.setAttribute('aria-label', defaultAria);
+    }
+}
+
+function updateBellMenu(total, bellUrl) {
+    const emptyItem = document.getElementById('ef-notifications-empty');
+    const priorityDivider = document.getElementById('ef-notifications-priority-divider');
+    const priorityRow = document.getElementById('ef-notifications-priority-row');
+    const priorityLink = document.getElementById('ef-notifications-priority-link');
+    const value = Math.max(0, Number(total) || 0);
+    const hasNotifications = value > 0;
+
+    if (emptyItem) {
+        emptyItem.classList.toggle('d-none', hasNotifications);
+    }
+
+    if (priorityDivider) {
+        priorityDivider.classList.toggle('d-none', !hasNotifications);
+    }
+
+    if (priorityRow) {
+        priorityRow.classList.toggle('d-none', !hasNotifications);
+    }
+
+    if (priorityLink && bellUrl) {
+        priorityLink.setAttribute('href', bellUrl);
+    }
+}
+
 function applyCounts(data) {
     if (!data || typeof data !== 'object') {
         return;
     }
 
+    const total = Number(data.total) || 0;
+
     updateBadge('invitations', data.invitations);
     updateBadge('messages', data.messages);
-    updateBadge('notifications', data.total);
+    updateBadge('notifications', total);
+    updateBellButton(total);
+    updateBellMenu(total, data.bell_url);
 }
 
 export async function refreshNotificationCounts() {

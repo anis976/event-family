@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class UniqueUserFullName extends Constraint
 {
-    public string $message = 'Ce prénom et ce nom sont déjà associés à un autre compte.';
+    public string $message = 'user.full_name.unique_profile';
 
     public function getTargets(): string
     {

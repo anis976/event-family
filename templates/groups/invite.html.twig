@@ -1,32 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Inviter — {{ group.name }}{% endblock %}
-{% block page_title %}Inviter des membres{% endblock %}
+{% block title %}{{ 'ui.groups.invite.page_title'|trans({'%name%': group.name}) }}{% endblock %}
+{% block page_title %}{{ 'ui.groups.invite.page_heading'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5 ef-GroupShow">
-    <nav aria-label="Fil d'Ariane" class="mb-4">
+    <h1 class="visually-hidden">{{ 'ui.groups.invite.page_heading'|trans }}</h1>
+
+    <nav aria-label="{{ 'ui.groups.breadcrumb_aria'|trans }}" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups') }}">Mes groupes</a></li>
+            <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups') }}">{{ 'ui.groups.show.my_groups_breadcrumb'|trans }}</a></li>
             <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups_show', { id: group.id }) }}">{{ group.name }}</a></li>
-            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">Inviter</li>
+            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">{{ 'ui.groups.invite.breadcrumb'|trans }}</li>
         </ol>
     </nav>
 
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-            <h2 class="h5 fw-bold mb-3">Rechercher un membre</h2>
-            <form method="GET" action="{{ path('app_groups_invite_search', { id: group.id }) }}" class="d-flex gap-2">
+            <h2 class="h5 fw-bold mb-3">{{ 'ui.groups.invite.search_heading'|trans }}</h2>
+            <form method="GET" action="{{ path('app_groups_invite_search', { id: group.id }) }}" class="ef-GroupShow__invite-search d-flex gap-2">
+                <label for="group-invite-search" class="visually-hidden">{{ 'ui.groups.invite.search_heading'|trans }}</label>
                 <input
                     type="search"
+                    id="group-invite-search"
                     name="q"
                     class="form-control ef-input"
                     value="{{ searchQuery }}"
-                    placeholder="Prénom, nom, pseudo ou e-mail…"
+                    placeholder="{{ 'ui.groups.invite.search_placeholder'|trans }}"
                     minlength="2"
                 >
-                <button type="submit" class="btn btn-save-profile px-4 fw-bold">
-                    <i class="bi bi-search me-1"></i> Rechercher
+                <button type="submit" class="btn btn-save-profile fw-bold">
+                    <i class="bi bi-search me-1" aria-hidden="true"></i> {{ 'ui.common.search'|trans }}
                 </button>
             </form>
         </div>
@@ -35,12 +39,12 @@
     {% if searchQuery is not empty %}
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-transparent border-0 py-4 px-4">
-                <h3 class="h6 mb-0 text-muted">Résultats pour « {{ searchQuery }} »</h3>
+                <h3 class="h6 mb-0 text-muted">{{ 'ui.groups.invite.results_for'|trans({'%query%': searchQuery}) }}</h3>
             </div>
 
             {% if searchUsers is empty %}
                 <div class="card-body text-center py-5 text-muted">
-                    Aucun utilisateur trouvé pour cette recherche.
+                    {{ 'ui.groups.invite.no_search_results'|trans }}
                 </div>
             {% else %}
                 {% include 'groups/_user_invite_table.html.twig' with { users: searchUsers, group: group, userStatusRules: userStatusRules, searchQuery: searchQuery } %}
@@ -50,20 +54,20 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-transparent border-0 py-4 px-4">
-            <h3 class="h6 mb-1 fw-bold">Utilisateurs du site</h3>
+            <h3 class="h6 mb-1 fw-bold">{{ 'ui.groups.invite.browse_heading'|trans }}</h3>
             <p class="text-muted small mb-0">
-                Membres éligibles hors de ton groupe
+                {{ 'ui.groups.invite.browse_hint'|trans }}
                 {% if browseTotal > browseUsers|length %}
-                    ({{ browseUsers|length }} affichés sur {{ browseTotal }})
+                    ({{ 'ui.groups.invite.browse_shown'|trans({'%shown%': browseUsers|length, '%total%': browseTotal}) }})
                 {% else %}
-                    ({{ browseTotal }})
+                    {{ 'ui.groups.invite.browse_count'|trans({'%count%': browseTotal}) }}
                 {% endif %}
             </p>
         </div>
 
         {% if browseUsers is empty %}
             <div class="card-body text-center py-5 text-muted">
-                Aucun utilisateur disponible à inviter pour le moment.
+                {{ 'ui.groups.invite.browse_empty'|trans }}
             </div>
         {% else %}
             {% include 'groups/_user_invite_table.html.twig' with { users: browseUsers, group: group, userStatusRules: userStatusRules, searchQuery: '' } %}
@@ -72,7 +76,7 @@
 
     <div class="mt-4">
         <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn btn-light">
-            <i class="bi bi-arrow-left me-1"></i> Retour au groupe
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> {{ 'ui.groups.back_to_group'|trans }}
         </a>
     </div>
 </div>

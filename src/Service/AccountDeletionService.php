@@ -29,6 +29,7 @@ final class AccountDeletionService
         private readonly EntityManagerInterface $entityManager,
         private readonly UserAccountSoftDeleteService $accountSoftDelete,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TransactionalEmailHelper $emailHelper,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
     ) {
@@ -70,16 +71,19 @@ final class AccountDeletionService
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
 
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject('EventFamily — Confirmer la suppression de ton compte')
-            ->htmlTemplate('emails/account_deletion_confirm.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->emailHelper->trans('email.account_deletion_confirm.subject', [], $user))
+                ->htmlTemplate('emails/account_deletion_confirm.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'confirmUrl' => $confirmUrl,
                 'expiresHours' => self::TOKEN_TTL_HOURS,
-            ]);
+            ],
+        );
 
         $this->mailer->send($email);
     }
@@ -123,7 +127,7 @@ final class AccountDeletionService
 
         $this->accountSoftDelete->softDelete($user);
 
-        $this->sendDeletionDoneNotification($originalEmail, $user);
+        $this->sendDeletionDoneNotification($originalEmail, $user->getLocale());
     }
 
     public function isValidTokenFormat(string $plainToken): bool
@@ -134,16 +138,19 @@ final class AccountDeletionService
     /**
      * @throws TransportExceptionInterface
      */
-    private function sendDeletionDoneNotification(string $originalEmail, User $user): void
+    private function sendDeletionDoneNotification(string $originalEmail, string $locale): void
     {
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($originalEmail)
-            ->subject('EventFamily — Ton compte a été supprimé')
-            ->htmlTemplate('emails/account_deletion_done.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($originalEmail)
+                ->subject($this->emailHelper->trans('email.account_deletion_done.subject', locale: $locale))
+                ->htmlTemplate('emails/account_deletion_done.html.twig'),
+            locale: $locale,
+            context: [
                 'deletedAt' => ParisClock::now(),
-            ]);
+            ],
+        );
 
         $this->mailer->send($email);
     }

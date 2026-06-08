@@ -1,14 +1,26 @@
-<div class="ef-search-panel" id="searchBarCollapse" role="search" aria-hidden="true">
+<form
+    action="{{ path('app_events') }}"
+    method="get"
+    class="ef-search-panel mt-3"
+    id="searchBarCollapse"
+    role="search"
+    aria-hidden="true"
+    data-turbo="false"
+>
     <div class="input-group m-0 ef-search-panel__input-group">
         <span class="input-group-text bg-transparent border-end-0 text-muted ef-search-panel__input-text">
             <i class="bi bi-search" aria-hidden="true"></i>
         </span>
         <input
             type="search"
+            name="q"
             class="form-control border-start-0 shadow-none ef-search-panel__form-control"
-            placeholder="Rechercher un événement..."
+            placeholder="{{ 'ui.search.placeholder'|trans }}"
             id="searchInput"
             autocomplete="off"
+            maxlength="100"
+            value="{{ app.request.query.get('q')|default('')|e('html_attr') }}"
+            aria-label="{{ 'ui.topbar.search_events'|trans }}"
         >
     </div>
-</div>
+</form>

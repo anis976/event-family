@@ -45,13 +45,64 @@
         }
     }
 
+    &__btn-report,
     .ef-btn-donate {
+        transition:
+            background-color 0.45s ease-in-out,
+            border-color 0.45s ease-in-out,
+            color 0.45s ease-in-out,
+            transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba($ef-primary-orange-dark, 0.35);
+        }
+
+        &:active {
+            transition-duration: 0.25s;
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba($ef-primary-orange-dark, 0.25);
+        }
+    }
+
+    &__btn-report {
+        display: inline-block;
+        margin-top: 0.15rem;
+        background-color: rgba(243, 141, 30, 0.15);
+        color: $ef-primary-orange;
+        border: none;
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+
+        &:hover {
+            background-color: $ef-primary-orange;
+            color: white;
+        }
+
+        @include color-mode(dark) {
+            background-color: rgba($ef-primary-orange, 0.1);
+            border: 1px solid $ef-primary-orange;
+            color: $ef-primary-orange;
+
+            &:hover {
+                background-color: $ef-primary-orange;
+                color: white;
+            }
+        }
+    }
+
+    .ef-btn-donate {
+        display: inline-block;
+        text-decoration: none;
         background-color: rgba(243, 141, 30, 0.15);
         color: $ef-primary-orange;
         border: none;
         padding: 0.6rem 2rem;
         border-radius: 8px;
-        transition: 0.3s;
 
         @include media-breakpoint-down(md) {
             padding: 0.4rem 1rem;

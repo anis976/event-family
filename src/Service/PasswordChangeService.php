@@ -26,6 +26,7 @@ final class PasswordChangeService
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TransactionalEmailHelper $emailHelper,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
     ) {
@@ -52,16 +53,19 @@ final class PasswordChangeService
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
 
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject('EventFamily — Confirmer le changement de mot de passe')
-            ->htmlTemplate('emails/password_change_confirm.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->emailHelper->trans('email.password_change.subject', [], $user))
+                ->htmlTemplate('emails/password_change_confirm.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'confirmUrl' => $confirmUrl,
                 'expiresHours' => self::TOKEN_TTL_HOURS,
-            ]);
+            ],
+        );
 
         $this->mailer->send($email);
     }

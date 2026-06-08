@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Mon espace{% endblock %}
+{% block title %}{{ 'ui.profile.my_space_page_title'|trans }}{% endblock %}
 
-{% block page_title %}Mon espace{% endblock %}
+{% block page_title %}{{ 'ui.profile.my_space'|trans }}{% endblock %}
 
 {% block body %}
     <section class="ef-profile-section py-3 py-lg-5">
@@ -10,8 +10,8 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-md-10 col-lg-8">
                     {% include 'profile/_header.html.twig' with {
-                        title: 'Mon espace personnel',
-                        subtitle: 'Gérer les informations privées de ton compte',
+                        title: 'ui.profile.personal_space_title'|trans,
+                        subtitle: 'ui.profile.personal_space_subtitle'|trans,
                         profileUser: user,
                     } only %}
 
@@ -30,69 +30,84 @@
                             }) }}
 
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase opacity-50">Nom d'utilisateur</label>
+                                <span class="d-block form-label small fw-bold text-uppercase opacity-50">{{ 'ui.profile.username'|trans }}</span>
                                 <div class="form-control-plaintext ps-2 fw-medium">
                                     {% if user.pseudo %}
                                         @{{ user.pseudo }}
                                     {% else %}
-                                        <span class="text-muted">Non défini</span>
+                                        <span class="text-muted">{{ 'ui.profile.not_defined'|trans }}</span>
                                     {% endif %}
                                 </div>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-uppercase opacity-50">Adresse e-mail (privée)</label>
+                                <span class="d-block form-label small fw-bold text-uppercase opacity-50">{{ 'ui.profile.email_private'|trans }}</span>
                                 <div class="form-control-plaintext ps-2 fw-medium">{{ user.email }}</div>
                             </div>
 
                             <div class="col-12"><hr class="my-2 opacity-50"></div>
 
                             <div class="col-md-6">
-                                {{ form_label(profileForm.firstName, 'Prénom', { label_attr: { class: 'form-label fw-medium' } }) }}
-                                {{ form_widget(profileForm.firstName, { attr: { class: 'form-control ef-input', placeholder: 'Ton prénom' } }) }}
+                                {{ form_label(profileForm.firstName, 'ui.profile.first_name'|trans, { label_attr: { class: 'form-label fw-medium' } }) }}
+                                {{ form_widget(profileForm.firstName, { attr: { class: 'form-control ef-input', placeholder: 'ui.profile.first_name_placeholder'|trans } }) }}
                                 {{ form_errors(profileForm.firstName) }}
                             </div>
 
                             <div class="col-md-6">
-                                {{ form_label(profileForm.lastName, 'Nom de famille', { label_attr: { class: 'form-label fw-medium' } }) }}
-                                {{ form_widget(profileForm.lastName, { attr: { class: 'form-control ef-input', placeholder: 'Ton nom' } }) }}
+                                {{ form_label(profileForm.lastName, 'ui.profile.last_name'|trans, { label_attr: { class: 'form-label fw-medium' } }) }}
+                                {{ form_widget(profileForm.lastName, { attr: { class: 'form-control ef-input', placeholder: 'ui.profile.last_name_placeholder'|trans } }) }}
                                 {{ form_errors(profileForm.lastName) }}
                             </div>
 
                             <div class="col-md-12">
-                                {{ form_label(profileForm.pseudo, 'Pseudo', { label_attr: { class: 'form-label fw-medium' } }) }}
-                                {{ form_widget(profileForm.pseudo, { attr: { class: 'form-control ef-input', placeholder: 'Optionnel' } }) }}
+                                {{ form_label(profileForm.pseudo, 'ui.profile.pseudo'|trans, { label_attr: { class: 'form-label fw-medium' } }) }}
+                                {{ form_widget(profileForm.pseudo, { attr: { class: 'form-control ef-input', placeholder: 'ui.profile.pseudo_optional'|trans } }) }}
                                 {% if profileForm.pseudo.vars.help is not empty %}
                                     <div class="form-text">{{ profileForm.pseudo.vars.help }}</div>
                                 {% endif %}
                                 {{ form_errors(profileForm.pseudo) }}
                             </div>
 
+                            <div class="col-12 mt-2" id="notifications">
+                                <h2 class="h6 small fw-bold text-uppercase opacity-50 mb-2">{{ 'ui.profile.notifications'|trans }}</h2>
+                                <div class="p-3 border rounded-3 bg-light-subtle ef-profile__notifications-box">
+                                    <div class="form-check mb-0">
+                                        {{ form_widget(profileForm.notifyPrivateMessageEmail, { attr: { class: 'form-check-input' } }) }}
+                                        {{ form_label(profileForm.notifyPrivateMessageEmail, null, { label_attr: { class: 'form-check-label fw-medium' } }) }}
+                                        {% if profileForm.notifyPrivateMessageEmail.vars.help is not empty %}
+                                            <div class="form-text mt-2 mb-0">{{ profileForm.notifyPrivateMessageEmail.vars.help }}</div>
+                                        {% endif %}
+                                        {{ form_errors(profileForm.notifyPrivateMessageEmail) }}
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-12 mt-4">
-                                <label class="form-label small fw-bold text-uppercase opacity-50 mb-2">Sécurité</label>
+                                <h2 class="h6 small fw-bold text-uppercase opacity-50 mb-2">{{ 'ui.profile.security'|trans }}</h2>
                                 <div class="p-3 border rounded-3 bg-light-subtle d-flex flex-column flex-md-row align-items-center justify-content-between ef-profile__security-box">
                                     <div class="mb-3 mb-md-0 text-center text-md-start">
-                                        <span class="d-block fw-bold">Mot de passe</span>
-                                        <span class="text-muted small">Sécurise l'accès à ton compte</span>
+                                        <span class="d-block fw-bold">{{ 'ui.profile.password'|trans }}</span>
+                                        <span class="text-muted small">{{ 'ui.profile.password_hint'|trans }}</span>
                                     </div>
                                     <a
                                         href="{{ path('app_profile_change_password') }}"
                                         class="btn btn-change-password px-4 py-2 fw-bold shadow-sm"
+                                        aria-label="{{ 'ui.profile.edit_password_aria'|trans }}"
                                     >
                                         <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>
-                                        Modifier
+                                        {{ 'ui.common.edit'|trans }}
                                     </a>
                                 </div>
                             </div>
 
                             <div class="col-12 mt-2">
-                                <label class="form-label small fw-bold text-uppercase opacity-50 mb-2">Zone dangereuse</label>
+                                <h2 class="h6 small fw-bold text-uppercase opacity-50 mb-2">{{ 'ui.profile.danger_zone'|trans }}</h2>
                                 <div class="p-3 border border-danger-subtle rounded-3 bg-danger-subtle">
                                     <div class="d-flex flex-column flex-md-row align-items-center justify-content-between">
                                         <div class="mb-3 mb-md-0 text-center text-md-start">
-                                            <span class="d-block fw-bold text-danger">Suppression du compte</span>
+                                            <span class="d-block fw-bold text-danger">{{ 'ui.profile.delete_account_title'|trans }}</span>
                                             <span class="text-muted small">
-                                                Attention : cette action sera irréversible et supprimera toutes tes données.
+                                                {{ 'ui.profile.delete_account_warning'|trans }}
                                             </span>
                                         </div>
                                         <a
@@ -100,7 +115,7 @@
                                             class="btn btn-outline-danger px-4 py-2 fw-bold shadow-sm"
                                         >
                                             <i class="bi bi-trash me-2" aria-hidden="true"></i>
-                                            Supprimer mon compte
+                                            {{ 'ui.profile.delete_account_btn'|trans }}
                                         </a>
                                     </div>
                                 </div>
@@ -109,7 +124,7 @@
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-save-profile w-100 py-2 fw-bold shadow-sm">
                                     <i class="bi bi-check-all fs-5 me-2" aria-hidden="true"></i>
-                                    Mettre à jour mon profil
+                                    {{ 'ui.profile.update_profile'|trans }}
                                 </button>
                             </div>
 
@@ -120,15 +135,4 @@
             </div>
         </div>
     </section>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" crossorigin="anonymous">
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js" crossorigin="anonymous" defer></script>
-    <script type="module" src="{{ asset('js/ef-profile-avatar.js') }}"></script>
 {% endblock %}

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Enum\GroupRequestStatus;
 use App\Repository\GroupRequestRepository;
 use App\Util\ParisClock;
@@ -16,8 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_ef_group_requests_user_group', columns: ['user_id', 'related_group_id'])]
 #[ORM\Index(name: 'idx_ef_group_requests_group_status', columns: ['related_group_id', 'status'])]
 #[ORM\HasLifecycleCallbacks]
-class GroupRequest
+class GroupRequest implements EfAdminLabelInterface
 {
+    use AdminLabelTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -122,5 +126,16 @@ class GroupRequest
         $this->readAt = ParisClock::now();
 
         return $this;
+    }
+
+    public function getAdminLabel(): string
+    {
+        return sprintf(
+            'Demande #%s — %s → %s (%s)',
+            $this->id ?? '?',
+            $this->user->getAdminLabel(),
+            $this->relatedGroup->getAdminLabel(),
+            $this->status->value,
+        );
     }
 }

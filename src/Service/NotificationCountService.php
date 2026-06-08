@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Repository\GroupMemberRepository;
 use App\Repository\GroupRequestRepository;
-use App\Service\MessageService;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class NotificationCountService
 {
@@ -49,17 +49,26 @@ final class NotificationCountService
      */
     public function resolveBellTargetRoute(User $user): string
     {
-        $counts = $this->getCounts($user);
-
-        if ($counts['invitations'] > 0) {
+        if ($this->getInvitationCount($user) > 0) {
             return 'app_invitations_index';
         }
 
-        if ($counts['messages'] > 0) {
-            return 'app_messages';
-        }
-
         return 'app_messages';
+    }
+
+    /**
+     * @return array{invitations: int, messages: int, total: int, bell_route: string, bell_url: string}
+     */
+    public function getCountsPayload(User $user, UrlGeneratorInterface $urlGenerator): array
+    {
+        $counts = $this->getCounts($user);
+        $bellRoute = $counts['invitations'] > 0 ? 'app_invitations_index' : 'app_messages';
+
+        return [
+            ...$counts,
+            'bell_route' => $bellRoute,
+            'bell_url' => $urlGenerator->generate($bellRoute),
+        ];
     }
 
     /**

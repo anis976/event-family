@@ -91,10 +91,66 @@ function initMessageReadObservers() {
     });
 }
 
+function initStaffNoticeVariantPicker() {
+    document.querySelectorAll('[data-ef-staff-notice-picker]').forEach((picker) => {
+        if (picker.dataset.efBound === '1') {
+            return;
+        }
+        picker.dataset.efBound = '1';
+
+        const select = picker.querySelector('[data-ef-staff-notice-input]');
+        const labelEl = picker.querySelector('[data-ef-staff-notice-label]');
+        if (!select || !labelEl) {
+            return;
+        }
+
+        const updateSelection = (value) => {
+            picker.querySelectorAll('[data-ef-staff-notice-variant]').forEach((button) => {
+                const isActive = button.dataset.efStaffNoticeVariant === value;
+                button.classList.toggle('ef-theme-active', isActive);
+                button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+                const check = button.querySelector('.bi-check2');
+                if (check) {
+                    check.classList.toggle('d-none', !isActive);
+                }
+            });
+
+            const activeButton = picker.querySelector(`[data-ef-staff-notice-variant="${value}"]`);
+            if (activeButton) {
+                labelEl.textContent = activeButton.dataset.efStaffNoticeLabel ?? activeButton.textContent.trim();
+            }
+        };
+
+        picker.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-ef-staff-notice-variant]');
+            if (!button) {
+                return;
+            }
+
+            const value = button.dataset.efStaffNoticeVariant;
+            if (!value) {
+                return;
+            }
+
+            select.value = value;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+            updateSelection(value);
+        });
+
+        const initialValue = select.value || picker.querySelector('[data-ef-staff-notice-variant]')?.dataset.efStaffNoticeVariant;
+        if (initialValue) {
+            select.value = initialValue;
+            updateSelection(initialValue);
+        }
+    });
+}
+
 export function initMessagesPage() {
     initMessageReplyToggles();
     initMessageDeleteConfirm();
     initMessageReadObservers();
+    initStaffNoticeVariantPicker();
 }
 
 document.addEventListener('turbo:load', initMessagesPage);

@@ -15,18 +15,18 @@ final class EmailVerificationController extends AbstractAppController
     public function verify(string $token, EmailVerificationService $emailVerification): Response
     {
         if (strlen($token) !== 64 || !ctype_xdigit($token)) {
-            $this->addErrorFlash('Lien de vérification invalide.');
+            $this->addErrorFlash('flash.verification.invalid_link');
 
             return $this->redirectToRoute('app_login');
         }
 
         if ($emailVerification->verifyEmail($token)) {
-            $this->addSuccessFlash('Ton e-mail est confirmé. Tu peux maintenant te connecter.');
+            $this->addSuccessFlash('flash.verification.confirmed');
 
             return $this->redirectToRoute('app_login');
         }
 
-        $this->addErrorFlash('Ce lien de vérification est invalide ou a expiré. Inscris-toi à nouveau ou contacte le support.');
+        $this->addErrorFlash('flash.verification.expired');
 
         return $this->redirectToRoute('app_login');
     }

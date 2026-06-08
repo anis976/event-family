@@ -57,7 +57,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleStaffRequestAction($id, $requestId, $request, 'accept-join', function (User $staff, $groupRequest): void {
             $this->groupRequestService->acceptJoinRequest($staff, $groupRequest);
-        }, 'La demande a été acceptée.');
+        }, 'flash.group.request_accepted');
     }
 
     #[Route('/{id}/demandes/{requestId}/refuser', name: '_refuse_request', requirements: ['id' => '\d+', 'requestId' => '\d+'], methods: ['POST'])]
@@ -65,7 +65,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleStaffRequestAction($id, $requestId, $request, 'refuse-join', function (User $staff, $groupRequest): void {
             $this->groupRequestService->refuseJoinRequest($staff, $groupRequest);
-        }, 'La demande a été refusée.');
+        }, 'flash.group.request_refused');
     }
 
     #[Route('/{id}/inviter', name: '_invite_search', requirements: ['id' => '\d+'], methods: ['GET'])]
@@ -118,21 +118,21 @@ final class GroupModerationController extends AbstractAppController
         }
 
         if (!$this->isCsrfTokenValid('invite'.$userId, (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_groups_invite_search', ['id' => $group->getId()]);
         }
 
         $target = $this->userRepository->findActiveById($userId);
         if (null === $target) {
-            $this->addErrorFlash('Utilisateur introuvable.');
+            $this->addErrorFlash('flash.group.user_not_found');
 
             return $this->redirectToRoute('app_groups_invite_search', ['id' => $group->getId()]);
         }
 
         try {
             $this->groupRequestService->inviteUser($staff, $group, $target);
-            $this->addSuccessFlash('Invitation envoyée à '.$target->getFirstName().'.');
+            $this->addSuccessFlash('flash.group.invite_sent', ['%name%' => $target->getFirstName()]);
         } catch (\DomainException $e) {
             $this->addErrorFlash($e->getMessage());
         }
@@ -150,14 +150,14 @@ final class GroupModerationController extends AbstractAppController
         $group = $this->requireGroup($id);
 
         if (!$this->isCsrfTokenValid('join-group'.$group->getId(), (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
         }
 
         try {
             $this->groupRequestService->createJoinRequest($user, $group);
-            $this->addSuccessFlash('Ta demande d\'adhésion a été envoyée.');
+            $this->addSuccessFlash('flash.group.join_request_sent');
         } catch (\DomainException $e) {
             $this->addErrorFlash($e->getMessage());
         }
@@ -170,7 +170,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleUserInvitationAction($id, $requestId, $request, 'accept-invitation', function (User $user, $groupRequest): void {
             $this->groupRequestService->acceptInvitation($user, $groupRequest);
-        }, 'Tu as rejoint le groupe.');
+        }, 'flash.group.invitation_joined');
     }
 
     #[Route('/{id}/invitation/{requestId}/refuser', name: '_refuse_invitation', requirements: ['id' => '\d+', 'requestId' => '\d+'], methods: ['POST'])]
@@ -178,7 +178,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleUserInvitationAction($id, $requestId, $request, 'refuse-invitation', function (User $user, $groupRequest): void {
             $this->groupRequestService->refuseInvitation($user, $groupRequest);
-        }, 'Invitation refusée.');
+        }, 'flash.group.invitation_declined');
     }
 
     #[Route('/membres/{memberId}/modo', name: '_toggle_modo', requirements: ['memberId' => '\d+'], methods: ['POST'])]
@@ -186,7 +186,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleMemberAction($memberId, $request, 'toggle-modo', function (User $actor, GroupMember $member): void {
             $this->memberModerationService->toggleModerator($actor, $member);
-        }, 'Le rôle modérateur a été mis à jour.');
+        }, 'flash.group.moderator_updated');
     }
 
     #[Route('/membres/{memberId}/ban', name: '_ban_member', requirements: ['memberId' => '\d+'], methods: ['POST'])]
@@ -196,7 +196,7 @@ final class GroupModerationController extends AbstractAppController
 
         return $this->handleMemberAction($memberId, $request, 'ban', function (User $actor, GroupMember $member) use ($reason): void {
             $this->memberModerationService->banMember($actor, $member, $reason);
-        }, 'Le membre a été banni.', requiresReason: true, reason: $reason);
+        }, 'flash.group.member_banned', requiresReason: true, reason: $reason);
     }
 
     #[Route('/membres/{memberId}/debannir', name: '_unban_member', requirements: ['memberId' => '\d+'], methods: ['POST'])]
@@ -204,7 +204,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleMemberAction($memberId, $request, 'unban', function (User $actor, GroupMember $member): void {
             $this->memberModerationService->unbanMember($actor, $member);
-        }, 'Le membre a été débanni.');
+        }, 'flash.group.member_unbanned');
     }
 
     #[Route('/membres/{memberId}/exclure', name: '_kick_member', requirements: ['memberId' => '\d+'], methods: ['POST'])]
@@ -212,7 +212,7 @@ final class GroupModerationController extends AbstractAppController
     {
         return $this->handleMemberAction($memberId, $request, 'kick', function (User $actor, GroupMember $member): void {
             $this->memberModerationService->kickMember($actor, $member);
-        }, 'Le membre a été exclu du groupe.');
+        }, 'flash.group.member_kicked');
     }
 
     /**
@@ -240,13 +240,13 @@ final class GroupModerationController extends AbstractAppController
         }
 
         if (!$this->isCsrfTokenValid($csrfPrefix.$memberId, (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
         }
 
         if ($requiresReason && '' === $reason) {
-            $this->addErrorFlash('Indique un motif de bannissement.');
+            $this->addErrorFlash('flash.group.ban_reason_required');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
         }
@@ -280,7 +280,7 @@ final class GroupModerationController extends AbstractAppController
         }
 
         if (!$this->isCsrfTokenValid($csrfPrefix.$requestId, (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectAfterStaffRequest($request, $group);
         }
@@ -333,7 +333,7 @@ final class GroupModerationController extends AbstractAppController
         $group = $this->requireGroup($groupId);
 
         if (!$this->isCsrfTokenValid($csrfPrefix.$requestId, (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectAfterUserInvitation($request, $group);
         }

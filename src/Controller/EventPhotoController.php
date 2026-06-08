@@ -10,7 +10,9 @@ use App\Enum\EventPhotoSlot;
 use App\Repository\EventRepository;
 use App\Service\EventAccessService;
 use App\Service\EventImageService;
+use App\Service\EventPlaceholderService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,6 +26,7 @@ final class EventPhotoController extends AbstractAppController
         private readonly EventRepository $eventRepository,
         private readonly EventAccessService $eventAccess,
         private readonly EventImageService $eventImageService,
+        private readonly EventPlaceholderService $placeholderService,
     ) {
     }
 
@@ -50,9 +53,7 @@ final class EventPhotoController extends AbstractAppController
     {
         $user = $this->requireUser();
         $event = $this->eventRepository->findOneWithRelations($id);
-        $hasPhoto = EventPhotoSlot::Cover === $slot ? $event?->hasPhotoCover() : $event?->hasPhotoDetail();
-
-        if (null === $event || !$hasPhoto) {
+        if (null === $event) {
             throw $this->createNotFoundException();
         }
 
@@ -60,9 +61,24 @@ final class EventPhotoController extends AbstractAppController
             throw $this->createAccessDeniedException();
         }
 
+        $uploadedResponse = $this->tryServeUploadedPhoto($event, $slot);
+        if (null !== $uploadedResponse) {
+            return $uploadedResponse;
+        }
+
+        return $this->servePlaceholder($event, $slot);
+    }
+
+    private function tryServeUploadedPhoto(Event $event, EventPhotoSlot $slot): ?BinaryFileResponse
+    {
+        $hasPhoto = EventPhotoSlot::Cover === $slot ? $event->hasPhotoCover() : $event->hasPhotoDetail();
+        if (!$hasPhoto) {
+            return null;
+        }
+
         $path = $this->eventImageService->getPhotoAbsolutePath($event, $slot);
         if (null === $path) {
-            throw $this->createNotFoundException();
+            return null;
         }
 
         $filename = EventPhotoSlot::Cover === $slot ? $event->getPhotoCover() : $event->getPhotoDetail();
@@ -72,6 +88,21 @@ final class EventPhotoController extends AbstractAppController
         $response->setMaxAge(3600);
 
         return $response;
+    }
+
+    private function servePlaceholder(Event $event, EventPhotoSlot $slot): Response
+    {
+        $localPath = $this->placeholderService->getLocalAbsolutePath($event, $slot);
+        if (null !== $localPath) {
+            $response = new BinaryFileResponse($localPath);
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, basename($localPath));
+            $response->setPublic();
+            $response->setMaxAge(86400);
+
+            return $response;
+        }
+
+        return new RedirectResponse($this->placeholderService->getRemoteUrlForEvent($event, $slot));
     }
 
     private function requireUser(): User

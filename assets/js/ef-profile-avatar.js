@@ -1,9 +1,12 @@
 const MAX_BYTES = 4 * 1024 * 1024;
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const CROPPER_CSS = 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css';
+const CROPPER_JS = 'https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js';
 
 let cropper = null;
 let selectedFile = null;
 let objectUrl = null;
+let cropperLoadPromise = null;
 
 function getBootstrapModal(el) {
     return window.bootstrap?.Modal?.getOrCreateInstance(el);
@@ -23,17 +26,83 @@ function destroyCropper() {
     }
 }
 
-function initProfileAvatarManager() {
+function loadStylesheet(href) {
+    if (document.querySelector(`link[href="${href}"]`)) {
+        return;
+    }
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+}
+
+function loadScript(src) {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+        return existing.dataset.efLoaded === '1'
+            ? Promise.resolve()
+            : new Promise((resolve, reject) => {
+                existing.addEventListener('load', () => resolve(), { once: true });
+                existing.addEventListener('error', () => reject(new Error('script load failed')), { once: true });
+            });
+    }
+
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.crossOrigin = 'anonymous';
+        script.addEventListener('load', () => {
+            script.dataset.efLoaded = '1';
+            resolve();
+        }, { once: true });
+        script.addEventListener('error', () => reject(new Error('script load failed')), { once: true });
+        document.head.appendChild(script);
+    });
+}
+
+function ensureCropperLoaded() {
+    if (typeof window.Cropper !== 'undefined') {
+        return Promise.resolve();
+    }
+
+    if (!cropperLoadPromise) {
+        cropperLoadPromise = (async () => {
+            loadStylesheet(CROPPER_CSS);
+            await loadScript(CROPPER_JS);
+        })().catch((error) => {
+            cropperLoadPromise = null;
+            throw error;
+        });
+    }
+
+    return cropperLoadPromise;
+}
+
+export function initProfileAvatarManager() {
+    const managerEl = document.getElementById('ef-avatar-manager');
+    if (!managerEl) {
+        return;
+    }
+
     const chooseBtn = document.getElementById('ef-avatar-choose-btn');
     const fileInput = document.getElementById('ef-avatar-file-input');
     const modalEl = document.getElementById('ef-avatar-crop-modal');
     const cropImage = document.getElementById('ef-avatar-crop-image');
-    const saveBtn = document.getElementById('ef-avatar-crop-save');
+    const saveBtn = document.getElementById('ef-avatar-save-btn');
     const uploadForm = document.getElementById('ef-avatar-upload-form');
 
     if (!chooseBtn || !fileInput || !modalEl || !cropImage || !saveBtn || !uploadForm) {
         return;
     }
+
+    const alerts = {
+        invalidFormat: managerEl.dataset.efAlertInvalidFormat ?? '',
+        maxSize: managerEl.dataset.efAlertMaxSize ?? '',
+        cropperUnavailable: managerEl.dataset.efAlertCropperUnavailable ?? '',
+        uploadFailed: managerEl.dataset.efAlertUploadFailed ?? '',
+    };
 
     if (chooseBtn.dataset.efBound === '1') {
         return;
@@ -50,13 +119,13 @@ function initProfileAvatarManager() {
         }
 
         if (!ALLOWED_TYPES.includes(file.type)) {
-            window.alert('Format non autorisé. Utilise JPG, PNG ou WebP.');
+            window.alert(alerts.invalidFormat || 'Unsupported format.');
             fileInput.value = '';
             return;
         }
 
         if (file.size > MAX_BYTES) {
-            window.alert('La photo ne doit pas dépasser 4 Mo.');
+            window.alert(alerts.maxSize || 'File too large.');
             fileInput.value = '';
             return;
         }
@@ -70,9 +139,20 @@ function initProfileAvatarManager() {
         modal?.show();
     });
 
-    modalEl.addEventListener('shown.bs.modal', () => {
+    modalEl.addEventListener('shown.bs.modal', async () => {
+        try {
+            await ensureCropperLoaded();
+        } catch {
+            window.alert(alerts.cropperUnavailable || 'Cropping tool unavailable.');
+            getBootstrapModal(modalEl)?.hide();
+
+            return;
+        }
+
         if (typeof window.Cropper === 'undefined') {
-            window.alert('Outil de recadrage indisponible. Recharge la page.');
+            window.alert(alerts.cropperUnavailable || 'Cropping tool unavailable.');
+            getBootstrapModal(modalEl)?.hide();
+
             return;
         }
 
@@ -128,7 +208,7 @@ function initProfileAvatarManager() {
             })
             .catch(() => {
                 saveBtn.disabled = false;
-                window.alert('Impossible d\'envoyer la photo. Réessaie.');
+                window.alert(alerts.uploadFailed || 'Upload failed.');
             });
     });
 }
@@ -140,5 +220,3 @@ if (document.readyState !== 'loading') {
 } else {
     document.addEventListener('DOMContentLoaded', initProfileAvatarManager);
 }
-
-export { initProfileAvatarManager };

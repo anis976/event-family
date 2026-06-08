@@ -1,4 +1,6 @@
 symfonycasts_sass:
     root_sass:
         - 'assets/styles/app.scss'
+        - 'assets/styles/error-page.scss'
+        - 'assets/styles/ef-admin.scss'
     binary: '%kernel.project_dir%/node_modules/.bin/sass.cmd'

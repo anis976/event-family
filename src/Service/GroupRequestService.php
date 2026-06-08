@@ -63,19 +63,19 @@ final class GroupRequestService
     public function createJoinRequest(User $user, Group $group): GroupRequest
     {
         if ($this->groupAccess->isMember($user, $group)) {
-            throw new \DomainException('Tu es déjà membre de ce groupe.');
+            throw new \DomainException('flash.group.already_member');
         }
 
         if ($this->groupAccess->isBannedInGroup($user, $group)) {
-            throw new \DomainException('Tu es banni de ce groupe.');
+            throw new \DomainException('flash.group.banned');
         }
 
         if (!$this->groupRequestRepository->canUserRequestAgain($user, $group)) {
-            throw new \DomainException('Tu as atteint la limite de demandes pour ce groupe.');
+            throw new \DomainException('flash.group.join_limit');
         }
 
         if (null !== $this->groupRequestRepository->findInvitedForUserAndGroup($user, $group)) {
-            throw new \DomainException('Tu as déjà une invitation en attente pour ce groupe.');
+            throw new \DomainException('flash.group.pending_invitation');
         }
 
         $request = (new GroupRequest())
@@ -92,23 +92,27 @@ final class GroupRequestService
     public function inviteUser(User $inviter, Group $group, User $target): GroupRequest
     {
         if (!$this->groupAccess->isStaff($inviter, $group)) {
-            throw new \DomainException('Seul le chef ou un modérateur peut inviter.');
+            throw new \DomainException('flash.group.staff_only_invite');
         }
 
         if ($this->groupAccess->isMember($target, $group)) {
-            throw new \DomainException('Cet utilisateur est déjà membre du groupe.');
+            throw new \DomainException('flash.group.target_already_member');
+        }
+
+        if ($target->isBanned()) {
+            throw new \DomainException('flash.group.target_suspended');
         }
 
         if ($this->groupAccess->isBannedInGroup($target, $group)) {
-            throw new \DomainException('Cet utilisateur est banni de ce groupe.');
+            throw new \DomainException('flash.group.target_banned');
         }
 
         if (null !== $this->groupRequestRepository->findPendingForUserAndGroup($target, $group)) {
-            throw new \DomainException('Une demande d\'adhésion est déjà en attente pour cet utilisateur.');
+            throw new \DomainException('flash.group.target_pending_request');
         }
 
         if (null !== $this->groupRequestRepository->findInvitedForUserAndGroup($target, $group)) {
-            throw new \DomainException('Cet utilisateur a déjà une invitation en attente.');
+            throw new \DomainException('flash.group.target_pending_invitation');
         }
 
         $request = (new GroupRequest())
@@ -200,7 +204,7 @@ final class GroupRequestService
         $this->entityManager->refresh($request);
 
         if (!$request->isPending() && GroupRequestStatus::Invited !== $request->getStatus()) {
-            throw new \DomainException('Cette demande n\'est plus en attente.');
+            throw new \DomainException('flash.group.request_not_pending');
         }
 
         $user = $request->getUser();
@@ -231,27 +235,27 @@ final class GroupRequestService
         $this->entityManager->refresh($request);
 
         if (!$request->isPending()) {
-            throw new \DomainException('Cette demande a déjà été traitée par un autre modérateur.');
+            throw new \DomainException('flash.group.request_already_handled');
         }
     }
 
     private function assertStaffCanHandle(User $staff, GroupRequest $request): void
     {
         if (!$this->groupAccess->isStaff($staff, $request->getRelatedGroup())) {
-            throw new \DomainException('Accès refusé.');
+            throw new \DomainException('flash.group.access_denied');
         }
     }
 
     private function assertInvitationForUser(User $user, GroupRequest $request): void
     {
         if ($request->getUser()->getId() !== $user->getId()) {
-            throw new \DomainException('Cette invitation ne t\'est pas destinée.');
+            throw new \DomainException('flash.group.invitation_not_for_you');
         }
 
         $this->entityManager->refresh($request);
 
         if (GroupRequestStatus::Invited !== $request->getStatus()) {
-            throw new \DomainException('Cette invitation n\'est plus valide.');
+            throw new \DomainException('flash.group.invitation_invalid');
         }
     }
 }

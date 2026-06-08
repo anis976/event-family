@@ -23,20 +23,6 @@
         padding-left: 0.625rem;
         padding-right: 0.625rem;
     }
-
-    @include color-mode(dark) {
-        .ef-input.form-select {
-            background-color: #2b3035 !important;
-            color: #f8f9fa !important;
-            border-color: rgba(255, 255, 255, 0.1);
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-
-            option {
-                background-color: #2b3035;
-                color: #f8f9fa;
-            }
-        }
-    }
 }
 
 .ef-profile-card {
@@ -52,40 +38,6 @@
     .card-body {
         @media (max-width: 576px) {
             padding: 1.25rem !important;
-        }
-    }
-}
-
-.ef-icon-box {
-    background: $ef-primary-orange-dark;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    flex-shrink: 0;
-
-    .bi {
-        color: #fff;
-    }
-
-    @media (min-width: 768px) {
-        width: 56px;
-        height: 56px;
-    }
-
-    @media (min-width: 992px) {
-        width: 60px;
-        height: 60px;
-    }
-
-    @include color-mode(dark) {
-        background-color: rgba($ef-soft-gold, 0.1);
-        border: 1px solid rgba($ef-soft-gold, 0.3);
-
-        .bi {
-            color: $ef-soft-gold;
         }
     }
 }
@@ -170,6 +122,7 @@
 
 .ef-input {
     border: 1.5px solid var(--bs-border-color);
+    border-radius: 0.5rem;
     padding: 0.6rem 0.8rem;
     background-color: transparent;
     color: var(--bs-body-color);
@@ -179,6 +132,24 @@
         background-color: rgba($ef-primary-orange, 0.1) !important;
         border-color: $ef-primary-orange !important;
         box-shadow: 0 0 0 0.25rem rgba($ef-primary-orange, 0.15);
+    }
+
+    @include color-mode(dark) {
+        &.form-select {
+            background-color: #2b3035 !important;
+            color: #f8f9fa !important;
+            border-color: rgba(255, 255, 255, 0.1);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f8f9fa' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+
+            option {
+                background-color: #2b3035;
+                color: #f8f9fa;
+            }
+        }
+
+        &[type='datetime-local'] {
+            color-scheme: dark;
+        }
     }
 }
 
@@ -245,18 +216,8 @@
     }
 }
 
-.ef-readonly-input {
-    background-color: rgba(var(--bs-secondary-rgb), 0.05) !important;
-    cursor: not-allowed;
-    border-color: transparent;
-
-    &:focus {
-        box-shadow: none !important;
-        border-color: transparent !important;
-    }
-}
-
-.ef-profile__security-box {
+.ef-profile__security-box,
+.ef-profile__notifications-box {
     @include color-mode(dark) {
         background-color: rgba(255, 255, 255, 0.04) !important;
         border-color: rgba(255, 255, 255, 0.1) !important;

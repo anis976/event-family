@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class UniqueUserPseudo extends Constraint
 {
-    public string $message = 'Ce pseudo est déjà utilisé par un autre compte.';
+    public string $message = 'user.pseudo.unique_profile';
 
     public function getTargets(): string
     {

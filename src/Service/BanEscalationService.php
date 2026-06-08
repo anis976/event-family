@@ -62,11 +62,12 @@ final class BanEscalationService
      */
     private function handleThirdBan(User $user, ?Group $group, string $reason, int $banCount): void
     {
-        $privateContent = $this->banNotification->buildPrivateNoticeContent(3, $reason, $group);
+        $privateContent = $this->banNotification->buildPrivateNoticeContent(3, $reason, $group, $user);
         $this->messageService->sendPlatformPrivateNotice($user, $privateContent, PlatformNoticeVariant::System);
 
+        $userLocale = $user->getLocale();
         $originalEmail = $this->accountSoftDelete->softDelete($user);
-        $this->banNotification->sendAccountDeletedEmail($originalEmail, $reason, $group, $banCount);
+        $this->banNotification->sendAccountDeletedEmail($originalEmail, $reason, $group, $banCount, $userLocale);
     }
 
     /**
@@ -79,7 +80,7 @@ final class BanEscalationService
         int $step,
         PlatformNoticeVariant $variant,
     ): void {
-        $privateContent = $this->banNotification->buildPrivateNoticeContent($step, $reason, $group);
+        $privateContent = $this->banNotification->buildPrivateNoticeContent($step, $reason, $group, $user);
         $this->messageService->sendPlatformPrivateNotice($user, $privateContent, $variant);
         $this->banNotification->sendWarningEmail($user, $step, $reason, $group);
     }

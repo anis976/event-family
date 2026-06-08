@@ -1,0 +1,48 @@
+{% extends '@!EasyAdmin/layout.html.twig' %}
+
+{% block configured_stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/ef-admin.scss') }}">
+{% endblock %}
+
+{% block head_favicon %}
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📅</text></svg>">
+{% endblock %}
+
+{% block head_metas %}
+    {{ parent() }}
+    <meta name="ef-admin-idle-timeout" content="{{ ef_admin_idle_timeout }}">
+    <meta name="ef-admin-idle-warning" content="{{ ef_admin_idle_warning }}">
+    <meta name="ef-admin-activity-url" content="{{ path('ef_admin_session_activity') }}">
+    <meta name="ef-admin-csrf-token" content="{{ csrf_token('ef_admin_session_activity') }}">
+    <meta name="ef-admin-logout-url" content="{{ path('app_logout') }}">
+    <meta name="ef-admin-logout-csrf" content="{{ csrf_token('logout') }}">
+    <meta name="ef-admin-home-url" content="{{ path('app_home') }}">
+{% endblock %}
+
+{% block javascript_page_color_scheme %}
+    <script src="{{ asset('js/ef-admin-theme-sync.js') }}"></script>
+    {{ parent() }}
+{% endblock %}
+
+{% block body_javascript %}
+    {{ parent() }}
+
+    <div class="modal fade" id="ef-admin-idle-modal" tabindex="-1" aria-labelledby="ef-admin-idle-modal-label" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="ef-admin-idle-modal-label">{{ 'admin.idle.modal_title'|trans }}</h5>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">{{ 'admin.idle.modal_body_security'|trans }}</p>
+                    <p class="mb-0">{{ 'admin.idle.modal_body_countdown'|trans({'%seconds%': ef_admin_idle_warning})|raw }}</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" id="ef-admin-idle-logout">{{ 'admin.idle.logout'|trans }}</button>
+                    <button type="button" class="btn btn-primary" id="ef-admin-idle-stay">{{ 'admin.idle.stay'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

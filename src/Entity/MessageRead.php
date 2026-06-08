@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Repository\MessageReadRepository;
 use App\Util\ParisClock;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,8 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'ef_message_reads')]
 #[ORM\UniqueConstraint(name: 'uniq_ef_message_reads_message_user', columns: ['message_id', 'user_id'])]
 #[ORM\HasLifecycleCallbacks]
-class MessageRead
+class MessageRead implements EfAdminLabelInterface
 {
+    use AdminLabelTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -68,5 +72,15 @@ class MessageRead
     public function getReadAt(): ?\DateTimeImmutable
     {
         return $this->readAt;
+    }
+
+    public function getAdminLabel(): string
+    {
+        return sprintf(
+            'Lu #%s — %s sur %s',
+            $this->id ?? '?',
+            $this->user->getAdminLabel(),
+            $this->message->getAdminLabel(),
+        );
     }
 }

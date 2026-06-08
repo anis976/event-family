@@ -14,6 +14,18 @@ auth:
   password_reset_invalid_token: "Ce lien de réinitialisation est invalide, expiré ou déjà utilisé. Fais une nouvelle demande."
   password_reset_done: "Ton mot de passe a été réinitialisé. Tu peux te connecter."
   password_reset_done_no_notify: "Ton mot de passe a été réinitialisé, mais l'e-mail de notification n'a pas pu être envoyé."
+  google:
+    cancel_csrf_invalid: "La demande d'annulation n'est pas valide. Réessaie."
+    registration_cancelled: "Inscription Google annulée. Tu peux te connecter autrement ou réessayer plus tard."
+    failed: "La connexion avec Google a échoué. Réessaie ou utilise ton e-mail et mot de passe."
+    email_missing: "Google n'a pas fourni d'adresse e-mail utilisable. Choisis un autre compte Google ou inscris-toi par e-mail."
+    profile_invalid: "Profil Google incomplet. Réessaie ou contacte le support."
+    use_password_login: "Un compte existe déjà avec cet e-mail (inscription classique). Connecte-toi avec ton mot de passe."
+    account_conflict: "Ce compte Google ne correspond pas à ton profil EventFamily. Contacte le support si besoin."
+    signup_terms_required: "Accepte les conditions générales avant de t'inscrire avec Google."
+    csrf_invalid: "Session expirée. Recharge la page puis réessaie."
+    registration_complete: "Ton profil est complété. Bienvenue sur EventFamily !"
+    profile_unique_conflict: "Ce couple prénom / nom ou ce pseudo est déjà utilisé. Modifie tes informations."
 
 profile:
   updated: "Ton profil a été mis à jour."
@@ -50,7 +62,7 @@ ui:
   sidebar:
     guest: Invité
     not_connected: Non connecté
-    my_profile: Mon profil
+    my_profile: Mon espace
     logout: Déconnexion
     login: Connexion
     register: Inscription
@@ -80,7 +92,8 @@ ui:
     cgu: CGU & confidentialité
     manage_cookies: Gérer les cookies
     support: Soutenir le projet
-    donate: Donate
+    donate: Offrir un coup de pouce
+    donate_aria: Soutenir EventFamily via PayPal (nouvel onglet)
     copyright: © %year% EventFamily. Tous droits réservés.
   common:
     back_to_top: Retour en haut
@@ -117,19 +130,20 @@ ui:
     feature_events_text: Découvre les événements à venir
     feature_connect_title: Reste connecté
     feature_connect_text: Garde le contact avec ta famille
-    upcoming_events: Événements à venir
+    upcoming_events: Événements publics à venir
     view_all_events: Voir tous les événements
     no_public_events: Aucun événement public à venir pour le moment.
-    guest_page_title: EventFamily — Organisez vos événements en famille
-    guest_welcome: EventFamily, votre espace familial privé
-    guest_lead: Créez des groupes, planifiez des événements et échangez en toute simplicité — l’accès au contenu est réservé aux membres inscrits.
+    guest_page_title: EventFamily — Organise tes événements en famille
+    guest_meta_description: Crée des groupes familiaux, planifie des événements et échange en toute simplicité. EventFamily est un espace privé réservé aux membres inscrits.
+    guest_welcome: EventFamily, ton espace familial privé
+    guest_lead: Crée des groupes, planifie des événements et échange en toute simplicité — l’accès au contenu est réservé aux membres inscrits.
     guest_how_title: Comment ça marche ?
-    guest_step1_title: Créez un compte
-    guest_step1_text: Inscrivez-vous gratuitement pour rejoindre ou créer un groupe familial.
-    guest_step2_title: Rejoignez un groupe
-    guest_step2_text: Le responsable du groupe vous invite ; vous accédez ensuite aux événements et messages du groupe.
-    guest_step3_title: Partagez vos moments
-    guest_step3_text: Publiez des événements, échangez avec les membres et gardez le lien au quotidien.
+    guest_step1_title: Crée un compte
+    guest_step1_text: Inscris-toi gratuitement pour rejoindre ou créer un groupe familial.
+    guest_step2_title: Rejoins un groupe
+    guest_step2_text: Le responsable du groupe t’invite ; tu accèdes ensuite aux événements et messages du groupe.
+    guest_step3_title: Partage tes moments
+    guest_step3_text: Publie des événements, échange avec les membres et garde le lien au quotidien.
     guest_private_notice: Les événements, groupes et messages ne sont visibles qu’après connexion. EventFamily est un espace privé, pas un annuaire public.
     guest_cta_register: Créer un compte
     guest_cta_login: Se connecter
@@ -156,6 +170,7 @@ ui:
     breadcrumb_aria: Fil d'Ariane
     breadcrumb_new: Nouveau
     breadcrumb_edit: Modifier
+    card_modal_aria: 'Voir l''aperçu de l''événement %title%'
     create_form_title: Créer un événement
     create_form_hint: Publie un événement pour l'un de tes groupes.
     publish: Publier l'événement
@@ -185,7 +200,7 @@ ui:
       staff_contact_moderator: Modérateur
     modal:
       view_more: Voir plus
-      delete_confirm_named: Voulez-vous vraiment supprimer « %title% » ?
+      delete_confirm_named: Veux-tu vraiment supprimer « %title% » ?
   groups:
     breadcrumb_aria: Fil d'Ariane
     back_to_group: Retour au groupe
@@ -202,6 +217,7 @@ ui:
     role:
       leader_badge: Chef
     member_count: '{0} aucun membre|{1} %count% membre|]1,Inf[ %count% membres'
+    card_link_aria: 'Voir le groupe %name% — %members%'
     breadcrumb: Groupes
     breadcrumb_new: Nouveau
     breadcrumb_edit: Modifier
@@ -214,6 +230,7 @@ ui:
     show:
       my_groups_breadcrumb: Mes groupes
       manage_requests: Gérer les demandes
+      manage_requests_aria: 'Gérer les demandes — %count% en attente'
       invite_members: Inviter des membres
       group_messages: Messages du groupe
       role_owner: PROPRIÉTAIRE
@@ -237,7 +254,7 @@ ui:
       column_member: Membre
       column_role: Rôle
       column_actions: Actions
-      actions_aria: Actions membre
+      actions_aria: Actions pour %name%
       view_profile: Voir profil
       remove_moderator: Retirer modérateur
       make_moderator: Passer modérateur
@@ -245,7 +262,8 @@ ui:
       kick: Exclure
       send_message: Envoyer un message
       unban: Débannir
-      message_placeholder: Votre message…
+      message_placeholder: Écris ton message…
+      message_label: Message privé pour %name%
       role_banned: BANNI
       role_owner: CHEF
       role_moderator: MODO
@@ -285,17 +303,23 @@ ui:
     title: Messages
     page_title: EventFamily — Messages
     hub_title: Espace Messages
+    hub:
+      link_private: Messages privés
+      link_private_unread: '{1} Messages privés — %count% non lu|]1,Inf[ Messages privés — %count% non lus'
+      link_group: Messages de groupe
+      link_group_unread: '{1} Messages de groupe — %count% non lu|]1,Inf[ Messages de groupe — %count% non lus'
     private:
       title: Messages privés
-      subtitle: Conversations individuelles avec vos contacts
+      subtitle: Conversations individuelles avec tes contacts
       page_title: EventFamily — Messages privés
       empty: Aucun message privé pour le moment.
       showing_count: '{0} Aucune conversation affichée|{1} %visible% conversation affichée sur %total%|]1,Inf[ %visible% conversations affichées sur %total%'
       load_older: Charger les conversations plus anciennes
       max_visible_hint: Seules les %max% conversations les plus récentes peuvent être affichées ici. Les plus anciennes sont supprimées automatiquement après 12 mois.
+      email_notify_settings: Alertes e-mail des messages privés
     group:
       title: Messages de groupe
-      subtitle: Discussions dans vos groupes
+      subtitle: Discussions dans tes groupes
       page_title: EventFamily — Messages de groupe
       picker_aria: Choisir un groupe
       picker_header: Mes groupes
@@ -311,15 +335,16 @@ ui:
       placeholder_group: Écrire un message au groupe…
     thread:
       unknown_user: Utilisateur inconnu
-      closed_notice: Cette conversation est clôturée. Un participant l'a masquée de son espace. Vous pouvez encore la consulter, mais il n'est plus possible d'y répondre.
+      closed_notice: Cette conversation est clôturée. Un participant l'a masquée de son espace. Tu peux encore la consulter, mais il n'est plus possible d'y répondre.
       reply: Répondre
-      max_replies: Max 2 réponses
+      read_at: 'Lu le %date%'
+      load_older_replies: 'Afficher les réponses plus anciennes (%visible% / %total%)'
       delete_group: Supprimer
       hide_private: Masquer
       confirm_delete_group: Supprimer ce message définitivement pour tout le groupe ?
-      confirm_hide_private: Masquer cette conversation de votre espace ?
+      confirm_hide_private: Masquer cette conversation de ton espace ?
       view_replies: '{1} Voir %count% réponse|]1,Inf[ Voir %count% réponses'
-      reply_placeholder: Votre réponse…
+      reply_placeholder: Ta réponse…
     back_to_hub: Retour au hub
     placeholder: Écrire un message…
     send_aria: Envoyer
@@ -330,6 +355,7 @@ ui:
       publish_aria: Publier l'annonce
       announcement_aria: Annonce officielle EventFamily
       badge: Annonce
+      badge_moderator: Modération
       confirm_delete: Supprimer cette annonce officielle ?
     system:
       notice_aria: Message système du groupe
@@ -338,6 +364,23 @@ ui:
       reset: Réinitialiser
     platform:
       notice_aria: Message officiel EventFamily
+    direct:
+      send_as: Envoyer en tant que
+      mode_member: Membre (message personnel)
+      mode_moderator: Modération EventFamily
+      mode_admin: Administration EventFamily
+    staff_private:
+      form_title: Message officiel à un membre
+      recipient_label: Destinataire
+      recipient_placeholder: Pseudo, e-mail, identifiant ou nom…
+      recipient_hint: Saisis un pseudo (@pseudo), un e-mail, un identifiant numérique ou un nom unique.
+      recipient_required: Indique le destinataire du message.
+      recipient_max: La recherche du destinataire est trop longue.
+      variant_label: Envoyer en tant que
+      variant_required: Choisis le type de message officiel.
+      content_label: Message
+      content_placeholder: Rédiger le message officiel…
+      send: Envoyer le message officiel
     form:
       content_required: Le message ne peut pas être vide.
       content_max: Le message ne peut pas dépasser {{ limit }} caractères.
@@ -367,6 +410,7 @@ ui:
   about:
     title: À propos
     page_title: EventFamily — À propos
+    meta_description: EventFamily — plateforme privée pour organiser des événements familiaux entre proches invités. Découvre le projet, la confidentialité et comment nous contacter.
     subtitle: Plateforme de gestion d'événements familiaux
     intro: EventFamily est une plateforme conçue pour rapprocher les familles et faciliter l'organisation d'événements familiaux.
     feature_groups_title: Crée des groupes familiaux
@@ -401,8 +445,10 @@ ui:
     field_name: Nom
     field_email: Adresse e-mail
     message_min: Minimum %min% caractères pour décrire ta demande.
-    channel_email: E-mail
     channel_whatsapp: WhatsApp
+    whatsapp_prefill: "Bonjour, j'ai une question concernant EventFamily."
+    whatsapp_link_aria: Contacter EventFamily sur WhatsApp (nouvel onglet)
+    whatsapp_open_hint: Ouvre WhatsApp avec un message prérempli
     alert_recaptcha_unavailable: Vérification anti-spam indisponible. Recharge la page et réessaie.
     alert_recaptcha_v3_required: Ces clés ne sont pas compatibles reCAPTCHA v3. Crée un site « Score (v3) » dans Google reCAPTCHA et mets à jour RECAPTCHA_SITE_KEY / RECAPTCHA_SECRET_KEY.
     recaptcha_legal: 'Ce site est protégé par reCAPTCHA v3 (vérification invisible, sans case à cocher). Les <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">règles de confidentialité</a> et les <a href="https://policies.google.com/terms" rel="noopener noreferrer" target="_blank">conditions d''utilisation</a> de Google s''appliquent.'
@@ -425,6 +471,7 @@ ui:
       suspended_contact: 'Pour contester cette décision, écris à <a href="mailto:%email%" class="ef-link-orange">%email%</a> depuis ton adresse e-mail EventFamily.'
       error_title: Connexion impossible
       google: Se connecter avec Google
+      google_terms_hint: "Première connexion avec Google ? Tu devras accepter les conditions générales juste après."
       verify_email: Vérifie ton adresse e-mail.
       verify_password: Vérifie ton mot de passe.
       submit: Continuer
@@ -442,7 +489,11 @@ ui:
       confirm_password: Confirmer
     placeholder:
       email: nom@exemple.com
-      password: '••••••••'
+      password: Saisis ton mot de passe
+      password_new: Au moins 8 caractères — à toi de jouer
+      password_confirm: Retape exactement le même mot de passe
+      password_current: Saisis ton mot de passe actuel
+      password_optional: Laisse vide pour conserver l'actuel
     resend:
       title: Pas reçu l'e-mail d'activation ?
       hint: Vérifie d'abord ta boîte de réception et le dossier spam / courrier indésirable. Attends quelques minutes avant de demander un nouvel envoi (5 demandes max. toutes les 15 min.).
@@ -452,12 +503,19 @@ ui:
       page_title: EventFamily — Inscription
       title: Créer un compte
       google: S'inscrire avec Google
+      google_terms_hint: "Après Google, tu devras accepter les conditions générales pour activer ton compte."
       accept_terms_prefix: J'accepte les
       accept_terms_link: Conditions d'utilisation
       submit: S'inscrire
       has_account: Déjà un compte ?
       login_link: Se connecter
       illustration_alt: Illustration inscription
+    google_complete:
+      page_title: EventFamily — Finaliser ton compte
+      title: Finalise ton profil
+      intro: "Dernière étape après Google : vérifie ton identité sur EventFamily et accepte les conditions générales pour activer ton compte."
+      submit: Accéder à EventFamily
+      cancel: Annuler et revenir à la connexion
     forgot:
       page_title: EventFamily — Mot de passe oublié
       title: Mot de passe oublié
@@ -494,7 +552,9 @@ ui:
   legal:
     back_home: Retour à l'accueil
     cgu_title: CGU & Politique de Confidentialité
+    cgu_meta_description: Conditions d'utilisation, politique de confidentialité et cookies — EventFamily.
     mentions_title: Mentions légales
+    mentions_meta_description: Éditeur, hébergeur et propriété intellectuelle — EventFamily.
   error:
     not_found:
       page_title: EventFamily — Page introuvable
@@ -504,6 +564,7 @@ ui:
       hint: Vérifie l'adresse dans la barre du navigateur ou reviens à l'accueil.
       back_home: Retour à l'accueil
       contact: Nous contacter
+      about: À propos du site
   profile:
     my_space: Mon espace
     my_space_page_title: EventFamily — Mon espace
@@ -521,11 +582,15 @@ ui:
     security: Sécurité
     password: Mot de passe
     password_hint: Sécurise l'accès à ton compte
+    edit_password_aria: Modifier mon mot de passe
     danger_zone: Zone dangereuse
     delete_account_title: Suppression du compte
     delete_account_warning: 'Attention : cette action sera irréversible et supprimera toutes tes données.'
     delete_account_btn: Supprimer mon compte
     update_profile: Mettre à jour mon profil
+    notifications: Notifications
+    notify_private_message_email: M'avertir par e-mail en cas de nouveau message privé
+    notify_private_message_email_help: Un e-mail te sera envoyé si quelqu'un t'écrit sur EventFamily (maximum un rappel toutes les 30 minutes par conversation).
     show:
       page_title: EventFamily — Profil de %name%
       page_heading: Profil membre
@@ -535,6 +600,7 @@ ui:
       member_since: Membre depuis
       display_name: Nom affiché
       send_private: Envoyer un message privé
+      message_label: Message privé pour %name%
       message_placeholder: Écris ton message privé à %name%…
       send_now: Envoyer maintenant
       not_set: Non renseigné
@@ -764,6 +830,12 @@ email:
     subject: EventFamily — Suspension levée
     title: Compte réactivé
     intro: La suspension de ton compte EventFamily a été <strong>levée</strong>. Tu peux à nouveau te connecter.
+  private_message:
+    subject: '%name% t''a écrit sur EventFamily'
+    title: Nouveau message privé
+    intro: '<strong>%name%</strong> t''a envoyé un message sur EventFamily :'
+    cta: Lire le message
+    opt_out: 'Tu peux désactiver ces alertes dans <strong>Mon espace</strong> → notifications.'
   contact:
     subject: 'EventFamily — Contact de %name%'
     title: Contact EventFamily
@@ -828,6 +900,7 @@ flash:
     pending_invitation: Tu as déjà une invitation en attente pour ce groupe.
     staff_only_invite: Seul le chef ou un modérateur peut inviter.
     target_already_member: Cet utilisateur est déjà membre du groupe.
+    target_suspended: Cet utilisateur est suspendu du site.
     target_banned: Cet utilisateur est banni de ce groupe.
     target_pending_request: Une demande d'adhésion est déjà en attente pour cet utilisateur.
     target_pending_invitation: Cet utilisateur a déjà une invitation en attente.
@@ -853,21 +926,25 @@ flash:
     group_not_found: Groupe introuvable.
     group_inaccessible: Groupe introuvable ou inaccessible.
     staff_published: Annonce officielle publiée.
+    staff_sent_private: Message officiel envoyé au membre.
+    staff_admin_only: Seuls les administrateurs du site peuvent envoyer un message en tant qu'administration.
+    recipient_ambiguous: Plusieurs membres correspondent à cette recherche. Précise le pseudo, l'e-mail ou l'identifiant.
     published: Message publié.
     recipient_not_found: Destinataire introuvable.
     empty: Le message ne peut pas être vide.
     sent: Message envoyé.
     reply_sent: Réponse envoyée.
     deleted_group: Message supprimé.
-    hidden_private: Conversation masquée de votre espace.
+    hidden_private: Conversation masquée de ton espace.
     must_be_member: Tu dois être membre du groupe pour publier un message.
     banned_in_group: Tu es banni de ce groupe.
     staff_only_announcement: Seuls les modérateurs et administrateurs du site peuvent publier une annonce officielle.
     thread_not_found: Fil de discussion introuvable.
-    max_replies: Ce fil a déjà atteint le maximum de réponses autorisées.
+    rate_hourly: Tu as envoyé trop de messages privés récemment. Réessaie dans quelques minutes.
+    rate_hourly_group: Tu as publié trop de messages de groupe récemment. Réessaie dans quelques minutes.
     no_reply_staff: Les annonces officielles EventFamily ne peuvent pas recevoir de réponses.
     no_reply_platform: Ce message officiel ne peut pas recevoir de réponses.
-    thread_closed: Cette conversation est clôturée. Vous pouvez encore la consulter, mais il n'est plus possible d'y répondre.
+    thread_closed: Cette conversation est clôturée. Tu peux encore la consulter, mais il n'est plus possible d'y répondre.
     access_denied: Accès refusé.
     cannot_delete: Tu ne peux pas supprimer ce message.
     platform_cannot_delete: Ce message officiel ne peut pas être supprimé.
@@ -909,32 +986,69 @@ legal:
   cgu:
     privacy:
       title: Protection des données personnelles
-      intro: Conformément au RGPD, nous nous engageons à protéger la vie privée de nos utilisateurs.
-      collection_title: Collecte des données
-      collection_body: 'Nous collectons les données suivantes : adresse e-mail, nom d''utilisateur, ville de résidence, ainsi que les textes et images liés aux événements créés.'
-      adsense_title: Utilisation des données (AdSense)
-      adsense_body: Le site affiche des publicités via Google AdSense pour financer les frais d'hébergement. Des cookies tiers sont utilisés pour proposer des publicités pertinentes. Vous pouvez gérer votre consentement via le bandeau dédié.
-      retention_title: Conservation et Droits
-      retention_body: 'Vos données sont conservées durant toute la durée de vie du compte. En cas de suppression du compte, les données sont définitivement effacées sous un délai de 3 mois. Vous pouvez demander l''accès ou la suppression de vos données en contactant l''administrateur à :'
+      intro: Conformément au Règlement général sur la protection des données (RGPD), EventFamily s'engage à protéger la vie privée de ses membres et à traiter les données personnelles avec transparence.
+      controller_title: Responsable du traitement
+      controller_body: 'Le responsable du traitement est <strong>SOUFFOUMADI Anissoir</strong>, domicilié au %address%. Contact : <a href="mailto:%email%">%email%</a>. EventFamily est un projet personnel, développé par passion, sans activité commerciale.'
+      nature_title: Finalité du site
+      nature_body: EventFamily offre un espace privé dédié aux membres d'une même famille pour partager des événements (mariages, fêtes, réunions…) et organiser des rencontres familiales. Le service n'est pas destiné à d'autres types de mise en relation.
+      collection_title: Données collectées
+      collection_body: 'Selon les fonctionnalités utilisées : identifiants de compte (adresse e-mail, mot de passe stocké de manière sécurisée, prénom, nom, pseudo optionnel, langue d''interface) ; connexion Google (identifiant Google et e-mail associé) ; profil (photo optionnelle, recadrage, visibilité) ; contenus publiés (groupes familiaux, événements avec titres, dates, lieux, descriptions et photos, messages privés et messages de groupe) ; préférences (notifications e-mail pour les messages privés, choix de consentement cookies) ; formulaire contact réservé aux membres connectés (objet et message) ; données techniques (dates de connexion, jetons temporaires pour vérification d''e-mail, changement ou réinitialisation de mot de passe, suppression de compte). Aucune « ville de résidence » n''est demandée.'
+      purposes_title: Finalités du traitement
+      purposes_body: 'Création et gestion du compte ; organisation et partage d''événements familiaux au sein de groupes privés ; messagerie entre membres autorisés ; invitations et demandes d''adhésion aux groupes ; modération et sécurité de la plateforme ; envoi d''e-mails transactionnels (confirmation, alertes, avertissements) ; mesure d''audience et publicité en ligne uniquement si vous y consentez ; amélioration du service.'
+      legal_basis_title: Bases légales
+      legal_basis_body: 'Exécution du contrat (inscription et utilisation du service) ; intérêt légitime (sécurité, prévention du spam, modération) ; consentement (cookies de mesure d''audience et publicitaires, notifications e-mail optionnelles) ; obligations légales le cas échéant.'
+      third_parties_title: Destinataires et sous-traitants
+      third_parties_body: 'Des données peuvent être traitées par : <strong>Google</strong> (connexion OAuth, reCAPTCHA v3 sur le formulaire contact, Google Analytics si accepté, Google AdSense si accepté) — <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">politique de confidentialité Google</a> ; le <strong>prestataire d''envoi d''e-mails</strong> (SMTP) pour les messages transactionnels et le formulaire contact ; <strong>PayPal</strong> si vous utilisez le lien de don volontaire dans le pied de page (site externe, soumis à la politique PayPal). L''hébergeur du site stocke les données techniques nécessaires au fonctionnement.'
+      cookies_title: Cookies et traceurs
+      cookies_body: 'Des cookies strictement nécessaires (session, sécurité CSRF, langue, mémorisation de connexion, enregistrement de vos choix cookies) sont déposés sans consentement. Les cookies de mesure d''audience (Google Analytics) et publicitaires (Google AdSense) ne sont activés qu''après votre accord via le bandeau ou « Gérer les cookies » dans le pied de page. Le détail des catégories figure dans la fenêtre de préférences cookies.'
+      adsense_title: Publicité en ligne (AdSense)
+      adsense_body: 'Le site peut afficher des publicités via Google AdSense pour contribuer aux frais d''hébergement. Des cookies tiers peuvent être utilisés pour la mesure et la personnalisation publicitaire. Aucun script publicitaire n''est chargé tant que vous n''acceptez pas la catégorie « cookies publicitaires ».'
+      retention_title: Durées de conservation
+      retention_body: 'Données de compte : conservées tant que le compte est actif ; après confirmation de suppression, effacement définitif sous 3 mois. Messages : fils anciens supprimés automatiquement après 12 mois. Événements passés : données associées purgées après 10 mois. Comptes inactifs : avertissements par e-mail puis suppression selon les règles configurées sur la plateforme. Jetons temporaires (vérification, mot de passe, suppression) : durée limitée (de quelques minutes à quelques heures). Choix cookies : 6 mois.'
+      rights_title: Vos droits
+      rights_body: 'Vous disposez d''un droit d''accès, de rectification, d''effacement, de limitation, d''opposition et de portabilité concernant vos données personnelles. Vous pouvez retirer votre consentement cookies à tout moment via « Gérer les cookies ». Pour exercer vos droits, contactez l''éditeur à l''adresse ci-dessous.'
+      cnil_title: Réclamation
+      cnil_body: 'Vous pouvez introduire une réclamation auprès de la CNIL (Commission nationale de l''informatique et des libertés) : <a href="https://www.cnil.fr" rel="noopener noreferrer" target="_blank">www.cnil.fr</a>.'
+      transfers_title: Transferts hors Union européenne
+      transfers_body: 'Certains prestataires (notamment Google) peuvent traiter des données en dehors de l''Union européenne. Google propose des garanties contractuelles (clauses types) pour encadrer ces transferts.'
+      contact_body: 'Pour toute question relative à vos données personnelles, écrivez à'
     terms:
       title: Conditions Générales d'Utilisation
       purpose_title: Objet du service
-      purpose_body: EventFamily est une plateforme de mise en relation familiale. Elle permet la publication d'événements (mariages, fêtes, etc.). L'accès est strictement réservé aux utilisateurs connectés.
+      purpose_body: EventFamily est une plateforme privée de mise en relation familiale. Elle permet de créer des groupes, publier des événements (mariages, fêtes, réunions…) et échanger via la messagerie. L'accès au contenu des membres est réservé aux utilisateurs connectés et autorisés.
+      scope_title: Périmètre d'utilisation
+      scope_body: Le service est exclusivement destiné au partage d'événements et à l'organisation de rencontres au sein de la famille. EventFamily n'est pas un site de rencontre généraliste ni une place de marché. Toute utilisation détournée ou contraire à cet esprit familial peut entraîner une suspension du compte.
+      account_title: Compte et inscription
+      account_body: 'L''inscription requiert une adresse e-mail valide et l''acceptation des présentes CGU. La vérification de l''e-mail peut être demandée. La connexion via Google est possible ; un complément d''inscription peut être requis. Vous êtes responsable de la confidentialité de vos identifiants.'
       user_resp_title: Responsabilité de l'utilisateur
-      user_resp_body: L'utilisateur est seul responsable du contenu qu'il publie. Il est interdit de publier du contenu haineux, diffamatoire ou portant atteinte au respect de la vie privée des autres membres de la famille.
+      user_resp_body: L'utilisateur est seul responsable du contenu qu'il publie (textes, photos, messages). Sont interdits les contenus haineux, diffamatoires, illicites ou portant atteinte à la vie privée d'autres membres. Les photos et informations partagées doivent respecter le cercle familial concerné.
+      moderation_title: Modération et sanctions
+      moderation_body: Les responsables de groupes et l'équipe de modération peuvent avertir, suspendre ou exclure un membre en cas de non-respect des règles. Des avertissements progressifs sur la plateforme peuvent conduire à la suppression définitive du compte. Les décisions de modération peuvent faire l'objet d'un contact par e-mail avec l'équipe.
       publisher_resp_title: Responsabilité de l'éditeur
-      publisher_resp_body: SOUFFOUMADI Anissoir ne pourra être tenu responsable des fausses informations publiées par les membres, ni des dommages indirects résultant de l'utilisation du site.
+      publisher_resp_body: EventFamily est un projet personnel développé bénévolement pour améliorer le quotidien des familles. SOUFFOUMADI Anissoir ne pourra être tenu responsable des contenus publiés par les membres, des fausses informations qu'ils échangent entre eux, ni des dommages indirects liés à l'utilisation du site. L'éditeur s'efforce de maintenir un service disponible et sécurisé, sans garantie d'un fonctionnement ininterrompu.
       ip_title: Propriété intellectuelle
-      ip_body: Les photos et textes publiés restent la propriété de l'utilisateur. En publiant, l'utilisateur concède à EventFamily le droit d'afficher ces contenus uniquement sur la plateforme pour les membres autorisés.
+      ip_body: Les photos et textes publiés par les membres restent leur propriété. En publiant, l'utilisateur concède à EventFamily le droit d'afficher ces contenus uniquement sur la plateforme, pour les membres autorisés. La structure du site (design, logo, code) reste la propriété de l'éditeur.
+      changes_title: Modification des CGU
+      changes_body: Les présentes CGU peuvent être mises à jour pour refléter l'évolution du service ou la réglementation. En cas de modification substantielle, les membres en seront informés lors de leur prochaine connexion ou par e-mail si nécessaire. La poursuite de l'utilisation du site vaut acceptation des CGU en vigueur.
+      law_title: Droit applicable
+      law_body: Les présentes CGU sont soumises au droit français. En cas de litige, et à défaut de résolution amiable, les tribunaux français seront seuls compétents.
   mentions:
     editor:
       title: 1. Édition du site
       intro: 'En vertu de l''article 6 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l''économie numérique, il est précisé aux utilisateurs du site <strong>EventFamily</strong> l''identité des différents intervenants dans le cadre de sa réalisation et de son suivi :'
       owner: 'Propriétaire & Éditeur :'
+      owner_name: SOUFFOUMADI Anissoir
+      address: 'Adresse :'
       contact: 'Contact :'
       director: 'Directeur de la publication :'
+      director_name: SOUFFOUMADI Anissoir
+      status: 'Statut :'
+      status_body: Projet personnel développé par passion, sans activité commerciale. EventFamily n'est pas une entreprise.
+    nature:
+      title: 2. Objet du site
+      body: EventFamily est un espace privé dédié aux membres d'une famille pour partager des événements et organiser des rencontres familiales (mariages, fêtes, réunions…). Le site n'a pas vocation à accueillir d'autres types de mise en relation.
     hosting:
-      title: 2. Hébergement
+      title: 3. Hébergement
       intro: 'Le site est hébergé par :'
       provider: 'Prestataire :'
       provider_placeholder: '[Nom de l''hébergeur — ex. OVH Cloud]'
@@ -943,14 +1057,14 @@ legal:
       contact: 'Contact :'
       contact_placeholder: '[Téléphone ou site de l''hébergeur]'
     ip:
-      title: 3. Propriété intellectuelle
+      title: 4. Propriété intellectuelle
       body: SOUFFOUMADI Anissoir est propriétaire des droits de propriété intellectuelle sur la structure du site (logos, graphismes, icônes). Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable.
 
 admin:
   dashboard:
     title: Administration EventFamily
     open_site: Ouvrir le site
-    intro: Espace réservé aux administrateurs et modérateurs du site. Les actions de suppression nécessitent le rôle administrateur.
+    intro: Espace réservé aux administrateurs et modérateurs du site. Les actions de suppression nécessitent un rôle super-modérateur ou administrateur.
     users_title: Utilisateurs
     users_desc: Profils complets, rôles, statut du compte et mots de passe.
     users_btn: Gérer les utilisateurs
@@ -969,6 +1083,7 @@ admin:
     idle_notice: Cette zone se déconnecte automatiquement après %seconds% secondes d'inactivité.
   access:
     session_changed: Tu es connecté(e) avec un compte sans accès à l'administration. Retour au site EventFamily.
+    csrf_expired: Ta session a expiré ou la page est périmée. Recharge la page puis réessaie.
   system_notice:
     page_title: EventFamily — Message système — %name%
     page_heading: Groupes — Message système
@@ -977,6 +1092,9 @@ admin:
     title: Message système — %name%
     hint: Ce message est affiché en tête du fil pour tous les membres. Seul un administrateur peut le modifier ou le réinitialiser.
   title: EventFamily — Administration
+  locale:
+    fr: Français
+    en: English
   page:
     index: Administration
     new: Créer
@@ -998,15 +1116,22 @@ admin:
       created_at: Créé le
       updated_at: Modifié le
       deleted_at: Supprimé le
+      not_available: —
+      none: Aucune
+      unknown_id: '?'
     user:
       entity_singular: utilisateur
       entity_plural: utilisateurs
       fieldset_identity: Identité
       fieldset_access: Accès
       fieldset_profile: Profil
+      field_email: E-mail
       field_first_name: Prénom
       field_last_name: Nom
+      field_pseudo: Pseudo
+      field_locale: Langue
       field_roles: Rôles site
+      help_roles_admin_only: Seul un administrateur peut modifier les rôles staff (modérateur, super-modérateur, administrateur).
       field_password: Mot de passe
       field_verified: Compte vérifié
       field_banned: Compte suspendu (site)
@@ -1016,12 +1141,15 @@ admin:
       error_ban_reason_required: Merci de préciser le motif de la suspension avant d'enregistrer.
       error_already_banned: Ce compte est déjà suspendu.
       error_self_ban: Tu ne peux pas te suspendre toi-même.
+      error_self_unban: Tu ne peux pas lever ta propre suspension.
+      error_staff_target: Seul un administrateur peut suspendre ou réactiver un compte staff (modérateur, super-modérateur, administrateur).
       field_group_bans: Bans de groupe (escalade)
       ban_summary: '%total% / %max% au total — %active% actif(s) dans un groupe'
       field_avatar_visibility: Visibilité avatar
       field_last_login: Dernière connexion
       role_user: Utilisateur
       role_moderator: Modérateur site
+      role_super_moderator: Super-modérateur
       role_admin: Administrateur
       avatar_public: Public
       avatar_private: Privé
@@ -1105,7 +1233,8 @@ admin:
         other: Autre
       notice_variant:
         system: Système
-        eventfamily: EventFamily
+        moderator: Modération EventFamily
+        eventfamily: Administration EventFamily
       thread:
         parent: Message parent
         viewed: Message consulté
@@ -1117,6 +1246,7 @@ admin:
         hidden_by_author: masqué auteur %date%
         hidden_by_recipient: masqué destinataire %date%
         thread_closed: fil clôturé %date%
+        separator: '————————————————————————————————————————'
     ban:
       entity_singular: bannissement
       entity_plural: bannissements
@@ -1138,7 +1268,7 @@ admin:
   idle:
     modal_title: Session administration expirée
     modal_body_security: Par mesure de sécurité, la zone d'administration se déconnecte rapidement en cas d'inactivité.
-    modal_body_countdown: 'Déconnexion automatique dans <strong id="ef-admin-idle-countdown">10</strong> secondes.'
+    modal_body_countdown: 'Déconnexion automatique dans <strong id="ef-admin-idle-countdown">%seconds%</strong> secondes.'
     logout: Se déconnecter
     stay: Rester connecté
 
@@ -1198,7 +1328,7 @@ cookie:
       duration: 1 an
     remember:
       name: REMEMBERME
-      purpose: Mémorise votre connexion si vous cochez « Se souvenir de moi ».
+      purpose: Mémorise ta connexion si tu coches « Se souvenir de moi ».
       duration: Selon la configuration du site (connexion prolongée).
     consent:
       name: ef_consent

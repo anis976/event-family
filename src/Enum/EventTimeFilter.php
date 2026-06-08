@@ -13,18 +13,18 @@ enum EventTimeFilter: string
     public function label(): string
     {
         return match ($this) {
-            self::Upcoming => 'À venir',
-            self::Ongoing => 'En cours',
-            self::Past => 'Passés',
+            self::Upcoming => 'ui.events.filter.upcoming',
+            self::Ongoing => 'ui.events.filter.ongoing',
+            self::Past => 'ui.events.filter.past',
         };
     }
 
     public function emptyMessage(): string
     {
         return match ($this) {
-            self::Upcoming => 'Aucun événement à venir pour le moment.',
-            self::Ongoing => 'Aucun événement en cours pour le moment.',
-            self::Past => 'Aucun événement passé pour le moment.',
+            self::Upcoming => 'ui.events.empty.upcoming',
+            self::Ongoing => 'ui.events.empty.ongoing',
+            self::Past => 'ui.events.empty.past',
         };
     }
 

@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends AbstractType<null>
@@ -26,22 +27,29 @@ final class ContactFormType extends AbstractType
 
     public const int MESSAGE_MAX_LENGTH = 2000;
 
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $t = fn (string $id, array $params = []): string => $this->translator->trans($id, $params);
+
         $builder
             ->add('message', TextareaType::class, [
-                'label' => 'Message',
+                'label' => $t('ui.contact.form.message_label'),
                 'attr' => [
                     'class' => 'form-control ef-input ef-contact__textarea js-input-count',
                     'rows' => 6,
                     'maxlength' => self::MESSAGE_MAX_LENGTH,
-                    'placeholder' => 'Décris ta demande en détail…',
+                    'placeholder' => $t('ui.contact.form.message_placeholder'),
                 ],
                 'constraints' => [
-                    new NotBlank(message: 'Le message est obligatoire.'),
+                    new NotBlank(message: $t('ui.contact.form.validation.message_required')),
                     new Length(
                         max: self::MESSAGE_MAX_LENGTH,
-                        maxMessage: 'Le message ne peut pas dépasser {{ limit }} caractères.',
+                        maxMessage: $t('ui.contact.form.validation.message_max'),
                     ),
                     new Callback($this->validateMessage(...)),
                 ],
@@ -49,7 +57,7 @@ final class ContactFormType extends AbstractType
             ->add('companyWebsite', TextType::class, [
                 'mapped' => false,
                 'required' => false,
-                'label' => 'Site web de l\'entreprise',
+                'label' => $t('ui.contact.form.honeypot_label'),
                 'attr' => [
                     'class' => 'ef-contact__honeypot',
                     'autocomplete' => 'off',
@@ -84,6 +92,18 @@ final class ContactFormType extends AbstractType
                 $event->setData($data);
             }
         });
+
+        // Horodatage frais à chaque affichage (évite faux positif anti-spam après erreur de validation)
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
+            $form = $event->getForm();
+            if ($form->has('_startedAt')) {
+                $form->get('_startedAt')->setData((string) time());
+            }
+
+            if ($options['recaptcha_enabled'] && $form->has('recaptchaToken')) {
+                $form->get('recaptchaToken')->setData('');
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -108,9 +128,9 @@ final class ContactFormType extends AbstractType
         }
 
         if (mb_strlen($trimmed) < self::MESSAGE_MIN_LENGTH) {
-            $context->buildViolation(sprintf(
-                'Décris ta demande en au moins %d caractères (évite les messages du type « salut » ou « bonjour » seuls).',
-                self::MESSAGE_MIN_LENGTH,
+            $context->buildViolation($this->translator->trans(
+                'ui.contact.form.validation.message_min',
+                ['%min%' => self::MESSAGE_MIN_LENGTH],
             ))->addViolation();
         }
     }

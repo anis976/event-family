@@ -1,14 +1,16 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — {{ event.title }}{% endblock %}
+{% block title %}{{ 'ui.events.show.page_title'|trans({'%title%': event.title}) }}{% endblock %}
 {% block page_title %}{{ event.title }}{% endblock %}
 
 {% block body %}
-<div class="container py-5 ef-event-show">
-    <nav aria-label="Fil d'Ariane" class="mb-4">
+<div class="ef-main-content-padding ef-event-show">
+    <h1 class="visually-hidden">{{ event.title }}</h1>
+
+    <nav aria-label="{{ 'ui.events.show.breadcrumb_aria'|trans }}" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="{{ path('app_events') }}" class="ef-event-show__nav-link">Événements</a>
+                <a href="{{ path('app_events') }}" class="ef-event-show__nav-link">{{ 'ui.events.breadcrumb'|trans }}</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ event.title }}</li>
         </ol>
@@ -18,12 +20,12 @@
         <div class="d-flex flex-wrap gap-2 mb-4">
             {% if can_edit %}
                 <a href="{{ path('app_events_edit', { id: event.id }) }}" class="btn ef-events__btn-edit" data-turbo="false">
-                    <i class="bi bi-pencil-square me-2"></i> Modifier
+                    <i class="bi bi-pencil-square me-2"></i> {{ 'ui.common.edit'|trans }}
                 </a>
             {% endif %}
             {% if can_delete %}
                 <button type="button" class="btn ef-events__btn-delete" data-bs-toggle="modal" data-bs-target="#modal-delete-event-show" data-turbo="false">
-                    <i class="bi bi-trash3 me-2"></i> Supprimer
+                    <i class="bi bi-trash3 me-2"></i> {{ 'ui.common.delete'|trans }}
                 </button>
             {% endif %}
         </div>
@@ -45,30 +47,30 @@
                         class="w-100 rounded-3 ef-event-show__detail{% if is_past %} ef-event-show__hero--past{% endif %}"
                         loading="lazy"
                     >
-                    <figcaption class="small text-muted mt-2 mb-0">Lieu / détail</figcaption>
+                    <figcaption class="small text-muted mt-2 mb-0">{{ 'ui.events.show.location_detail'|trans }}</figcaption>
                 </figure>
                 <div class="card-body p-4">
                     <div class="d-flex flex-wrap gap-2 mb-3">
-                        <span class="badge ef-events__kind-badge">{{ event.kind.label }}</span>
+                        <span class="badge ef-events__kind-badge">{{ event.kind.label|trans }}</span>
                         <span class="badge ef-events__visibility-badge{% if event.visibility.value != 'public' %} ef-events__visibility-badge--group{% endif %}">
-                            {{ event.visibility.label }}
+                            {{ event.visibility.label|trans }}
                         </span>
                     </div>
 
                     <h1 class="h3 fw-bold mb-4">{{ event.title }}</h1>
 
                     <div class="mb-0">
-                        <h2 class="text-uppercase text-muted small h6">Description</h2>
-                        <p class="ef-event-show__description mb-0">{{ event.description|default('Aucune description fournie.')|nl2br }}</p>
+                        <h2 class="text-uppercase text-muted small h6">{{ 'ui.common.description'|trans }}</h2>
+                        <p class="ef-event-show__description mb-0">{{ event.description|default('ui.common.no_description'|trans)|nl2br }}</p>
                     </div>
                 </div>
             </div>
 
             {% if can_contact_staff and staff_contacts is not empty %}
                 <div class="card border-0 shadow-sm ef-card p-4">
-                    <h2 class="h6 fw-bold mb-2">Proposer un événement au groupe</h2>
+                    <h2 class="h6 fw-bold mb-2">{{ 'ui.events.show.propose_title'|trans }}</h2>
                     <p class="text-muted small mb-3">
-                        Seuls le chef et le modérateur peuvent publier ou modifier un événement. Envoie-leur un message privé.
+                        {{ 'ui.events.show.propose_hint'|trans }}
                     </p>
 
                     {% for contact in staff_contacts %}
@@ -76,10 +78,10 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('contact-event-staff' ~ event.id) }}">
                             <input type="hidden" name="recipient_id" value="{{ contact.user.id }}">
                             <div class="visually-hidden" aria-hidden="true">
-                                <label for="website-{{ contact.user.id }}">Ne pas remplir</label>
+                                <label for="website-{{ contact.user.id }}">{{ 'ui.events.show.honeypot_label'|trans }}</label>
                                 <input type="text" name="website" id="website-{{ contact.user.id }}" tabindex="-1" autocomplete="off">
                             </div>
-                            <label class="form-label small fw-medium" for="content-{{ contact.user.id }}">Message à {{ contact.label }} ({{ contact.user.displayName }})</label>
+                            <label class="form-label small fw-medium" for="content-{{ contact.user.id }}">{{ 'ui.events.show.message_to_staff'|trans({'%role%': contact.label|trans, '%name%': contact.user.displayName}) }}</label>
                             <textarea
                                 name="content"
                                 id="content-{{ contact.user.id }}"
@@ -88,10 +90,10 @@
                                 minlength="15"
                                 maxlength="1000"
                                 required
-                                placeholder="Décris l'événement que tu souhaites proposer…"
+                                placeholder="{{ 'ui.events.show.propose_placeholder'|trans }}"
                             ></textarea>
                             <button type="submit" class="btn btn-save-profile btn-sm">
-                                <i class="bi bi-send me-1"></i> Envoyer un message privé
+                                <i class="bi bi-send me-1"></i> {{ 'ui.events.show.send_private'|trans }}
                             </button>
                         </form>
                     {% endfor %}
@@ -100,24 +102,24 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm ef-card-info p-4 sticky-top ef-event-show__sidebar" style="top: 80px;">
-                <h2 class="h6 text-uppercase text-muted mb-3">Informations</h2>
+            <div class="card border-0 shadow-sm ef-card-info p-4 sticky-top ef-event-show__sidebar">
+                <h2 class="h6 text-uppercase text-muted mb-3">{{ 'ui.events.show.info_title'|trans }}</h2>
 
                 <dl class="ef-event-show__meta mb-4">
-                    <dt><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>Début</dt>
-                    <dd>{{ event.startDate|date('d/m/Y à H:i') }}</dd>
+                    <dt><i class="bi bi-calendar3 me-2" aria-hidden="true"></i>{{ 'ui.events.show.meta_start'|trans }}</dt>
+                    <dd>{{ event.startDate|ef_datetime }}</dd>
 
                     {% if event.endDate %}
-                        <dt><i class="bi bi-calendar-check me-2" aria-hidden="true"></i>Fin</dt>
-                        <dd>{{ event.endDate|date('d/m/Y à H:i') }}</dd>
+                        <dt><i class="bi bi-calendar-check me-2" aria-hidden="true"></i>{{ 'ui.events.show.meta_end'|trans }}</dt>
+                        <dd>{{ event.endDate|ef_datetime }}</dd>
                     {% endif %}
 
                     {% if event.location %}
-                        <dt><i class="bi bi-geo-alt me-2" aria-hidden="true"></i>Lieu</dt>
+                        <dt><i class="bi bi-geo-alt me-2" aria-hidden="true"></i>{{ 'ui.events.show.meta_location'|trans }}</dt>
                         <dd>{{ event.location }}</dd>
                     {% endif %}
 
-                    <dt><i class="bi bi-people me-2" aria-hidden="true"></i>Groupe</dt>
+                    <dt><i class="bi bi-people me-2" aria-hidden="true"></i>{{ 'ui.events.show.meta_group'|trans }}</dt>
                     <dd>
                         <a href="{{ path('app_groups_show', { id: event.relatedGroup.id }) }}" class="ef-event-show__nav-link">
                             {{ event.relatedGroup.displayLabel }}
@@ -125,17 +127,17 @@
                     </dd>
 
                     {% if event.author %}
-                        <dt><i class="bi bi-person me-2" aria-hidden="true"></i>Publié par</dt>
+                        <dt><i class="bi bi-person me-2" aria-hidden="true"></i>{{ 'ui.events.show.meta_author'|trans }}</dt>
                         <dd>{{ event.author.displayName }}</dd>
                     {% endif %}
 
-                    <dt><i class="bi bi-clock me-2" aria-hidden="true"></i>Publié le</dt>
-                    <dd>{{ event.createdAt|date('d/m/Y') }}</dd>
+                    <dt><i class="bi bi-clock me-2" aria-hidden="true"></i>{{ 'ui.events.show.meta_published'|trans }}</dt>
+                    <dd>{{ event.createdAt|ef_date }}</dd>
                 </dl>
 
                 {% if can_edit %}
                     <a href="{{ path('app_events_new', { groupe: event.relatedGroup.id }) }}" class="btn w-100 ef-events__btn-edit" data-turbo="false">
-                        <i class="bi bi-plus-lg me-2"></i> Nouvel événement dans ce groupe
+                        <i class="bi bi-plus-lg me-2"></i> {{ 'ui.events.show.new_in_group'|trans }}
                     </a>
                 {% endif %}
             </div>
@@ -149,13 +151,13 @@
             <div class="modal-content border-0 shadow">
                 <div class="modal-body text-center p-4">
                     <i class="bi bi-exclamation-triangle text-danger fs-1 mb-3" aria-hidden="true"></i>
-                    <h3 class="fw-bold h5">Supprimer ?</h3>
-                    <p class="text-secondary small">Cette action est définitive.</p>
+                    <h3 class="fw-bold h5">{{ 'ui.events.show.delete_title'|trans }}</h3>
+                    <p class="text-secondary small">{{ 'ui.events.show.delete_irreversible'|trans }}</p>
                     <div class="d-flex gap-2 justify-content-center mt-4">
-                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
                         <form action="{{ path('app_events_delete', { id: event.id }) }}" method="post" data-turbo="false" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete-event' ~ event.id) }}">
-                            <button type="submit" class="btn btn-danger btn-sm px-3">Confirmer</button>
+                            <button type="submit" class="btn btn-danger btn-sm px-3">{{ 'ui.common.confirm'|trans }}</button>
                         </form>
                     </div>
                 </div>
@@ -163,9 +165,4 @@
         </div>
     </div>
 {% endif %}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module" src="{{ asset('js/ef-events.js') }}"></script>
 {% endblock %}

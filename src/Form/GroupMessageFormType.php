@@ -9,16 +9,24 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class GroupMessageFormType extends AbstractType
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $t = fn (string $id): string => $this->translator->trans($id);
+
         $builder->add('content', TextareaType::class, [
             'label' => false,
             'constraints' => [
-                new Assert\NotBlank(message: 'Le message ne peut pas être vide.'),
-                new Assert\Length(max: 5000, maxMessage: 'Le message ne peut pas dépasser {{ limit }} caractères.'),
+                new Assert\NotBlank(message: $t('ui.messages.form.content_required')),
+                new Assert\Length(max: 5000, maxMessage: $t('ui.messages.form.content_max')),
             ],
         ]);
     }

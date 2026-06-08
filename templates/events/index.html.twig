@@ -1,15 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Événements{% endblock %}
-{% block page_title %}Événements{% endblock %}
+{% block title %}{{ 'ui.events.page_title'|trans }}{% endblock %}
+{% block page_title %}{{ 'ui.events.title'|trans }}{% endblock %}
 
 {% block body %}
+{% set events_route_params = { vue: current_filter.value } %}
+{% if search_query %}
+    {% set events_route_params = events_route_params|merge({ q: search_query }) %}
+{% endif %}
+
 <div class="ef-main-content-padding ef-events">
+    <h1 class="visually-hidden">{{ 'ui.events.title'|trans }}</h1>
+
     <div class="d-flex flex-row align-items-center justify-content-between mb-4 ef-events__title">
-        <h2 class="m-0">Événements</h2>
+        <h2 class="m-0">{{ 'ui.events.title'|trans }}</h2>
         {% if can_create %}
             <a href="{{ path('app_events_new') }}" class="btn shadow-sm" data-turbo="false">
-                <i class="bi bi-plus-lg me-2"></i> Créer un événement
+                <i class="bi bi-plus-lg me-2" aria-hidden="true"></i> {{ 'ui.events.create'|trans }}
             </a>
         {% endif %}
     </div>
@@ -17,36 +24,42 @@
     {% if not can_create %}
         <div class="alert alert-warning border-0 shadow-sm mb-4 ef-events__member-notice" role="status">
             <i class="bi bi-exclamation-circle me-2" aria-hidden="true"></i>
-            {% if is_regular_member_only %}
-                <strong>Publication réservée au chef et au modérateur.</strong>
-                Pour proposer un événement, contacte le <strong>chef</strong> ou le <strong>modérateur</strong> de ton groupe
-                (<a href="{{ path('app_messages') }}" class="alert-link">Messages privés</a>
-                ou depuis la <a href="{{ path('app_groups') }}" class="alert-link">fiche groupe</a>).
-            {% else %}
-                Pour publier un événement, rejoins un groupe puis contacte son <strong>chef</strong> ou son <strong>modérateur</strong>.
-                <a href="{{ path('app_groups') }}" class="alert-link ms-1">Voir les groupes</a>
-            {% endif %}
+            {{ 'ui.events.member_notice'|trans }}
+            <a href="{{ path('app_groups') }}" class="alert-link ms-1">{{ 'ui.events.view_groups'|trans }}</a>
         </div>
     {% endif %}
 
-    <nav class="nav mb-4 ef-events__nav" aria-label="Catégories d'événements">
-        {% for filter in [
-            { value: 'upcoming', label: 'À venir' },
-            { value: 'ongoing', label: 'En cours' },
-            { value: 'past', label: 'Passés' },
-        ] %}
+    {% if search_query %}
+        <div class="alert alert-info border-0 shadow-sm mb-4 py-2 d-flex flex-wrap align-items-center justify-content-between gap-2" role="status">
+            <span class="small mb-0">
+                <i class="bi bi-search me-1" aria-hidden="true"></i>
+                {{ 'ui.events.search_results'|trans({
+                    '%query%': search_query,
+                    '%category%': current_filter.label|trans|lower,
+                }) }}
+            </span>
+            <a href="{{ path('app_events', { vue: current_filter.value }) }}" class="alert-link small text-nowrap">{{ 'ui.events.clear_search'|trans }}</a>
+        </div>
+    {% endif %}
+
+    <nav class="nav mb-4 ef-events__nav" aria-label="{{ 'ui.events.filters_aria'|trans }}">
+        {% for filter in event_filters %}
             <a
-                href="{{ path('app_events', { vue: filter.value, page: 1 }) }}"
+                href="{{ path('app_events', events_route_params|merge({ page: 1, vue: filter.value })) }}"
                 class="btn{% if current_filter.value == filter.value %} active{% endif %}"
                 {% if current_filter.value == filter.value %}aria-current="page"{% endif %}
             >
-                {{ filter.label }}
+                {{ filter.label|trans }}
             </a>
         {% endfor %}
     </nav>
 
     {% if events is empty %}
-        {% include 'events/_empty.html.twig' with { message: current_filter.emptyMessage() } %}
+        {% include 'events/_empty.html.twig' with {
+            message: search_query
+                ? 'ui.events.search_empty'|trans({'%query%': search_query})
+                : current_filter.emptyMessage()|trans,
+        } %}
     {% else %}
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
             {% for event in events %}
@@ -60,8 +73,8 @@
         {% include 'components/_ef_paginate.html.twig' with {
             pagination: pagination,
             route_name: 'app_events',
-            route_params: { vue: current_filter.value },
-            wrapper_class: 'ef-events__paginate mt-4',
+            route_params: events_route_params,
+            wrapper_class: 'd-flex justify-content-center ef-paginate ef-events__paginate mt-4',
         } %}
     {% endif %}
 
@@ -73,10 +86,4 @@
         } %}
     {% endfor %}
 </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module" src="{{ asset('js/ef-events.js') }}"></script>
-    <script type="module" src="{{ asset('js/ef-groups.js') }}"></script>
 {% endblock %}

@@ -30,12 +30,12 @@ final class EventImageProcessor
     public function resizeAndSave(string $sourcePath, string $destinationPath, string $mimeType): void
     {
         if (!extension_loaded('gd')) {
-            throw new \RuntimeException('L\'extension PHP GD est requise pour traiter les photos d\'événements.');
+            throw new \RuntimeException('flash.event.image_gd_required');
         }
 
         $image = $this->createImageFromPath($sourcePath, $mimeType);
         if (false === $image) {
-            throw new \InvalidArgumentException('Impossible de lire l\'image source.');
+            throw new \InvalidArgumentException('flash.event.image_read_failed');
         }
 
         $width = imagesx($image);
@@ -47,7 +47,7 @@ final class EventImageProcessor
             $resized = imagescale($image, $newWidth, $newHeight);
             imagedestroy($image);
             if (false === $resized) {
-                throw new \InvalidArgumentException('Impossible de redimensionner l\'image.');
+                throw new \InvalidArgumentException('flash.event.image_resize_failed');
             }
             $image = $resized;
         }
@@ -79,7 +79,7 @@ final class EventImageProcessor
         };
 
         if (false === $saved) {
-            throw new \InvalidArgumentException('Impossible d\'enregistrer l\'image.');
+            throw new \InvalidArgumentException('flash.event.image_save_failed');
         }
     }
 }

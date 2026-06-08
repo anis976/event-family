@@ -11,36 +11,44 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class ResetPasswordFormType extends AbstractType
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $t = fn (string $id): string => $this->translator->trans($id);
+
         $builder->add('plainPassword', RepeatedType::class, [
             'type' => PasswordType::class,
             'mapped' => false,
-            'invalid_message' => 'Les mots de passe ne correspondent pas.',
+            'invalid_message' => $t('ui.auth.form.validation.password_mismatch'),
             'first_options' => [
-                'label' => 'Nouveau mot de passe',
+                'label' => $t('ui.auth.field.password'),
                 'attr' => [
                     'autocomplete' => 'new-password',
                     'class' => 'form-control form-control-lg',
-                    'placeholder' => '••••••••',
+                    'placeholder' => $t('ui.auth.placeholder.password_new'),
                 ],
                 'constraints' => [
-                    new NotBlank(message: 'Le mot de passe est obligatoire.'),
+                    new NotBlank(message: $t('ui.auth.form.validation.password_required')),
                     new Length(
                         min: 8,
-                        minMessage: 'Le mot de passe doit contenir au moins {{ limit }} caractères.',
+                        minMessage: $t('ui.auth.form.validation.password_min'),
                     ),
                 ],
             ],
             'second_options' => [
-                'label' => 'Confirmer le mot de passe',
+                'label' => $t('ui.auth.field.confirm_password'),
                 'attr' => [
                     'autocomplete' => 'new-password',
                     'class' => 'form-control form-control-lg',
-                    'placeholder' => '••••••••',
+                    'placeholder' => $t('ui.auth.placeholder.password_confirm'),
                 ],
             ],
         ]);

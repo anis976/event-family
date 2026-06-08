@@ -8,7 +8,9 @@ use App\Entity\User;
 use App\Form\ContactFormType;
 use App\Service\ContactMailService;
 use App\Service\ContactSpamGuardService;
+use App\Service\ContactWhatsAppService;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,6 +24,8 @@ final class ContactController extends AbstractAppController
         Request $request,
         ContactMailService $contactMail,
         ContactSpamGuardService $spamGuard,
+        ContactWhatsAppService $contactWhatsApp,
+        ParameterBagInterface $parameters,
         #[Autowire('%env(RECAPTCHA_SITE_KEY)%')]
         string $recaptchaSiteKey,
     ): Response {
@@ -34,12 +38,6 @@ final class ContactController extends AbstractAppController
 
         $form = $this->createForm(ContactFormType::class, null, [
             'recaptcha_enabled' => $recaptchaEnabled,
-            'attr' => [
-                'class' => 'ef-contact__form',
-                'data-turbo' => 'false',
-                'data-ef-contact-form' => '1',
-                'data-recaptcha-site-key' => $recaptchaEnabled ? $recaptchaSiteKey : '',
-            ],
         ]);
         $form->handleRequest($request);
 
@@ -49,24 +47,40 @@ final class ContactController extends AbstractAppController
                 return $this->fakeSuccessRedirect();
             }
 
+            $recaptchaToken = (string) $form->get('recaptchaToken')->getData();
+            if ('' === trim($recaptchaToken)) {
+                $posted = $request->request->all('contact_form');
+                $recaptchaToken = \is_array($posted) ? (string) ($posted['recaptchaToken'] ?? '') : '';
+            }
+
             if ($recaptchaEnabled && !$spamGuard->verifyRecaptcha(
-                (string) $form->get('recaptchaToken')->getData(),
+                $recaptchaToken,
                 $request->getClientIp(),
             )) {
-                $this->addErrorFlash('Vérification anti-spam échouée. Recharge la page et réessaie.');
+                if ($spamGuard->hasRecaptchaHostnameMismatch()) {
+                    $this->addErrorFlash('flash.contact.spam_hostname_mismatch');
+                } elseif ($spamGuard->wasLastRecaptchaTokenEmpty()) {
+                    $this->addErrorFlash('flash.contact.spam_token_missing');
+                } elseif ('dev' === $parameters->get('kernel.environment')) {
+                    $this->addErrorFlash('flash.contact.spam_failed_debug', [
+                        '%detail%' => $spamGuard->getLastRecaptchaDebugSummary(),
+                    ]);
+                } else {
+                    $this->addErrorFlash('flash.contact.spam_failed');
+                }
 
-                return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled);
+                return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled, $contactWhatsApp);
             }
 
             $rateLimit = $spamGuard->checkRateLimits($user);
             if ('hourly' === $rateLimit) {
-                $this->addWarningFlash('Tu as atteint la limite de 5 messages par heure. Réessaie dans quelques minutes.');
+                $this->addWarningFlash('flash.contact.rate_hourly');
 
                 return $this->redirectToRoute('app_contact');
             }
 
             if ('daily' === $rateLimit) {
-                $this->addWarningFlash('Tu as atteint la limite de 20 messages aujourd\'hui. Merci de réessayer demain.');
+                $this->addWarningFlash('flash.contact.rate_daily');
 
                 return $this->redirectToRoute('app_contact');
             }
@@ -76,22 +90,22 @@ final class ContactController extends AbstractAppController
             try {
                 $contactMail->sendContactMessage($user, $message);
             } catch (TransportExceptionInterface) {
-                $this->addErrorFlash('Impossible d\'envoyer ton message pour le moment. Réessaie plus tard.');
+                $this->addErrorFlash('flash.contact.send_failed');
 
-                return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled, Response::HTTP_UNPROCESSABLE_ENTITY);
+                return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled, $contactWhatsApp, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $this->addSuccessFlash('Ton message a bien été envoyé. Nous te répondrons dès que possible.');
+            $this->addSuccessFlash('flash.contact.sent');
 
             return $this->redirectToRoute('app_contact');
         }
 
-        return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled);
+        return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled, $contactWhatsApp);
     }
 
     private function fakeSuccessRedirect(): Response
     {
-        $this->addSuccessFlash('Ton message a bien été envoyé. Nous te répondrons dès que possible.');
+        $this->addSuccessFlash('flash.contact.sent');
 
         return $this->redirectToRoute('app_contact');
     }
@@ -101,12 +115,16 @@ final class ContactController extends AbstractAppController
         User $user,
         string $recaptchaSiteKey,
         bool $recaptchaEnabled,
+        ContactWhatsAppService $contactWhatsApp,
         int $status = Response::HTTP_OK,
     ): Response {
         return $this->render('contact/index.html.twig', [
             'contactForm' => $form,
             'user' => $user,
             'recaptchaSiteKey' => $recaptchaEnabled ? $recaptchaSiteKey : '',
+            'whatsappEnabled' => $contactWhatsApp->isEnabled(),
+            'whatsappDisplayNumber' => $contactWhatsApp->getDisplayNumber(),
+            'whatsappChatUrl' => $contactWhatsApp->getChatUrl(),
         ], new Response(status: $status));
     }
 }

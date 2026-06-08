@@ -12,8 +12,8 @@ enum EventVisibility: string
     public function label(): string
     {
         return match ($this) {
-            self::Public => 'Public (tous les utilisateurs du site)',
-            self::Group => 'Privé (membres du groupe uniquement)',
+            self::Public => 'event.visibility.public',
+            self::Group => 'event.visibility.group',
         };
     }
 }

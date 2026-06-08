@@ -1,0 +1,4 @@
+# Dev local : formulaire contact plus permissif pour les tests
+parameters:
+    ef.contact.min_submit_delay_seconds: 0
+    ef.contact.recaptcha_min_score: 0.0

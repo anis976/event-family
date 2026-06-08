@@ -24,3 +24,11 @@ framework:
             policy: sliding_window
             limit: 20
             interval: '1 day'
+        private_message_hourly:
+            policy: sliding_window
+            limit: '%ef.messages.private_hourly_limit%'
+            interval: '1 hour'
+        group_message_hourly:
+            policy: sliding_window
+            limit: '%ef.messages.group_hourly_limit%'
+            interval: '1 hour'

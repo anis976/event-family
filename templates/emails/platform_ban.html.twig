@@ -1,0 +1,16 @@
+{% extends 'emails/_base.html.twig' %}
+
+{% block email_title %}{{ 'email.platform_ban.title'|trans(locale=ef_email_locale) }}{% endblock %}
+
+{% block email_body %}
+    <p>{{ 'email.common.greeting'|trans({'%name%': user.firstName}, locale=ef_email_locale) }}</p>
+
+    <p>{{ 'email.platform_ban.intro'|trans(locale=ef_email_locale)|raw }}</p>
+
+    <p>{{ 'email.ban_warning.reason_label'|trans(locale=ef_email_locale) }}</p>
+    <p style="background: #f8f9fa; padding: 12px; border-left: 4px solid #c00;">{{ reason|nl2br }}</p>
+
+    <p>{{ 'email.platform_ban.contact'|trans({'%email%': moderation_contact}, locale=ef_email_locale)|raw }}</p>
+
+    <p style="font-size: 0.9rem; color: #666;">{{ 'email.platform_ban.footer'|trans(locale=ef_email_locale) }}</p>
+{% endblock %}

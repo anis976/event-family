@@ -31,6 +31,57 @@ class UserBanRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    public function countBansForUserAtOrBefore(User $user, \DateTimeImmutable $at): int
+    {
+        return (int) $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->andWhere('b.bannedUser = :user')
+            ->andWhere('b.createdAt <= :at')
+            ->setParameter('user', $user)
+            ->setParameter('at', $at)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findLatestActivePlatformBanForUser(User $user): ?UserBan
+    {
+        $now = ParisClock::now();
+
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.bannedUser = :user')
+            ->andWhere('b.relatedGroup IS NULL')
+            ->andWhere('b.endsAt IS NULL OR b.endsAt > :now')
+            ->setParameter('user', $user)
+            ->setParameter('now', $now)
+            ->orderBy('b.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function hasActivePlatformBan(User $user): bool
+    {
+        return null !== $this->findLatestActivePlatformBanForUser($user);
+    }
+
+    /**
+     * @return list<UserBan>
+     */
+    public function findActivePlatformBansForUser(User $user): array
+    {
+        $now = ParisClock::now();
+
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.bannedUser = :user')
+            ->andWhere('b.relatedGroup IS NULL')
+            ->andWhere('b.endsAt IS NULL OR b.endsAt > :now')
+            ->setParameter('user', $user)
+            ->setParameter('now', $now)
+            ->orderBy('b.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findActiveBanForUserInGroup(User $user, Group $group): ?UserBan
     {
         $now = ParisClock::now();

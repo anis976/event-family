@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Group;
+use App\Entity\GroupMember;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,6 +31,36 @@ class GroupRepository extends ServiceEntityRepository
     }
 
     /**
+     * Groupes dont l'utilisateur est responsable et qui ont au moins un autre membre.
+     *
+     * @return list<Group>
+     */
+    public function findOwnedGroupsWithOtherMembers(User $user): array
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.owner = :user')
+            ->andWhere(
+                '(SELECT COUNT(gm.id) FROM '.GroupMember::class.' gm WHERE gm.group = g AND gm.user != :user) > 0',
+            )
+            ->setParameter('user', $user)
+            ->orderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<Group>
+     */
+    public function findOwnedByUser(User $user): array
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.owner = :user')
+            ->orderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param list<int> $excludeGroupIds
      *
      * @return list<Group>
@@ -37,9 +68,7 @@ class GroupRepository extends ServiceEntityRepository
     public function findOthersPaginated(array $excludeGroupIds, int $page, int $perPage): array
     {
         $qb = $this->createQueryBuilder('g')
-            ->addSelect('gm', 'u', 'owner')
-            ->leftJoin('g.groupMembers', 'gm')
-            ->leftJoin('gm.user', 'u')
+            ->addSelect('owner')
             ->leftJoin('g.owner', 'owner')
             ->orderBy('g.createdAt', 'DESC')
             ->setFirstResult(max(0, ($page - 1) * $perPage))
@@ -76,6 +105,25 @@ class GroupRepository extends ServiceEntityRepository
             ->leftJoin('g.groupMembers', 'gm')
             ->leftJoin('gm.user', 'u')
             ->leftJoin('g.owner', 'owner')
+            ->andWhere('g.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /** Contexte messagerie de groupe (sans membres ni jointures lourdes). */
+    public function findOneForGroupMessages(int $id): ?Group
+    {
+        return $this->find($id);
+    }
+
+    /** Fiche groupe sans charger tous les membres (liste paginée à part). */
+    public function findOneForShow(int $id): ?Group
+    {
+        return $this->createQueryBuilder('g')
+            ->addSelect('owner', 'author')
+            ->leftJoin('g.owner', 'owner')
+            ->leftJoin('g.author', 'author')
             ->andWhere('g.id = :id')
             ->setParameter('id', $id)
             ->getQuery()

@@ -4,124 +4,125 @@
 
 {% block page_title %}{{ 'ui.about.title'|trans }}{% endblock %}
 
+{% block meta_description %}
+    <meta name="description" content="{{ 'ui.about.meta_description'|trans }}">
+{% endblock %}
+
 {% block body %}
-    <div class="ef-about">
-        <div class="d-flex justify-content-center container-fluid ef-about__content">
-            <div class="col-md-9 ef-about__content-col">
-                <div class="text-center ef-about__content-col-title">
-                    <h2 class="fw-bold">{{ 'ui.about.title'|trans }}</h2>
-                    <p class="mb-5">{{ 'ui.about.subtitle'|trans }}</p>
-                </div>
+    <div class="ef-main-content-padding ef-about">
+        <h1 class="visually-hidden">{{ 'ui.about.title'|trans }}</h1>
 
-                <div class="card mb-4 p-2 border-0 shadow-sm ef-about__content-card">
-                    <div class="card-body ef-about__content-card-body">
-                        <p class="card-text ef-about__content-card-text mb-0">
-                            {{ 'ui.about.intro'|trans }}
-                        </p>
-                    </div>
-                </div>
+        <div class="ef-about__inner mx-auto">
+            <p class="ef-about__lead text-center mb-5">{{ 'ui.about.subtitle'|trans }}</p>
 
-                <section class="ef-about__section mb-4" aria-labelledby="ef-about-audience-title">
-                    <h3 id="ef-about-audience-title" class="ef-about__section-title h5 fw-bold">
-                        <i class="bi bi-people-fill me-2" aria-hidden="true"></i>{{ 'ui.about.audience_title'|trans }}
-                    </h3>
-                    <p class="ef-about__section-text mb-0">{{ 'ui.about.audience_text'|trans }}</p>
-                </section>
-
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4 ef-about__content-row">
-                    <div class="col ef-about__content-row-col">
-                        <div class="card text-center h-100 border-0 shadow-sm ef-about__content-row-card">
-                            <div class="card-body ef-about__content-row-card-body">
-                                <h4 class="card-title h5 mb-3">{{ 'ui.about.feature_groups_title'|trans }}</h4>
-                                <p class="card-text mb-0">
-                                    {{ 'ui.about.feature_groups_text'|trans }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col ef-about__content-row-col">
-                        <div class="card text-center h-100 border-0 shadow-sm ef-about__content-row-col-card">
-                            <div class="card-body ef-about__content-row-col-card-body">
-                                <h4 class="card-title h5 mb-3">{{ 'ui.about.feature_events_title'|trans }}</h4>
-                                <p class="card-text mb-0">
-                                    {{ 'ui.about.feature_events_text'|trans }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col ef-about__content-row-col">
-                        <div class="card text-center h-100 border-0 shadow-sm ef-about__content-row-card">
-                            <div class="card-body ef-about__content-row-card-body">
-                                <h4 class="card-title h5 mb-3">{{ 'ui.about.feature_connect_title'|trans }}</h4>
-                                <p class="card-text mb-0">
-                                    {{ 'ui.about.feature_connect_text'|trans }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <section class="ef-about__section ef-about__section--list mb-4" aria-labelledby="ef-about-features-member-title">
-                    <h3 id="ef-about-features-member-title" class="ef-about__section-title h5 fw-bold">
-                        <i class="bi bi-check2-square me-2" aria-hidden="true"></i>{{ 'ui.about.features_member_title'|trans }}
-                    </h3>
-                    <p class="ef-about__section-text">{{ 'ui.about.features_member_intro'|trans }}</p>
-                    <ul class="ef-about__list mb-0">
-                        <li>{{ 'ui.about.features_member_groups'|trans }}</li>
-                        <li>{{ 'ui.about.features_member_events'|trans }}</li>
-                        <li>{{ 'ui.about.features_member_messages'|trans }}</li>
-                    </ul>
-                </section>
-
-                <div class="card mb-4 border-0 shadow-sm ef-about__mission-card">
-                    <div class="card-body ef-about__mission-card-card-body">
-                        <h3 class="card-title h5 ef-about__mission-card-title">
-                            <i class="bi bi-heart me-2" aria-hidden="true"></i>{{ 'ui.about.mission_title'|trans }}
-                        </h3>
-                        <p class="card-text ef-about__mission-card-text mb-0">
-                            {{ 'ui.about.mission_text'|trans }}
-                        </p>
-                    </div>
-                </div>
-
-                <section class="ef-about__section mb-4" aria-labelledby="ef-about-privacy-title">
-                    <h3 id="ef-about-privacy-title" class="ef-about__section-title h5 fw-bold">
-                        <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'ui.about.privacy_title'|trans }}
-                    </h3>
-                    <p class="ef-about__section-text mb-0">{{ 'ui.about.privacy_text'|trans }}</p>
-                </section>
-
-                <section class="ef-about__section ef-about__section--highlight mb-4" aria-labelledby="ef-about-transparency-title">
-                    <h3 id="ef-about-transparency-title" class="ef-about__section-title h5 fw-bold">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'ui.about.transparency_title'|trans }}
-                    </h3>
-                    <p class="ef-about__section-text mb-0">{{ 'ui.about.transparency_text'|trans }}</p>
-                </section>
-
-                <section class="ef-about__section ef-about__section--contact mb-4" aria-labelledby="ef-about-contact-title">
-                    <h3 id="ef-about-contact-title" class="ef-about__section-title h5 fw-bold">
-                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>{{ 'ui.about.contact_public_title'|trans }}
-                    </h3>
-                    <p class="ef-about__section-text mb-0">
-                        {{ 'ui.about.contact_public_html'|trans({
-                            '%mentions_url%': path('app_mentions'),
-                            '%email%': 'anissoir976@gmail.com',
-                            '%contact_url%': path('app_contact'),
-                        })|raw }}
+            <div class="card mb-4 border-0 shadow-sm ef-about__intro-card">
+                <div class="card-body">
+                    <p class="card-text ef-about__intro-text mb-0">
+                        {{ 'ui.about.intro'|trans }}
                     </p>
-                </section>
-
-                {% if not app.user %}
-                    <div class="ef-about__guest-cta text-center">
-                        <a href="{{ path('app_register') }}" class="ef-about__guest-cta-btn ef-about__guest-cta-btn--primary">
-                            {{ 'ui.about.guest_cta_register'|trans }}
-                        </a>
-                        <a href="{{ path('app_login') }}" class="ef-about__guest-cta-btn ef-about__guest-cta-btn--secondary">
-                            {{ 'ui.about.guest_cta_login'|trans }}
-                        </a>
-                    </div>
-                {% endif %}
+                </div>
             </div>
+
+            <section class="ef-about__section mb-4" aria-labelledby="ef-about-audience-title">
+                <h2 id="ef-about-audience-title" class="ef-about__section-title h5 fw-bold">
+                    <i class="bi bi-people-fill me-2" aria-hidden="true"></i>{{ 'ui.about.audience_title'|trans }}
+                </h2>
+                <p class="ef-about__section-text mb-0">{{ 'ui.about.audience_text'|trans }}</p>
+            </section>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-4">
+                <div class="col">
+                    <div class="card text-center h-100 border-0 shadow-sm ef-about__feature-card">
+                        <div class="card-body">
+                            <h3 class="card-title h5 mb-3">{{ 'ui.about.feature_groups_title'|trans }}</h3>
+                            <p class="card-text mb-0">
+                                {{ 'ui.about.feature_groups_text'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center h-100 border-0 shadow-sm ef-about__feature-card">
+                        <div class="card-body">
+                            <h3 class="card-title h5 mb-3">{{ 'ui.about.feature_events_title'|trans }}</h3>
+                            <p class="card-text mb-0">
+                                {{ 'ui.about.feature_events_text'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card text-center h-100 border-0 shadow-sm ef-about__feature-card">
+                        <div class="card-body">
+                            <h3 class="card-title h5 mb-3">{{ 'ui.about.feature_connect_title'|trans }}</h3>
+                            <p class="card-text mb-0">
+                                {{ 'ui.about.feature_connect_text'|trans }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="ef-about__section ef-about__section--list mb-4" aria-labelledby="ef-about-features-member-title">
+                <h2 id="ef-about-features-member-title" class="ef-about__section-title h5 fw-bold">
+                    <i class="bi bi-check2-square me-2" aria-hidden="true"></i>{{ 'ui.about.features_member_title'|trans }}
+                </h2>
+                <p class="ef-about__section-text">{{ 'ui.about.features_member_intro'|trans }}</p>
+                <ul class="ef-about__list mb-0">
+                    <li>{{ 'ui.about.features_member_groups'|trans }}</li>
+                    <li>{{ 'ui.about.features_member_events'|trans }}</li>
+                    <li>{{ 'ui.about.features_member_messages'|trans }}</li>
+                </ul>
+            </section>
+
+            <div class="card mb-4 border-0 shadow-sm ef-about__mission-card">
+                <div class="card-body">
+                    <h2 class="card-title h5 ef-about__mission-card-title">
+                        <i class="bi bi-heart me-2" aria-hidden="true"></i>{{ 'ui.about.mission_title'|trans }}
+                    </h2>
+                    <p class="card-text ef-about__mission-card-text mb-0">
+                        {{ 'ui.about.mission_text'|trans }}
+                    </p>
+                </div>
+            </div>
+
+            <section class="ef-about__section mb-4" aria-labelledby="ef-about-privacy-title">
+                <h2 id="ef-about-privacy-title" class="ef-about__section-title h5 fw-bold">
+                    <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'ui.about.privacy_title'|trans }}
+                </h2>
+                <p class="ef-about__section-text mb-0">{{ 'ui.about.privacy_text'|trans }}</p>
+            </section>
+
+            <section class="ef-about__section ef-about__section--highlight mb-4" aria-labelledby="ef-about-transparency-title">
+                <h2 id="ef-about-transparency-title" class="ef-about__section-title h5 fw-bold">
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'ui.about.transparency_title'|trans }}
+                </h2>
+                <p class="ef-about__section-text mb-0">{{ 'ui.about.transparency_text'|trans }}</p>
+            </section>
+
+            <section class="ef-about__section ef-about__section--contact mb-4" aria-labelledby="ef-about-contact-title">
+                <h2 id="ef-about-contact-title" class="ef-about__section-title h5 fw-bold">
+                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>{{ 'ui.about.contact_public_title'|trans }}
+                </h2>
+                <p class="ef-about__section-text mb-0">
+                    {{ 'ui.about.contact_public_html'|trans({
+                        '%mentions_url%': path('app_mentions'),
+                        '%email%': ef_contact_recipient,
+                        '%contact_url%': path('app_contact'),
+                    })|raw }}
+                </p>
+            </section>
+
+            {% if not app.user %}
+                <div class="ef-about__guest-cta text-center">
+                    <a href="{{ path('app_register') }}" class="ef-about__guest-cta-btn ef-about__guest-cta-btn--primary">
+                        {{ 'ui.about.guest_cta_register'|trans }}
+                    </a>
+                    <a href="{{ path('app_login') }}" class="ef-about__guest-cta-btn ef-about__guest-cta-btn--secondary">
+                        {{ 'ui.about.guest_cta_login'|trans }}
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

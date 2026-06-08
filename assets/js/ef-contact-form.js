@@ -1,7 +1,7 @@
 let recaptchaLoader = null;
 
 function loadRecaptcha(siteKey) {
-    if (window.grecaptcha?.execute) {
+    if (typeof window.grecaptcha?.execute === 'function') {
         return Promise.resolve();
     }
 
@@ -29,7 +29,7 @@ export function initContactForm() {
     }
 
     const siteKey = (form.dataset.recaptchaSiteKey ?? '').trim();
-    const tokenInput = form.querySelector('.js-contact-recaptcha-token');
+    const tokenInput = form.querySelector('input.js-contact-recaptcha-token');
 
     if (!siteKey || !tokenInput) {
         return;
@@ -38,18 +38,21 @@ export function initContactForm() {
     form.dataset.efContactBound = '1';
 
     form.addEventListener('submit', (event) => {
+        if (form.dataset.recaptchaSkip === '1') {
+            form.dataset.recaptchaSkip = '0';
+
+            return;
+        }
+
         if (form.dataset.recaptchaPending === '1') {
             event.preventDefault();
 
             return;
         }
 
-        if ('' !== tokenInput.value.trim()) {
-            return;
-        }
-
         event.preventDefault();
         form.dataset.recaptchaPending = '1';
+        tokenInput.value = '';
 
         loadRecaptcha(siteKey)
             .then(
@@ -57,15 +60,31 @@ export function initContactForm() {
                     window.grecaptcha.ready(resolve);
                 }),
             )
-            .then(() => window.grecaptcha.execute(siteKey, { action: 'contact' }))
+            .then(() => {
+                if (typeof window.grecaptcha?.execute !== 'function') {
+                    throw new Error('recaptcha_v3_required');
+                }
+
+                return window.grecaptcha.execute(siteKey, { action: 'contact' });
+            })
             .then((token) => {
                 tokenInput.value = token;
+                tokenInput.setAttribute('value', token);
                 form.dataset.recaptchaPending = '0';
-                form.requestSubmit();
+                form.dataset.recaptchaSkip = '1';
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit();
+                } else {
+                    form.submit();
+                }
             })
             .catch(() => {
                 form.dataset.recaptchaPending = '0';
-                window.alert('Vérification anti-spam indisponible. Recharge la page et réessaie.');
+                window.alert(
+                    form.dataset.efAlertRecaptchaV3
+                        || form.dataset.efAlertRecaptcha
+                        || 'Anti-spam verification unavailable.',
+                );
             });
     });
 }

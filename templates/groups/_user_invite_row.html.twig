@@ -11,18 +11,18 @@
     <td class="text-end pe-4 py-3">
         {% if rules.refused_count >= 3 %}
             <span class="badge bg-danger-subtle text-danger rounded-pill px-3 py-2 fw-bold">
-                <i class="bi bi-x-circle-fill me-1"></i> Bloqué (3 rejets)
+                <i class="bi bi-x-circle-fill me-1"></i> {{ 'ui.groups.invite.status_blocked'|trans }}
             </span>
         {% elseif rules.pending_or_invited %}
             <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-medium" disabled>
-                <i class="bi bi-hourglass-split me-1"></i> En attente
+                <i class="bi bi-hourglass-split me-1"></i> {{ 'ui.groups.invite.status_pending'|trans }}
             </button>
         {% else %}
             <form action="{{ path('app_groups_invite_user', { id: group.id, userId: user.id }) }}" method="POST" class="d-inline" data-turbo="false">
                 <input type="hidden" name="_token" value="{{ csrf_token('invite' ~ user.id) }}">
                 <input type="hidden" name="q" value="{{ searchQuery|default('') }}">
                 <button type="submit" class="btn btn-outline-success btn-sm px-3 rounded-pill fw-medium">
-                    <i class="bi bi-send me-1"></i> Inviter
+                    <i class="bi bi-send me-1"></i> {{ 'ui.groups.invite.invite_button'|trans }}
                 </button>
             </form>
         {% endif %}

@@ -23,7 +23,13 @@
             </div>
             <div class="col-12 col-md-4 ef-footer__col">
                 <h6 class="fw-bold">{{ 'ui.footer.support'|trans }}</h6>
-                <button type="button" class="btn ef-btn-donate px-4">{{ 'ui.footer.donate'|trans }}</button>
+                <a
+                    href="https://www.paypal.com/donate/?hosted_button_id=E8ULND24DQE2W"
+                    class="btn ef-btn-donate px-4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="{{ 'ui.footer.donate_aria'|trans }}"
+                >{{ 'ui.footer.donate'|trans }}</a>
             </div>
         </div>
         {% else %}

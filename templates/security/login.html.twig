@@ -1,20 +1,21 @@
 {% extends 'layout/auth.html.twig' %}
 
-{% block title %}EventFamily — Connexion{% endblock %}
+{% block title %}{{ 'ui.auth.login.page_title'|trans }}{% endblock %}
 
 {% block body_class %} ef-signIn{% endblock %}
 
 {% block auth_flash %}{% endblock %}
 
 {% block body %}
-    <div class="container-fluid ef-main-wrapper ef-signIn">
+    <div class="container-fluid ef-main-wrapper">
         <div class="container">
             <div class="row align-items-center justify-content-center g-4">
                 <div class="col-lg-6 d-none d-lg-block text-center">
                     <img
-                        src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
-                        class="img-fluid illustration-img"
-                        alt="Illustration connexion"
+                        src="{{ asset('images/auth/login.svg') }}"
+                        class="img-fluid ef-auth__illustration"
+                        alt=""
+                        role="presentation"
                         width="500"
                         height="450"
                     >
@@ -31,41 +32,57 @@
                         class="card shadow-lg p-4 p-sm-5 ef-auth__form-card"
                         data-turbo="false"
                     >
-                        <h1 class="text-center fw-bold mb-4 mt-2 h2">Connexion à EventFamily</h1>
+                        <h1 class="text-center fw-bold mb-4 mt-2 h2">{{ 'ui.auth.login.title'|trans }}</h1>
 
                         {% if app.request.query.get('idle') %}
                             {% include 'components/_ef_alert.html.twig' with {
                                 type: 'warning',
-                                title: 'Session expirée',
-                                message: 'Tu as été déconnecté(e) après une période d\'inactivité. Reconnecte-toi pour continuer.',
+                                title: 'ui.auth.login.idle_title'|trans,
+                                message: 'ui.auth.login.idle_message'|trans,
                                 dismissible: true,
                                 show_title: true,
                             } only %}
                         {% endif %}
 
+                        {% if app.request.query.get('suspended') %}
+                            <div class="mb-4">
+                                {% include 'components/_ef_alert.html.twig' with {
+                                    type: 'danger',
+                                    title: 'ui.auth.login.suspended_title'|trans,
+                                    message: 'ui.auth.login.suspended_message'|trans,
+                                    dismissible: true,
+                                    show_title: true,
+                                } only %}
+                                <p class="small text-center mb-0 mt-2">
+                                    {{ 'ui.auth.login.suspended_contact'|trans({
+                                        '%email%': ef_moderation_contact,
+                                    })|raw }}
+                                </p>
+                            </div>
+                        {% endif %}
+
                         {% if error %}
                             {% include 'components/_ef_alert.html.twig' with {
                                 type: 'danger',
-                                title: 'Connexion impossible',
+                                title: 'ui.auth.login.error_title'|trans,
                                 message: error.messageKey|trans(error.messageData, 'security'),
                                 dismissible: true,
                                 show_title: true,
                             } only %}
                         {% endif %}
 
-                        <button
-                            type="button"
-                            class="btn btn-lg w-100 btn-google-custom d-flex align-items-center justify-content-center mb-4 fw-semibold"
-                            aria-disabled="true"
-                            title="Bientôt disponible"
-                            data-ef-google-soon
+                        <a
+                            href="{{ path('app_connect_google_start', { mode: 'login' }) }}"
+                            class="btn btn-lg w-100 btn-google-custom d-flex align-items-center justify-content-center fw-semibold text-decoration-none"
+                            data-turbo="false"
                         >
                             <i class="bi bi-google me-2" aria-hidden="true"></i>
-                            <span>Se connecter avec Google</span>
-                        </button>
+                            <span>{{ 'ui.auth.login.google'|trans }}</span>
+                        </a>
+                        <p class="small text-muted text-center mb-4">{{ 'ui.auth.login.google_terms_hint'|trans }}</p>
 
                         <div class="divider d-flex align-items-center my-4">
-                            <p class="text-center fw-bold mx-3 mb-0 text-muted small">OU</p>
+                            <p class="text-center fw-bold mx-3 mb-0 text-muted small">{{ 'ui.common.or'|trans }}</p>
                         </div>
 
                         <input
@@ -76,14 +93,14 @@
                         >
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold" for="username">Adresse e-mail</label>
+                            <label class="form-label fw-semibold" for="username">{{ 'ui.auth.field.email'|trans }}</label>
                             <input
                                 type="email"
                                 id="username"
                                 name="_username"
                                 class="form-control form-control-lg{{ error ? ' is-invalid' : '' }}"
                                 value="{{ last_username }}"
-                                placeholder="nom@exemple.com"
+                                placeholder="{{ 'ui.auth.placeholder.email'|trans }}"
                                 autocomplete="email"
                                 required
                             >
@@ -91,20 +108,20 @@
                                 <div class="ef-form-errors invalid-feedback d-block">
                                     <div class="ef-form-errors__item">
                                         <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
-                                        <span>Vérifie ton adresse e-mail.</span>
+                                        <span>{{ 'ui.auth.login.verify_email'|trans }}</span>
                                     </div>
                                 </div>
                             {% endif %}
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-semibold" for="password">Mot de passe</label>
+                            <label class="form-label fw-semibold" for="password">{{ 'ui.auth.field.password'|trans }}</label>
                             <input
                                 type="password"
                                 id="password"
                                 name="_password"
                                 class="form-control form-control-lg{{ error ? ' is-invalid' : '' }}"
-                                placeholder="••••••••"
+                                placeholder="{{ 'ui.auth.placeholder.password'|trans }}"
                                 autocomplete="current-password"
                                 required
                             >
@@ -112,7 +129,7 @@
                                 <div class="ef-form-errors invalid-feedback d-block">
                                     <div class="ef-form-errors__item">
                                         <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
-                                        <span>Vérifie ton mot de passe.</span>
+                                        <span>{{ 'ui.auth.login.verify_password'|trans }}</span>
                                     </div>
                                 </div>
                             {% endif %}
@@ -122,7 +139,7 @@
                             type="submit"
                             class="btn btn-submit-custom btn-lg w-100 mb-4 shadow-sm fw-bold"
                         >
-                            Continuer
+                            {{ 'ui.auth.login.submit'|trans }}
                         </button>
 
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
@@ -135,52 +152,51 @@
                                     value="on"
                                 >
                                 <label class="form-check-label text-muted small" for="rememberMe">
-                                    Se souvenir de moi
+                                    {{ 'ui.auth.login.remember_me'|trans }}
                                 </label>
                             </div>
                             <a
                                 href="{{ path('app_forgot_password') }}"
                                 class="ef-link-orange text-decoration-none small"
                             >
-                                Mot de passe oublié ?
+                                {{ 'ui.auth.login.forgot_password'|trans }}
                             </a>
                         </div>
 
                         <p class="text-center text-muted mb-3 small">
-                            Pas encore de compte ?
+                            {{ 'ui.auth.login.no_account'|trans }}
                             <a href="{{ path('app_register') }}" class="ef-link-orange fw-bold text-decoration-none">
-                                S'inscrire
+                                {{ 'ui.auth.login.register_link'|trans }}
                             </a>
                         </p>
                     </form>
 
                     <div class="card border-0 p-3 p-sm-4 mt-3 ef-auth__form-card ef-signIn__resend-panel">
-                        <p class="small text-muted mb-2 ef-signIn__resend-title">
+                        <h2 class="h6 small text-muted mb-2 ef-signIn__resend-title">
                             <i class="bi bi-envelope-exclamation me-1" aria-hidden="true"></i>
-                            Pas reçu l'e-mail d'activation ?
-                        </p>
+                            {{ 'ui.auth.resend.title'|trans }}
+                        </h2>
                         <p class="small text-muted mb-3 ef-signIn__resend-hint">
-                            Vérifie d'abord ta boîte de réception et le dossier <strong>spam / courrier indésirable</strong>.
-                            Attends quelques minutes avant de demander un nouvel envoi (5 demandes max. toutes les 15&nbsp;min.).
+                            {{ 'ui.auth.resend.hint'|trans }}
                         </p>
                         <form method="post" action="{{ path('app_resend_verification_email') }}" data-turbo="false">
                             <input type="hidden" name="_token" value="{{ csrf_token('resend_verification') }}">
                             <div class="mb-2">
-                                <label class="form-label fw-semibold small" for="resend-email">Ton adresse e-mail</label>
+                                <label class="form-label fw-semibold small" for="resend-email">{{ 'ui.auth.resend.email_label'|trans }}</label>
                                 <input
                                     type="email"
                                     id="resend-email"
                                     name="email"
                                     class="form-control form-control-sm"
                                     value="{{ last_username }}"
-                                    placeholder="nom@exemple.com"
+                                    placeholder="{{ 'ui.auth.placeholder.email'|trans }}"
                                     autocomplete="email"
                                     required
                                 >
                             </div>
                             <button type="submit" class="btn btn-google-custom btn-sm w-100 fw-semibold">
                                 <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>
-                                Renvoyer l'e-mail d'activation
+                                {{ 'ui.auth.resend.submit'|trans }}
                             </button>
                         </form>
                     </div>

@@ -30,3 +30,9 @@
         }
     }
 }
+
+// Survol / actif des liens sidebar — réutilisé sur les menus déroulants et selects.
+@mixin ef-nav-link-hover {
+    background-color: rgba($ef-primary-orange, 0.1) !important;
+    color: $ef-primary-orange !important;
+}

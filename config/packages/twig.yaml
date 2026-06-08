@@ -2,6 +2,10 @@ twig:
     file_name_pattern: '*.twig'
     form_themes:
         - 'form/ef_form_theme.html.twig'
+    globals:
+        ef_moderation_contact: '%ef.moderation_contact%'
+        ef_contact_recipient: '%ef.contact.recipient%'
+        ef_publisher_address: '%ef.publisher.address%'
 
 when@test:
     twig:

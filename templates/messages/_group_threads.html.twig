@@ -1,0 +1,41 @@
+{% for thread in group_threads %}
+    {% if thread.parent is null %}
+        {% if thread.staffAnnouncement %}
+            {% include 'messages/_staff_announcement.html.twig' with {
+                thread: thread,
+                isUnread: unread_ids[thread.id] is defined,
+            } %}
+        {% else %}
+            {% include 'messages/_thread.html.twig' with { thread: thread, unread_ids: unread_ids } %}
+        {% endif %}
+    {% endif %}
+{% else %}
+    <p class="text-muted text-center my-3">{{ 'ui.messages.group.empty'|trans }}</p>
+{% endfor %}
+
+{% if group_threads_total > 0 %}
+    <p class="text-muted text-center small mb-0 ef-messages__threads-count" role="status">
+        {{ 'ui.messages.group.showing_count'|trans({
+            '%count%': group_threads|length,
+            '%visible%': group_threads|length,
+            '%total%': group_threads_total,
+        }) }}
+    </p>
+{% endif %}
+
+{% if can_load_older_threads %}
+    <div class="text-center mt-3 mb-1" id="ef-messages-older">
+        <a
+            href="{{ path('app_messages_group', { groupId: current_group.id, show: next_threads_visible }) }}#ef-messages-older"
+            class="btn btn-outline-secondary btn-sm rounded-pill px-4 ef-messages__load-older"
+            data-turbo-action="advance"
+        >
+            <i class="bi bi-arrow-down-circle me-1" aria-hidden="true"></i>
+            {{ 'ui.messages.group.load_older'|trans }}
+        </a>
+    </div>
+{% elseif threads_max_visible_reached %}
+    <p class="text-muted text-center small mt-3 mb-0" role="status">
+        {{ 'ui.messages.group.max_visible_hint'|trans({ '%max%': threads_max_visible }) }}
+    </p>
+{% endif %}

@@ -15,11 +15,11 @@ enum EventKind: string
     public function label(): string
     {
         return match ($this) {
-            self::Wedding => 'Mariage',
-            self::Birthday => 'Anniversaire',
-            self::Party => 'Fête',
-            self::Gathering => 'Réunion de famille',
-            self::Other => 'Autre',
+            self::Wedding => 'event.kind.wedding',
+            self::Birthday => 'event.kind.birthday',
+            self::Party => 'event.kind.party',
+            self::Gathering => 'event.kind.gathering',
+            self::Other => 'event.kind.other',
         };
     }
 }

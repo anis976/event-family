@@ -1,23 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Modifier {{ event.title }}{% endblock %}
-{% block page_title %}Modifier l'événement{% endblock %}
+{% block title %}{{ 'ui.events.edit_page_title'|trans }} — {{ event.title }}{% endblock %}
+{% block page_title %}{{ 'ui.events.edit_form_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="ef-main-content-padding ef-events ef-events--form-page">
-    <nav aria-label="Fil d'Ariane" class="ef-events__breadcrumb">
-        <a href="{{ path('app_events') }}" class="ef-events__breadcrumb-link text-decoration-none">Événements</a>
+    <nav aria-label="{{ 'ui.events.breadcrumb_aria'|trans }}" class="ef-events__breadcrumb">
+        <a href="{{ path('app_events') }}" class="ef-events__breadcrumb-link text-decoration-none">{{ 'ui.events.breadcrumb'|trans }}</a>
         <span class="ef-events__breadcrumb-sep" aria-hidden="true">/</span>
         <a href="{{ path('app_events_show', { id: event.id }) }}" class="ef-events__breadcrumb-link text-decoration-none">{{ event.title }}</a>
         <span class="ef-events__breadcrumb-sep" aria-hidden="true">/</span>
-        <span class="ef-events__breadcrumb-current" aria-current="page">Modifier</span>
+        <span class="ef-events__breadcrumb-current" aria-current="page">{{ 'ui.events.breadcrumb_edit'|trans }}</span>
     </nav>
 
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-9 col-xl-8">
             <div class="card ef-events-form__card border-0 shadow-sm">
                 <div class="card-body p-4 p-md-5">
-                    <h2 class="h4 fw-bold mb-4">Modifier l'événement</h2>
+                    <h1 class="visually-hidden">{{ 'ui.events.edit_form_title'|trans }}</h1>
+                    <p class="h4 fw-bold mb-4">{{ 'ui.events.edit_form_title'|trans }}</p>
 
                     {{ form_start(eventForm, { attr: { class: 'ef-events-form', novalidate: 'novalidate' } }) }}
                         {% include 'events/_form_fields.html.twig' with { eventForm: eventForm } %}
@@ -25,9 +26,9 @@
                         <div class="d-flex flex-column flex-sm-row gap-2 pt-3">
                             <button type="submit" class="btn btn-save-profile flex-grow-1 py-2 fw-bold shadow-sm">
                                 <i class="bi bi-check-all fs-5 me-2" aria-hidden="true"></i>
-                                Enregistrer
+                                {{ 'ui.common.save'|trans }}
                             </button>
-                            <a href="{{ path('app_events_show', { id: event.id }) }}" class="btn ef-events-form__btn-cancel px-4 py-2">Annuler</a>
+                            <a href="{{ path('app_events_show', { id: event.id }) }}" class="btn ef-events-form__btn-cancel px-4 py-2">{{ 'ui.common.cancel'|trans }}</a>
                         </div>
                     {{ form_end(eventForm) }}
                 </div>
@@ -35,9 +36,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module" src="{{ asset('js/ef-groups.js') }}"></script>
 {% endblock %}

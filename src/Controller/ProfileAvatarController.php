@@ -33,7 +33,7 @@ final class ProfileAvatarController extends AbstractAppController
         }
 
         if (!$this->isCsrfTokenValid('profile_avatar_upload', (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Recharge la page et réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_profile');
         }
@@ -42,7 +42,7 @@ final class ProfileAvatarController extends AbstractAppController
         $uploadedFile = $request->files->get('photo');
 
         if (null === $uploadedFile) {
-            $this->addErrorFlash('Choisis une photo à envoyer.');
+            $this->addErrorFlash('flash.avatar.choose_required');
 
             return $this->redirectToRoute('app_profile');
         }
@@ -65,12 +65,12 @@ final class ProfileAvatarController extends AbstractAppController
 
             return $this->redirectToRoute('app_profile');
         } catch (\Throwable) {
-            $this->addErrorFlash('Impossible d\'enregistrer ta photo. Réessaie avec une autre image.');
+            $this->addErrorFlash('flash.avatar.save_failed');
 
             return $this->redirectToRoute('app_profile');
         }
 
-        $this->addSuccessFlash('Photo de profil mise à jour.');
+        $this->addSuccessFlash('flash.avatar.updated');
 
         return $this->redirectToRoute('app_profile');
     }
@@ -87,7 +87,7 @@ final class ProfileAvatarController extends AbstractAppController
         }
 
         if (!$this->isCsrfTokenValid('profile_avatar_delete', (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Recharge la page et réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_profile');
         }
@@ -96,7 +96,7 @@ final class ProfileAvatarController extends AbstractAppController
         $entityManager->flush();
         $entityManager->refresh($user);
 
-        $this->addSuccessFlash('Photo de profil supprimée.');
+        $this->addSuccessFlash('flash.avatar.deleted');
 
         return $this->redirectToRoute('app_profile');
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Entity\Trait\TimestampableParisTrait;
 use App\Enum\EventKind;
 use App\Enum\EventVisibility;
@@ -19,9 +21,10 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 #[ORM\Index(name: 'idx_ef_events_visibility', columns: ['visibility'])]
 #[ORM\HasLifecycleCallbacks]
 #[Assert\Callback(callback: 'validateDateRange')]
-class Event
+class Event implements EfAdminLabelInterface
 {
     use TimestampableParisTrait;
+    use AdminLabelTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,12 +32,12 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Le titre est obligatoire.')]
+    #[Assert\NotBlank(message: 'event.title.required')]
     #[Assert\Length(max: 255)]
     private string $title = '';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\Length(max: 2000, maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.')]
+    #[Assert\Length(max: 2000, maxMessage: 'event.description.max')]
     private ?string $description = null;
 
     #[ORM\Column(length: 50, enumType: EventKind::class)]
@@ -71,7 +74,7 @@ class Event
 
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'events')]
     #[ORM\JoinColumn(name: 'group_id', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
-    #[Assert\NotNull(message: 'Le groupe est obligatoire.')]
+    #[Assert\NotNull(message: 'event.group.required')]
     private ?Group $relatedGroup = null;
 
     public function getId(): ?int
@@ -273,9 +276,16 @@ class Event
         }
 
         if (null !== $this->endDate && $this->endDate < $this->startDate) {
-            $context->buildViolation('La date de fin doit être postérieure ou égale à la date de début.')
+            $context->buildViolation('event.end_date.before_start')
                 ->atPath('endDate')
                 ->addViolation();
         }
+    }
+
+    public function getAdminLabel(): string
+    {
+        return '' !== $this->title
+            ? $this->title
+            : 'Événement #'.($this->id ?? '?');
     }
 }

@@ -1,21 +1,21 @@
 <div class="ef-messages__thread ef-messages__thread--staff">
     <article
         class="ef-messages__staff-announcement{% if isUnread|default(false) %} ef-message--unread{% endif %}"
-        aria-label="Annonce officielle EventFamily"
+        aria-label="{{ 'ui.messages.staff.announcement_aria'|trans }}"
         data-id="{{ thread.id }}"
         data-group="1"
     >
         <div class="ef-messages__staff-announcement-header">
             <span class="ef-messages__staff-announcement-author">
                 <i class="bi bi-megaphone" aria-hidden="true"></i>
-                EventFamily
+                {{ 'admin.dashboard.title'|trans }}
             </span>
             <div class="d-flex align-items-center gap-2">
                 {% if isUnread|default(false) %}
                     <span class="ef-messages__unread-dot rounded-circle bg-danger d-inline-block" aria-hidden="true"></span>
                 {% endif %}
-                <span class="ef-messages__staff-announcement-badge">Annonce</span>
-                <time class="ef-messages__staff-announcement-date">{{ thread.createdAt|date('d/m/Y H:i') }}</time>
+                <span class="ef-messages__staff-announcement-badge">{{ 'ui.messages.staff.badge'|trans }}</span>
+                <time class="ef-messages__staff-announcement-date">{{ thread.createdAt|ef_datetime }}</time>
             </div>
         </div>
 
@@ -29,11 +29,11 @@
                     action="{{ path('app_messages_delete', { id: thread.id }) }}"
                     method="POST"
                     data-turbo="false"
-                    data-ef-confirm="Supprimer cette annonce officielle ?"
+                    data-ef-confirm="{{ 'ui.messages.staff.confirm_delete'|trans|e('html_attr') }}"
                 >
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ thread.id) }}">
                     <button type="submit" class="ef-messages__staff-announcement-action ef-messages__staff-announcement-action--danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> Supprimer
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'ui.common.delete'|trans }}
                     </button>
                 </form>
             </div>

@@ -6,12 +6,12 @@
         {{ form_widget(form.content, {
             attr: {
                 class: 'form-control border-0 shadow-none p-0 bg-transparent',
-                placeholder: placeholder|default('Écrire un message…'),
+                placeholder: placeholder|default('ui.messages.placeholder'|trans),
                 rows: '1',
                 style: 'resize: none',
             },
         }) }}
-        <button type="submit" class="btn ef-messages__send-btn p-0 d-flex align-items-center justify-content-center" aria-label="Envoyer">
+        <button type="submit" class="btn ef-messages__send-btn p-0 d-flex align-items-center justify-content-center" aria-label="{{ 'ui.messages.send_aria'|trans }}">
             <i class="bi bi-send-fill"></i>
         </button>
     {{ form_end(form) }}

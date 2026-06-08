@@ -18,6 +18,7 @@ use App\Service\EventAccessService;
 use App\Service\EventImageService;
 use App\Service\MessageService;
 use App\Service\SiteStaffService;
+use App\Util\Pagination;
 use App\Util\ParisClock;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -50,28 +51,26 @@ final class EventController extends AbstractAppController
         $user = $this->requireUser();
         $memberGroupIds = $this->groupMemberRepository->findGroupIdsForUser($user);
         $filter = EventTimeFilter::fromRequest($request->query->getString('vue'));
+        $searchQuery = $this->normalizeSearchQuery($request->query->getString('q'));
 
-        $page = max(1, $request->query->getInt('page', 1));
-        $totalItems = $this->eventRepository->countVisibleByFilter($memberGroupIds, $filter);
-        $totalPages = max(1, (int) ceil($totalItems / self::PER_PAGE));
-        if ($page > $totalPages) {
-            $page = $totalPages;
-        }
-
-        $events = $this->eventRepository->findVisibleByFilterPaginated($memberGroupIds, $filter, $page, self::PER_PAGE);
+        $totalItems = $this->eventRepository->countVisibleByFilter($memberGroupIds, $filter, $searchQuery);
+        $pagination = Pagination::create($request->query->getInt('page', 1), $totalItems, self::PER_PAGE);
+        $events = $this->eventRepository->findVisibleByFilterPaginated(
+            $memberGroupIds,
+            $filter,
+            $pagination['page'],
+            self::PER_PAGE,
+            $searchQuery,
+        );
         $creatableGroups = $this->getCreatableGroups($user);
 
         return $this->render('events/index.html.twig', [
             'events' => $events,
             'current_filter' => $filter,
+            'event_filters' => EventTimeFilter::cases(),
+            'search_query' => $searchQuery ?? '',
             'can_create' => [] !== $creatableGroups,
-            'is_regular_member_only' => [] !== $memberGroupIds && [] === $creatableGroups,
-            'pagination' => [
-                'page' => $page,
-                'total_pages' => $totalPages,
-                'total_items' => $totalItems,
-                'per_page' => self::PER_PAGE,
-            ],
+            'pagination' => $pagination,
         ]);
     }
 
@@ -82,7 +81,7 @@ final class EventController extends AbstractAppController
         $creatableGroups = $this->getCreatableGroups($user);
 
         if ([] === $creatableGroups) {
-            $this->addWarningFlash('Seuls le chef ou le modérateur d\'un groupe peuvent publier un événement. Demande à ton chef ou modérateur.');
+            $this->addWarningFlash('flash.event.publish_staff_only');
 
             return $this->redirectToRoute('app_events');
         }
@@ -120,7 +119,7 @@ final class EventController extends AbstractAppController
             $this->entityManager->persist($event);
             $this->entityManager->flush();
 
-            $this->addSuccessFlash('L\'événement a été publié.');
+            $this->addSuccessFlash('flash.event.published');
 
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
@@ -175,7 +174,7 @@ final class EventController extends AbstractAppController
             }
 
             $this->entityManager->flush();
-            $this->addSuccessFlash('L\'événement a été mis à jour.');
+            $this->addSuccessFlash('flash.event.updated');
 
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
@@ -210,7 +209,7 @@ final class EventController extends AbstractAppController
         $this->entityManager->remove($event);
         $this->entityManager->flush();
 
-        $this->addSuccessFlash('L\'événement a été supprimé.');
+        $this->addSuccessFlash('flash.event.deleted');
 
         return $this->redirectToRoute('app_events', ['vue' => $redirectFilter->value]);
     }
@@ -229,7 +228,7 @@ final class EventController extends AbstractAppController
         }
 
         if (!$this->isCsrfTokenValid('contact-event-staff'.$id, (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_events_show', ['id' => $id]);
         }
@@ -242,34 +241,33 @@ final class EventController extends AbstractAppController
         $content = trim((string) $request->request->get('content', ''));
 
         if (\strlen($content) < 15) {
-            $this->addErrorFlash('Le message doit contenir au moins 15 caractères.');
+            $this->addErrorFlash('flash.event.contact_min_length');
 
             return $this->redirectToRoute('app_events_show', ['id' => $id]);
         }
 
         if (\strlen($content) > 1000) {
-            $this->addErrorFlash('Le message ne peut pas dépasser 1000 caractères.');
+            $this->addErrorFlash('flash.event.contact_max_length');
 
             return $this->redirectToRoute('app_events_show', ['id' => $id]);
         }
 
         $recipient = $this->userRepository->findActiveById($recipientId);
         if (null === $recipient || !$this->isGroupStaffRecipient($event, $recipient)) {
-            $this->addErrorFlash('Destinataire invalide.');
+            $this->addErrorFlash('flash.event.contact_invalid_recipient');
 
             return $this->redirectToRoute('app_events_show', ['id' => $id]);
         }
 
-        $prefixedContent = sprintf(
-            "Bonjour,\n\nJe souhaite proposer ou discuter d'un événement pour le groupe « %s ».\n\nÉvénement concerné : « %s »\n\n%s",
-            $event->getRelatedGroup()?->getDisplayLabel() ?? '',
-            $event->getTitle(),
-            $content,
-        );
+        $prefixedContent = $this->trans('event.contact.message_body', [
+            '%group%' => $event->getRelatedGroup()?->getDisplayLabel() ?? '',
+            '%title%' => $event->getTitle(),
+            '%content%' => $content,
+        ]);
 
         try {
             $this->messageService->sendPrivateMessage($user, $recipient, $prefixedContent);
-            $this->addSuccessFlash('Message envoyé au responsable du groupe.');
+            $this->addSuccessFlash('flash.event.contact_sent');
         } catch (\DomainException $e) {
             $this->addErrorFlash($e->getMessage());
         }
@@ -362,7 +360,7 @@ final class EventController extends AbstractAppController
         $contacts = [];
         $owner = $group->getOwner();
         if (null !== $owner) {
-            $contacts[$owner->getId() ?? 0] = ['user' => $owner, 'label' => 'Chef du groupe'];
+            $contacts[$owner->getId() ?? 0] = ['user' => $owner, 'label' => 'ui.events.show.staff_contact_owner'];
         }
 
         foreach ($group->getGroupMembers() as $member) {
@@ -373,7 +371,7 @@ final class EventController extends AbstractAppController
             if (null === $memberUser) {
                 continue;
             }
-            $contacts[$memberUser->getId() ?? 0] = ['user' => $memberUser, 'label' => 'Modérateur'];
+            $contacts[$memberUser->getId() ?? 0] = ['user' => $memberUser, 'label' => 'ui.events.show.staff_contact_moderator'];
         }
 
         return array_values($contacts);
@@ -403,5 +401,19 @@ final class EventController extends AbstractAppController
         }
 
         return $user;
+    }
+
+    private function normalizeSearchQuery(string $raw): ?string
+    {
+        $query = trim($raw);
+        if ('' === $query) {
+            return null;
+        }
+
+        if (\strlen($query) > 100) {
+            $query = substr($query, 0, 100);
+        }
+
+        return $query;
     }
 }

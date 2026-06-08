@@ -14,8 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/groupes', name: 'app_admin_groups')]
-#[IsGranted('ROLE_ADMIN')]
+#[Route('%ef.admin.path%/groupes', name: 'app_admin_groups')]
+#[IsGranted(User::ROLE_ADMIN)]
 final class GroupSystemNoticeController extends AbstractAppController
 {
     public function __construct(
@@ -41,7 +41,7 @@ final class GroupSystemNoticeController extends AbstractAppController
                 $admin,
                 (string) $form->get('content')->getData(),
             );
-            $this->addSuccessFlash('Le message système a été mis à jour.');
+            $this->addSuccessFlash('flash.group.system_notice_updated');
 
             return $this->redirectToRoute('app_messages_group', ['groupId' => $group->getId()]);
         }
@@ -60,13 +60,13 @@ final class GroupSystemNoticeController extends AbstractAppController
         $admin = $this->requireUser();
 
         if (!$this->isCsrfTokenValid('reset-system-notice'.$group->getId(), (string) $request->request->get('_token'))) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_messages_group', ['groupId' => $group->getId()]);
         }
 
         $this->systemNoticeService->resetToDefault($group, $admin);
-        $this->addSuccessFlash('Le message système par défaut a été restauré.');
+        $this->addSuccessFlash('flash.group.system_notice_reset');
 
         return $this->redirectToRoute('app_messages_group', ['groupId' => $group->getId()]);
     }
@@ -85,7 +85,7 @@ final class GroupSystemNoticeController extends AbstractAppController
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
-            throw $this->createAccessDeniedException();
+            throw $this->createAccessDeniedException($this->trans('admin.access.session_changed'));
         }
 
         return $user;

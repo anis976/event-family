@@ -1,41 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Messages{% endblock %}
-{% block page_title %}Messages{% endblock %}
+{% block title %}{{ 'ui.messages.page_title'|trans }}{% endblock %}
+{% block page_title %}{{ 'ui.messages.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5 text-center ef-messages-hub">
-    <h2 class="fw-bold mb-5">Espace Messages</h2>
+    <h1 class="fw-bold mb-5 h2">{{ 'ui.messages.hub_title'|trans }}</h1>
 
     <div class="row justify-content-center g-4">
         <div class="col-md-5 position-relative">
             {% if notifications.private > 0 %}
-                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger ef-messages-hub__badge">
+                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger ef-messages-hub__badge" aria-hidden="true">
                     {{ notifications.private }}
                 </span>
             {% endif %}
 
-            <a href="{{ path('app_messages_private') }}" class="text-decoration-none">
+            <a
+                href="{{ path('app_messages_private') }}"
+                class="text-decoration-none"
+                aria-label="{{ notifications.private > 0
+                    ? 'ui.messages.hub.link_private_unread'|trans({ '%count%': notifications.private })
+                    : 'ui.messages.hub.link_private'|trans }}"
+            >
                 <div class="card p-4 shadow-sm border-0 h-100 ef-message-card">
-                    <i class="bi bi-chat-left-text fs-1 text-primary mb-3"></i>
-                    <h3 class="h4 fw-bold">Messages privés</h3>
-                    <p class="text-muted mb-0">Conversations individuelles avec vos contacts</p>
+                    <i class="bi bi-chat-left-text fs-1 text-primary mb-3" aria-hidden="true"></i>
+                    <h2 class="h4 fw-bold">{{ 'ui.messages.private.title'|trans }}</h2>
+                    <p class="text-muted mb-0">{{ 'ui.messages.private.subtitle'|trans }}</p>
                 </div>
             </a>
         </div>
 
         <div class="col-md-5 position-relative">
             {% if notifications.group > 0 %}
-                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger ef-messages-hub__badge">
+                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger ef-messages-hub__badge" aria-hidden="true">
                     {{ notifications.group }}
                 </span>
             {% endif %}
 
-            <a href="{{ path('app_messages_group') }}" class="text-decoration-none">
+            <a
+                href="{{ path('app_messages_group') }}"
+                class="text-decoration-none"
+                aria-label="{{ notifications.group > 0
+                    ? 'ui.messages.hub.link_group_unread'|trans({ '%count%': notifications.group })
+                    : 'ui.messages.hub.link_group'|trans }}"
+            >
                 <div class="card p-4 shadow-sm border-0 h-100 ef-message-card">
-                    <i class="bi bi-people fs-1 text-success mb-3"></i>
-                    <h3 class="h4 fw-bold">Messages de groupe</h3>
-                    <p class="text-muted mb-0">Discussions dans vos groupes</p>
+                    <i class="bi bi-people fs-1 text-success mb-3" aria-hidden="true"></i>
+                    <h2 class="h4 fw-bold">{{ 'ui.messages.group.title'|trans }}</h2>
+                    <p class="text-muted mb-0">{{ 'ui.messages.group.subtitle'|trans }}</p>
                 </div>
             </a>
         </div>

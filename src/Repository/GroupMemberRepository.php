@@ -31,18 +31,93 @@ class GroupMemberRepository extends ServiceEntityRepository
      */
     public function findGroupsForUser(User $user): array
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('g', 'allGm', 'memberUser', 'owner')
+        return $this->findGroupsForUserPaginated($user, 1, PHP_INT_MAX);
+    }
+
+    /**
+     * Liste légère pour le sélecteur de groupe (messages de groupe).
+     *
+     * @return list<array{id: int, name: string}>
+     */
+    public function findGroupPickerForUser(User $user): array
+    {
+        $rows = $this->getEntityManager()->createQueryBuilder()
+            ->select('g.id', 'g.name')
             ->from(Group::class, 'g')
             ->innerJoin('g.groupMembers', 'gm')
-            ->leftJoin('g.groupMembers', 'allGm')
-            ->leftJoin('allGm.user', 'memberUser')
+            ->andWhere('gm.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('CASE WHEN g.owner = :user THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_map(
+            static fn (array $row): array => ['id' => (int) $row['id'], 'name' => (string) $row['name']],
+            $rows,
+        );
+    }
+
+    public function countGroupsForUser(User $user): int
+    {
+        return (int) $this->createQueryBuilder('gm')
+            ->select('COUNT(DISTINCT g.id)')
+            ->innerJoin('gm.group', 'g')
+            ->andWhere('gm.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @return list<Group>
+     */
+    public function findGroupsForUserPaginated(User $user, int $page, int $perPage): array
+    {
+        $perPage = max(1, $perPage);
+        $page = max(1, $page);
+        $offset = ($page - 1) * $perPage;
+
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g', 'owner')
+            ->from(Group::class, 'g')
+            ->innerJoin('g.groupMembers', 'gm')
             ->leftJoin('g.owner', 'owner')
             ->andWhere('gm.user = :user')
             ->setParameter('user', $user)
-            ->orderBy('g.name', 'ASC')
+            ->orderBy('CASE WHEN g.owner = :user THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('g.name', 'ASC')
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param list<int> $groupIds
+     *
+     * @return array<int, int> groupId => member count
+     */
+    public function countMembersByGroupIds(array $groupIds): array
+    {
+        if ([] === $groupIds) {
+            return [];
+        }
+
+        $rows = $this->createQueryBuilder('gm')
+            ->select('IDENTITY(gm.group) AS groupId', 'COUNT(gm.id) AS memberCount')
+            ->andWhere('gm.group IN (:groupIds)')
+            ->setParameter('groupIds', $groupIds)
+            ->groupBy('gm.group')
+            ->getQuery()
+            ->getScalarResult();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int) $row['groupId']] = (int) $row['memberCount'];
+        }
+
+        return $map;
     }
 
     /**
@@ -70,6 +145,41 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->setParameter('role', \App\Enum\GroupMemberRole::Moderator)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function countOtherMembersInGroup(Group $group, User $excludeUser): int
+    {
+        return (int) $this->createQueryBuilder('gm')
+            ->select('COUNT(gm.id)')
+            ->andWhere('gm.group = :group')
+            ->andWhere('gm.user != :user')
+            ->setParameter('group', $group)
+            ->setParameter('user', $excludeUser)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Autres membres du groupe (hors utilisateur exclu), modérateur en priorité puis ancienneté.
+     *
+     * @return list<GroupMember>
+     */
+    public function findOtherMembersOrdered(Group $group, User $excludeUser): array
+    {
+        return $this->createQueryBuilder('gm')
+            ->addSelect('u')
+            ->innerJoin('gm.user', 'u')
+            ->andWhere('gm.group = :group')
+            ->andWhere('gm.user != :user')
+            ->setParameter('group', $group)
+            ->setParameter('user', $excludeUser)
+            ->addOrderBy('CASE WHEN gm.role = :moderatorRole THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('gm.joinedAt', 'ASC')
+            ->addOrderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->setParameter('moderatorRole', GroupMemberRole::Moderator->value)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -127,5 +237,42 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function countByGroup(Group $group): int
+    {
+        return (int) $this->createQueryBuilder('gm')
+            ->select('COUNT(gm.id)')
+            ->andWhere('gm.group = :group')
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Chef, puis modérateur, puis membres ; tri par nom dans chaque rôle.
+     *
+     * @return list<GroupMember>
+     */
+    public function findByGroupPaginated(Group $group, int $page, int $perPage): array
+    {
+        $perPage = max(1, $perPage);
+        $page = max(1, $page);
+        $offset = ($page - 1) * $perPage;
+
+        return $this->createQueryBuilder('gm')
+            ->addSelect('u')
+            ->innerJoin('gm.user', 'u')
+            ->andWhere('gm.group = :group')
+            ->setParameter('group', $group)
+            ->addOrderBy('CASE WHEN gm.role = :ownerRole THEN 0 WHEN gm.role = :moderatorRole THEN 1 ELSE 2 END', 'ASC')
+            ->addOrderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->setParameter('ownerRole', GroupMemberRole::Owner->value)
+            ->setParameter('moderatorRole', GroupMemberRole::Moderator->value)
+            ->setFirstResult($offset)
+            ->setMaxResults($perPage)
+            ->getQuery()
+            ->getResult();
     }
 }

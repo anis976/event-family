@@ -24,7 +24,7 @@
             background: rgba($ef-primary-blue-dark, 0.08);
         }
 
-        h2,
+        h3,
         h6 {
             color: #3f3f46;
             font-weight: 500;
@@ -32,6 +32,26 @@
             @include color-mode(dark) {
                 color: #aaa;
             }
+        }
+    }
+
+    &__info-card {
+        top: 80px;
+    }
+
+    &__family-text {
+        color: $ef-primary-orange-dark;
+        display: inline-block;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    &__group-name {
+        color: #3f3f46;
+        font-weight: 500;
+
+        @include color-mode(dark) {
+            color: #aaa;
         }
     }
 
@@ -74,6 +94,34 @@
             &:hover {
                 background-color: $ef-primary-orange;
                 color: white;
+            }
+        }
+    }
+
+    &__btn-send {
+        background-color: $ef-primary-orange-dark;
+        border: 1px solid $ef-primary-orange-dark;
+        color: #fff;
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 0.4rem 1rem;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+
+        &:hover {
+            background-color: $ef-active-hover-orange;
+            border-color: $ef-active-hover-orange;
+            color: #fff;
+        }
+
+        @include color-mode(dark) {
+            background-color: $ef-primary-orange-dark;
+            border-color: $ef-primary-orange-dark;
+            color: #fff;
+
+            &:hover {
+                background-color: $ef-active-hover-orange;
+                border-color: $ef-active-hover-orange;
+                color: #fff;
             }
         }
     }
@@ -156,6 +204,34 @@
                 border-radius: 6px;
                 text-transform: uppercase;
             }
+        }
+    }
+
+    &__invite-search {
+        $invite-search-padding: 0.45rem 0.75rem;
+
+        max-width: 100%;
+        min-width: 0;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        .form-control {
+            flex: 1 1 0;
+            min-width: 0;
+            width: 1%;
+            padding: $invite-search-padding;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .btn-save-profile {
+            flex: 0 0 auto;
+            padding: $invite-search-padding;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
         }
     }
 

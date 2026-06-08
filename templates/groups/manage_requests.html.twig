@@ -1,36 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Demandes — {{ group.name }}{% endblock %}
-{% block page_title %}Demandes d'adhésion{% endblock %}
+{% block title %}{{ 'ui.groups.manage_requests.page_title'|trans({'%name%': group.name}) }}{% endblock %}
+{% block page_title %}{{ 'ui.groups.manage_requests.page_heading'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5 ef-GroupShow">
-    <nav aria-label="Fil d'Ariane" class="mb-4">
+    <h1 class="visually-hidden">{{ 'ui.groups.manage_requests.page_heading'|trans }}</h1>
+
+    <nav aria-label="{{ 'ui.groups.breadcrumb_aria'|trans }}" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups') }}">Mes groupes</a></li>
+            <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups') }}">{{ 'ui.groups.show.my_groups_breadcrumb'|trans }}</a></li>
             <li class="breadcrumb-item ef-GroupShow__nav-link"><a href="{{ path('app_groups_show', { id: group.id }) }}">{{ group.name }}</a></li>
-            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">Demandes</li>
+            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">{{ 'ui.groups.manage_requests.breadcrumb'|trans }}</li>
         </ol>
     </nav>
 
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-transparent border-0 py-4 px-4">
-            <h2 class="h5 mb-0">Demandes en attente <span class="badge bg-secondary ms-2">{{ requests|length }}</span></h2>
+            <h2 class="h5 mb-0">{{ 'ui.groups.manage_requests.pending_title'|trans }} <span class="badge bg-secondary ms-2">{{ requests|length }}</span></h2>
         </div>
 
         {% if requests is empty %}
             <div class="card-body text-center py-5 text-muted">
-                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
-                Aucune demande en attente pour le moment.
+                <i class="bi bi-inbox fs-1 d-block mb-3" aria-hidden="true"></i>
+                {{ 'ui.groups.manage_requests.empty'|trans }}
             </div>
         {% else %}
             <div class="table-responsive px-2 pb-3">
                 <table class="table align-middle table-hover mb-0 ef-GroupShow__card-table">
                     <thead>
                         <tr>
-                            <th class="ps-4 py-3 border-0">Membre</th>
-                            <th class="py-3 border-0">Date</th>
-                            <th class="py-3 border-0 text-end pe-4">Actions</th>
+                            <th class="ps-4 py-3 border-0">{{ 'ui.groups.members.column_member'|trans }}</th>
+                            <th class="py-3 border-0">{{ 'ui.groups.manage_requests.column_date'|trans }}</th>
+                            <th class="py-3 border-0 text-end pe-4">{{ 'ui.groups.members.column_actions'|trans }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,19 +48,19 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="py-3 text-muted small">{{ request.createdAt|date('d/m/Y H:i') }}</td>
+                                <td class="py-3 text-muted small">{{ request.createdAt|ef_datetime }}</td>
                                 <td class="text-end pe-4 py-3">
                                     <div class="d-flex justify-content-end gap-2 flex-wrap">
                                         <form action="{{ path('app_groups_accept_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
                                             <input type="hidden" name="_token" value="{{ csrf_token('accept-join' ~ request.id) }}">
                                             <button type="submit" class="btn btn-sm btn-success">
-                                                <i class="bi bi-check-lg me-1"></i> Accepter
+                                                <i class="bi bi-check-lg me-1"></i> {{ 'ui.common.accept'|trans }}
                                             </button>
                                         </form>
                                         <form action="{{ path('app_groups_refuse_request', { id: group.id, requestId: request.id }) }}" method="POST" data-turbo="false">
                                             <input type="hidden" name="_token" value="{{ csrf_token('refuse-join' ~ request.id) }}">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="bi bi-x-lg me-1"></i> Refuser
+                                                <i class="bi bi-x-lg me-1"></i> {{ 'ui.common.refuse'|trans }}
                                             </button>
                                         </form>
                                     </div>
@@ -73,7 +75,7 @@
 
     <div class="mt-4">
         <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn btn-light">
-            <i class="bi bi-arrow-left me-1"></i> Retour au groupe
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i> {{ 'ui.groups.back_to_group'|trans }}
         </a>
     </div>
 </div>

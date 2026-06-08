@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
+use App\Entity\Trait\AdminLabelTrait;
 use App\Entity\Trait\TimestampableParisTrait;
 use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,10 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'uniq_ef_groups_owner', columns: ['owner_id'])]
 #[ORM\UniqueConstraint(name: 'uniq_ef_groups_name', columns: ['name'])]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: ['name'], message: 'Ce nom de groupe est déjà utilisé.')]
-class Group
+#[UniqueEntity(fields: ['name'], message: 'group.name.unique', groups: ['Default', 'Admin'])]
+class Group implements EfAdminLabelInterface
 {
     use TimestampableParisTrait;
+    use AdminLabelTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,15 +31,15 @@ class Group
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Le nom du groupe est obligatoire.')]
+    #[Assert\NotBlank(message: 'group.name.required')]
     private string $name = '';
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Le nom de famille est obligatoire.')]
+    #[Assert\NotBlank(message: 'group.family_name.required')]
     private string $familyName = '';
 
     #[ORM\Column(type: 'text', nullable: true)]
-    #[Assert\Length(max: 500, maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.')]
+    #[Assert\Length(max: 500, maxMessage: 'group.description.max')]
     private ?string $description = null;
 
     /** Message système affiché en tête du fil de groupe (null = texte par défaut plateforme). */
@@ -226,6 +229,13 @@ class Group
     public function getDisplayLabel(): string
     {
         return trim($this->name.' '.$this->familyName);
+    }
+
+    public function getAdminLabel(): string
+    {
+        $label = $this->getDisplayLabel();
+
+        return '' !== $label ? $label : 'Groupe #'.($this->id ?? '?');
     }
 
     /**

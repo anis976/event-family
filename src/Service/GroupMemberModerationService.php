@@ -29,13 +29,13 @@ final class GroupMemberModerationService
         $group = $targetMember->getGroup();
 
         if (!$this->groupAccess->isOwner($actor, $group)) {
-            throw new \DomainException('Seul le chef du groupe peut gérer les modérateurs.');
+            throw new \DomainException('flash.group.owner_only_moderator');
         }
 
         $this->assertCanModerateTarget($actor, $targetMember);
 
         if (GroupMemberRole::Owner === $targetMember->getRole()) {
-            throw new \DomainException('Le chef du groupe ne peut pas être modifié.');
+            throw new \DomainException('flash.group.owner_cannot_change');
         }
 
         if (GroupMemberRole::Moderator === $targetMember->getRole()) {
@@ -46,7 +46,7 @@ final class GroupMemberModerationService
         }
 
         if ($this->groupMemberRepository->countModeratorsInGroup($group) >= 1) {
-            throw new \DomainException('Ce groupe ne peut avoir qu\'un seul modérateur.');
+            throw new \DomainException('flash.group.single_moderator');
         }
 
         $targetMember->setRole(GroupMemberRole::Moderator);
@@ -58,19 +58,19 @@ final class GroupMemberModerationService
         $group = $targetMember->getGroup();
 
         if (!$this->groupAccess->isStaff($actor, $group)) {
-            throw new \DomainException('Seuls le chef et le modérateur peuvent bannir un membre.');
+            throw new \DomainException('flash.group.staff_only_ban');
         }
 
         $this->assertCanModerateTarget($actor, $targetMember);
         $this->assertStaffCanActOnTargetRole($actor, $group, $targetMember);
 
         if (null !== $this->userBanRepository->findActiveBanForUserInGroup($targetMember->getUser(), $group)) {
-            throw new \DomainException('Ce membre est déjà banni.');
+            throw new \DomainException('flash.group.already_banned');
         }
 
         $trimmedReason = trim($reason);
         if ('' === $trimmedReason) {
-            throw new \DomainException('Le motif du bannissement est obligatoire.');
+            throw new \DomainException('flash.group.ban_reason_required_service');
         }
 
         $ban = (new UserBan())
@@ -90,12 +90,12 @@ final class GroupMemberModerationService
         $group = $targetMember->getGroup();
 
         if (!$this->groupAccess->isStaff($actor, $group)) {
-            throw new \DomainException('Seuls le chef et le modérateur peuvent débannir un membre.');
+            throw new \DomainException('flash.group.staff_only_unban');
         }
 
         $ban = $this->userBanRepository->findActiveBanForUserInGroup($targetMember->getUser(), $group);
         if (null === $ban) {
-            throw new \DomainException('Ce membre n\'est pas banni.');
+            throw new \DomainException('flash.group.not_banned');
         }
 
         $ban->setEndsAt(ParisClock::now());
@@ -107,13 +107,13 @@ final class GroupMemberModerationService
         $group = $targetMember->getGroup();
 
         if (!$this->groupAccess->isOwner($actor, $group)) {
-            throw new \DomainException('Seul le chef du groupe peut exclure un membre.');
+            throw new \DomainException('flash.group.owner_only_kick');
         }
 
         $this->assertCanModerateTarget($actor, $targetMember);
 
         if (GroupMemberRole::Owner === $targetMember->getRole()) {
-            throw new \DomainException('Le chef du groupe ne peut pas être exclu.');
+            throw new \DomainException('flash.group.owner_cannot_kick');
         }
 
         $activeBan = $this->userBanRepository->findActiveBanForUserInGroup($targetMember->getUser(), $group);
@@ -129,14 +129,14 @@ final class GroupMemberModerationService
     private function assertCanModerateTarget(User $actor, GroupMember $targetMember): void
     {
         if ($targetMember->getUser()->getId() === $actor->getId()) {
-            throw new \DomainException('Tu ne peux pas effectuer cette action sur ton propre compte.');
+            throw new \DomainException('flash.group.self_action');
         }
     }
 
     private function assertStaffCanActOnTargetRole(User $actor, \App\Entity\Group $group, GroupMember $targetMember): void
     {
         if (GroupMemberRole::Owner === $targetMember->getRole()) {
-            throw new \DomainException('Le chef du groupe ne peut pas être banni.');
+            throw new \DomainException('flash.group.owner_cannot_ban');
         }
 
         if ($this->groupAccess->isOwner($actor, $group)) {
@@ -144,7 +144,7 @@ final class GroupMemberModerationService
         }
 
         if (GroupMemberRole::Member !== $targetMember->getRole()) {
-            throw new \DomainException('Un modérateur ne peut bannir que des membres simples.');
+            throw new \DomainException('flash.group.moderator_ban_member_only');
         }
     }
 }

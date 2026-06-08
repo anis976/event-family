@@ -1,0 +1,3 @@
+parameters:
+    ef.publisher.address_default: '81 rue de l''Ermitage, 17140 Lagord'
+    ef.publisher.address: '%env(default:ef.publisher.address_default:PUBLISHER_ADDRESS)%'

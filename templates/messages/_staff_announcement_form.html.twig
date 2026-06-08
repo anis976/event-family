@@ -1,8 +1,8 @@
 <div class="ef-messages__staff-form p-3 border rounded-4 shadow-sm">
     <p class="ef-messages__staff-form-label mb-2">
         <i class="bi bi-megaphone me-1" aria-hidden="true"></i>
-        Annonce officielle EventFamily
-        <span class="text-muted fw-normal">— sans réponse possible</span>
+        {{ 'ui.messages.staff.form_label'|trans }}
+        <span class="text-muted fw-normal">{{ 'ui.messages.staff.no_reply'|trans }}</span>
     </p>
     {{ form_start(staff_form, {
         action: form_action|default(null),
@@ -11,12 +11,12 @@
         {{ form_widget(staff_form.content, {
             attr: {
                 class: 'form-control border-0 shadow-none p-0 bg-transparent',
-                placeholder: placeholder|default('Rédiger une annonce pour ce groupe…'),
+                placeholder: placeholder|default('ui.messages.staff.placeholder'|trans),
                 rows: '1',
                 style: 'resize: none',
             },
         }) }}
-        <button type="submit" class="btn ef-messages__staff-send-btn p-0 d-flex align-items-center justify-content-center" aria-label="Publier l'annonce">
+        <button type="submit" class="btn ef-messages__staff-send-btn p-0 d-flex align-items-center justify-content-center" aria-label="{{ 'ui.messages.staff.publish_aria'|trans }}">
             <i class="bi bi-megaphone-fill"></i>
         </button>
     {{ form_end(staff_form) }}

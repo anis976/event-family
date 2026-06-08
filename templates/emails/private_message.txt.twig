@@ -1,0 +1,14 @@
+{{ 'email.common.greeting'|trans({'%name%': user.displayName}, locale=ef_email_locale) }}
+
+{{ 'email.private_message.intro'|trans({'%name%': sender.displayName}, locale=ef_email_locale)|striptags }}
+
+{% if preview %}
+---
+{{ preview }}
+---
+{% endif %}
+
+{{ 'email.private_message.cta'|trans(locale=ef_email_locale) }} :
+{{ messagesUrl }}
+
+{{ 'email.private_message.opt_out'|trans(locale=ef_email_locale)|striptags }}

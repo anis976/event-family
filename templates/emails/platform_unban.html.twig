@@ -1,0 +1,11 @@
+{% extends 'emails/_base.html.twig' %}
+
+{% block email_title %}{{ 'email.platform_unban.title'|trans(locale=ef_email_locale) }}{% endblock %}
+
+{% block email_body %}
+    <p>{{ 'email.common.greeting'|trans({'%name%': user.firstName}, locale=ef_email_locale) }}</p>
+
+    <p>{{ 'email.platform_unban.intro'|trans(locale=ef_email_locale)|raw }}</p>
+
+    <p style="font-size: 0.9rem; color: #666;">{{ 'email.common.ignore_if_not_you'|trans(locale=ef_email_locale) }}</p>
+{% endblock %}

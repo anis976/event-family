@@ -1,0 +1,94 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+// Pagination réutilisable (groupes, événements, membres, etc.)
+.ef-paginate,
+.ef-events__paginate {
+    // Surcharge des variables Bootstrap pour gagner la cascade sans !important partout
+    --bs-pagination-bg: transparent;
+    --bs-pagination-border-width: 0;
+    --bs-pagination-border-color: transparent;
+    --bs-pagination-color: #666;
+    --bs-pagination-hover-bg: #{rgba($ef-primary-orange, 0.1)};
+    --bs-pagination-hover-color: #{$ef-primary-orange};
+    --bs-pagination-hover-border-color: transparent;
+    --bs-pagination-focus-box-shadow: none;
+    --bs-pagination-active-bg: #{$ef-primary-orange};
+    --bs-pagination-active-border-color: transparent;
+    --bs-pagination-active-color: #fff;
+    --bs-pagination-disabled-color: #ccc;
+    --bs-pagination-disabled-bg: transparent;
+    --bs-pagination-disabled-border-color: transparent;
+
+    .pagination {
+        border: none;
+        gap: 0.5rem;
+
+        .page-item {
+            .page-link {
+                border: none;
+                background: transparent;
+                border-radius: 0.5rem;
+                color: #666;
+                padding: 0.6rem 1rem;
+                font-weight: 600;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 42px;
+
+                &:hover {
+                    background-color: rgba($ef-primary-orange, 0.1);
+                    color: $ef-primary-orange;
+                }
+
+                &:focus {
+                    box-shadow: none;
+                }
+            }
+
+            &.active {
+                .page-link {
+                    background-color: $ef-primary-orange;
+                    border: none;
+                    color: white !important;
+                    box-shadow: 0 4px 10px rgba($ef-primary-orange, 0.2);
+
+                    &:hover {
+                        background-color: $ef-primary-orange;
+                        color: white !important;
+                    }
+                }
+            }
+
+            &.disabled {
+                .page-link {
+                    opacity: 0.5;
+                    color: #ccc;
+                    background: transparent;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+
+    @include color-mode(dark) {
+        --bs-pagination-color: #aaa;
+        --bs-pagination-hover-bg: #{rgba($ef-primary-orange, 0.2)};
+        --bs-pagination-hover-color: #{$ef-primary-orange};
+
+        .page-item .page-link {
+            color: #aaa;
+
+            &:hover {
+                background-color: rgba($ef-primary-orange, 0.2);
+            }
+        }
+
+        .page-item.active .page-link {
+            background-color: $ef-primary-orange;
+            color: white !important;
+        }
+    }
+}

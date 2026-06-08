@@ -68,22 +68,22 @@ final class UserAvatarService
         array $crop,
     ): void {
         if (!$uploadedFile->isValid()) {
-            throw new \InvalidArgumentException('Fichier invalide.');
+            throw new \InvalidArgumentException('flash.avatar.invalid_file');
         }
 
         if ($uploadedFile->getSize() > $this->maxBytes) {
-            throw new \InvalidArgumentException('La photo ne doit pas dépasser 4 Mo.');
+            throw new \InvalidArgumentException('flash.avatar.max_size');
         }
 
         $mimeType = $uploadedFile->getMimeType() ?? '';
         $extension = $this->imageProcessor->resolveExtensionForMime($mimeType);
 
         if (null === $extension) {
-            throw new \InvalidArgumentException('Format non autorisé. Utilise JPG, PNG ou WebP.');
+            throw new \InvalidArgumentException('flash.avatar.invalid_format');
         }
 
         if (!$this->isValidImageContent($uploadedFile->getPathname(), $mimeType)) {
-            throw new \InvalidArgumentException('Le fichier n\'est pas une image valide.');
+            throw new \InvalidArgumentException('flash.avatar.invalid_image');
         }
 
         $this->ensureStorageDir();

@@ -2,9 +2,24 @@
 
 {% block body_class %} ef-home{% if not app.user %} ef-home--guest{% endif %}{% endblock %}
 
-{% block page_title %}{{ app.user ? 'ui.home.title'|trans : 'ui.home.guest_page_title'|trans }}{% endblock %}
+{% block page_title %}{{ 'ui.home.title'|trans }}{% endblock %}
 
 {% block title %}{{ app.user ? 'ui.home.page_title'|trans : 'ui.home.guest_page_title'|trans }}{% endblock %}
+
+{% block meta_description %}
+    {% if not app.user %}
+        <meta name="description" content="{{ 'ui.home.guest_meta_description'|trans }}">
+    {% endif %}
+{% endblock %}
+
+{% block meta_og %}
+    {% if not app.user %}
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ 'ui.home.guest_page_title'|trans }}">
+        <meta property="og:description" content="{{ 'ui.home.guest_meta_description'|trans }}">
+        <meta property="og:locale" content="{{ app.request.locale == 'en' ? 'en_US' : 'fr_FR' }}">
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <section class="ef-hero-section">
@@ -33,31 +48,55 @@
     <div class="ef-main-content-padding">
         <div class="row g-4 text-center mb-5">
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                {% if app.user %}
+                    <a href="{{ path('app_groups') }}" class="card h-100 ef-card ef-card--link border-0 shadow-sm text-center p-4">
+                {% else %}
+                    <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                {% endif %}
                     <div class="ef-icon-box mx-auto mb-3">
                         <i class="bi bi-people fs-3" aria-hidden="true"></i>
                     </div>
                     <h2 class="h5 fw-bold">{{ 'ui.home.feature_groups_title'|trans }}</h2>
                     <p class="text-muted small mb-0">{{ 'ui.home.feature_groups_text'|trans }}</p>
-                </div>
+                {% if app.user %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
             </div>
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                {% if app.user %}
+                    <a href="{{ path('app_events') }}" class="card h-100 ef-card ef-card--link border-0 shadow-sm text-center p-4">
+                {% else %}
+                    <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                {% endif %}
                     <div class="ef-icon-box mx-auto mb-3">
                         <i class="bi bi-calendar-event fs-3" aria-hidden="true"></i>
                     </div>
                     <h2 class="h5 fw-bold">{{ 'ui.home.feature_events_title'|trans }}</h2>
                     <p class="text-muted small mb-0">{{ 'ui.home.feature_events_text'|trans }}</p>
-                </div>
+                {% if app.user %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
             </div>
             <div class="col-12 col-md-6 col-lg-4">
-                <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                {% if app.user %}
+                    <a href="{{ path('app_messages') }}" class="card h-100 ef-card ef-card--link border-0 shadow-sm text-center p-4">
+                {% else %}
+                    <div class="card h-100 ef-card border-0 shadow-sm text-center p-4">
+                {% endif %}
                     <div class="ef-icon-box mx-auto mb-3">
                         <i class="bi bi-stars fs-3" aria-hidden="true"></i>
                     </div>
                     <h2 class="h5 fw-bold">{{ 'ui.home.feature_connect_title'|trans }}</h2>
                     <p class="text-muted small mb-0">{{ 'ui.home.feature_connect_text'|trans }}</p>
-                </div>
+                {% if app.user %}
+                    </a>
+                {% else %}
+                    </div>
+                {% endif %}
             </div>
         </div>
 

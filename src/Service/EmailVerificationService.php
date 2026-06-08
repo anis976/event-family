@@ -24,6 +24,7 @@ final class EmailVerificationService
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TransactionalEmailHelper $emailHelper,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
     ) {
@@ -48,16 +49,19 @@ final class EmailVerificationService
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
 
-        $email = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject('EventFamily — Active ton compte')
-            ->htmlTemplate('emails/verification.html.twig')
-            ->context([
+        $email = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->emailHelper->trans('email.verification.subject', [], $user))
+                ->htmlTemplate('emails/verification.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'verificationUrl' => $verificationUrl,
                 'expiresHours' => self::TOKEN_TTL_HOURS,
-            ]);
+            ],
+        );
 
         $this->mailer->send($email);
     }

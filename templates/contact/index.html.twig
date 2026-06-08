@@ -2,97 +2,104 @@
 
 {% form_theme contactForm 'form/ef_form_theme.html.twig' %}
 
-{% block title %}EventFamily — Contact{% endblock %}
+{% block title %}{{ 'ui.contact.page_title'|trans }}{% endblock %}
 
-{% block page_title %}Contact{% endblock %}
+{% block page_title %}{{ 'ui.contact.title'|trans }}{% endblock %}
 
 {% block body %}
-    <div class="ef-contact">
-        <div class="p-4 d-flex justify-content-center container-fluid ef-contact__content">
-            <div class="col-md-10 ef-contact__content-col">
-                <div class="text-center ef-contact__content-col-title">
-                    <h2 class="fw-bold mb-3">Nous contacter</h2>
-                    <p class="mb-5">Une question ? N'hésite pas à nous écrire.</p>
-                </div>
+    <div class="ef-main-content-padding ef-contact">
+        <h1 class="visually-hidden">{{ 'ui.contact.title'|trans }}</h1>
 
-                <div class="row g-4 justify-content-center ef-contact__row">
-                    <div class="col-lg-6 col-md-12 ef-contact__col">
-                        <div class="card h-100 p-1 border-0 ef-contact__row-card">
-                            <div class="card-body ef-contact__row-card-body">
-                                <h5 class="card-title mb-4">Envoyer un message</h5>
+        <div class="ef-contact__inner mx-auto">
+            <div class="text-center ef-contact__header mb-5">
+                <h2 class="fw-bold mb-3">{{ 'ui.contact.heading'|trans }}</h2>
+                <p class="ef-contact__subtitle mb-0">{{ 'ui.contact.subtitle'|trans }}</p>
+            </div>
 
-                                {% include 'components/_ef_form_validation_summary.html.twig' with { form: contactForm } only %}
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-6 col-md-12">
+                    <div class="card h-100 border-0 shadow-sm ef-contact__form-card">
+                        <div class="card-body">
+                            <h3 class="h5 card-title mb-4">{{ 'ui.contact.form_title'|trans }}</h3>
 
-                                {{ form_start(contactForm, { attr: { novalidate: 'novalidate' } }) }}
-                                    <div class="ef-contact__honeypot-wrap" aria-hidden="true">
-                                        {{ form_widget(contactForm.companyWebsite) }}
-                                    </div>
-                                    {{ form_widget(contactForm._startedAt) }}
-                                    {% if contactForm.recaptchaToken is defined %}
-                                        {{ form_widget(contactForm.recaptchaToken) }}
-                                    {% endif %}
-                                    <div class="mb-3">
-                                        <label for="contact-display-name" class="form-label fw-medium">Nom</label>
-                                        <input
-                                            type="text"
-                                            id="contact-display-name"
-                                            class="form-control ef-input ef-contact__readonly"
-                                            value="{{ user.firstName }} {{ user.lastName }}"
-                                            readonly
-                                            aria-readonly="true"
-                                            tabindex="-1"
-                                        >
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="contact-display-email" class="form-label fw-medium">Adresse e-mail</label>
-                                        <input
-                                            type="email"
-                                            id="contact-display-email"
-                                            class="form-control ef-input ef-contact__readonly"
-                                            value="{{ user.email }}"
-                                            readonly
-                                            aria-readonly="true"
-                                            tabindex="-1"
-                                        >
-                                    </div>
-                                    <div class="mb-3" data-ef-char-count>
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            {{ form_label(contactForm.message, null, { label_attr: { class: 'form-label fw-medium mb-0' } }) }}
-                                            <small class="js-counter text-muted fw-bold" data-max="{{ constant('App\\Form\\ContactFormType::MESSAGE_MAX_LENGTH') }}">0 / {{ constant('App\\Form\\ContactFormType::MESSAGE_MAX_LENGTH') }}</small>
-                                        </div>
-                                        {{ form_widget(contactForm.message) }}
-                                        {{ form_errors(contactForm.message) }}
-                                        <div class="form-text text-muted">
-                                            Minimum {{ constant('App\\Form\\ContactFormType::MESSAGE_MIN_LENGTH') }} caractères pour décrire ta demande.
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="btn col-12">
-                                        <i class="bi bi-envelope me-2" aria-hidden="true"></i>Envoyer
-                                    </button>
-                                {{ form_end(contactForm) }}
-                            </div>
-                        </div>
-                    </div>
+                            {% include 'components/_ef_form_validation_summary.html.twig' with { form: contactForm } only %}
 
-                    <div class="col-lg-5 col-md-12 ef-contact__row-adresses">
-                        <div class="card mb-3 p-1 border-0 ef-contact__email">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>E-mail
-                                </h5>
-                                <p class="card-text mb-0">admin@eventfamily.com</p>
-                            </div>
-                        </div>
-                        <div class="card mb-3 p-1 border-0 ef-contact__row-phone">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <i class="bi bi-chat-left me-2" aria-hidden="true"></i>WhatsApp
-                                </h5>
-                                <p class="card-text mb-0">+33 1 23 45 67 89</p>
-                            </div>
+                            {% set contact_form_attr = {
+                                novalidate: 'novalidate',
+                                class: 'ef-contact__form',
+                                'data-turbo': 'false',
+                                'data-ef-contact-form': '1',
+                            } %}
+                            {% if recaptchaSiteKey %}
+                                {% set contact_form_attr = contact_form_attr|merge({
+                                    'data-recaptcha-site-key': recaptchaSiteKey,
+                                    'data-ef-alert-recaptcha': 'ui.contact.alert_recaptcha_unavailable'|trans,
+                                    'data-ef-alert-recaptcha-v3': 'ui.contact.alert_recaptcha_v3_required'|trans,
+                                }) %}
+                            {% endif %}
+                            {{ form_start(contactForm, { attr: contact_form_attr }) }}
+                                <div class="ef-contact__honeypot-wrap" aria-hidden="true">
+                                    {{ form_widget(contactForm.companyWebsite) }}
+                                </div>
+                                {{ form_widget(contactForm._startedAt) }}
+                                {% if contactForm.recaptchaToken is defined %}
+                                    {{ form_widget(contactForm.recaptchaToken, {
+                                        attr: { class: 'js-contact-recaptcha-token', autocomplete: 'off' },
+                                    }) }}
+                                {% endif %}
+                                <div class="mb-3">
+                                    <span class="form-label fw-medium d-block">{{ 'ui.contact.field_name'|trans }}</span>
+                                    <p class="ef-contact__identity mb-0">{{ user.firstName }} {{ user.lastName }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <span class="form-label fw-medium d-block">{{ 'ui.contact.field_email'|trans }}</span>
+                                    <p class="ef-contact__identity mb-0">{{ user.email }}</p>
+                                </div>
+                                <div class="mb-3" data-ef-char-count>
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        {{ form_label(contactForm.message, null, { label_attr: { class: 'form-label fw-medium mb-0' } }) }}
+                                        <small class="js-counter text-muted fw-bold" data-max="{{ constant('App\\Form\\ContactFormType::MESSAGE_MAX_LENGTH') }}">0 / {{ constant('App\\Form\\ContactFormType::MESSAGE_MAX_LENGTH') }}</small>
+                                    </div>
+                                    {{ form_widget(contactForm.message) }}
+                                    {{ form_errors(contactForm.message) }}
+                                    <div class="form-text text-muted">
+                                        {{ 'ui.contact.message_min'|trans({'%min%': constant('App\\Form\\ContactFormType::MESSAGE_MIN_LENGTH')}) }}
+                                    </div>
+                                </div>
+                                {% if recaptchaSiteKey %}
+                                    <p class="ef-contact__recaptcha-legal small text-muted mb-3">
+                                        {{ 'ui.contact.recaptcha_legal'|trans|raw }}
+                                    </p>
+                                {% endif %}
+                                <button type="submit" class="btn ef-contact__submit w-100">
+                                    <i class="bi bi-envelope me-2" aria-hidden="true"></i>{{ 'ui.common.send'|trans }}
+                                </button>
+                            {{ form_end(contactForm) }}
                         </div>
                     </div>
                 </div>
+
+                {% if whatsappEnabled %}
+                <div class="col-lg-5 col-md-12">
+                    <a
+                        href="{{ whatsappChatUrl }}"
+                        class="card h-100 border-0 shadow-sm ef-contact__whatsapp-link text-decoration-none"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="{{ 'ui.contact.whatsapp_link_aria'|trans }}"
+                    >
+                        <div class="card-body">
+                            <h3 class="h5 card-title mb-2">
+                                <i class="bi bi-chat-left me-2" aria-hidden="true"></i>{{ 'ui.contact.channel_whatsapp'|trans }}
+                            </h3>
+                            <p class="card-text mb-0">{{ whatsappDisplayNumber }}</p>
+                            <p class="card-text mb-0 mt-2 small ef-contact__whatsapp-hint">
+                                <i class="bi bi-box-arrow-up-right me-1" aria-hidden="true"></i>{{ 'ui.contact.whatsapp_open_hint'|trans }}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>

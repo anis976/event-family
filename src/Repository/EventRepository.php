@@ -98,7 +98,7 @@ class EventRepository extends ServiceEntityRepository
     /**
      * @param list<int> $memberGroupIds
      */
-    public function countVisibleByFilter(array $memberGroupIds, EventTimeFilter $filter): int
+    public function countVisibleByFilter(array $memberGroupIds, EventTimeFilter $filter, ?string $search = null): int
     {
         $now = ParisClock::now();
         $qb = $this->createQueryBuilder('e')
@@ -106,6 +106,7 @@ class EventRepository extends ServiceEntityRepository
 
         $this->applyVisibleToUserFilter($qb, $memberGroupIds);
         $this->applyTimeFilter($qb, $filter, $now);
+        $this->applySearchFilter($qb, $search);
 
         return (int) $qb->getQuery()->getSingleScalarResult();
     }
@@ -120,6 +121,7 @@ class EventRepository extends ServiceEntityRepository
         EventTimeFilter $filter,
         int $page,
         int $perPage,
+        ?string $search = null,
     ): array {
         $now = ParisClock::now();
         $offset = max(0, ($page - 1) * $perPage);
@@ -131,6 +133,7 @@ class EventRepository extends ServiceEntityRepository
 
         $this->applyVisibleToUserFilter($qb, $memberGroupIds);
         $this->applyTimeFilter($qb, $filter, $now);
+        $this->applySearchFilter($qb, $search);
         $this->applyTimeOrder($qb, $filter);
 
         return $qb
@@ -138,6 +141,21 @@ class EventRepository extends ServiceEntityRepository
             ->setMaxResults($perPage)
             ->getQuery()
             ->getResult();
+    }
+
+    private function applySearchFilter(QueryBuilder $qb, ?string $search, string $alias = 'e'): void
+    {
+        $term = null !== $search ? trim($search) : '';
+        if ('' === $term) {
+            return;
+        }
+
+        $likeTerm = '%'.addcslashes($term, '%_\\').'%';
+        $qb->andWhere(sprintf(
+            '(LOWER(%1$s.title) LIKE LOWER(:eventSearch) OR LOWER(COALESCE(%1$s.location, \'\')) LIKE LOWER(:eventSearch))',
+            $alias,
+        ))
+            ->setParameter('eventSearch', $likeTerm);
     }
 
     /**

@@ -1,7 +1,10 @@
 {% set isUnread = unread_ids[thread.id] is defined %}
 {% set isGroup = thread.isGroupMessage %}
+{% set replyTotal = thread_reply_totals[thread.id]|default(thread.replies|length) %}
+{% set repliesVisible = thread_replies_visible[thread.id]|default(thread.replies|length) %}
+{% set canLoadOlderReplies = not isGroup and replyTotal > repliesVisible %}
 
-<div class="ef-messages__thread">
+<div class="ef-messages__thread" id="thread-{{ thread.id }}">
     <article
         class="ef-messages__item ef-messages__item--received p-3 rounded-4 shadow-sm bg-white{% if isUnread %} ef-message--unread{% endif %}"
         data-id="{{ thread.id }}"
@@ -10,10 +13,10 @@
         <div class="d-flex justify-content-between mb-1">
             <span class="fw-bold ef-messages__author">
                 {% if isGroup %}
-                    {{ thread.author ? thread.author.firstName ~ ' ' ~ thread.author.lastName : 'Utilisateur inconnu' }}
+                    {{ thread.author ? thread.author.firstName ~ ' ' ~ thread.author.lastName : 'ui.messages.thread.unknown_user'|trans }}
                 {% else %}
                     {% set otherUser = (thread.author == app.user) ? thread.recipient : thread.author %}
-                    {{ otherUser ? otherUser.firstName ~ ' ' ~ otherUser.lastName : 'Utilisateur inconnu' }}
+                    {{ otherUser ? otherUser.firstName ~ ' ' ~ otherUser.lastName : 'ui.messages.thread.unknown_user'|trans }}
                 {% endif %}
             </span>
 
@@ -21,26 +24,36 @@
                 {% if isUnread %}
                     <span class="ef-messages__unread-dot rounded-circle bg-danger d-inline-block" aria-hidden="true"></span>
                 {% endif %}
-                <time class="text-muted small">{{ thread.createdAt|date('d/m/Y H:i') }}</time>
+                <time class="text-muted small">{{ thread.createdAt|ef_datetime }}</time>
             </div>
         </div>
 
         <p class="mb-2 small">{{ thread.content }}</p>
 
+        {% if not isGroup and thread.author == app.user and read_receipts[thread.id] is defined %}
+            <p class="mb-2 small text-muted ef-messages__read-receipt" role="status">
+                <i class="bi bi-check2-all me-1" aria-hidden="true"></i>
+                {{ 'ui.messages.thread.read_at'|trans({'%date%': read_receipts[thread.id]|ef_datetime}) }}
+            </p>
+        {% endif %}
+
+        {% if not isGroup and thread.repliesClosedAt %}
+            <div class="alert alert-light border small py-2 mb-2" role="status">
+                {{ 'ui.messages.thread.closed_notice'|trans }}
+            </div>
+        {% endif %}
+
         <div class="d-flex gap-3 align-items-center flex-wrap">
             {% if not thread.platformNotice and not thread.staffAnnouncement %}
-                {% if thread.replies|length < 2 %}
+                {% if thread.repliesClosedAt %}
+                {% else %}
                     <button
                         class="btn btn-sm btn-link p-0 text-decoration-none ef-messages__action"
                         type="button"
                         data-ef-toggle-reply="reply-form-{{ thread.id }}"
                     >
-                        <i class="bi bi-reply"></i> Répondre
+                        <i class="bi bi-reply"></i> {{ 'ui.messages.thread.reply'|trans }}
                     </button>
-                {% else %}
-                    <span class="text-muted small fst-italic">
-                        <i class="bi bi-lock"></i> Max 2 réponses
-                    </span>
                 {% endif %}
             {% endif %}
 
@@ -52,50 +65,84 @@
                     action="{{ path('app_messages_delete', { id: thread.id }) }}"
                     method="POST"
                     data-turbo="false"
-                    data-ef-confirm="Supprimer ce message définitivement ?"
+                    data-ef-confirm="{{ isGroup ? 'ui.messages.thread.confirm_delete_group'|trans : 'ui.messages.thread.confirm_hide_private'|trans }}"
                 >
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ thread.id) }}">
                     <button type="submit" class="btn btn-sm btn-link p-0 text-danger text-decoration-none">
-                        <i class="bi bi-trash"></i> Supprimer
+                        <i class="bi bi-trash"></i> {{ isGroup ? 'ui.messages.thread.delete_group'|trans : 'ui.messages.thread.hide_private'|trans }}
                     </button>
                 </form>
             {% endif %}
 
-            {% if thread.replies|length > 0 %}
+            {% if replyTotal > 0 %}
                 <button
                     class="btn btn-sm btn-link p-0 text-decoration-none text-muted"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#replies-{{ thread.id }}"
+                    aria-expanded="{{ canLoadOlderReplies ? 'false' : 'true' }}"
                 >
                     <i class="bi bi-chat-dots me-1"></i>
-                    Voir {{ thread.replies|length }} réponse(s)
+                    {{ 'ui.messages.thread.view_replies'|trans({'%count%': replyTotal}) }}
                 </button>
             {% endif %}
         </div>
     </article>
 
     <div id="reply-form-{{ thread.id }}" class="ef-messages__reply-form mt-2 d-none">
-        <form action="{{ path('app_messages_reply', { id: thread.id }) }}" method="POST" class="d-flex align-items-center gap-2" data-turbo="false">
+        <form action="{{ path('app_messages_reply', { id: thread.id }) }}" method="POST" class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2" data-turbo="false">
             <input type="hidden" name="_token" value="{{ csrf_token('reply' ~ thread.id) }}">
-            <input type="text" name="content" class="form-control form-control-sm" placeholder="Votre réponse…" required>
-            <button type="submit" class="btn btn-sm btn-primary">Envoyer</button>
+            <input type="text" name="content" class="form-control ef-messages__reply-input" placeholder="{{ 'ui.messages.thread.reply_placeholder'|trans }}" required>
+            <button type="submit" class="btn ef-messages__btn-send flex-shrink-0">{{ 'ui.common.send'|trans }}</button>
         </form>
     </div>
 
-    <div class="collapse ef-messages__replies ms-4 ms-md-5 mt-2" id="replies-{{ thread.id }}">
-        <div class="d-flex flex-column gap-3 pt-2">
-            {% for reply in thread.replies %}
-                {% set replyUnread = unread_ids[reply.id] is defined %}
-                <article
-                    class="ef-messages__item{% if reply.author == app.user %} ef-messages__item--sent border{% else %} ef-messages__item--received shadow-sm{% endif %} p-3 rounded-4{% if replyUnread %} ef-message--unread{% endif %}"
-                    data-id="{{ reply.id }}"
-                    data-group="{{ isGroup ? '1' : '0' }}"
-                >
-                    <span class="fw-bold d-block mb-1">{{ reply.author.firstName }} {{ reply.author.lastName }}</span>
-                    <p class="mb-0 small">{{ reply.content }}</p>
-                </article>
-            {% endfor %}
+    {% if replyTotal > 0 %}
+        <div class="collapse{% if not canLoadOlderReplies %} show{% endif %} ef-messages__replies ms-4 ms-md-5 mt-2" id="replies-{{ thread.id }}">
+            {% if canLoadOlderReplies %}
+                <div class="text-center mb-2">
+                    {% set next_replies = min(repliesVisible + private_replies_load_more, private_replies_max_visible, replyTotal) %}
+                    {% set query_params = app.request.query.all %}
+                    {% set replies_param = query_params.replies|default({}) %}
+                    {% if replies_param is not iterable %}
+                        {% set replies_param = {} %}
+                    {% endif %}
+                    {% set load_params = query_params|merge({replies: replies_param|merge({ (thread.id): next_replies })}) %}
+                    <a
+                        href="{{ path('app_messages_private', load_params) }}#thread-{{ thread.id }}"
+                        class="btn btn-outline-secondary btn-sm rounded-pill px-3 ef-messages__load-older-replies"
+                        data-turbo-action="advance"
+                    >
+                        <i class="bi bi-arrow-up-circle me-1" aria-hidden="true"></i>
+                        {{ 'ui.messages.thread.load_older_replies'|trans({
+                            '%visible%': repliesVisible,
+                            '%total%': replyTotal,
+                        }) }}
+                    </a>
+                </div>
+            {% endif %}
+
+            <div class="d-flex flex-column gap-3 pt-2">
+                {% for reply in thread.replies %}
+                    {% set replyUnread = unread_ids[reply.id] is defined %}
+                    <article
+                        class="ef-messages__item{% if reply.author == app.user %} ef-messages__item--sent border{% else %} ef-messages__item--received shadow-sm{% endif %} p-3 rounded-4{% if replyUnread %} ef-message--unread{% endif %}"
+                        data-id="{{ reply.id }}"
+                    >
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-bold small">{{ reply.author ? reply.author.firstName ~ ' ' ~ reply.author.lastName : 'ui.messages.thread.unknown_user'|trans }}</span>
+                            <time class="text-muted small">{{ reply.createdAt|ef_datetime }}</time>
+                        </div>
+                        <p class="mb-0 small">{{ reply.content }}</p>
+                        {% if not isGroup and reply.author == app.user and read_receipts[reply.id] is defined %}
+                            <p class="mb-0 mt-1 small text-muted ef-messages__read-receipt" role="status">
+                                <i class="bi bi-check2-all me-1" aria-hidden="true"></i>
+                                {{ 'ui.messages.thread.read_at'|trans({'%date%': read_receipts[reply.id]|ef_datetime}) }}
+                            </p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 </div>

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="{{ ef_email_locale|default('fr') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block email_title %}{% endblock %}</title>
+</head>
+<body style="font-family: sans-serif; line-height: 1.6; color: #333;">
+{% block email_body %}{% endblock %}
+</body>
+</html>

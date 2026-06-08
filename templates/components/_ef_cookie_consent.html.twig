@@ -1,0 +1,169 @@
+{# data-turbo-permanent : le bandeau et la modale survivent aux navigations Turbo #}
+<div
+    id="ef-consent-root"
+    data-turbo-permanent
+    data-ef-consent-cookie="{{ ef_consent_cookie_name }}"
+    data-ef-consent-version="{{ ef_consent_version }}"
+    data-ef-consent-ttl="{{ ef_consent_ttl }}"
+    data-ef-consent-has-choice="{{ ef_consent.hasChoice ? '1' : '0' }}"
+    data-ef-consent-marketing="{{ ef_consent.marketing ? '1' : '0' }}"
+    data-ef-consent-analytics="{{ ef_consent.analytics ? '1' : '0' }}"
+    {% if ef_google_analytics_id %}data-ef-ga-id="{{ ef_google_analytics_id }}"{% endif %}
+>
+    <div
+        id="ef-consent-banner"
+        class="ef-consent-banner{% if ef_consent.hasChoice %} ef-consent-banner--hidden{% endif %}"
+        style="position:absolute;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:1;width:calc(100% - 2rem);max-width:44rem;box-sizing:border-box;padding:1.15rem 1.35rem;border-radius:1rem;color:#f4f4f5;background:rgba(12,12,14,0.82);border:1px solid rgba(255,255,255,0.1);box-shadow:0 18px 48px rgba(0,0,0,0.28)"
+        role="dialog"
+        aria-labelledby="ef-consent-banner-title"
+        aria-describedby="ef-consent-banner-desc"
+        {% if ef_consent.hasChoice %}hidden{% endif %}
+    >
+        <div class="ef-consent-banner__inner">
+            <div class="ef-consent-banner__head">
+                <span class="ef-consent-banner__icon" aria-hidden="true">
+                    <i class="bi bi-shield-lock"></i>
+                </span>
+                <div class="ef-consent-banner__copy">
+                    <p id="ef-consent-banner-title" class="ef-consent-banner__title">{{ 'cookie.banner.title'|trans }}</p>
+                    <p id="ef-consent-banner-desc" class="ef-consent-banner__text">
+                        {{ 'cookie.banner.description'|trans }}
+                        <a href="{{ path('app_cgu') }}#privacy" class="ef-consent-banner__link">{{ 'cookie.banner.privacy_link'|trans }}</a>
+                    </p>
+                </div>
+            </div>
+            <div class="ef-consent-banner__actions" role="group" aria-label="{{ 'cookie.banner.actions_aria'|trans }}">
+                <button type="button" class="btn ef-consent-banner__btn ef-consent-banner__btn-reject" data-ef-consent-action="reject-all">
+                    {{ 'cookie.banner.reject_all'|trans }}
+                </button>
+                <button type="button" class="btn ef-consent-banner__btn ef-consent-banner__btn-customize" data-ef-consent-action="open-preferences">
+                    {{ 'cookie.banner.customize'|trans }}
+                </button>
+                <button type="button" class="btn ef-consent-banner__btn ef-consent-banner__btn-accept" data-ef-consent-action="accept-all">
+                    {{ 'cookie.banner.accept_all'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# backdrop static : évite fermeture accidentelle ; CNIL OK car refus/enregistrement explicites et bandeau non bloquant #}
+    <div
+        class="modal fade ef-consent-preferences-modal"
+        id="ef-consent-preferences-modal"
+        tabindex="-1"
+        aria-labelledby="ef-consent-preferences-title"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+    >
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex align-items-center gap-3 flex-grow-1 pe-2">
+                        <span class="modal-header__icon" aria-hidden="true">
+                            <i class="bi bi-sliders2"></i>
+                        </span>
+                        <div>
+                            <h5 class="modal-title fw-bold mb-0" id="ef-consent-preferences-title">{{ 'cookie.preferences.title'|trans }}</h5>
+                            <p class="small text-muted mb-0 mt-1">{{ 'cookie.preferences.subtitle'|trans }}</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="ef-consent-intro">{{ 'cookie.preferences.intro'|trans }}</p>
+
+                    <article class="ef-consent-category ef-consent-category--locked">
+                        <span class="ef-consent-category__badge ef-consent-category__badge--required">{{ 'cookie.category.necessary.badge'|trans }}</span>
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <h6 class="ef-consent-category__title">{{ 'cookie.category.necessary.title'|trans }}</h6>
+                                <p class="ef-consent-category__desc">{{ 'cookie.category.necessary.description'|trans }}</p>
+                            </div>
+                            <div class="form-check form-switch m-0 flex-shrink-0">
+                                <input class="form-check-input" type="checkbox" id="ef-consent-necessary" checked disabled aria-label="{{ 'cookie.category.necessary.title'|trans }}">
+                            </div>
+                        </div>
+                        <details class="ef-consent-details">
+                            <summary>{{ 'cookie.preferences.essential_details'|trans }}</summary>
+                            <ul class="ef-consent-essential-list">
+                                {% for item in ef_consent_essential_catalog %}
+                                    <li>
+                                        <strong>{{ item.name_key|trans }}</strong>
+                                        <span class="text-muted"> — {{ item.purpose_key|trans }}</span>
+                                        <span class="d-block small text-muted">{{ item.duration_key|trans }}</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </details>
+                    </article>
+
+                    <article class="ef-consent-category ef-consent-category--optional">
+                        <span class="ef-consent-category__badge ef-consent-category__badge--optional">{{ 'cookie.category.analytics.badge'|trans }}</span>
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <h6 class="ef-consent-category__title">{{ 'cookie.category.analytics.title'|trans }}</h6>
+                                <p class="ef-consent-category__desc mb-0">{{ 'cookie.category.analytics.description'|trans }}</p>
+                            </div>
+                            <div class="form-check form-switch m-0 flex-shrink-0">
+                                <input class="form-check-input" type="checkbox" id="ef-consent-analytics" value="1"{% if ef_consent.analytics %} checked{% endif %} aria-describedby="ef-consent-analytics-hint">
+                            </div>
+                        </div>
+                        <p id="ef-consent-analytics-hint" class="ef-consent-hint mb-0">{{ 'cookie.category.analytics.hint'|trans }}</p>
+                        {% if ef_consent_analytics_catalog|length > 0 %}
+                            <details class="ef-consent-details mt-2">
+                                <summary>{{ 'cookie.preferences.analytics_details'|trans }}</summary>
+                                <ul class="ef-consent-essential-list">
+                                    {% for item in ef_consent_analytics_catalog %}
+                                        <li>
+                                            <strong>{{ item.name_key|trans }}</strong>
+                                            <span class="text-muted"> — {{ item.purpose_key|trans }}</span>
+                                            <span class="d-block small text-muted">{{ item.duration_key|trans }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        {% endif %}
+                    </article>
+
+                    <article class="ef-consent-category ef-consent-category--optional">
+                        <span class="ef-consent-category__badge ef-consent-category__badge--optional">{{ 'cookie.category.marketing.badge'|trans }}</span>
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <h6 class="ef-consent-category__title">{{ 'cookie.category.marketing.title'|trans }}</h6>
+                                <p class="ef-consent-category__desc mb-0">{{ 'cookie.category.marketing.description'|trans }}</p>
+                            </div>
+                            <div class="form-check form-switch m-0 flex-shrink-0">
+                                <input class="form-check-input" type="checkbox" id="ef-consent-marketing" value="1"{% if ef_consent.marketing %} checked{% endif %} aria-describedby="ef-consent-marketing-hint">
+                            </div>
+                        </div>
+                        <p id="ef-consent-marketing-hint" class="ef-consent-hint mb-0">{{ 'cookie.category.marketing.hint'|trans }}</p>
+                    </article>
+                </div>
+                <div class="modal-footer flex-wrap justify-content-between">
+                    <button type="button" class="btn ef-groups-form__btn-cancel order-2 order-sm-1" data-bs-dismiss="modal">
+                        {{ 'ui.common.close'|trans }}
+                    </button>
+                    <div class="d-flex flex-wrap gap-2 order-1 order-sm-2 ms-sm-auto">
+                        <button type="button" class="btn ef-consent-modal__btn-reject" data-ef-consent-action="reject-all">
+                            {{ 'cookie.preferences.reject_all'|trans }}
+                        </button>
+                        <button type="button" class="btn ef-consent-modal__btn-save" data-ef-consent-action="save-preferences">
+                            {{ 'cookie.preferences.save'|trans }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button
+        type="button"
+        class="btn btn-sm ef-consent-fab{% if not ef_consent.hasChoice %} d-none{% endif %}"
+        data-ef-consent-manage
+        aria-label="{{ 'ui.footer.manage_cookies'|trans }}"
+    >
+        <i class="bi bi-sliders" aria-hidden="true"></i>
+        <span class="ef-consent-fab__label">{{ 'ui.footer.manage_cookies'|trans }}</span>
+    </button>
+</div>

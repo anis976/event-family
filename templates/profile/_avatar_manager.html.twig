@@ -1,5 +1,13 @@
-<div class="ef-profile-avatar-manager mb-4">
-    <label class="form-label small fw-bold text-uppercase opacity-50 mb-2">Photo de profil <span class="text-muted fw-normal">(optionnelle)</span></label>
+<div
+    class="ef-profile-avatar-manager mb-4"
+    data-ef-alert-invalid-format="{{ 'ui.profile.avatar.alert_invalid_format'|trans|e('html_attr') }}"
+    data-ef-alert-max-size="{{ 'ui.profile.avatar.alert_max_size'|trans|e('html_attr') }}"
+    data-ef-alert-cropper-unavailable="{{ 'ui.profile.avatar.alert_cropper_unavailable'|trans|e('html_attr') }}"
+    data-ef-alert-upload-failed="{{ 'ui.profile.avatar.alert_upload_failed'|trans|e('html_attr') }}"
+>
+    <h2 class="h6 small fw-bold text-uppercase opacity-50 mb-2">
+        {{ 'ui.profile.avatar.label'|trans }} <span class="text-muted fw-normal">{{ 'ui.profile.avatar.optional'|trans }}</span>
+    </h2>
 
     <div class="d-flex flex-column flex-sm-row align-items-start gap-3 p-3 border rounded-3 bg-light-subtle">
         <div class="ef-profile-avatar-manager__preview-wrap">
@@ -7,7 +15,7 @@
                 <div class="ef-profile-avatar-wrap ef-profile-avatar-wrap--preview">
                     <img
                         src="{{ path('app_profile_avatar_show', { id: user.id, v: user.updatedAt.timestamp }) }}"
-                        alt="Ta photo de profil"
+                        alt="{{ 'ui.profile.avatar.alt_self'|trans }}"
                         class="ef-profile-avatar"
                     >
                 </div>
@@ -20,12 +28,12 @@
 
         <div class="flex-grow-1">
             <p class="small text-muted mb-3">
-                JPG, PNG ou WebP — max. 4 Mo. Recadre la zone utile (affichée en rond).
+                {{ 'ui.profile.avatar.hint'|trans }}
                 {% if user.hasAvatar %}
                     {% if user.avatarVisibility.value == 'private' %}
-                        <span class="d-block mt-1">Visibilité actuelle : <strong>privée</strong> (membres de tes groupes uniquement).</span>
+                        <span class="d-block mt-1">{{ 'ui.profile.avatar.visibility_private'|trans }}</span>
                     {% else %}
-                        <span class="d-block mt-1">Visibilité actuelle : <strong>publique</strong>.</span>
+                        <span class="d-block mt-1">{{ 'ui.profile.avatar.visibility_public'|trans }}</span>
                     {% endif %}
                 {% endif %}
             </p>
@@ -33,15 +41,15 @@
             <div class="d-flex flex-wrap gap-2">
                 <button type="button" class="btn btn-sm btn-outline-secondary" id="ef-avatar-choose-btn">
                     <i class="bi bi-camera me-1" aria-hidden="true"></i>
-                    {{ user.hasAvatar ? 'Changer la photo' : 'Ajouter une photo' }}
+                    {{ user.hasAvatar ? 'ui.profile.avatar.change'|trans : 'ui.profile.avatar.add'|trans }}
                 </button>
 
                 {% if user.hasAvatar %}
                     <form action="{{ path('app_profile_avatar_delete') }}" method="post" data-turbo="false" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('profile_avatar_delete') }}">
-                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Supprimer ta photo de profil ?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('{{ 'ui.profile.avatar.delete_confirm'|trans|e('js') }}');">
                             <i class="bi bi-trash me-1" aria-hidden="true"></i>
-                            Supprimer
+                            {{ 'ui.common.delete'|trans }}
                         </button>
                     </form>
                 {% endif %}
@@ -77,35 +85,35 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ef-avatar-crop-modal-label">Recadrer ta photo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                <h5 class="modal-title" id="ef-avatar-crop-modal-label">{{ 'ui.profile.avatar.crop_title'|trans }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
             </div>
             <div class="modal-body">
                 <div class="ef-profile-avatar-manager__crop-area mb-3">
-                    <img id="ef-avatar-crop-image" src="" alt="" class="w-100">
+                    <img id="ef-avatar-crop-image" src="" alt="" role="presentation" class="w-100">
                 </div>
 
                 <fieldset class="border-0 p-0 m-0">
-                    <legend class="form-label fw-medium fs-6 mb-2">Qui peut voir cette photo ?</legend>
+                    <legend class="form-label fw-medium fs-6 mb-2">{{ 'ui.profile.avatar.visibility_question'|trans }}</legend>
                     <div class="form-check mb-2">
                         <input class="form-check-input" type="radio" name="ef_avatar_visibility_choice" id="ef-avatar-vis-public" value="public">
                         <label class="form-check-label" for="ef-avatar-vis-public">
-                            <strong>Publique</strong> — visible par tous les membres du site
+                            {{ 'ui.profile.avatar.visibility_public_label'|trans }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="ef_avatar_visibility_choice" id="ef-avatar-vis-private" value="private" checked>
                         <label class="form-check-label" for="ef-avatar-vis-private">
-                            <strong>Privée</strong> — visible uniquement par les membres de ton groupe (les autres voient l'icône par défaut)
+                            {{ 'ui.profile.avatar.visibility_private_label'|trans }}
                         </label>
                     </div>
                 </fieldset>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
                 <button type="button" class="btn btn-save-profile" id="ef-avatar-crop-save">
                     <i class="bi bi-check-lg me-1" aria-hidden="true"></i>
-                    Enregistrer
+                    {{ 'ui.common.save'|trans }}
                 </button>
             </div>
         </div>

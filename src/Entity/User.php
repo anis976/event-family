@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Contract\EfAdminLabelInterface;
 use App\Entity\Trait\TimestampableParisTrait;
 use App\Enum\AvatarVisibility;
 use App\Repository\UserRepository;
@@ -13,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Validator\Constraints\UniqueUserFullName;
 use App\Validator\Constraints\UniqueUserPseudo;
+use App\Entity\Trait\AdminLabelTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,17 +26,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'uniq_ef_users_full_name', columns: ['first_name', 'last_name'])]
 #[ORM\UniqueConstraint(name: 'uniq_ef_users_verification_token', columns: ['verification_token_hash'])]
 #[ORM\HasLifecycleCallbacks]
-#[UniqueEntity(fields: ['email'], message: 'Cette adresse e-mail est déjà utilisée.', groups: ['Registration'])]
-#[UniqueEntity(fields: ['firstName', 'lastName'], message: 'Ce prénom et ce nom sont déjà associés à un compte.', groups: ['Registration'])]
-#[UniqueEntity(fields: ['pseudo'], message: 'Ce pseudo est déjà utilisé par un autre compte.', groups: ['Registration'], ignoreNull: true)]
-#[UniqueUserFullName(groups: ['Profile'])]
-#[UniqueUserPseudo(groups: ['Profile'])]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+#[UniqueEntity(fields: ['email'], message: 'user.email.unique', groups: ['Registration', 'Admin', 'Default'])]
+#[UniqueEntity(fields: ['firstName', 'lastName'], message: 'user.full_name.unique', groups: ['Registration', 'Admin', 'Default'])]
+#[UniqueEntity(fields: ['pseudo'], message: 'user.pseudo.unique', groups: ['Registration', 'Profile', 'Admin', 'Default'], ignoreNull: true)]
+#[UniqueUserFullName(groups: ['Profile', 'Admin', 'Default'])]
+#[UniqueUserPseudo(groups: ['Profile', 'Admin', 'Default'])]
+class User implements UserInterface, PasswordAuthenticatedUserInterface, EfAdminLabelInterface
 {
     use TimestampableParisTrait;
+    use AdminLabelTrait;
 
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_MODERATOR = 'ROLE_MODERATOR';
+    public const ROLE_SUPER_MODERATOR = 'ROLE_SUPER_MODERATOR';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
     #[ORM\Id]
@@ -48,13 +52,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $email = '';
 
     /**
-     * @var list<string> Rôles site (ROLE_USER, ROLE_MODERATOR, ROLE_ADMIN)
+     * @var list<string> Rôles site (ROLE_USER, ROLE_MODERATOR, ROLE_SUPER_MODERATOR, ROLE_ADMIN)
      */
     #[ORM\Column]
     private array $roles = [];
 
     #[ORM\Column]
     private string $password = '';
+
+    #[ORM\Column(length: 32, nullable: true)]
+    private ?string $googleId = null;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $oauthRegistrationComplete = true;
 
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $pseudo = null;
@@ -140,6 +150,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(options: ['default' => false])]
     private bool $isBanned = false;
+
+    #[ORM\Column(options: ['default' => true])]
+    private bool $notifyPrivateMessageEmail = true;
 
     /**
      * @var Collection<int, Group>
@@ -271,6 +284,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(?string $googleId): static
+    {
+        $this->googleId = $googleId;
+
+        return $this;
+    }
+
+    public function hasGoogleAccount(): bool
+    {
+        return null !== $this->googleId && '' !== $this->googleId;
+    }
+
+    public function isOAuthRegistrationComplete(): bool
+    {
+        return $this->oauthRegistrationComplete;
+    }
+
+    public function setOAuthRegistrationComplete(bool $oauthRegistrationComplete): static
+    {
+        $this->oauthRegistrationComplete = $oauthRegistrationComplete;
 
         return $this;
     }
@@ -658,6 +700,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isNotifyPrivateMessageEmail(): bool
+    {
+        return $this->notifyPrivateMessageEmail;
+    }
+
+    public function setNotifyPrivateMessageEmail(bool $notifyPrivateMessageEmail): static
+    {
+        $this->notifyPrivateMessageEmail = $notifyPrivateMessageEmail;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Group>
      */
@@ -728,5 +782,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getReceivedMessages(): Collection
     {
         return $this->receivedMessages;
+    }
+
+    public function getAdminLabel(): string
+    {
+        return sprintf('%s <%s>', $this->getDisplayName(), $this->email);
     }
 }

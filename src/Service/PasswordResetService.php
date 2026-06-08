@@ -32,6 +32,7 @@ final class PasswordResetService
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TransactionalEmailHelper $emailHelper,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
     ) {
@@ -75,16 +76,19 @@ final class PasswordResetService
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
 
-        $emailMessage = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject('EventFamily — Réinitialisation de ton mot de passe')
-            ->htmlTemplate('emails/password_reset.html.twig')
-            ->context([
+        $emailMessage = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->emailHelper->trans('email.password_reset.subject', [], $user))
+                ->htmlTemplate('emails/password_reset.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'resetUrl' => $resetUrl,
                 'expiresHours' => self::TOKEN_TTL_HOURS,
-            ]);
+            ],
+        );
 
         $this->mailer->send($emailMessage);
     }
@@ -145,15 +149,18 @@ final class PasswordResetService
      */
     private function sendPasswordChangedNotification(User $user): void
     {
-        $emailMessage = (new TemplatedEmail())
-            ->from(Address::create($this->mailerFrom))
-            ->to($user->getEmail())
-            ->subject('EventFamily — Ton mot de passe a été modifié')
-            ->htmlTemplate('emails/password_reset_done.html.twig')
-            ->context([
+        $emailMessage = $this->emailHelper->prepare(
+            (new TemplatedEmail())
+                ->from(Address::create($this->mailerFrom))
+                ->to($user->getEmail())
+                ->subject($this->emailHelper->trans('email.password_reset_done.subject', [], $user))
+                ->htmlTemplate('emails/password_reset_done.html.twig'),
+            $user,
+            context: [
                 'user' => $user,
                 'changedAt' => ParisClock::now(),
-            ]);
+            ],
+        );
 
         $this->mailer->send($emailMessage);
     }

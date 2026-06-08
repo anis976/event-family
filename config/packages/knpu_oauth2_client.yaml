@@ -1,0 +1,10 @@
+knpu_oauth2_client:
+    clients:
+        google:
+            type: google
+            client_id: '%env(GOOGLE_OAUTH_CLIENT_ID)%'
+            client_secret: '%env(GOOGLE_OAUTH_CLIENT_SECRET)%'
+            # URL absolue (pas un nom de route) — voir GOOGLE_OAUTH_REDIRECT_URI dans .env
+            redirect_route: '%env(ef_google_oauth_redirect:GOOGLE_OAUTH_REDIRECT_URI)%'
+            redirect_params: {}
+            use_state: true

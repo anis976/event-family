@@ -2,7 +2,7 @@
 <div class="d-flex align-items-center mb-3 ps-1 ef-profile__header">
     {% include 'profile/_avatar_portrait.html.twig' with { profileUser: profileUser|default(null) } %}
     <div>
-        <h2 class="fw-bold h4 mb-0 text-body">{{ title }}</h2>
+        <h1 class="fw-bold h4 mb-0 text-body">{{ title }}</h1>
         {% if subtitle is defined and subtitle %}
             <p class="text-muted small mb-0">{{ subtitle }}</p>
         {% endif %}

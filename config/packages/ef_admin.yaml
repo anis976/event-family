@@ -1,0 +1,13 @@
+parameters:
+    env(EF_ADMIN_PATH): 'ef-console-8f3a2c91'
+    env(EF_ADMIN_IDLE_TIMEOUT): '900'
+    env(EF_ADMIN_IDLE_WARNING): '60'
+    ef.admin.path: '/%env(string:EF_ADMIN_PATH)%'
+    ef.admin.idle_timeout: '%env(int:EF_ADMIN_IDLE_TIMEOUT)%'
+    ef.admin.idle_warning: '%env(int:EF_ADMIN_IDLE_WARNING)%'
+
+twig:
+    globals:
+        ef_admin_path: '%ef.admin.path%'
+        ef_admin_idle_timeout: '%ef.admin.idle_timeout%'
+        ef_admin_idle_warning: '%ef.admin.idle_warning%'

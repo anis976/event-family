@@ -1,0 +1,6 @@
+parameters:
+    ef.consent.cookie_name: ef_consent
+    # Incrémenter si la structure du cookie ef_consent change (réaffichage du bandeau)
+    ef.consent.version: 2
+    # 6 mois (recommandation CNIL pour le stockage du choix)
+    ef.consent.ttl_seconds: 15552000

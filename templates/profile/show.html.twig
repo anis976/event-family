@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Profil de {{ profileUser.firstName|capitalize }}{% endblock %}
+{% block title %}{{ 'ui.profile.show.page_title'|trans({'%name%': profileUser.firstName|capitalize}) }}{% endblock %}
 
-{% block page_title %}Profil membre{% endblock %}
+{% block page_title %}{{ 'ui.profile.show.page_heading'|trans }}{% endblock %}
 
 {% block body %}
     <section class="ef-profile-section py-3 py-lg-5">
@@ -10,8 +10,8 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-md-10 col-lg-8">
                     {% include 'profile/_header.html.twig' with {
-                        title: 'Profil de membre',
-                        subtitle: 'Consultation des informations du cercle',
+                        title: 'ui.profile.show.title'|trans,
+                        subtitle: 'ui.profile.show.subtitle'|trans,
                         profileUser: profileUser,
                     } only %}
 
@@ -19,18 +19,18 @@
                         <div class="card-body p-3 p-md-4">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase opacity-50">Nom d'utilisateur</label>
+                                    <span class="d-block form-label small fw-bold text-uppercase opacity-50">{{ 'ui.profile.username'|trans }}</span>
                                     <div class="form-control-plaintext ps-2 fw-medium">
                                         {% if profileUser.pseudo %}
                                             @{{ profileUser.pseudo }}
                                         {% else %}
-                                            <span class="text-muted">Non renseigné</span>
+                                            <span class="text-muted">{{ 'ui.profile.show.not_set'|trans }}</span>
                                         {% endif %}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase opacity-50">Prénom &amp; nom</label>
+                                    <span class="d-block form-label small fw-bold text-uppercase opacity-50">{{ 'ui.profile.show.full_name'|trans }}</span>
                                     <div class="form-control-plaintext ps-2 fw-medium">
                                         {{ profileUser.firstName|capitalize }} {{ profileUser.lastName|upper }}
                                     </div>
@@ -39,14 +39,14 @@
                                 <div class="col-12"><hr class="my-2 opacity-50"></div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase opacity-50">Membre depuis</label>
+                                    <span class="d-block form-label small fw-bold text-uppercase opacity-50">{{ 'ui.profile.show.member_since'|trans }}</span>
                                     <div class="form-control-plaintext ps-2 fw-medium">
-                                        {{ profileUser.createdAt|date('d/m/Y') }}
+                                        {{ profileUser.createdAt|ef_date }}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label class="form-label small fw-bold text-uppercase opacity-50">Nom affiché</label>
+                                    <span class="d-block form-label small fw-bold text-uppercase opacity-50">{{ 'ui.profile.show.display_name'|trans }}</span>
                                     <div class="form-control-plaintext ps-2 fw-medium">{{ profileUser.displayName }}</div>
                                 </div>
 
@@ -64,7 +64,7 @@
                                                     aria-controls="form-msg-profile"
                                                 >
                                                     <i class="bi bi-chat-dots me-2" aria-hidden="true"></i>
-                                                    Envoyer un message privé
+                                                    {{ 'ui.profile.show.send_private'|trans }}
                                                 </button>
                                             </div>
 
@@ -78,12 +78,19 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token('send_direct_message') }}">
                                                     <input type="hidden" name="recipient_id" value="{{ profileUser.id }}">
 
+                                                    {% if ef_is_site_staff %}
+                                                        {% include 'messages/_direct_message_send_mode.html.twig' with {
+                                                            id_prefix: 'profile-msg-' ~ profileUser.id,
+                                                        } only %}
+                                                    {% endif %}
+
                                                     <textarea
+                                                        id="profile-msg-content"
                                                         name="content"
                                                         class="form-control ef-input rounded-4 mb-3"
                                                         rows="3"
-                                                        style="resize: none;"
-                                                        placeholder="Écris ton message privé à {{ profileUser.firstName|capitalize }}…"
+                                                        placeholder="{{ 'ui.profile.show.message_placeholder'|trans({'%name%': profileUser.firstName|capitalize}) }}"
+                                                        aria-label="{{ 'ui.profile.show.message_label'|trans({'%name%': profileUser.firstName|capitalize}) }}"
                                                         required
                                                     ></textarea>
 
@@ -95,10 +102,10 @@
                                                             data-bs-target="#form-msg-profile"
                                                             data-ef-msg-cancel
                                                         >
-                                                            Annuler
+                                                            {{ 'ui.common.cancel'|trans }}
                                                         </button>
                                                         <button type="submit" class="btn btn-sm btn-save-profile">
-                                                            Envoyer maintenant
+                                                            {{ 'ui.profile.show.send_now'|trans }}
                                                         </button>
                                                     </div>
                                                 </form>
@@ -106,7 +113,7 @@
                                         {% else %}
                                             <div class="alert alert-warning small mb-0" role="alert">
                                                 <i class="bi bi-slash-circle me-1" aria-hidden="true"></i>
-                                                {{ messageDenialReason }}
+                                                {{ messageDenialReason|trans }}
                                             </div>
                                         {% endif %}
                                     </div>
@@ -118,11 +125,4 @@
             </div>
         </div>
     </section>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {% if canSendMessage %}
-        <script src="{{ asset('js/ef-profile-message.js') }}" defer></script>
-    {% endif %}
 {% endblock %}

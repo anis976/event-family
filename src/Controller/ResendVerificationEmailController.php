@@ -36,7 +36,7 @@ final class ResendVerificationEmailController extends AbstractAppController
         if (!$csrfTokenManager->isTokenValid(
             new CsrfToken(self::CSRF_TOKEN_ID, (string) $request->request->get('_token')),
         )) {
-            $this->addErrorFlash('Session expirée. Réessaie.');
+            $this->addErrorFlash('flash.session_expired');
 
             return $this->redirectToRoute('app_login');
         }
@@ -53,8 +53,8 @@ final class ResendVerificationEmailController extends AbstractAppController
         $email = mb_strtolower(trim((string) $request->request->get('email', '')));
 
         $violations = $validator->validate($email, [
-            new Assert\NotBlank(message: 'L\'adresse e-mail est obligatoire.'),
-            new Assert\Email(message: 'Cette adresse e-mail n\'est pas valide.'),
+            new Assert\NotBlank(message: 'ui.auth.form.validation.email_required'),
+            new Assert\Email(message: 'ui.auth.form.validation.email_invalid'),
         ]);
 
         if (count($violations) > 0) {
@@ -70,9 +70,7 @@ final class ResendVerificationEmailController extends AbstractAppController
                 $emailVerification->sendVerificationEmail($user);
                 $entityManager->flush();
             } catch (TransportExceptionInterface) {
-                $this->addErrorFlash(
-                    'Impossible d\'envoyer l\'e-mail pour le moment. Vérifie MAILER_DSN ou réessaie plus tard.',
-                );
+                $this->addErrorFlash('flash.verification.email_send_failed');
 
                 return $this->redirectToRoute('app_login', ['email' => $email]);
             }

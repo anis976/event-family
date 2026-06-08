@@ -1,0 +1,8 @@
+"Invalid credentials.": "Incorrect email address or password."
+"Invalid CSRF token.": "Session expired. Reload the sign-in page and try again."
+"Jeton CSRF invalide.": "Session expired. Reload the sign-in page and try again."
+"Ton compte n'est pas encore activé. Ouvre le lien reçu par e-mail pour confirmer ton adresse.": "Your account is not activated yet. Open the link received by email to confirm your address."
+"User account is disabled.": "This account is disabled."
+"User account is locked.": "This account is locked."
+"Too many failed login attempts, please try again later.": "Too many sign-in attempts. Try again later."
+"Accès refusé. Ton compte a été suspendu par la modération EventFamily. Consulte l'e-mail reçu pour le motif et les démarches de recours.": "Access denied. Your EventFamily account was suspended by moderation. Check the email you received for the reason and how to appeal."

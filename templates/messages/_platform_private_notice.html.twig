@@ -1,10 +1,11 @@
 {% set variant = thread.platformNoticeVariant.value|default('eventfamily') %}
 {% set isSystem = variant == 'system' %}
+{% set isModerator = variant == 'moderator' %}
 
-<div class="ef-messages__thread ef-messages__thread--platform{% if isSystem %} ef-messages__thread--system{% else %} ef-messages__thread--staff{% endif %}">
+<div class="ef-messages__thread ef-messages__thread--platform{% if isSystem %} ef-messages__thread--system{% elseif isModerator %} ef-messages__thread--moderator{% else %} ef-messages__thread--staff{% endif %}">
     <article
         class="{% if isSystem %}ef-messages__system-notice{% else %}ef-messages__staff-announcement{% endif %}{% if isUnread|default(false) %} ef-message--unread{% endif %}"
-        aria-label="Message officiel EventFamily"
+        aria-label="{{ 'ui.messages.platform.notice_aria'|trans }}"
         data-id="{{ thread.id }}"
         data-group="0"
     >
@@ -12,10 +13,13 @@
             <span class="{% if isSystem %}ef-messages__system-notice-author{% else %}ef-messages__staff-announcement-author{% endif %}">
                 {% if isSystem %}
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    System
+                    {{ 'admin.crud.message.notice_variant.system'|trans }}
+                {% elseif isModerator %}
+                    <i class="bi bi-shield" aria-hidden="true"></i>
+                    {{ 'admin.crud.message.notice_variant.moderator'|trans }}
                 {% else %}
                     <i class="bi bi-megaphone" aria-hidden="true"></i>
-                    EventFamily
+                    {{ 'admin.crud.message.notice_variant.eventfamily'|trans }}
                 {% endif %}
             </span>
             <div class="d-flex align-items-center gap-2">
@@ -23,9 +27,9 @@
                     <span class="ef-messages__unread-dot rounded-circle bg-danger d-inline-block" aria-hidden="true"></span>
                 {% endif %}
                 <span class="{% if isSystem %}ef-messages__system-notice-badge{% else %}ef-messages__staff-announcement-badge{% endif %}">
-                    {{ isSystem ? 'Info' : 'Annonce' }}
+                    {{ isSystem ? 'ui.messages.system.badge'|trans : (isModerator ? 'ui.messages.staff.badge_moderator'|trans : 'ui.messages.staff.badge'|trans) }}
                 </span>
-                <time class="{% if isSystem %}text-muted small{% else %}ef-messages__staff-announcement-date{% endif %}">{{ thread.createdAt|date('d/m/Y H:i') }}</time>
+                <time class="{% if isSystem %}text-muted small{% else %}ef-messages__staff-announcement-date{% endif %}">{{ thread.createdAt|ef_datetime }}</time>
             </div>
         </div>
 

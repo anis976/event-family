@@ -1,39 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Messages privés{% endblock %}
-{% block page_title %}Messages privés{% endblock %}
+{% block title %}{{ 'ui.messages.private.page_title'|trans }}{% endblock %}
+{% block page_title %}{{ 'ui.messages.private.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="ef-messages container-fluid py-3 py-md-4" data-ef-read-url-base="{{ path('app_messages_read', { id: 0 })|slice(0, -1) }}">
     <div class="mb-4">
         <a href="{{ path('app_messages') }}" class="btn btn-outline-secondary btn-sm mb-3">
-            <i class="bi bi-arrow-left"></i> Retour au hub
+            <i class="bi bi-arrow-left"></i> {{ 'ui.messages.back_to_hub'|trans }}
         </a>
-        <h2 class="fw-bold fs-3">Messages privés</h2>
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-2 mb-3">
+            {% if private_threads_total > 0 %}
+                <span
+                    class="badge rounded-pill bg-secondary"
+                    title="{{ 'ui.messages.private.showing_count'|trans({ '%visible%': private_threads|length, '%total%': private_threads_total }) }}"
+                >{{ private_threads_total }}</span>
+            {% endif %}
+            <a href="{{ path('app_profile') }}#notifications" class="small text-muted text-decoration-none ef-messages__notify-settings ms-md-auto">
+                <i class="bi bi-envelope me-1" aria-hidden="true"></i>{{ 'ui.messages.private.email_notify_settings'|trans }}
+            </a>
+        </div>
     </div>
 
+    {% if staff_private_form is defined and staff_private_form %}
+        <div class="mb-4">
+            {% include 'messages/_staff_private_message_form.html.twig' with {
+                staff_private_form: staff_private_form,
+            } only %}
+        </div>
+    {% endif %}
+
     <div class="ef-messages__thread-container d-flex flex-column gap-4">
-        {% for thread in private_threads %}
-            {% if thread.parent is null %}
-                {% if thread.platformNotice %}
-                    {% include 'messages/_platform_private_notice.html.twig' with {
-                        thread: thread,
-                        isUnread: unread_ids[thread.id] is defined,
-                    } %}
-                {% else %}
-                    {% include 'messages/_thread.html.twig' with { thread: thread, unread_ids: unread_ids } %}
-                {% endif %}
-            {% endif %}
-        {% else %}
-            <p class="text-muted text-center my-5">Aucun message privé pour le moment.</p>
-        {% endfor %}
+        {% include 'messages/_private_threads.html.twig' %}
     </div>
 </div>
 {% endblock %}
 
 {% block body_class %} ef-page-messages{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module" src="{{ asset('js/ef-messages.js') }}"></script>
-{% endblock %}

@@ -2,97 +2,64 @@
 @use '../base/mixins' as *;
 
 .ef-about {
-    flex: 1;
+    &__inner {
+        max-width: 960px;
+    }
 
-    &__content {
-        width: 95%;
-        max-width: 1320px;
-        margin: 0 auto;
-        padding: 1rem !important;
+    &__lead {
+        font-size: $ef-font-size-sm;
+        color: $gray-600;
 
-        &-col {
-            flex: 0 0 100%;
-            max-width: 90%;
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
 
-            @include media-breakpoint-up(md) {
-                max-width: 90%;
-            }
+    &__intro-card {
+        border-radius: 1.25rem !important;
+        margin-bottom: 3rem !important;
 
-            &-title {
-                margin-bottom: 3.5rem !important;
+        @include color-mode(dark) {
+            background-color: #252525;
+            border: 1px solid rgba($ef-white-color-dark, 0.1);
+        }
+    }
 
-                h2 {
-                    font-size: 2.25rem;
-                    margin-bottom: 0.75rem;
+    &__intro-text {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: $gray-700;
 
-                    @include color-mode(dark) {
-                        color: $ef-white-color-dark;
-                    }
-                }
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
 
-                p {
-                    font-size: $ef-font-size-sm;
-                }
+    &__feature-card {
+        border-radius: 1.25rem !important;
+        padding: 0.5rem !important;
+
+        h3,
+        h4,
+        h5 {
+            font-weight: 700;
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
             }
         }
 
-        &-card {
-            border-radius: 1.25rem !important;
-            padding: 0.5rem !important;
-            margin-bottom: 3rem !important;
+        .card-text {
+            color: $gray-600;
 
-            &-body {
-                padding: 1rem !important;
-            }
-
-            &-text {
-                font-size: 1.1rem;
-                line-height: 1.7;
-                color: $gray-700;
-
-                @include color-mode(dark) {
-                    color: $ef-white-color-dark;
-                }
+            @include color-mode(dark) {
+                color: $gray-600-dark;
             }
         }
 
-        &-row {
-            --bs-gutter-x: 2rem;
-            --bs-gutter-y: 2rem;
-            margin-bottom: 4rem !important;
-
-            &-card,
-            &-col-card {
-                border-radius: 1.25rem !important;
-                padding: 1.5rem !important;
-
-                &-body {
-                    padding: 0.5rem !important;
-                }
-
-                h4,
-                h5 {
-                    font-weight: 700;
-                    margin-top: 1rem;
-
-                    @include color-mode(dark) {
-                        color: $ef-white-color-dark;
-                    }
-                }
-
-                .card-text {
-                    color: $gray-600;
-
-                    @include color-mode(dark) {
-                        color: $gray-600-dark;
-                    }
-                }
-
-                @include color-mode(dark) {
-                    background-color: #252525;
-                    border: 1px solid rgba($ef-white-color-dark, 0.1);
-                }
-            }
+        @include color-mode(dark) {
+            background-color: #252525;
+            border: 1px solid rgba($ef-white-color-dark, 0.1);
         }
     }
 
@@ -177,32 +144,30 @@
     }
 
     &__mission-card {
-        // Pas de conflit Bootstrap : on pilote .card via ses variables CSS natives
         &.card {
             --bs-card-bg: #{$ef-mission-card-bg};
             --bs-card-border-width: 0;
             --bs-card-border-color: transparent;
             --bs-card-border-radius: 1.25rem;
             border-radius: 1.25rem !important;
-            padding: 1rem !important;
 
             @include color-mode(dark) {
                 --bs-card-bg: #{$ef-mission-card-dark-bg};
             }
         }
 
-        &-card-body {
-            padding: 0.8rem !important;
-
-            i {
-                color: #dc3545;
-            }
+        .card-body i {
+            color: #dc3545;
         }
 
         &-title {
             font-size: 1.6rem;
             font-weight: 700;
             margin-bottom: 1.5rem !important;
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+            }
         }
 
         &-text {

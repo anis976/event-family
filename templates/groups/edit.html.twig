@@ -1,28 +1,24 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}EventFamily — Modifier {{ group.name }}{% endblock %}
-{% block page_title %}Modifier le groupe{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/groups-form-page.css') }}">
-{% endblock %}
+{% block title %}{{ 'ui.groups.edit_page_title'|trans }} — {{ group.name }}{% endblock %}
+{% block page_title %}{{ 'ui.groups.edit_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="ef-main-content-padding ef-groups ef-groups--form-page">
-    <nav aria-label="Fil d'Ariane" class="ef-groups__breadcrumb">
-        <a href="{{ path('app_groups') }}" class="ef-groups__breadcrumb-link">Groupes</a>
+    <nav aria-label="{{ 'ui.groups.breadcrumb_aria'|trans }}" class="ef-groups__breadcrumb">
+        <a href="{{ path('app_groups') }}" class="ef-groups__breadcrumb-link">{{ 'ui.groups.breadcrumb'|trans }}</a>
         <span class="ef-groups__breadcrumb-sep" aria-hidden="true">/</span>
         <a href="{{ path('app_groups_show', { id: group.id }) }}" class="ef-groups__breadcrumb-link">{{ group.name }}</a>
         <span class="ef-groups__breadcrumb-sep" aria-hidden="true">/</span>
-        <span class="ef-groups__breadcrumb-current" aria-current="page">Modifier</span>
+        <span class="ef-groups__breadcrumb-current" aria-current="page">{{ 'ui.groups.breadcrumb_edit'|trans }}</span>
     </nav>
 
     <div class="row justify-content-center">
         <div class="col-12 col-md-10 col-lg-9 col-xl-7">
             <div class="card ef-groups-form__card border-0 shadow-sm">
                 <div class="card-body p-4 p-md-5">
-                    <h2 class="h4 fw-bold mb-4">Modifier les informations</h2>
+                    <h1 class="visually-hidden">{{ 'ui.groups.edit_info_heading'|trans }}</h1>
+                    <p class="h4 fw-bold mb-4">{{ 'ui.groups.edit_info_heading'|trans }}</p>
 
                     {{ form_start(groupForm, { attr: { class: 'ef-groups-form', novalidate: 'novalidate' } }) }}
                         <div class="mb-3">
@@ -47,9 +43,9 @@
                         <div class="d-flex flex-column flex-sm-row gap-2 pt-3">
                             <button type="submit" class="btn btn-save-profile flex-grow-1 py-2 fw-bold shadow-sm">
                                 <i class="bi bi-check-all fs-5 me-2" aria-hidden="true"></i>
-                                Enregistrer
+                                {{ 'ui.common.save'|trans }}
                             </button>
-                            <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn ef-groups-form__btn-cancel px-4 py-2">Annuler</a>
+                            <a href="{{ path('app_groups_show', { id: group.id }) }}" class="btn ef-groups-form__btn-cancel px-4 py-2">{{ 'ui.common.cancel'|trans }}</a>
                         </div>
                     {{ form_end(groupForm) }}
                 </div>
@@ -57,9 +53,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script type="module" src="{{ asset('js/ef-groups.js') }}"></script>
 {% endblock %}
