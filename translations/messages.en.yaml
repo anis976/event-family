@@ -20,10 +20,10 @@ auth:
     email_missing: "Google did not provide a usable email address. Choose another Google account or register by email."
     profile_invalid: "Incomplete Google profile. Try again or contact support."
     use_password_login: "An account already exists with this email (classic registration). Sign in with your password."
-    account_conflict: "This Google account does not match your EventFamily profile. Contact support if needed."
+    account_conflict: "This Google account does not match your RapporFam profile. Contact support if needed."
     signup_terms_required: "Accept the terms of use before signing up with Google."
     csrf_invalid: "Session expired. Reload the page and try again."
-    registration_complete: "Your profile is complete. Welcome to EventFamily!"
+    registration_complete: "Your profile is complete. Welcome to RapporFam!"
     profile_unique_conflict: "This first/last name or username is already taken. Update your details."
 
 profile:
@@ -92,8 +92,8 @@ ui:
     manage_cookies: Manage cookies
     support: Support the project
     donate: Give a little boost
-    donate_aria: Support EventFamily via PayPal (opens in new tab)
-    copyright: © %year% EventFamily. All rights reserved.
+    donate_aria: Support RapporFam via PayPal (opens in new tab)
+    copyright: © %year% RapporFam. All rights reserved.
   common:
     back_to_top: Back to top
     close: Close
@@ -120,8 +120,8 @@ ui:
     coming_soon: Coming soon
   home:
     title: Home
-    page_title: EventFamily — Home
-    welcome: Welcome to EventFamily
+    page_title: RapporFam — Home
+    welcome: Welcome to RapporFam
     lead: The platform that brings your family events together
     feature_groups_title: Create family groups
     feature_groups_text: Join us to create and share your family moments
@@ -132,9 +132,9 @@ ui:
     upcoming_events: Upcoming public events
     view_all_events: View all events
     no_public_events: No public upcoming events at the moment.
-    guest_page_title: EventFamily — Organize your family events
-    guest_meta_description: Create family groups, plan events, and stay in touch. EventFamily is a private space for registered members only.
-    guest_welcome: EventFamily, your private family space
+    guest_page_title: RapporFam — Organize your family events
+    guest_meta_description: Create family groups, plan events, and stay in touch. RapporFam is a private space for registered members only.
+    guest_welcome: RapporFam, your private family space
     guest_lead: Create groups, plan events, and stay in touch — content access is for registered members only.
     guest_how_title: How it works
     guest_step1_title: Create an account
@@ -143,13 +143,13 @@ ui:
     guest_step2_text: The group owner invites you; you then access the group’s events and messages.
     guest_step3_title: Share your moments
     guest_step3_text: Publish events, chat with members, and stay connected day to day.
-    guest_private_notice: Events, groups, and messages are only visible after sign-in. EventFamily is a private space, not a public directory.
+    guest_private_notice: Events, groups, and messages are only visible after sign-in. RapporFam is a private space, not a public directory.
     guest_cta_register: Create an account
     guest_cta_login: Sign in
     guest_about_cta: Learn more about the project
   events:
     title: Events
-    page_title: EventFamily — Events
+    page_title: RapporFam — Events
     create: Create an event
     member_notice: To publish an event, join a group and contact its owner.
     view_groups: View groups
@@ -174,9 +174,9 @@ ui:
     create_form_hint: Publish an event for one of your groups.
     publish: Publish event
     edit_form_title: Edit event
-    edit_page_title: EventFamily — Edit event
+    edit_page_title: RapporFam — Edit event
     show:
-      page_title: EventFamily — %title%
+      page_title: RapporFam — %title%
       breadcrumb_aria: Breadcrumb
       location_detail: Location / detail
       propose_title: Suggest an event to the group
@@ -204,7 +204,7 @@ ui:
     breadcrumb_aria: Breadcrumb
     back_to_group: Back to group
     title: Groups
-    page_title: EventFamily — Groups
+    page_title: RapporFam — Groups
     my_groups: My groups
     create: Create a group
     create_first: Create my first group
@@ -220,10 +220,10 @@ ui:
     breadcrumb: Groups
     breadcrumb_new: New
     breadcrumb_edit: Edit
-    create_page_title: EventFamily — Create a group
+    create_page_title: RapporFam — Create a group
     create_limit_hint: Only one group can be created per account.
     submit_create: Create group
-    edit_page_title: EventFamily — Edit group
+    edit_page_title: RapporFam — Edit group
     edit_title: Edit group
     edit_info_heading: Edit information
     show:
@@ -268,19 +268,19 @@ ui:
       role_moderator: MOD
       role_member: MEMBER
       ban_modal_title: Ban %name%
-      ban_modal_hint: The member will be banned from this group. EventFamily will automatically send a warning (1/3, 2/3) or delete the account on the 3rd platform-wide ban.
+      ban_modal_hint: The member will be banned from this group. RapporFam will automatically send a warning (1/3, 2/3) or delete the account on the 3rd platform-wide ban.
       ban_reason_label: Reason for ban
       ban_reason_placeholder: Clearly describe the reason for the ban…
       ban_confirm: Confirm ban
     manage_requests:
-      page_title: EventFamily — Requests — %name%
+      page_title: RapporFam — Requests — %name%
       page_heading: Join requests
       breadcrumb: Requests
       pending_title: Pending requests
       empty: No pending requests at the moment.
       column_date: Date
     invite:
-      page_title: EventFamily — Invite — %name%
+      page_title: RapporFam — Invite — %name%
       page_heading: Invite members
       breadcrumb: Invite
       search_heading: Search for a member
@@ -300,7 +300,7 @@ ui:
       invite_button: Invite
   messages:
     title: Messages
-    page_title: EventFamily — Messages
+    page_title: RapporFam — Messages
     hub_title: Messages hub
     hub:
       link_private: Private messages
@@ -310,7 +310,7 @@ ui:
     private:
       title: Private messages
       subtitle: One-to-one conversations with your contacts
-      page_title: EventFamily — Private messages
+      page_title: RapporFam — Private messages
       empty: No private messages yet.
       showing_count: '{0} No conversations shown|{1} %visible% conversation shown of %total%|]1,Inf[ %visible% conversations shown of %total%'
       load_older: Load older conversations
@@ -319,12 +319,12 @@ ui:
     group:
       title: Group messages
       subtitle: Discussions in your groups
-      page_title: EventFamily — Group messages
+      page_title: RapporFam — Group messages
       picker_aria: Choose a group
       picker_header: My groups
       unread_count: '{1} %count% unread message|]1,Inf[ %count% unread messages'
       group_sheet: Group page
-      staff_readonly: Viewing as EventFamily staff. You can publish official announcements, but not member messages.
+      staff_readonly: Viewing as RapporFam staff. You can publish official announcements, but not member messages.
       empty: No messages published in this group yet.
       showing_count: '{0} No threads shown|{1} %visible% thread shown of %total%|]1,Inf[ %visible% threads shown of %total%'
       load_older: Load older messages
@@ -332,6 +332,22 @@ ui:
       select_prompt: Select a group to view the conversation.
       no_groups_staff: You have no groups. As staff, open a group from its page to view messages.
       placeholder_group: Write a message to the group…
+      photos:
+        attach_aria: Attach a photo
+        attach_title: Add a photo (max. 2)
+        hint: Up to 2 photos (JPG, PNG, WebP — max. 3 MB each). Optional cropping. Automatically deleted with the message after 12 months.
+        privacy_hint: Share moments you are comfortable showing to your group.
+        privacy_notice: 'This photo will be visible to group members. We do not offer direct download, but screenshots are always possible on the web.'
+        crop_title: Crop photo
+        use_without_crop: Use without cropping
+        apply_crop: Apply crop
+        alt: 'Message photo %index%'
+        alert_invalid_format: 'Unsupported format. Use JPG, PNG or WebP.'
+        alert_max_size: Each photo must not exceed 3 MB.
+        alert_max_count: You can attach at most 2 photos per message.
+        alert_cropper_unavailable: Cropping tool unavailable. Reload the page and try again.
+        view_title: Message photo
+        view_aria: 'View photo %index% full size'
     thread:
       unknown_user: Unknown user
       closed_notice: This conversation is closed. A participant hid it from their inbox. You can still read it, but replies are no longer possible.
@@ -348,11 +364,11 @@ ui:
     placeholder: Write a message…
     send_aria: Send
     staff:
-      form_label: Official EventFamily announcement
+      form_label: Official RapporFam announcement
       no_reply: — no replies allowed
       placeholder: Write an announcement for this group…
       publish_aria: Publish announcement
-      announcement_aria: Official EventFamily announcement
+      announcement_aria: Official RapporFam announcement
       badge: Announcement
       badge_moderator: Moderation
       confirm_delete: Delete this official announcement?
@@ -362,12 +378,12 @@ ui:
       badge: Info
       reset: Reset
     platform:
-      notice_aria: Official EventFamily message
+      notice_aria: Official RapporFam message
     direct:
       send_as: Send as
       mode_member: Member (personal message)
-      mode_moderator: EventFamily moderation
-      mode_admin: EventFamily administration
+      mode_moderator: RapporFam moderation
+      mode_admin: RapporFam administration
     staff_private:
       form_title: Official message to a member
       recipient_label: Recipient
@@ -385,7 +401,7 @@ ui:
       content_max: Message cannot exceed {{ limit }} characters.
   invitations:
     title: Invitations
-    page_title: EventFamily — Invitations
+    page_title: RapporFam — Invitations
     received:
       title: Invitations received
       subtitle: Personal invitations to join a group.
@@ -408,10 +424,10 @@ ui:
       stay: Stay signed in
   about:
     title: About
-    page_title: EventFamily — About
-    meta_description: EventFamily — a private platform to organize family events among invited relatives. Learn about the project, privacy, and how to contact us.
+    page_title: RapporFam — About
+    meta_description: RapporFam — a private platform to organize family events among invited relatives. Learn about the project, privacy, and how to contact us.
     subtitle: Family event management platform
-    intro: EventFamily is a platform designed to bring families closer together and facilitate the organization of family events.
+    intro: RapporFam is a platform designed to bring families closer together and facilitate the organization of family events.
     feature_groups_title: Create family groups
     feature_groups_text: Gather your family in private groups for better organization.
     feature_events_title: Organize events
@@ -420,8 +436,8 @@ ui:
     feature_connect_text: Communicate easily with group members through integrated messaging.
     mission_title: Our Mission
     mission_text: We believe that family is at the heart of our lives. Our mission is to create simple and effective tools to keep family bonds strong, regardless of distance.
-    audience_title: Who is EventFamily for?
-    audience_text: EventFamily is for families and close relatives who want to organize shared moments in an online space reserved for invited people. It is not an open social network open to everyone—each group is private and managed by its owner.
+    audience_title: Who is RapporFam for?
+    audience_text: RapporFam is for families and close relatives who want to organize shared moments in an online space reserved for invited people. It is not an open social network open to everyone—each group is private and managed by its owner.
     features_member_title: Features for registered members
     features_member_intro: 'After creating an account and joining a family group by invitation, you can:'
     features_member_groups: create or join private family groups;
@@ -430,14 +446,14 @@ ui:
     privacy_title: Privacy
     privacy_text: Events, member lists, and conversations are not available to visitors who are not signed in. Only this information page, the public home page, legal pages, and sign-in or registration screens are visible without an account.
     transparency_title: What this site is not
-    transparency_text: EventFamily does not publish a public event directory, does not sell family data, and does not display group content on the open web. Public pages exist only to present the service and allow registration.
+    transparency_text: RapporFam does not publish a public event directory, does not sell family data, and does not display group content on the open web. Public pages exist only to present the service and allow registration.
     contact_public_title: Contact and publisher
     contact_public_html: 'Publisher details are in the <a href="%mentions_url%">legal notice</a>. For a general inquiry, email <a href="%email%">%email%</a>. The <a href="%contact_url%">contact form</a> is available to signed-in members only.'
     guest_cta_register: Create an account
     guest_cta_login: Sign in
   contact:
     title: Contact
-    page_title: EventFamily — Contact
+    page_title: RapporFam — Contact
     heading: Contact us
     subtitle: Have a question? Feel free to write to us.
     form_title: Send a message
@@ -445,8 +461,8 @@ ui:
     field_email: Email address
     message_min: At least %min% characters to describe your request.
     channel_whatsapp: WhatsApp
-    whatsapp_prefill: "Hello, I have a question about EventFamily."
-    whatsapp_link_aria: Contact EventFamily on WhatsApp (opens in a new tab)
+    whatsapp_prefill: "Hello, I have a question about RapporFam."
+    whatsapp_link_aria: Contact RapporFam on WhatsApp (opens in a new tab)
     whatsapp_open_hint: Opens WhatsApp with a pre-filled message
     alert_recaptcha_unavailable: Anti-spam verification unavailable. Reload the page and try again.
     alert_recaptcha_v3_required: These keys are not reCAPTCHA v3 compatible. Create a "Score (v3)" site in Google reCAPTCHA and update RECAPTCHA_SITE_KEY / RECAPTCHA_SECRET_KEY.
@@ -461,13 +477,13 @@ ui:
         message_min: 'Describe your request in at least %min% characters (avoid messages like just « hi » or « hello »).'
   auth:
     login:
-      page_title: EventFamily — Sign in
-      title: Sign in to EventFamily
+      page_title: RapporFam — Sign in
+      title: Sign in to RapporFam
       idle_title: Session expired
       idle_message: You were signed out after a period of inactivity. Sign in again to continue.
       suspended_title: Account suspended
-      suspended_message: Your account was suspended by EventFamily moderation. Check the email you received for the reason and next steps.
-      suspended_contact: 'To contest this decision, email <a href="mailto:%email%" class="ef-link-orange">%email%</a> from your EventFamily email address.'
+      suspended_message: Your account was suspended by RapporFam moderation. Check the email you received for the reason and next steps.
+      suspended_contact: 'To contest this decision, email <a href="mailto:%email%" class="ef-link-orange">%email%</a> from your RapporFam email address.'
       error_title: Sign-in failed
       google: Sign in with Google
       google_terms_hint: "First time with Google? You will need to accept the terms of use right after."
@@ -499,7 +515,7 @@ ui:
       email_label: Your email address
       submit: Resend activation email
     register:
-      page_title: EventFamily — Sign up
+      page_title: RapporFam — Sign up
       title: Create an account
       google: Sign up with Google
       google_terms_hint: "After Google sign-in, you must accept the terms of use to activate your account."
@@ -510,19 +526,19 @@ ui:
       login_link: Sign in
       illustration_alt: Sign-up illustration
     google_complete:
-      page_title: EventFamily — Complete your account
+      page_title: RapporFam — Complete your account
       title: Complete your profile
-      intro: "Last step after Google: verify your identity on EventFamily and accept the terms of use to activate your account."
-      submit: Enter EventFamily
+      intro: "Last step after Google: verify your identity on RapporFam and accept the terms of use to activate your account."
+      submit: Enter RapporFam
       cancel: Cancel and return to sign-in
     forgot:
-      page_title: EventFamily — Forgot password
+      page_title: RapporFam — Forgot password
       title: Forgot password
       hint: Enter your account email address. If it is recognized, you will receive a secure link (valid for 1 h). Otherwise, ignore the email.
       submit: Send reset link
       back_to_login: Back to sign in
     reset:
-      page_title: EventFamily — New password
+      page_title: RapporFam — New password
       title: New password
       hint: Choose a strong password (at least 8 characters). This link is single-use.
       submit: Save password
@@ -551,12 +567,12 @@ ui:
   legal:
     back_home: Back to home
     cgu_title: Terms & Privacy Policy
-    cgu_meta_description: Terms of use, privacy policy and cookies — EventFamily.
+    cgu_meta_description: Terms of use, privacy policy and cookies — RapporFam.
     mentions_title: Legal notice
-    mentions_meta_description: Publisher, hosting and intellectual property — EventFamily.
+    mentions_meta_description: Publisher, hosting and intellectual property — RapporFam.
   error:
     not_found:
-      page_title: EventFamily — Page not found
+      page_title: RapporFam — Page not found
       code: '404'
       title: Page not found
       message: The page you are looking for does not exist or has been moved.
@@ -564,9 +580,18 @@ ui:
       back_home: Back to home
       contact: Contact us
       about: About the site
+    forbidden:
+      page_title: RapporFam — Access denied
+      code: '403'
+      title: Access denied
+      message: You do not have permission to access this page.
+      hint: If you think this is a mistake, contact us or return to the home page.
+      back_home: Back to home
+      contact: Contact us
+      login: Log in
   profile:
     my_space: My space
-    my_space_page_title: EventFamily — My space
+    my_space_page_title: RapporFam — My space
     personal_space_title: My personal space
     personal_space_subtitle: Manage your private account information
     username: Username
@@ -589,9 +614,9 @@ ui:
     update_profile: Update my profile
     notifications: Notifications
     notify_private_message_email: Email me when I receive a new private message
-    notify_private_message_email_help: You will get an email when someone writes to you on EventFamily (at most one reminder every 30 minutes per conversation).
+    notify_private_message_email_help: You will get an email when someone writes to you on RapporFam (at most one reminder every 30 minutes per conversation).
     show:
-      page_title: EventFamily — %name%'s profile
+      page_title: RapporFam — %name%'s profile
       page_heading: Member profile
       title: Member profile
       subtitle: View circle member information
@@ -626,19 +651,19 @@ ui:
       alert_cropper_unavailable: Cropping tool unavailable. Reload the page.
       alert_upload_failed: Unable to upload the photo. Try again.
     password_change:
-      page_title: EventFamily — Change password
+      page_title: RapporFam — Change password
       page_heading: Account security
       back_aria: Back
       hint: Choose a strong password (at least 8 characters). A confirmation email will be sent; the change only takes effect after you click the link. If this wasn't you, ignore the email.
       submit: Update my password
     delete_account:
-      page_title: EventFamily — Delete my account
+      page_title: RapporFam — Delete my account
       page_heading: Account deletion
       heading: Delete my account
-      alert: 'This is permanent. After submitting, you will be signed out: open the link in the email (1 h) to confirm. Close other EventFamily tabs and do not register a new account before confirming.'
+      alert: 'This is permanent. After submitting, you will be signed out: open the link in the email (1 h) to confirm. Close other RapporFam tabs and do not register a new account before confirming.'
       submit: Receive confirmation email
     delete_blocked:
-      page_title: EventFamily — Deletion unavailable
+      page_title: RapporFam — Deletion unavailable
       heading: Account deletion temporarily unavailable
       intro: 'You own at least one family group. Before deleting your account, you must either:'
       option_successor: designate a successor (group owner),
@@ -721,7 +746,7 @@ group:
     default: |
       Welcome to this group's message space.
 
-      Respect other members, stay courteous and report inappropriate behaviour to the group owner or moderator. EventFamily platform rules apply here.
+      Respect other members, stay courteous and report inappropriate behaviour to the group owner or moderator. RapporFam platform rules apply here.
   form:
     name: Group name
     name_placeholder: e.g. The Smiths
@@ -744,100 +769,101 @@ email:
     single_use: single use
     ignore_if_not_you: If you did not initiate this action, ignore this email.
     paris_time: Paris time
-    also_in_messages: You will also find this message in your EventFamily private messages.
+    also_in_messages: You will also find this message in your RapporFam private messages.
   verification:
-    subject: EventFamily — Activate your account
-    title: EventFamily activation
-    thanks: Thank you for signing up on <strong>EventFamily</strong>.
+    subject: RapporFam — Activate your account
+    title: RapporFam activation
+    thanks: Thank you for signing up on <strong>RapporFam</strong>.
     cta_intro: 'Click the button below to activate your account (%expires%):'
     cta: Activate my account
     ignore: If you did not create an account, ignore this email.
   password_reset:
-    subject: EventFamily — Reset your password
+    subject: RapporFam — Reset your password
     title: Password reset
-    intro: A <strong>password reset</strong> request was received for your EventFamily account.
+    intro: A <strong>password reset</strong> request was received for your RapporFam account.
     cta_intro: 'If this was you, click the button below (%expires%, <strong>%single_use%</strong>):'
     cta: Reset my password
     ignore: 'If you did not request this reset, <strong>ignore this email</strong> and check that you can still sign in. Your password will not change without clicking the link.'
   password_reset_done:
-    subject: EventFamily — Your password was changed
+    subject: RapporFam — Your password was changed
     title: Password changed
-    success: Your EventFamily password was <strong>successfully changed</strong> on %date% (%timezone%).
+    success: Your RapporFam password was <strong>successfully changed</strong> on %date% (%timezone%).
     no_action: If you made this change, no further action is needed.
     alert: '<strong>If you did not request this change</strong>, contact the site administrator immediately and try to recover access to your account.'
   password_change:
-    subject: EventFamily — Confirm password change
+    subject: RapporFam — Confirm password change
     title: Confirm password change
-    intro: A <strong>password change</strong> was requested on your EventFamily account.
+    intro: A <strong>password change</strong> was requested on your RapporFam account.
     cta_intro: 'If this was you, click the button below to confirm (%expires%):'
     cta: Confirm new password
     ignore: 'If you did not request this change, <strong>ignore this email</strong>: your current password will remain unchanged.'
   account_deletion_confirm:
-    subject: EventFamily — Confirm account deletion
+    subject: RapporFam — Confirm account deletion
     title: Confirm account deletion
-    intro: A request to <strong>permanently delete</strong> your EventFamily account was recorded.
+    intro: A request to <strong>permanently delete</strong> your RapporFam account was recorded.
     cta_intro: 'If this was you, click the button below (%expires%, <strong>%single_use%</strong>):'
     cta: Confirm deletion of my account
     ignore: 'If you did not request this deletion, <strong>ignore this email</strong>. Your account will remain active.'
   account_deletion_done:
-    subject: EventFamily — Your account was deleted
+    subject: RapporFam — Your account was deleted
     title: Account deleted
-    body: Your EventFamily account was <strong>permanently deleted</strong> on %date% (%timezone%).
+    body: Your RapporFam account was <strong>permanently deleted</strong> on %date% (%timezone%).
     alert: If you did not initiate this action, contact the site administrator immediately.
   inactive_warning:
-    subject_unverified: EventFamily — Activate your account before deletion
-    subject_step1: 'EventFamily — Inactivity: first reminder (1/2)'
-    subject_step2: 'EventFamily — Inactivity: final reminder (2/2)'
+    subject_unverified: RapporFam — Activate your account before deletion
+    subject_step1: 'RapporFam — Inactivity: first reminder (1/2)'
+    subject_step2: 'RapporFam — Inactivity: final reminder (2/2)'
     title: Inactive account
-    unverified: Your EventFamily account <strong>has not been activated yet</strong>.
+    unverified: Your RapporFam account <strong>has not been activated yet</strong>.
     unverified_hint: Confirm your email address using the link received when you signed up. Without activation, your account will be deleted automatically.
-    step1: Your EventFamily account has been <strong>inactive for a long time</strong>. This is your <strong>first reminder (1/2)</strong>.
+    step1: Your RapporFam account has been <strong>inactive for a long time</strong>. This is your <strong>first reminder (1/2)</strong>.
     step1_hint: Sign in to keep your account, groups and messages.
-    step2: Your EventFamily account is <strong>still inactive</strong>. This is your <strong>final reminder (2/2)</strong>.
+    step2: Your RapporFam account is <strong>still inactive</strong>. This is your <strong>final reminder (2/2)</strong>.
     step2_alert: '<strong>Without signing in soon, your account will be deleted and you will be removed from your groups.</strong>'
   inactive_deleted:
-    subject: EventFamily — Your account was deleted due to inactivity
+    subject: RapporFam — Your account was deleted due to inactivity
     title: Account deleted
-    body: Your EventFamily account was <strong>automatically deleted</strong> on %date% (%timezone%) due to prolonged inactivity.
+    body: Your RapporFam account was <strong>automatically deleted</strong> on %date% (%timezone%) due to prolonged inactivity.
     verified_hint: You were removed from all your groups. Your messages remain anonymised on the platform.
     unverified_hint: The account had never been activated after registration.
     footer: You can create a new account at any time if you wish to return.
   ban_warning:
-    subject_step1: EventFamily — Warning 1/3 after a ban
-    subject_step2: EventFamily — Final warning 2/3
-    subject_step3: EventFamily — Your account was deleted (3/3)
+    subject_step1: RapporFam — Warning 1/3 after a ban
+    subject_step2: RapporFam — Final warning 2/3
+    subject_step3: RapporFam — Your account was deleted (3/3)
     title: Ban warning
-    step1: 'You were <strong>banned from a group</strong> on EventFamily. This is your <strong>first warning (1/%max%)</strong>.'
+    step1: 'You were <strong>banned from a group</strong> on RapporFam. This is your <strong>first warning (1/%max%)</strong>.'
     step2: 'You were <strong>banned from a group again</strong>. This is your <strong>final warning (2/%max%)</strong>.'
     step2_alert: '<strong>On the next ban, your account will be permanently deleted.</strong>'
     group: 'Group: %name% (%family%)'
     reason_label: 'Reason for ban:'
   ban_deleted:
-    subject: EventFamily — Your account was deleted
+    subject: RapporFam — Your account was deleted
     title: Account deleted
-    body: Your EventFamily account was <strong>permanently deleted</strong> after %count% ban(s) recorded on the platform.
+    body: Your RapporFam account was <strong>permanently deleted</strong> after %count% ban(s) recorded on the platform.
     last_group: 'Last group concerned: %name% (%family%)'
     reason_label: 'Reason for ban:'
     contact: If you believe this is an error, contact the site administration.
   platform_ban:
-    subject: EventFamily — Your account was suspended
+    subject: RapporFam — Your account was suspended
     title: Account suspended
-    intro: Your EventFamily account was <strong>suspended by moderation</strong>. You cannot sign in while this suspension is active.
-    contact: 'To contest this decision, email <a href="mailto:%email%">%email%</a> from your EventFamily email address.'
-    footer: Include your EventFamily email address in your message so moderation can identify you.
+    intro: Your RapporFam account was <strong>suspended by moderation</strong>. You cannot sign in while this suspension is active.
+    contact: 'To contest this decision, email <a href="mailto:%email%">%email%</a> from your RapporFam email address.'
+    footer: Include your RapporFam email address in your message so moderation can identify you.
   platform_unban:
-    subject: EventFamily — Suspension lifted
+    subject: RapporFam — Suspension lifted
     title: Account reactivated
-    intro: The suspension on your EventFamily account has been <strong>lifted</strong>. You can sign in again.
+    intro: The suspension on your RapporFam account has been <strong>lifted</strong>. You can sign in again.
+    footer: If you did not expect this reactivation, contact moderation.
   private_message:
-    subject: '%name% wrote to you on EventFamily'
+    subject: '%name% wrote to you on RapporFam'
     title: New private message
-    intro: '<strong>%name%</strong> sent you a message on EventFamily:'
+    intro: '<strong>%name%</strong> sent you a message on RapporFam:'
     cta: Read message
     opt_out: 'You can turn off these alerts in <strong>My space</strong> → notifications.'
   contact:
-    subject: 'EventFamily — Contact from %name%'
-    title: EventFamily contact
+    subject: 'RapporFam — Contact from %name%'
+    title: RapporFam contact
     heading: New message via the contact form
     name: 'Name:'
     email: 'Email:'
@@ -941,7 +967,7 @@ flash:
     thread_not_found: Conversation thread not found.
     rate_hourly: You have sent too many private messages recently. Try again in a few minutes.
     rate_hourly_group: You have posted too many group messages recently. Try again in a few minutes.
-    no_reply_staff: Official EventFamily announcements cannot receive replies.
+    no_reply_staff: Official RapporFam announcements cannot receive replies.
     no_reply_platform: This official message cannot receive replies.
     thread_closed: This conversation is closed. You can still read it, but replies are no longer possible.
     access_denied: Access denied.
@@ -951,6 +977,20 @@ flash:
     counterpart_not_found: Recipient not found.
     author_not_found: Author not found.
     admin_system_only: Only a site administrator can manage this message.
+    content_or_photo_required: Write a message or attach at least one photo.
+    photo_caption_max: The caption cannot exceed 500 characters when a photo is attached.
+    photo_max_count: You can attach at most 2 photos per message.
+    photo_max_size: Each photo must not exceed 3 MB.
+    photo_invalid_file: Invalid photo file.
+    photo_invalid_format: 'Unsupported format. Use JPG, PNG or WebP.'
+    photo_read_failed: Unable to read the photo.
+    photo_crop_failed: Invalid crop.
+    photo_resize_failed: Unable to resize the photo.
+    photo_save_failed: Unable to save the photo.
+    photo_gd_required: The PHP GD extension is required to process photos.
+    photo_group_root_only: Photos are only allowed in main group messages.
+    photo_rate_hourly: 'You have shared too many photos this hour. Try again in a few minutes (limit: 6 photos/hour).'
+    photo_rate_daily: 'You have reached today''s photo limit. Try again tomorrow (limit: 20 photos/day).'
   event:
     image_invalid_file: Invalid file.
     image_max_size: Photo must not exceed 5 MB.
@@ -970,26 +1010,26 @@ flash:
 
 notice:
   inactive:
-    unverified: "Your EventFamily account has not been activated yet.\n\nSign in and confirm your email address before your account is automatically deleted for inactivity."
-    step1: "Your EventFamily account has been inactive for a long time. This is your first reminder (1/2).\n\nSign in to keep your account. Without signing in, you will receive a final reminder then your account will be automatically deleted."
-    step2: "Your EventFamily account is still inactive. This is your final reminder (2/2).\n\nSign in soon. Without action, your account will be automatically deleted and you will be removed from your groups."
+    unverified: "Your RapporFam account has not been activated yet.\n\nSign in and confirm your email address before your account is automatically deleted for inactivity."
+    step1: "Your RapporFam account has been inactive for a long time. This is your first reminder (1/2).\n\nSign in to keep your account. Without signing in, you will receive a final reminder then your account will be automatically deleted."
+    step2: "Your RapporFam account is still inactive. This is your final reminder (2/2).\n\nSign in soon. Without action, your account will be automatically deleted and you will be removed from your groups."
   ban:
     group_line: 'Group concerned: %name% (%family%).'
     group_unknown: 'Group concerned: not specified.'
-    step1: "You were banned from a group on EventFamily. This is your first warning (1/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nFurther bans on the platform may lead to additional sanctions, up to permanent account deletion on the 3rd ban."
-    step2: "You were banned from a group again on EventFamily. This is your final warning (2/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nOn the next ban, your EventFamily account will be permanently deleted."
-    step3: "You have reached your 3rd ban on EventFamily. Your account will be permanently deleted.\n\n%group_line%\n\nReason for ban:\n%reason%\n\nYou will no longer be able to sign in with this account. A confirmation email has also been sent to you."
-    platform_admin: "EventFamily moderation has suspended your account.\n\nReason:\n%reason%\n\nDetails of this decision were sent to you by email. To contest it, email %contact% from your EventFamily email address."
+    step1: "You were banned from a group on RapporFam. This is your first warning (1/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nFurther bans on the platform may lead to additional sanctions, up to permanent account deletion on the 3rd ban."
+    step2: "You were banned from a group again on RapporFam. This is your final warning (2/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nOn the next ban, your RapporFam account will be permanently deleted."
+    step3: "You have reached your 3rd ban on RapporFam. Your account will be permanently deleted.\n\n%group_line%\n\nReason for ban:\n%reason%\n\nYou will no longer be able to sign in with this account. A confirmation email has also been sent to you."
+    platform_admin: "RapporFam moderation has suspended your account.\n\nReason:\n%reason%\n\nDetails of this decision were sent to you by email. To contest it, email %contact% from your RapporFam email address."
 
 legal:
   cgu:
     privacy:
       title: Personal data protection
-      intro: In accordance with the General Data Protection Regulation (GDPR), EventFamily is committed to protecting members' privacy and processing personal data transparently.
+      intro: In accordance with the General Data Protection Regulation (GDPR), RapporFam is committed to protecting members' privacy and processing personal data transparently.
       controller_title: Data controller
-      controller_body: 'The data controller is <strong>SOUFFOUMADI Anissoir</strong>, domiciled at %address%. Contact: <a href="mailto:%email%">%email%</a>. EventFamily is a personal project, developed as a passion project, with no commercial activity.'
+      controller_body: 'The data controller is <strong>SOUFFOUMADI Anissoir</strong>, domiciled at %address%. Contact: <a href="mailto:%email%">%email%</a>. RapporFam is a personal project, developed as a passion project, with no commercial activity.'
       nature_title: Purpose of the site
-      nature_body: EventFamily provides a private space for family members to share events (weddings, parties, gatherings…) and organise family meet-ups. The service is not intended for other types of social networking.
+      nature_body: RapporFam provides a private space for family members to share events (weddings, parties, gatherings…) and organise family meet-ups. The service is not intended for other types of social networking.
       collection_title: Data collected
       collection_body: 'Depending on features used: account identifiers (email address, securely stored password, first name, last name, optional username, interface language); Google sign-in (Google ID and associated email); profile (optional photo, crop, visibility); published content (family groups, events with titles, dates, locations, descriptions and photos, private and group messages); preferences (email notifications for private messages, cookie consent choices); contact form for signed-in members only (subject and message); technical data (login dates, temporary tokens for email verification, password change or reset, account deletion). No "city of residence" is requested.'
       purposes_title: Purposes of processing
@@ -1014,9 +1054,9 @@ legal:
     terms:
       title: Terms of Use
       purpose_title: Purpose of the service
-      purpose_body: EventFamily is a private family networking platform. It allows creating groups, publishing events (weddings, parties, gatherings…) and messaging. Member content is reserved for signed-in, authorised users.
+      purpose_body: RapporFam is a private family networking platform. It allows creating groups, publishing events (weddings, parties, gatherings…) and messaging. Member content is reserved for signed-in, authorised users.
       scope_title: Scope of use
-      scope_body: The service is exclusively for sharing events and organising meet-ups within the family. EventFamily is not a general dating site or marketplace. Any misuse or use contrary to this family purpose may result in account suspension.
+      scope_body: The service is exclusively for sharing events and organising meet-ups within the family. RapporFam is not a general dating site or marketplace. Any misuse or use contrary to this family purpose may result in account suspension.
       account_title: Account and registration
       account_body: 'Registration requires a valid email address and acceptance of these Terms. Email verification may be required. Google sign-in is available; additional registration steps may apply. You are responsible for keeping your credentials confidential.'
       user_resp_title: User responsibility
@@ -1024,9 +1064,9 @@ legal:
       moderation_title: Moderation and sanctions
       moderation_body: Group owners and the moderation team may warn, suspend or remove a member for rule violations. Progressive warnings on the platform may lead to permanent account deletion. Moderation decisions may be discussed by email with the team.
       publisher_resp_title: Publisher responsibility
-      publisher_resp_body: EventFamily is a personal project developed voluntarily to improve families'' daily lives. SOUFFOUMADI Anissoir cannot be held liable for content published by members, false information they exchange, or indirect damages from use of the site. The publisher strives to maintain a secure, available service, without guaranteeing uninterrupted operation.
+      publisher_resp_body: RapporFam is a personal project developed voluntarily to improve families'' daily lives. SOUFFOUMADI Anissoir cannot be held liable for content published by members, false information they exchange, or indirect damages from use of the site. The publisher strives to maintain a secure, available service, without guaranteeing uninterrupted operation.
       ip_title: Intellectual property
-      ip_body: Photos and texts published by members remain their property. By publishing, the user grants EventFamily the right to display this content on the platform for authorised members only. The site structure (design, logo, code) remains the property of the publisher.
+      ip_body: Photos and texts published by members remain their property. By publishing, the user grants RapporFam the right to display this content on the platform for authorised members only. The site structure (design, logo, code) remains the property of the publisher.
       changes_title: Changes to the Terms
       changes_body: These Terms may be updated to reflect service or regulatory changes. In case of substantial changes, members will be informed on next sign-in or by email if needed. Continued use of the site constitutes acceptance of the current Terms.
       law_title: Applicable law
@@ -1034,7 +1074,7 @@ legal:
   mentions:
     editor:
       title: 1. Site publisher
-      intro: 'Under Article 6 of French law no. 2004-575 of 21 June 2004 on confidence in the digital economy, users of <strong>EventFamily</strong> are informed of the identity of those involved in creating and maintaining the site:'
+      intro: 'Under Article 6 of French law no. 2004-575 of 21 June 2004 on confidence in the digital economy, users of <strong>RapporFam</strong> are informed of the identity of those involved in creating and maintaining the site:'
       owner: 'Owner & Publisher:'
       owner_name: SOUFFOUMADI Anissoir
       address: 'Address:'
@@ -1042,10 +1082,10 @@ legal:
       director: 'Publication director:'
       director_name: SOUFFOUMADI Anissoir
       status: 'Status:'
-      status_body: Personal project developed as a passion project, with no commercial activity. EventFamily is not a company.
+      status_body: Personal project developed as a passion project, with no commercial activity. RapporFam is not a company.
     nature:
       title: 2. Purpose of the site
-      body: EventFamily is a private space for family members to share events and organise family meet-ups (weddings, parties, gatherings…). The site is not intended for other types of social networking.
+      body: RapporFam is a private space for family members to share events and organise family meet-ups (weddings, parties, gatherings…). The site is not intended for other types of social networking.
     hosting:
       title: 3. Hosting
       intro: 'The site is hosted by:'
@@ -1061,7 +1101,7 @@ legal:
 
 admin:
   dashboard:
-    title: EventFamily Administration
+    title: RapporFam Administration
     open_site: Open site
     intro: Area reserved for site administrators and moderators. Deletion actions require a super moderator or administrator role.
     users_title: Users
@@ -1081,16 +1121,17 @@ admin:
     bans_btn: View bans
     idle_notice: This area signs out automatically after %seconds% seconds of inactivity.
   access:
-    session_changed: You are signed in with an account that cannot access administration. Returning to EventFamily.
+    session_changed: You are signed in with an account that cannot access administration. Returning to RapporFam.
     csrf_expired: Your session expired or the page is outdated. Reload the page and try again.
+    denied: This action is not allowed in administration.
   system_notice:
-    page_title: EventFamily — System message — %name%
+    page_title: RapporFam — System message — %name%
     page_heading: Groups — System message
     breadcrumb_aria: Breadcrumb
     breadcrumb_messages: Group messages
     title: System message — %name%
     hint: This message is shown at the top of the thread for all members. Only an administrator can edit or reset it.
-  title: EventFamily — Administration
+  title: RapporFam — Administration
   locale:
     fr: Français
     en: English
@@ -1135,13 +1176,20 @@ admin:
       field_verified: Verified account
       field_banned: Account suspended (site)
       help_banned: The user will no longer be able to sign in. An email with the reason will be sent.
+      help_banned_readonly: You cannot suspend or reactivate this account.
       field_ban_reason: Reason for suspension
       help_ban_reason: Required when enabling suspension. Sent to the user by email.
+      help_ban_reason_display: Current suspension reason (read-only).
+      filter_deleted_at: Account status
+      filter_active_accounts: Active accounts
+      filter_deleted_accounts: Deleted accounts
       error_ban_reason_required: Please provide a reason for the suspension before saving.
       error_already_banned: This account is already suspended.
       error_self_ban: You cannot suspend yourself.
       error_self_unban: You cannot lift your own suspension.
       error_staff_target: Only an administrator can suspend or reactivate a staff account (moderator, super moderator, administrator).
+      error_super_moderator_target: Only an administrator can suspend or reactivate a super moderator account.
+      error_edit_staff_target: You can only edit regular user accounts (or your own).
       field_group_bans: Group bans (escalation)
       ban_summary: '%total% / %max% total — %active% active in a group'
       field_avatar_visibility: Avatar visibility
@@ -1232,8 +1280,8 @@ admin:
         other: Other
       notice_variant:
         system: System
-        moderator: EventFamily moderation
-        eventfamily: EventFamily administration
+        moderator: RapporFam moderation
+        eventfamily: RapporFam administration
       thread:
         parent: Parent message
         viewed: Viewed message

@@ -132,10 +132,11 @@ class MessageRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('m')
             ->distinct()
-            ->addSelect('author', 'replies', 'replyAuthor')
+            ->addSelect('author', 'replies', 'replyAuthor', 'photos')
             ->leftJoin('m.author', 'author')
             ->leftJoin('m.replies', 'replies')
             ->leftJoin('replies.author', 'replyAuthor')
+            ->leftJoin('m.photos', 'photos')
             ->andWhere('m.parent IS NULL')
             ->andWhere('m.relatedGroup = :group')
             ->setParameter('group', $group)
@@ -149,13 +150,14 @@ class MessageRepository extends ServiceEntityRepository
     public function findOneWithRelations(int $id): ?Message
     {
         return $this->createQueryBuilder('m')
-            ->addSelect('author', 'recipient', 'relatedGroup', 'parent', 'replies', 'replyAuthor')
+            ->addSelect('author', 'recipient', 'relatedGroup', 'parent', 'replies', 'replyAuthor', 'photos')
             ->leftJoin('m.author', 'author')
             ->leftJoin('m.recipient', 'recipient')
             ->leftJoin('m.relatedGroup', 'relatedGroup')
             ->leftJoin('m.parent', 'parent')
             ->leftJoin('m.replies', 'replies')
             ->leftJoin('replies.author', 'replyAuthor')
+            ->leftJoin('m.photos', 'photos')
             ->andWhere('m.id = :id')
             ->setParameter('id', $id)
             ->getQuery()

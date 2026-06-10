@@ -9,10 +9,14 @@ use App\Enum\AvatarVisibility;
 use App\Repository\GroupRepository;
 use App\Repository\UserBanRepository;
 use App\Service\AdminPlatformBanService;
+use App\Service\AdminUserPolicyService;
 use App\Service\BanEscalationService;
 use App\Service\EmailVerificationService;
 use App\Service\GroupOwnerTransferService;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -21,6 +25,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\BatchActionDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
@@ -29,6 +35,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\BooleanFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\NullFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -46,6 +53,7 @@ final class UserCrudController extends AbstractAdminCrudController
         private readonly GroupOwnerTransferService $groupOwnerTransfer,
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly AdminPlatformBanService $platformBanService,
+        private readonly AdminUserPolicyService $userPolicy,
         private readonly UserBanRepository $userBanRepository,
         private readonly EntityManagerInterface $entityManager,
     ) {
@@ -68,18 +76,71 @@ final class UserCrudController extends AbstractAdminCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        $canEdit = function (?User $entity): bool {
+            if (!$entity instanceof User) {
+                return false;
+            }
+
+            $actor = $this->getUser();
+
+            return $actor instanceof User && $this->userPolicy->canEdit($actor, $entity);
+        };
+
+        $canDelete = function (?User $entity): bool {
+            if (!$entity instanceof User) {
+                return false;
+            }
+
+            $actor = $this->getUser();
+
+            return $actor instanceof User && $this->userPolicy->canDelete($actor, $entity);
+        };
+
         return $actions
             ->setPermission(Action::DELETE, User::ROLE_SUPER_MODERATOR)
-            ->setPermission(Action::BATCH_DELETE, User::ROLE_SUPER_MODERATOR);
+            ->setPermission(Action::BATCH_DELETE, User::ROLE_SUPER_MODERATOR)
+            ->update(Crud::PAGE_INDEX, Action::EDIT, static fn (Action $action) => $action->displayIf($canEdit))
+            ->update(Crud::PAGE_DETAIL, Action::EDIT, static fn (Action $action) => $action->displayIf($canEdit))
+            ->update(Crud::PAGE_INDEX, Action::DELETE, static fn (Action $action) => $action->displayIf($canDelete))
+            ->update(Crud::PAGE_DETAIL, Action::DELETE, static fn (Action $action) => $action->displayIf($canDelete));
+    }
+
+    public function createIndexQueryBuilder(
+        SearchDto $searchDto,
+        EntityDto $entityDto,
+        FieldCollection $fields,
+        FilterCollection $filters,
+    ): QueryBuilder {
+        $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
+
+        if (!$this->isGranted(User::ROLE_ADMIN)) {
+            $queryBuilder
+                ->andWhere('entity.roles NOT LIKE :adminRole')
+                ->setParameter('adminRole', '%'.User::ROLE_ADMIN.'%');
+        }
+
+        $appliedFilters = $searchDto->getAppliedFilters();
+        if (!\is_array($appliedFilters) || !\array_key_exists('deletedAt', $appliedFilters)) {
+            $queryBuilder->andWhere('entity.deletedAt IS NULL');
+        }
+
+        return $queryBuilder;
     }
 
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('email'))
-            ->add(TextFilter::new('pseudo'))
-            ->add(BooleanFilter::new('isVerified'))
-            ->add(BooleanFilter::new('isBanned'));
+            ->add(TextFilter::new('email', $this->t('admin.crud.user.field_email')))
+            ->add(TextFilter::new('pseudo', $this->t('admin.crud.user.field_pseudo')))
+            ->add(BooleanFilter::new('isVerified', $this->t('admin.crud.user.field_verified')))
+            ->add(BooleanFilter::new('isBanned', $this->t('admin.crud.user.field_banned')))
+            ->add(
+                NullFilter::new('deletedAt', $this->t('admin.crud.user.filter_deleted_at'))
+                    ->setChoiceLabels(
+                        $this->t('admin.crud.user.filter_active_accounts'),
+                        $this->t('admin.crud.user.filter_deleted_accounts'),
+                    ),
+            );
     }
 
     public function configureFields(string $pageName): iterable
@@ -93,22 +154,17 @@ final class UserCrudController extends AbstractAdminCrudController
         yield TextField::new('pseudo', $this->t('admin.crud.user.field_pseudo'));
 
         yield FormField::addFieldset($this->t('admin.crud.user.fieldset_access'));
-        if ($this->isGranted(User::ROLE_ADMIN)) {
+        if (Crud::PAGE_INDEX === $pageName) {
             yield ChoiceField::new('roles', $this->t('admin.crud.user.field_roles'))
-                ->setChoices([
-                    $this->t('admin.crud.user.role_user') => User::ROLE_USER,
-                    $this->t('admin.crud.user.role_moderator') => User::ROLE_MODERATOR,
-                    $this->t('admin.crud.user.role_super_moderator') => User::ROLE_SUPER_MODERATOR,
-                    $this->t('admin.crud.user.role_admin') => User::ROLE_ADMIN,
-                ])
+                ->setChoices($this->staffRoleChoices())
+                ->allowMultipleChoices()
+                ->renderAsBadges($this->staffRoleBadgeColors());
+        } elseif ($this->isGranted(User::ROLE_ADMIN)) {
+            yield ChoiceField::new('roles', $this->t('admin.crud.user.field_roles'))
+                ->setChoices($this->staffRoleChoices())
                 ->setHelp($this->t('admin.crud.user.help_roles_admin_only'))
                 ->allowMultipleChoices()
-                ->renderAsBadges([
-                    User::ROLE_USER => 'secondary',
-                    User::ROLE_MODERATOR => 'info',
-                    User::ROLE_SUPER_MODERATOR => 'primary',
-                    User::ROLE_ADMIN => 'danger',
-                ]);
+                ->renderAsBadges($this->staffRoleBadgeColors());
         }
         yield TextField::new('plainPassword', $this->t('admin.crud.user.field_password'))
             ->setFormType(PasswordType::class)
@@ -132,29 +188,11 @@ final class UserCrudController extends AbstractAdminCrudController
             $verifiedField->setHelp($this->t('admin.crud.user.help_verified_new'));
         }
         yield $verifiedField;
-        yield BooleanField::new('isBanned', $this->t('admin.crud.user.field_banned'))
-            ->setHelp($this->t('admin.crud.user.help_banned'));
-        yield TextareaField::new('platformBanReason', $this->t('admin.crud.user.field_ban_reason'))
-            ->setFormTypeOption('mapped', false)
-            ->setHelp($this->t('admin.crud.user.help_ban_reason'))
-            ->setFormTypeOption('attr', ['rows' => 4])
-            ->setFormTypeOption('constraints', [$this->createPlatformBanReasonConstraint()])
-            ->onlyOnForms()
-            ->hideOnIndex();
-        yield TextareaField::new('platformBanReasonDisplay', $this->t('admin.crud.user.field_ban_reason'))
-            ->onlyOnDetail()
-            ->formatValue(function (?string $value, User $user): string {
-                if (!$user->isBanned()) {
-                    return $this->notAvailable();
-                }
-
-                $ban = $this->userBanRepository->findLatestActivePlatformBanForUser($user);
-
-                return $ban?->getReason() ?? $this->notAvailable();
-            });
+        yield from $this->buildBanFields($pageName);
 
         yield TextField::new('banSummary', $this->t('admin.crud.user.field_group_bans'))
             ->hideOnForm()
+            ->hideOnIndex()
             ->formatValue(function (?string $value, User $user): string {
                 $total = $this->userBanRepository->countTotalBansForUser($user);
                 $active = \count($this->userBanRepository->findActiveBansForUser($user));
@@ -174,10 +212,10 @@ final class UserCrudController extends AbstractAdminCrudController
             ])
             ->hideOnIndex();
         yield TextField::new('locale', $this->t('admin.crud.user.field_locale'))->hideOnIndex();
-        yield $this->adminDateTimeField('lastLoginAt', $this->t('admin.crud.user.field_last_login'), $pageName)->hideOnForm();
-        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnForm();
-        yield $this->adminDateTimeField('updatedAt', $this->t('admin.crud.common.updated_at'), $pageName)->hideOnForm();
-        yield $this->adminDateTimeField('deletedAt', $this->t('admin.crud.common.deleted_at'), $pageName)->hideOnForm();
+        yield $this->adminDateTimeField('lastLoginAt', $this->t('admin.crud.user.field_last_login'), $pageName)->hideOnForm()->hideOnIndex();
+        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnForm()->hideOnIndex();
+        yield $this->adminDateTimeField('updatedAt', $this->t('admin.crud.common.updated_at'), $pageName)->hideOnForm()->hideOnIndex();
+        yield $this->adminDateTimeField('deletedAt', $this->t('admin.crud.common.deleted_at'), $pageName)->hideOnForm()->hideOnIndex();
     }
 
     /**
@@ -205,8 +243,24 @@ final class UserCrudController extends AbstractAdminCrudController
     /**
      * @param User $entityInstance
      */
+    public function edit(AdminContext $context): KeyValueStore|Response
+    {
+        $this->assertCanEditUser($context->getEntity()->getInstance());
+
+        return parent::edit($context);
+    }
+
+    public function detail(AdminContext $context): KeyValueStore|Response
+    {
+        $this->assertCanEditUser($context->getEntity()->getInstance());
+
+        return parent::detail($context);
+    }
+
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
+        $this->assertCanEditUser($entityInstance);
+
         $unitOfWork = $entityManager->getUnitOfWork();
         $original = $unitOfWork->getOriginalEntityData($entityInstance);
         $wasBanned = (bool) ($original['isBanned'] ?? false);
@@ -261,7 +315,7 @@ final class UserCrudController extends AbstractAdminCrudController
             }
 
             if (!$this->canDeleteTarget($user)) {
-                $this->addFlash('danger', $this->t('admin.crud.user.error_admin_target'));
+                $this->addFlash('danger', $this->t($this->userPolicy->getDeleteDenialKey($user)));
 
                 return $this->redirectToUserIndex();
             }
@@ -364,7 +418,7 @@ final class UserCrudController extends AbstractAdminCrudController
         return $this->redirect(
             $this->adminUrlGenerator
                 ->setController(self::class)
-                ->setAction(Action::DETAIL)
+                ->setAction(Action::EDIT)
                 ->setEntityId($user->getId())
                 ->generateUrl(),
         );
@@ -419,8 +473,22 @@ final class UserCrudController extends AbstractAdminCrudController
     private function assertCanDeleteTarget(User $target): void
     {
         if (!$this->canDeleteTarget($target)) {
-            throw new AccessDeniedException($this->t('admin.crud.user.error_admin_target'));
+            throw new AccessDeniedException($this->t($this->userPolicy->getDeleteDenialKey($target)));
         }
+    }
+
+    private function assertCanEditUser(mixed $instance): void
+    {
+        if (!$instance instanceof User) {
+            return;
+        }
+
+        $actor = $this->requireAdminUser();
+        if ($this->userPolicy->canEdit($actor, $instance)) {
+            return;
+        }
+
+        throw new AccessDeniedException($this->t($this->userPolicy->getEditDenialKey($actor, $instance)));
     }
 
     private function getPlatformBanReason(): string
@@ -444,7 +512,6 @@ final class UserCrudController extends AbstractAdminCrudController
 
         try {
             if ($willBeBanned) {
-                $this->assertCanBanTarget($user);
                 $this->platformBanService->ban($user, $this->requireAdminUser(), $reason);
 
                 return;
@@ -452,7 +519,7 @@ final class UserCrudController extends AbstractAdminCrudController
 
             $this->platformBanService->unban($user, $this->requireAdminUser());
         } catch (\DomainException $exception) {
-            throw $this->translateDomainException($exception);
+            throw new AccessDeniedException($this->t($exception->getMessage()));
         }
     }
 
@@ -502,23 +569,122 @@ final class UserCrudController extends AbstractAdminCrudController
         return $admin;
     }
 
-    private function assertCanBanTarget(User $target): void
+    private function canDeleteTarget(User $target): bool
     {
-        if (!\in_array(User::ROLE_ADMIN, $target->getRoles(), true)) {
-            return;
+        $actor = $this->getUser();
+
+        return $actor instanceof User && $this->userPolicy->canDelete($actor, $target);
+    }
+
+    /**
+     * @return iterable<int, BooleanField|TextareaField>
+     */
+    private function buildBanFields(string $pageName): iterable
+    {
+        $isBannedField = BooleanField::new('isBanned', $this->t('admin.crud.user.field_banned'))
+            ->setHelp($this->t('admin.crud.user.help_banned'));
+
+        if (Crud::PAGE_INDEX === $pageName) {
+            $isBannedField->renderAsSwitch(false);
         }
 
-        if (!$this->isGranted(User::ROLE_ADMIN)) {
-            throw new AccessDeniedException($this->t('admin.crud.user.error_admin_target'));
+        if (Crud::PAGE_EDIT === $pageName && !$this->canBanTargetOnForm($pageName)) {
+            $isBannedField
+                ->setFormTypeOption('disabled', true)
+                ->setHelp($this->t('admin.crud.user.help_banned_readonly'));
+        }
+
+        yield $isBannedField;
+
+        $target = $this->getFormTargetUser();
+
+        if (Crud::PAGE_EDIT === $pageName && $target instanceof User && $target->isBanned()) {
+            yield TextareaField::new('platformBanReasonDisplay', $this->t('admin.crud.user.field_ban_reason'))
+                ->setFormTypeOption('mapped', false)
+                ->setFormTypeOption('disabled', true)
+                ->setFormTypeOption('data', $this->formatActivePlatformBanReason($target))
+                ->setFormTypeOption('attr', ['rows' => 4])
+                ->setHelp($this->t('admin.crud.user.help_ban_reason_display'))
+                ->onlyOnForms();
+        }
+
+        $showBanReasonInput = \in_array($pageName, [Crud::PAGE_NEW, Crud::PAGE_EDIT], true)
+            && (!$target instanceof User || !$target->isBanned())
+            && $this->canBanTargetOnForm($pageName);
+
+        if ($showBanReasonInput) {
+            yield TextareaField::new('platformBanReason', $this->t('admin.crud.user.field_ban_reason'))
+                ->setFormTypeOption('mapped', false)
+                ->setHelp($this->t('admin.crud.user.help_ban_reason'))
+                ->setFormTypeOption('attr', ['rows' => 4])
+                ->setFormTypeOption('constraints', [$this->createPlatformBanReasonConstraint()])
+                ->onlyOnForms();
+        }
+
+        if (Crud::PAGE_DETAIL === $pageName) {
+            yield TextareaField::new('platformBanReasonDisplay', $this->t('admin.crud.user.field_ban_reason'))
+                ->onlyOnDetail()
+                ->formatValue(fn (?string $value, User $user): string => $user->isBanned()
+                    ? $this->formatActivePlatformBanReason($user)
+                    : $this->notAvailable());
         }
     }
 
-    private function canDeleteTarget(User $target): bool
+    private function getFormTargetUser(): ?User
     {
-        if (\in_array(User::ROLE_ADMIN, $target->getRoles(), true)) {
-            return $this->isGranted(User::ROLE_ADMIN);
+        $instance = $this->getContext()?->getEntity()?->getInstance();
+
+        return $instance instanceof User ? $instance : null;
+    }
+
+    private function canBanTargetOnForm(string $pageName): bool
+    {
+        if (Crud::PAGE_NEW === $pageName) {
+            return true;
         }
 
-        return $this->isGranted(User::ROLE_SUPER_MODERATOR);
+        $target = $this->getFormTargetUser();
+        $actor = $this->getUser();
+
+        return $target instanceof User
+            && $actor instanceof User
+            && $this->userPolicy->canBanOrUnban($actor, $target);
+    }
+
+    private function formatActivePlatformBanReason(User $user): string
+    {
+        if (!$user->isBanned()) {
+            return $this->notAvailable();
+        }
+
+        $ban = $this->userBanRepository->findLatestActivePlatformBanForUser($user);
+
+        return $ban?->getReason() ?? $this->notAvailable();
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function staffRoleChoices(): array
+    {
+        return [
+            $this->t('admin.crud.user.role_user') => User::ROLE_USER,
+            $this->t('admin.crud.user.role_moderator') => User::ROLE_MODERATOR,
+            $this->t('admin.crud.user.role_super_moderator') => User::ROLE_SUPER_MODERATOR,
+            $this->t('admin.crud.user.role_admin') => User::ROLE_ADMIN,
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function staffRoleBadgeColors(): array
+    {
+        return [
+            User::ROLE_USER => 'secondary',
+            User::ROLE_MODERATOR => 'info',
+            User::ROLE_SUPER_MODERATOR => 'primary',
+            User::ROLE_ADMIN => 'danger',
+        ];
     }
 }

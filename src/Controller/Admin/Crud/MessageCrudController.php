@@ -13,7 +13,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -38,7 +37,7 @@ final class MessageCrudController extends AbstractAdminCrudController
             ->setEntityLabelInSingular($this->t('admin.crud.message.entity_singular'))
             ->setEntityLabelInPlural($this->t('admin.crud.message.entity_plural'))
             ->setEntityPermission(User::ROLE_MODERATOR)
-            ->setSearchFields(['id'])
+            ->setSearchFields(['id', 'content'])
             ->setPaginatorPageSize(25)
             ->setDefaultSort(['createdAt' => 'DESC'])
             ->setPageTitle(Crud::PAGE_DETAIL, fn (Message $message): string => $this->t('admin.crud.message.page_detail', [
@@ -66,7 +65,7 @@ final class MessageCrudController extends AbstractAdminCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        yield IdField::new('id');
+        yield IdField::new('id')->onlyOnIndex();
 
         yield FormField::addFieldset($this->t('admin.crud.message.fieldset_content'));
         yield TextareaField::new('content', $this->t('admin.crud.message.field_content_full'))
@@ -93,27 +92,25 @@ final class MessageCrudController extends AbstractAdminCrudController
         yield $this->entityAssociation('parent', $this->t('admin.crud.message.field_parent'))->hideOnIndex();
 
         yield FormField::addFieldset($this->t('admin.crud.message.fieldset_metadata'));
-        yield BooleanField::new('isStaffAnnouncement', $this->t('admin.crud.message.field_staff_announcement'));
-        yield BooleanField::new('isPlatformNotice', $this->t('admin.crud.message.field_platform_notice'));
-        yield ChoiceField::new('platformNoticeVariant', $this->t('admin.crud.message.field_notice_variant'))
-            ->setChoices($this->noticeVariantChoices())
-            ->hideOnIndex();
+        yield BooleanField::new('isStaffAnnouncement', $this->t('admin.crud.message.field_staff_announcement'))
+            ->renderAsSwitch(false);
+        yield BooleanField::new('isPlatformNotice', $this->t('admin.crud.message.field_platform_notice'))
+            ->renderAsSwitch(false);
+        yield TextField::new('platformNoticeVariantLabel', $this->t('admin.crud.message.field_notice_variant'))
+            ->onlyOnDetail()
+            ->setVirtual(true)
+            ->formatValue(function (?string $value, Message $message): string {
+                $variant = $message->getPlatformNoticeVariant();
+                if (!$variant instanceof PlatformNoticeVariant) {
+                    return $this->t('admin.crud.common.none');
+                }
+
+                return $this->t('admin.crud.message.notice_variant.'.$variant->value);
+            });
         yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName);
         yield $this->adminDateTimeField('authorHiddenAt', $this->t('admin.crud.message.field_hidden_by_author'), $pageName)->hideOnIndex();
         yield $this->adminDateTimeField('recipientHiddenAt', $this->t('admin.crud.message.field_hidden_by_recipient'), $pageName)->hideOnIndex();
         yield $this->adminDateTimeField('repliesClosedAt', $this->t('admin.crud.message.field_replies_closed'), $pageName)->hideOnIndex();
     }
 
-    /**
-     * @return array<string, PlatformNoticeVariant|null>
-     */
-    private function noticeVariantChoices(): array
-    {
-        $choices = [$this->t('admin.crud.common.none') => null];
-        foreach (PlatformNoticeVariant::cases() as $variant) {
-            $choices[$this->t('admin.crud.message.notice_variant.'.$variant->value)] = $variant;
-        }
-
-        return $choices;
-    }
 }

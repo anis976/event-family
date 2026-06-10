@@ -9,6 +9,6 @@ parameters:
     ef.messages.private_replies_initial: 30
     ef.messages.private_replies_load_more: 30
     ef.messages.private_replies_max_visible: 200
-    ef.messages.private_hourly_limit: 30
-    ef.messages.group_hourly_limit: 25
+    ef.messages.private_hourly_limit: 20
+    ef.messages.group_hourly_limit: 15
     ef.messages.email_notify_throttle_minutes: 30

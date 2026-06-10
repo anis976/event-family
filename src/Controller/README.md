@@ -1,4 +1,4 @@
-# Contrôleurs EventFamily
+# Contrôleurs RapporFam
 
 Tous les contrôleurs métier étendent **`AbstractAppController`** (pas `AbstractController` directement).
 

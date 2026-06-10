@@ -26,6 +26,7 @@ final class AdminPlatformBanService
         private readonly MailerInterface $mailer,
         private readonly TransactionalEmailHelper $emailHelper,
         private readonly TranslatorInterface $translator,
+        private readonly AdminUserPolicyService $userPolicy,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $mailerFrom,
         #[Autowire('%ef.moderation_contact%')]
@@ -145,22 +146,10 @@ final class AdminPlatformBanService
 
     private function assertCanManageTarget(User $actor, User $target): void
     {
-        if (\in_array(User::ROLE_ADMIN, $target->getRoles(), true)
-            && !\in_array(User::ROLE_ADMIN, $actor->getRoles(), true)) {
-            throw new \DomainException('admin.crud.user.error_admin_target');
+        if ($this->userPolicy->canBanOrUnban($actor, $target)) {
+            return;
         }
 
-        if ($this->isStaff($target) && !\in_array(User::ROLE_ADMIN, $actor->getRoles(), true)) {
-            throw new \DomainException('admin.crud.user.error_staff_target');
-        }
-    }
-
-    private function isStaff(User $user): bool
-    {
-        $roles = $user->getRoles();
-
-        return \in_array(User::ROLE_MODERATOR, $roles, true)
-            || \in_array(User::ROLE_SUPER_MODERATOR, $roles, true)
-            || \in_array(User::ROLE_ADMIN, $roles, true);
+        throw new \DomainException($this->userPolicy->getBanDenialKey($actor, $target));
     }
 }

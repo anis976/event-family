@@ -53,9 +53,15 @@ class Message implements EfAdminLabelInterface
     private Collection $replies;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank]
     #[Assert\Length(max: 5000)]
     private string $content = '';
+
+    /**
+     * @var Collection<int, MessagePhoto>
+     */
+    #[ORM\OneToMany(targetEntity: MessagePhoto::class, mappedBy: 'message', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private Collection $photos;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $isStaffAnnouncement = false;
@@ -88,6 +94,7 @@ class Message implements EfAdminLabelInterface
     {
         $this->replies = new ArrayCollection();
         $this->reads = new ArrayCollection();
+        $this->photos = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -190,6 +197,34 @@ class Message implements EfAdminLabelInterface
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function hasContent(): bool
+    {
+        return '' !== trim($this->content);
+    }
+
+    /**
+     * @return Collection<int, MessagePhoto>
+     */
+    public function getPhotos(): Collection
+    {
+        return $this->photos;
+    }
+
+    public function hasPhotos(): bool
+    {
+        return !$this->photos->isEmpty();
+    }
+
+    public function addPhoto(MessagePhoto $photo): static
+    {
+        if (!$this->photos->contains($photo)) {
+            $this->photos->add($photo);
+            $photo->setMessage($this);
+        }
 
         return $this;
     }
@@ -337,6 +372,12 @@ class Message implements EfAdminLabelInterface
 
     public function getAdminLabel(): string
     {
+        if ($this->hasPhotos() && !$this->hasContent()) {
+            $photoCount = $this->photos->count();
+
+            return sprintf('#%s — [%d photo(s)]', $this->id ?? '?', $photoCount);
+        }
+
         $excerpt = mb_strlen($this->content) > 60
             ? mb_substr($this->content, 0, 60).'…'
             : $this->content;

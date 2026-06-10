@@ -1,0 +1,12 @@
+# Profil mutualisé PlanetHoster The World (démarrage) — ressources CPU/RAM/I/O limitées.
+# Ajuster à la hausse si le site grandit ou si le compte N0C reçoit plus de ressources.
+parameters:
+    ef.message_photos.storage_dir: '%kernel.project_dir%/var/storage/message-photos'
+    ef.message_photos.max_bytes: 3145728
+    ef.message_photos.max_per_message: 2
+    ef.message_photos.max_dimension: 1200
+    ef.message_photos.webp_quality: 82
+    ef.message_photos.caption_max_length: 500
+    ef.message_photos.hourly_limit: 6
+    ef.message_photos.daily_limit: 20
+    ef.message_photos.purge_retention_months: '%ef.messages.purge_retention_months%'

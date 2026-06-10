@@ -55,6 +55,8 @@ final class MessageController extends AbstractAppController
         private readonly int $privateRepliesLoadMore,
         #[Autowire('%ef.messages.private_replies_max_visible%')]
         private readonly int $privateRepliesMaxVisible,
+        #[Autowire('%ef.message_photos.max_bytes%')]
+        private readonly int $messagePhotoMaxBytes,
     ) {
     }
 
@@ -229,13 +231,20 @@ final class MessageController extends AbstractAppController
             }
 
             try {
+                $uploadedPhotos = $this->extractGroupMessagePhotos($request);
+                $photoCrops = $this->extractGroupMessagePhotoCrops($request, \count($uploadedPhotos));
+
                 $this->messageService->sendGroupMessage(
                     $user,
                     $currentGroup,
                     (string) $form->get('content')->getData(),
+                    $uploadedPhotos,
+                    $photoCrops,
                 );
                 $this->addSuccessFlash('flash.message.published');
             } catch (\DomainException $e) {
+                $this->addErrorFlash($e->getMessage());
+            } catch (\InvalidArgumentException $e) {
                 $this->addErrorFlash($e->getMessage());
             }
 
@@ -299,6 +308,7 @@ final class MessageController extends AbstractAppController
                 : '',
             'system_notice_is_custom' => null !== $currentGroup
                 && $this->systemNoticeService->isCustomized($currentGroup),
+            'message_photo_max_bytes' => $this->messagePhotoMaxBytes,
         ]);
     }
 
@@ -496,6 +506,65 @@ final class MessageController extends AbstractAppController
         }
 
         return $map;
+    }
+
+    /**
+     * @return list<\Symfony\Component\HttpFoundation\File\UploadedFile>
+     */
+    private function extractGroupMessagePhotos(Request $request): array
+    {
+        $files = [];
+        $bag = $request->files;
+
+        for ($index = 0; $index < 2; ++$index) {
+            $file = $bag->get('photo_'.$index);
+            if ($file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile && $file->isValid()) {
+                $files[] = $file;
+            }
+        }
+
+        $legacy = $bag->all('photos');
+        if (\is_array($legacy)) {
+            foreach ($legacy as $file) {
+                if ($file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile && $file->isValid()) {
+                    $files[] = $file;
+                }
+            }
+        }
+
+        return \array_slice($files, 0, 2);
+    }
+
+    /**
+     * @return list<array{x: int, y: int, width: int, height: int}|null>
+     */
+    private function extractGroupMessagePhotoCrops(Request $request, int $photoCount): array
+    {
+        $crops = [];
+        for ($index = 0; $index < $photoCount; ++$index) {
+            $crops[] = $this->parsePhotoCrop($request, 'photo_'.$index);
+        }
+
+        return $crops;
+    }
+
+    /**
+     * @return array{x: int, y: int, width: int, height: int}|null
+     */
+    private function parsePhotoCrop(Request $request, string $prefix): ?array
+    {
+        $width = (int) $request->request->get($prefix.'_cropWidth');
+        $height = (int) $request->request->get($prefix.'_cropHeight');
+        if ($width <= 0 || $height <= 0) {
+            return null;
+        }
+
+        return [
+            'x' => (int) $request->request->get($prefix.'_cropX'),
+            'y' => (int) $request->request->get($prefix.'_cropY'),
+            'width' => $width,
+            'height' => $height,
+        ];
     }
 
     private function requireUser(): User

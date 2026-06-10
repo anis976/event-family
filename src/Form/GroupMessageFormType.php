@@ -24,8 +24,8 @@ final class GroupMessageFormType extends AbstractType
 
         $builder->add('content', TextareaType::class, [
             'label' => false,
+            'required' => false,
             'constraints' => [
-                new Assert\NotBlank(message: $t('ui.messages.form.content_required')),
                 new Assert\Length(max: 5000, maxMessage: $t('ui.messages.form.content_max')),
             ],
         ]);

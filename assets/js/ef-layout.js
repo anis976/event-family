@@ -1,5 +1,5 @@
 /**
- * EventFamily — layout UI (Turbo-safe, idempotent).
+ * RapporFam — layout UI (Turbo-safe, idempotent).
  */
 
 const STORAGE_THEME_KEY = 'ef-theme';
@@ -238,7 +238,7 @@ function onSystemThemeChange() {
     }
 }
 
-export function initEventFamilyLayout() {
+export function initRapporFamLayout() {
     applyTheme(getStoredThemePreference());
     initBootstrapDropdowns();
     updateBackToTopVisibility();

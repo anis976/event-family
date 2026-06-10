@@ -26,7 +26,7 @@
 
 | # | Sujet | Où | Statut |
 |---|--------|-----|--------|
-| 10 | **E-mails professionnels** | `MAILER_FROM`, `CONTACT_RECIPIENT`, `MODERATION_CONTACT` (SMTP prod) ; remplacer `admin@eventfamily.com` et adresses de test sur `/contact` + mentions | ☐ |
+| 10 | **E-mails professionnels** | `MAILER_FROM`, `CONTACT_RECIPIENT`, `MODERATION_CONTACT` (SMTP prod) ; remplacer `admin@rapprofam.fr` et adresses de test sur `/contact` + mentions | ☐ |
 | 10b | **Adresse éditeur** | Vérifier `PUBLISHER_ADDRESS` dans `.env` prod (mentions + RGPD) | ☐ |
 | 11 | **WhatsApp / téléphone** | `/contact` — numéro réel + lien `wa.me` (**pas de clé API** en v1). API Meta → v2 | ☐ |
 | 12 | **`CONTACT_RECIPIENT`** | `.env` prod — boîte qui reçoit les messages du formulaire | ☐ |
@@ -148,8 +148,8 @@ Les notifications (messages privés, vérification compte, etc.) doivent arriver
 
 | Règle | Exemple |
 |--------|---------|
-| `MAILER_FROM` = domaine du site | `EventFamily <noreply@eventfamily.com>` |
-| Même domaine que `DEFAULT_URI` | Site `https://eventfamily.com` → `@eventfamily.com` |
+| `MAILER_FROM` = domaine du site | `RapporFam <noreply@rapprofam.fr>` |
+| Même domaine que `DEFAULT_URI` | Site `https://rapprofam.fr` → `@rapprofam.fr` |
 | **Pas** Ethereal / Gmail perso en prod | Réservé au dev local |
 
 ### 2. DNS — SPF, DKIM, DMARC

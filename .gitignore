@@ -11,6 +11,9 @@
 !/var/storage/avatars/
 /var/storage/avatars/*
 !/var/storage/avatars/.gitkeep
+!/var/storage/message-photos/
+/var/storage/message-photos/*
+!/var/storage/message-photos/.gitkeep
 /vendor/
 ###< symfony/framework-bundle ###
 

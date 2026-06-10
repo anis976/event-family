@@ -1,0 +1,42 @@
+{% extends 'layout/error.html.twig' %}
+
+{% block title %}{{ 'ui.error.forbidden.page_title'|trans }}{% endblock %}
+
+{% block body %}
+    <main class="ef-error-page__main" role="main" aria-labelledby="ef-error-403-title">
+        <div class="ef-error-page__inner">
+            <div class="ef-error-page__card text-center">
+                <p class="ef-error-page__code" aria-hidden="true">{{ 'ui.error.forbidden.code'|trans }}</p>
+
+                <div class="ef-error-page__icon" aria-hidden="true">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+
+                <h1 id="ef-error-403-title" class="ef-error-page__title">{{ 'ui.error.forbidden.title'|trans }}</h1>
+                <p class="ef-error-page__message">{{ 'ui.error.forbidden.message'|trans }}</p>
+                <p class="ef-error-page__hint">{{ 'ui.error.forbidden.hint'|trans }}</p>
+
+                <div class="ef-error-page__actions">
+                    <a href="{{ path('app_home') }}" class="ef-error-page__btn ef-error-page__btn--primary">
+                        <i class="bi bi-house-door me-2" aria-hidden="true"></i>{{ 'ui.error.forbidden.back_home'|trans }}
+                    </a>
+                    {% if app.user %}
+                        <a href="{{ path('app_contact') }}" class="ef-error-page__btn ef-error-page__btn--secondary">
+                            <i class="bi bi-envelope me-2" aria-hidden="true"></i>{{ 'ui.error.forbidden.contact'|trans }}
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="ef-error-page__btn ef-error-page__btn--secondary">
+                            <i class="bi bi-box-arrow-in-right me-2" aria-hidden="true"></i>{{ 'ui.error.forbidden.login'|trans }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <p class="ef-error-page__brand">
+                <a href="{{ path('app_home') }}" class="ef-error-page__brand-link">
+                    <i class="bi bi-calendar-heart me-1" aria-hidden="true"></i>RapporFam
+                </a>
+            </p>
+        </div>
+    </main>
+{% endblock %}

@@ -1,4 +1,4 @@
-# EventFamily
+# RapporFam
 
 Plateforme Symfony 8 de gestion d'événements familiaux.
 
@@ -127,7 +127,8 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 - `@use` uniquement (pas `@import`) · classes **`ef-`**
 - Entrées SASS compilées : `app.scss` (site), `error-page.scss` (404 / erreurs), `ef-admin.scss` (back-office)
 - Pages : `home`, `about`, `contact`, `sign-in`, `legal`, `error`, `profile`, `groups`, `group-show`, `messages`, `events`, `event-show`
-- Composants : `back-to-top`, `alerts`, `dropdowns`, `session-idle`, `cookie-consent`
+- Composants : `back-to-top`, `alerts`, `dropdowns`, `session-idle`, `cookie-consent`, `messages-avatar`
+- JS messagerie : `ef-messages.js`, `ef-group-message-photos.js`, `ef-message-photo-lightbox.js` (Cropper.js à la demande pour upload photos)
 - **Images statiques** : `assets/images/event-placeholders/` (couvertures événements) · `assets/images/home/hero.jpg` (hero accueil). Dans le SCSS, les `url()` sont résolus **depuis** `assets/styles/` (fichier racine `app.scss`) — ex. `../images/home/hero.jpg`, pas `../../images/…`
 
 ## Routes principales
@@ -156,6 +157,7 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 | `/messages/groupe/{groupId}` | `app_messages_group` | Messages de groupe |
 | `POST /messages/direct` | `app_messages_send_direct` | Envoi MP direct |
 | `POST /messages/lire/{id}` | `app_messages_read` | Marquer lu (AJAX) |
+| `GET /messages/photo/{id}` | `app_messages_photo_show` | Affichage photo message de groupe (membres) |
 | `/contact` | `app_contact` | Formulaire contact (connecté) |
 | `/locale/switch` | `app_locale_switch` | Bascule FR ↔ EN (session + profil utilisateur) |
 | `POST /profil/avatar` | `app_profile_avatar_upload` | Upload avatar |
@@ -164,7 +166,7 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 Accès public **invité** (sans compte) : `/` (vitrine), `/about`, `/cgu`, `/mentions-legales`, `/locale/switch`, auth (`/login`, `/register`, reset / verify e-mail, …).  
 **Réservé `ROLE_USER`** : `/evenements`, `/groupes`, `/messages`, `/contact`, `/profil`, invitations, etc. Voir [Accueil public & AdSense](#accueil-public--adsense).
 
-Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, ex. `/ef-console-8f3a2c91`) — réservé aux **modérateurs et administrateurs site** (`ROLE_MODERATOR` / `ROLE_ADMIN`).
+Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, ex. `/ef-console-8f3a2c91`) — réservé au **staff site** (`ROLE_MODERATOR` minimum : modérateur, super-modérateur, administrateur).
 
 ## Administration (EasyAdmin)
 
@@ -172,10 +174,11 @@ Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, e
 |---------|--------|
 | URL | `/%EF_ADMIN_PATH%/` (défaut `ef-console-8f3a2c91`) — **à personnaliser en prod** (`.env.local`) |
 | Sidebar site | Lien « Administration » visible staff site uniquement, ouverture **nouvel onglet** |
-| Tableau de bord | Titre **« Administration EventFamily »** ; cartes vers chaque rubrique |
+| Tableau de bord | Titre **« Administration RapporFam »** ; cartes vers chaque rubrique |
 | Titres de rubrique | En-tête de chaque CRUD = nom de la section (Utilisateurs, Groupes, Événements, Messages, Bannissements) — plus le mot générique « Administration » |
-| Droits | Modo + super-modo + admin : lecture / création / édition ; **suppression** : super-modo + admin (admin seul pour supprimer un compte admin) |
-| CRUD | Utilisateurs, groupes, événements, **messages** (consultation litige), **bannissements** (historique lecture seule) |
+| Droits | Hiérarchie **modo → super-modo → admin** (`AdminUserPolicyService`) : édition / ban selon le palier ; **suppression comptes** : super-modo + admin (admin seul pour un compte admin) ; **suppression** groupes / événements / messages : admin seul |
+| CRUD | Utilisateurs, groupes, événements, **messages** (consultation litige), **bannissements** (historique lecture seule) — listes allégées, filtres traduits FR/EN |
+| Erreurs admin | `AdminAccessDeniedSubscriber` : flash + retour liste (plus de page brute « Access Denied ») |
 | Dates admin | Fuseau **Europe/Paris** ; format `jj/mm/aaaa HH:mm` (année courte `jj/mm/aa` en liste) — motifs ICU EasyAdmin (`dd/MM/yyyy`) |
 | i18n | Menu + titres via clés `admin.*` ; sélecteur FR/EN EasyAdmin ; libellés natifs `EasyAdminBundle.*` |
 | Thème sombre | Préférence site synchronisée (`ef-admin-theme-sync.js`) ; fond actif sidebar assombri en `.ea-dark-scheme` (`ef-admin.scss`) |
@@ -196,25 +199,33 @@ Distincte du **ban groupe** (escalade 3 strikes). Cocher **« Compte suspendu (s
 | E-mail | Motif + adresse de recours (`MODERATION_CONTACT`, défaut = `CONTACT_RECIPIENT`) |
 | MP privé | Notice archive avec lien de recours |
 | Login | Encart `?suspended=1` + lien `mailto:` modération |
-| Déban | Décocher la case → e-mail de réactivation |
+| Déban | Décocher la case → e-mail de réactivation (pied de page : *« Si tu ne t'attendais pas à cette réactivation… »*) |
 | Historique | Entrée `UserBan` sans groupe (« Suspension site ») dans **Bannissements** |
 
-Services : `AdminPlatformBanService`, `PlatformBanAccessSubscriber`. Pas de création manuelle de ban site depuis **Bannissements** (lecture seule).
+Services : `AdminPlatformBanService`, `AdminUserPolicyService`, `PlatformBanAccessSubscriber`. Pas de création manuelle de ban site depuis **Bannissements** (lecture seule).
 
 Variables : `EF_ADMIN_PATH`, `EF_ADMIN_IDLE_TIMEOUT`, `EF_ADMIN_IDLE_WARNING`, `MODERATION_CONTACT` (voir `.env`).
 
 Contrôleurs : `DashboardController`, `UserCrudController`, `GroupCrudController`, `EventCrudController`, `MessageCrudController`, `UserBanCrudController`, `GroupSystemNoticeController`, `AdminSessionActivityController`.
 
-### Validation manuelle admin (en attente)
+### Rubriques CRUD (état juin 2026)
 
-Les garde-fous rôles staff/admin sont implémentés, mais la validation complète est **à faire** :
+| Rubrique | Index | Édition / actions | Notes |
+|----------|-------|-------------------|-------|
+| **Utilisateurs** | Badges rôles staff ; comptes actifs par défaut (filtre *Comptes supprimés*) ; lignes non éditables non cliquables | Rôles : **admin seul** ; ban/déban selon palier ; motif suspension en lecture seule si déjà suspendu ; case suspension grisée si interdit | Comptes **admin** masqués aux non-admins |
+| **Groupes** | Nom, famille, responsable | Réassignation responsable ; message système : **admin seul** | Suppression : admin seul |
+| **Événements** | Titre, type, début, groupe | CRUD standard staff | Suppression : admin seul |
+| **Messages** | Extrait, auteur, destinataire, groupe, métadonnées | **Lecture seule** + détail fil litige ; recherche ID + contenu | Suppression : admin seul ; variante notice = champ virtuel (plus d'erreur enum) |
+| **Bannissements** | Utilisateur, motif (extrait), groupe, palier, statut | **Lecture seule** (+ détail) | Suppression : admin seul |
 
-- Je dois encore exécuter le smoke test manuel (admin / super-modo / modo) car ce n'est pas testé de bout en bout immédiatement.
-- À vérifier en priorité : ban/déban (incluant interdictions staff/admin), suppression (super-modo vs admin), visibilité/édition du champ rôles (admin seul).
-- Timeout admin/CSRF : un correctif est en place (`AdminCsrfExceptionSubscriber`) pour éviter les messages techniques bruts et forcer une redirection + flash traduite ; test réel à confirmer.
-- Référence pratique : matrice de test courte "5 minutes" utilisée pendant cette session (scénarios M/S/A sur cibles U/M/A).
+### Validation manuelle admin
 
-Statut actuel : **fonction implémentée, validation finale à confirmer en environnement réel**.
+| Zone | Statut |
+|------|--------|
+| Garde-fous rôles / ban / déban / suppression (Utilisateurs) | ☑ Smoke test **modo / super-modo / admin** validé en local (juin 2026) |
+| Polish listes + filtres (toutes rubriques CRUD) | ☑ Juin 2026 |
+| Timeout admin + CSRF expiré | Correctif en place (`AdminCsrfExceptionSubscriber`) — re-test rapide conseillé avant prod |
+| Ouverture à de vrais modérateurs | Après relecture **PRE_DEPLOY** + modifs vitrine pré-déploiement |
 
 ## Notifications (sidebar + cloche)
 
@@ -240,18 +251,37 @@ Hub `/messages` → **Messages privés** ou **Messages de groupe**.
 |----------------|-------|--------|
 | Fil / conversation | **1 fil actif par paire** (messages regroupés) | **1 fil racine par publication** (tableau d’affichage) |
 | Réponses | Illimitées (pagination : 30 → 200 par fil) | Illimitées |
-| Rate limit | 30 / h / utilisateur | 25 / h / utilisateur |
+| **Photos** | Non | **0 à 2** par message racine ; légende optionnelle (500 car. max si photo) |
+| Rate limit messages | 20 / h / utilisateur | 15 / h / utilisateur |
+| Rate limit photos | — | **6 / h** + **20 / jour** / utilisateur |
 | Marquage lu | AJAX au scroll (`ef-messages.js`) | En masse à l’ouverture du groupe |
 | Accusé « Lu le… » | Oui (expéditeur) | Non |
-| E-mail notification | Oui — opt-in Mon espace → Notifications | Non (v2 possible) |
+| E-mail notification | Oui — opt-in Mon espace → Notifications | Non |
 | E-mail délivrabilité | Texte + HTML, `List-Unsubscribe` → `/profil#notifications` | — |
-| Purge | 12 mois (`app:messages:purge-old`) | Idem |
+| Purge | 12 mois (`app:messages:purge-old`) | Idem (+ fichiers photos) |
 
-Config : `config/packages/ef_messages.yaml` (pagination, limites, throttle e-mail 30 min).
+Config messages : `config/packages/ef_messages.yaml` (pagination, limites, throttle e-mail 30 min).
 
-Services : `MessageService`, `MessageRepository`, `PrivateMessageNotificationService`, `PrivateMessageRateLimitService`, `GroupMessageRateLimitService`, `DirectMessagePolicy`.
+### Photos dans les messages de groupe (juin 2026)
 
-**v2 reporté (si besoin)** : Web Push · e-mails groupe · pagination réponses groupe très longues.
+| Élément | Détail |
+|---------|--------|
+| Périmètre | Messages **racine** de groupe uniquement (pas les réponses, pas les MP) |
+| Nombre | **2 max** par message ; texte **optionnel** (0–500 car. si photo jointe) |
+| Upload | JPG / PNG / WebP — **3 Mo** max à l’upload ; traitement GD → WebP **1200 px** (~100–250 Ko) |
+| UX envoi | Preview + recadrage **optionnel** (Cropper.js, chargé à la demande) ; avertissement confidentialité à l’import |
+| Affichage | Lightbox in-page (pas de nouvel onglet) ; **pas de bouton téléchargement** (consultation seule) |
+| Visibilité | Membres du groupe + staff site ; route protégée `app_messages_photo_show` |
+| Stockage | `var/storage/message-photos/` ; purge fichiers avec le message (12 mois ou suppression) |
+| Anti-spam | Rate limit photos **6/h** + **20/j** ; messages groupe **15/h** (calibré mutualisé PlanetHoster The World) |
+
+Config photos : `config/packages/ef_message_photos.yaml` · services `MessagePhotoService`, `MessagePhotoProcessor`, `GroupMessagePhotoRateLimitService` · JS `ef-group-message-photos.js`, `ef-message-photo-lightbox.js`.
+
+**UI fils (privé + groupe)** : avatar **42 px** à gauche de chaque carte (message racine et réponses) — photo si `profile_avatar_visible()` (même règle que le profil : public, groupe commun ou soi) ; sinon icône `bi-person-fill`. Styles isolés dans `assets/styles/components/_messages-avatar.scss` (retirable sans toucher au reste de `_messages.scss`). **Mobile** : badge compteur de fils en pilule compacte (`ef-messages__threads-badge`, `align-items-start` sur l’en-tête privé / groupe).
+
+Services : `MessageService`, `MessageRepository`, `PrivateMessageNotificationService`, `PrivateMessageRateLimitService`, `GroupMessageRateLimitService`, `GroupMessagePhotoRateLimitService`, `DirectMessagePolicy`.
+
+**v2 reporté (si besoin)** : Web Push · e-mails groupe · pagination réponses groupe très longues · bouton téléchargement opt-in auteur.
 
 ## Groupes
 
@@ -366,7 +396,7 @@ Variables (secondes) — prod dans `.env`, tests courts dans `.env.dev` :
 - Chaque connexion : `last_login_at` mis à jour + reset des avertissements (`LoginActivitySubscriber`)
 - Suppression : soft-delete + **retrait automatique des groupes** (membre) + fermeture bans actifs
 - **Exclus** : admin/modo site, chefs de groupe (owner)
-- Notifications : e-mail + message privé EventFamily (vérifiés) ; e-mail seul si jamais activé
+- Notifications : e-mail + message privé RapporFam (vérifiés) ; e-mail seul si jamais activé
 
 **Tester en local :**
 
@@ -381,18 +411,19 @@ Services : `InactiveAccountPurgeService`, `InactiveAccountNotificationService`, 
 
 ## Messagerie — règles métier
 
-Entités : `Message`, `MessageRead`.
+Entités : `Message`, `MessageRead`, `MessagePhoto`.
 
 - **Message système** (tête du fil groupe) : toujours affiché, non supprimable / non répondable par les membres ; édition **staff site** (`GroupSystemNoticeService`, `Group.systemNoticeContent`)
-- **Annonces staff** (admin/modo site) : fil privé orange « EventFamily », sans réponse (`PlatformNoticeVariant::EventFamily`)
-- **Notices plateforme** (bans, inactivité) : messages privés système (`PlatformNoticeVariant::System` / `EventFamily`)
-- **Privé** : **1 fil actif par paire** d'utilisateurs ; réponses illimitées (pagination 30 → 200 par fil) ; rate limit **30/h**
+- **Annonces staff** (admin/modo site) : fil privé orange « RapporFam », sans réponse (`PlatformNoticeVariant::RapporFam`)
+- **Notices plateforme** (bans, inactivité) : messages privés système (`PlatformNoticeVariant::System` / `RapporFam`)
+- **Privé** : **1 fil actif par paire** d'utilisateurs ; réponses illimitées (pagination 30 → 200 par fil) ; rate limit **20/h**
 - **E-mail nouveau MP** : opt-in Mon espace → Notifications (`notifyPrivateMessageEmail`) ; throttle 30 min / conversation ; texte + HTML + `List-Unsubscribe`
 - **Accusé de lecture** : « Lu le… » visible par l'expéditeur (MP uniquement)
 - **Masquage MP** : suppression « de mon côté » (`author_hidden_at` / `recipient_hidden_at`) — l'autre partie conserve le fil
 - **Fil clôturé** : dès qu'un participant **masque** le MP, plus de réponse possible pour **aucun** des deux
-- **Groupe** : seul l'auteur peut supprimer (hard delete pour tous les membres) ; rate limit **25/h** ; marquage lu en masse à l'ouverture
-- **Purge auto** : `php bin/console app:messages:purge-old` (`ef.messages.purge_retention_months`, défaut **12 mois**) — MP + groupe ; notices plateforme conservées
+- **Groupe** : seul l'auteur peut supprimer (hard delete pour tous les membres) ; rate limit **15/h** ; marquage lu en masse à l'ouverture
+- **Photos groupe** : 0–2 par message racine ; upload 3 Mo → WebP 1200 px ; lightbox sans téléchargement ; avertissement confidentialité ; limites **6/h** + **20/j** photos ; fichiers `var/storage/message-photos/` supprimés avec le message
+- **Purge auto** : `php bin/console app:messages:purge-old` (`ef.messages.purge_retention_months`, défaut **12 mois**) — MP + groupe + fichiers photos ; notices plateforme conservées
 - **Groupe** : membres du groupe ; sélecteur si plusieurs groupes ; point rouge sur groupes avec messages non lus
 - **Lecture MP** : auto à l'affichage (Intersection Observer, `ef-messages.js`)
 - Règles MP : `DirectMessagePolicy` (ban groupe, pas de MP à soi-même)
@@ -414,6 +445,7 @@ Entités : `Message`, `MessageRead`.
 | `ef_group_requests` | `GroupRequest` |
 | `ef_user_bans` | `UserBan` |
 | `ef_messages` | `Message` |
+| `ef_message_photos` | `MessagePhoto` |
 | `ef_message_reads` | `MessageRead` |
 | `ef_events` | `Event` |
 
@@ -477,7 +509,7 @@ Configurations **distinctes** (reCAPTCHA ≠ OAuth ≠ Analytics ≠ AdSense). D
 | Prévisualisation dev | `/_error/404` (firewall `dev` : `/_error` sans auth) |
 | Comportement site | URL inconnue : **invité** → redirection login (sauf routes publiques ci-dessus) ; **connecté** → page 404 personnalisée |
 
-Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/404`) ; marque EventFamily en pied de carte.
+Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/404`) ; marque RapporFam en pied de carte.
 
 ### Pages légales (livré — juin 2026)
 
@@ -508,8 +540,8 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 | 5 | **reCAPTCHA** prod (`RECAPTCHA_*`) — domaines du site |
 | 6 | **`EF_ADMIN_PATH`** personnalisé |
 | 7 | **Assets** : `sass:build`, `asset-map:compile`, `cache:clear` prod |
-| 8 | **Dossiers writable** : `var/storage/avatars/`, `var/storage/events/` |
-| 9 | **PHP GD** activé |
+| 8 | **Dossiers writable** : `var/storage/avatars/`, `var/storage/events/`, `var/storage/message-photos/` |
+| 9 | **PHP GD** activé (avatars, photos événements, **photos messages groupe**) |
 
 ### Synthèse — contenu & légal
 
@@ -543,8 +575,9 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 |---|----------|
 | 23–24 | Inscription, vérif e-mail, mot de passe, Google OAuth |
 | 25 | Contact + reCAPTCHA |
-| 26 | Groupes, événements, **messages privés + groupe**, invitations |
+| 26 | Groupes, événements, **messages privés + groupe**, **photos groupe**, invitations |
 | 26b | **MP** : fil unique, réponses, accusé « Lu », e-mail notif + désactivation Mon espace |
+| 26c | **Photos groupe** : upload 1–2, recadrage, lightbox, limites 6/h · avertissement confidentialité |
 | 27–32 | Locale FR/EN, session idle, avatars, admin, 404, PayPal |
 | 33 | **Délivrabilité** : mail-tester.com ≥ 8/10 ; MP reçu Gmail + Outlook |
 
@@ -559,7 +592,7 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | `DATABASE_URL` | MySQL hébergeur |
 | `MAILER_DSN` | SMTP production |
 | `MAILER_FROM` | E-mail expéditeur vérifié |
-| `DEFAULT_URI` | URL publique HTTPS (ex. `https://eventfamily.fr`) |
+| `DEFAULT_URI` | URL publique HTTPS (ex. `https://rapprofam.fr`) |
 | `CONTACT_RECIPIENT` | E-mail de réception du formulaire contact, mentions et CGU (`ef_contact_recipient`) |
 | `PUBLISHER_ADDRESS` | Adresse postale de l’éditeur — mentions + responsable du traitement RGPD (`ef_publisher_address`) |
 | `MODERATION_CONTACT` | Recours suspension site (défaut `${CONTACT_RECIPIENT}` dans `.env`) |
@@ -583,7 +616,8 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | Cron purge messages | `php bin/console app:messages:purge-old --env=prod` (ex. 5 h) |
 | Dossier avatars | `var/storage/avatars/` writable par PHP |
 | Dossier photos events | `var/storage/events/` writable par PHP |
-| Extension PHP | **GD** activée (avatars + photos événements) |
+| Dossier photos messages | `var/storage/message-photos/` writable par PHP |
+| Extension PHP | **GD** activée (avatars + photos événements + photos messages) |
 
 ### Fonctionnalités à finaliser avant prod
 
@@ -596,7 +630,7 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | **Délivrabilité e-mail** | Code livré (texte + HTML, List-Unsubscribe) — **SPF + DKIM + DMARC** obligatoires en prod ([PRE_DEPLOY § Délivrabilité](docs/PRE_DEPLOY.md)) |
 | **CGU & mentions — contenu juridique** | ☑ Livré juin 2026 — RGPD, LCEN, projet perso, données réelles, `PUBLISHER_ADDRESS` |
 | **CGU & mentions — hébergeur** | Remplacer les placeholders `legal.mentions.hosting.*` (nom, adresse, contact hébergeur) — FR + EN |
-| **E-mails professionnels** | Remplacer les adresses fictives (`admin@eventfamily.com`, Ethereal, etc.) : `MAILER_FROM`, `CONTACT_RECIPIENT`, `MODERATION_CONTACT` |
+| **E-mails professionnels** | Remplacer les adresses fictives (`admin@rapprofam.fr`, Ethereal, etc.) : `MAILER_FROM`, `CONTACT_RECIPIENT`, `MODERATION_CONTACT` |
 | **Messenger async** | En prod, configurer worker si e-mails async |
 | **HTTPS** | Obligatoire (cookies session, remember-me) |
 | **Bandeau cookies** | Livré (nécessaires + analytics + marketing) | AdSense : balises **après** approbation, sous consentement marketing |
@@ -625,11 +659,29 @@ RECAPTCHA_SECRET_KEY=
 
 Après envoi : flash vert *« Ton message a bien été envoyé… »* + e-mail sur [ethereal.email](https://ethereal.email). Pas de bandeau spécial sur la page — si vous voyez une erreur, c’est un flash rouge ou une alerte de validation.
 
+### Hébergement PlanetHoster The World (démarrage)
+
+Calibrage **juin 2026** pour un compte N0C mutualisé (CPU / RAM / I/O limités) — ajuster dans `ef_message_photos.yaml` et `ef_messages.yaml` si montée en charge.
+
+| Paramètre | Valeur prod initiale | Fichier |
+|-----------|---------------------|---------|
+| Photos / message groupe | 2 | `ef_message_photos.yaml` |
+| Upload photo max | 3 Mo | idem |
+| Dimension après GD | 1200 px WebP | idem |
+| Photos / h / utilisateur | 6 | idem |
+| Photos / jour / utilisateur | 20 | idem |
+| Messages groupe / h | 15 | `ef_messages.yaml` |
+| Messages privés / h | 20 | idem |
+| Purge messages + photos | 12 mois | idem |
+
+**Recommandation compte N0C** : allouer **≥ 2 Go RAM** au projet RapporFam si possible (traitement GD + Symfony). Sauvegardes **BDD + `var/storage/`** (avatars, events, message-photos).
+
 ### Avatars
 
 - Stockage : `var/storage/avatars/` (original + version 512×512 WebP/JPEG)
 - Visibilité : publique (tous les membres) ou privée (membres d'un groupe commun)
 - Fichiers renommés en UUID — jamais le nom d'origine
+- **Réutilisation messagerie** : partial `templates/messages/_user_avatar.html.twig` + `ProfileAvatarExtension` (`profile_avatar_visible`) — portrait profil (`_avatar_portrait.html.twig`) et cartes MP/groupe partagent la même logique d’affichage
 
 ## Performances & navigation (état au 2026-06-05)
 
@@ -668,8 +720,8 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 | Zone | Mesure |
 |------|--------|
 | **Badges sidebar / cloche** | AJAX (`ef-notifications.js`), plus de requêtes SQL dans chaque HTML |
-| **Messages groupe** | Marquage lu à l’ouverture ; rate limit 25/h ; pagination fils ; pastilles non-lues AJAX |
-| **Messages privés** | Fil unique par contact ; e-mail notif (opt-out) ; accusés de lecture ; pagination fils + réponses |
+| **Messages groupe** | Marquage lu à l’ouverture ; rate limit 15/h ; **photos** 6/h + 20/j ; pagination fils ; pastilles non-lues AJAX |
+| **Messages privés** | Fil unique par contact ; e-mail notif (opt-out) ; accusés de lecture ; pagination fils + réponses ; rate limit 20/h |
 | **Turbo** | JS unique, thème réappliqué avant rendu, pas de voile parasite ; `no-preview` cache |
 | **Listes** | Pagination groupes / événements / membres ; cartes groupes allégées |
 | **Admin messages** | Recherche index limitée à l’ID (plus de scan `content`) |
@@ -710,7 +762,7 @@ Détail ligne par ligne : [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md) (sections *Bl
 
 | Priorité | Tâche | Statut |
 |----------|--------|--------|
-| 1 | **Messagerie** (privé + groupe) | ☑ livré juin 2026 |
+| 1 | **Messagerie** (privé + groupe + **photos groupe**) | ☑ livré juin 2026 |
 | 2 | **Relecture page par page** | En cours — **Accueil** ☑ · **Hub Messages** ☑ · **Auth** ☑ · **Profil** ☑ · **Groupes** ☑ · **Événements** ☑ · **About** ☑ · **Contact** ☑ · **Invitations** ☑ · **Légal + 404** ☑ (juin 2026) · reste : **Admin EasyAdmin** |
 | 3 | **Bugs** repérés lors de la relecture | — |
 | 4 | **Perfs prod** — `APP_ENV=prod` + cache warmup | Avant déploiement |
@@ -778,16 +830,23 @@ Parcours `/messages` (hub), `/messages/prives` et `/messages/groupe` — correct
 |------|--------|
 | **Hub `/messages`** | `<h1>` « Espace Messages » ; cartes Privé / Groupe avec `aria-label` (compteur non-lu) ; pastilles et icônes décoratives en `aria-hidden` |
 | **Privé / Groupe** | Titre uniquement en topbar (suppression du `<h2>` dupliqué) ; badge total de fils sans paramètre `%count%` erroné |
+| **Avatars fils** | Portrait **42 px** dans chaque carte MP et groupe (photo ou icône selon visibilité profil) ; layout `item-row` sans débordement (`min-w-0`, `text-truncate`) |
+| **Mobile** | Badge compteur de fils : plus d’étirement pleine largeur (`ef-messages__threads-badge`, `align-items-start` sur en-têtes privé / groupe) |
 | **i18n FR** | Tutoiement aligné (sous-titres hub, fils MP, placeholders, flashs `hidden_private` / `thread_closed`) |
-| **SCSS** | Suppression du bloc mort `ef-messages__tabs` (remplacé par le sélecteur ⋮ multi-groupes) |
+| **SCSS** | Suppression du bloc mort `ef-messages__tabs` ; styles avatar isolés (`components/_messages-avatar.scss`) |
 
 | Fichier | Rôle |
 |---------|------|
 | `templates/messages/index.html.twig` | h1 hub, `aria-label` liens, hiérarchie titres cartes (`h2`) |
-| `templates/messages/private.html.twig` | En-tête sans titre dupliqué ; lien alertes e-mail `ms-md-auto` |
-| `templates/messages/group.html.twig` | Idem en-tête ; sélecteur groupes inchangé |
-| `assets/styles/pages/_messages.scss` | Nettoyage `__tabs` |
+| `templates/messages/_thread.html.twig` | Cartes fil + réponses avec avatar et contenu flex |
+| `templates/messages/_user_avatar.html.twig` | Partial avatar compact (taille + styles inline de secours) |
+| `templates/messages/private.html.twig` | En-tête sans titre dupliqué ; badge compact mobile ; lien alertes e-mail `ms-md-auto` |
+| `templates/messages/group.html.twig` | Idem en-tête + toolbar groupe (`ms-md-auto`) ; sélecteur ⋮ |
+| `assets/styles/components/_messages-avatar.scss` | Taille et fallback icône (fichier annulable à part) |
+| `assets/styles/pages/_messages.scss` | `__threads-badge`, `__item-content` ; `@use` avatar |
 | `translations/messages.{fr,en}.yaml` → `ui.messages.hub.*` | Libellés accessibles cartes hub (FR + EN) |
+
+**Annuler les avatars dans les fils** : supprimer `_user_avatar.html.twig`, retirer les blocs avatar dans `_thread.html.twig`, supprimer `components/_messages-avatar.scss` et le `@use` dans `_messages.scss`.
 
 **Volontairement non retenu** : refonte du sélecteur groupe (⋮) ; pagination réponses groupe (v2) ; meta SEO sur pages `ROLE_USER`.
 
@@ -1061,9 +1120,9 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 ### Court terme (hors prod / AdSense)
 
-1. **Performances** — valider en mode prod local (section ci-dessus)
-2. **Session admin / CSRF** — valider inactivité longue + actions formulaire après pause (plus de message brut "Invalid CSRF token")
-3. **Admin rôles staff** — exécuter la matrice smoke test (ban/déban/delete/rôles) avant ouverture à de vrais modérateurs
+1. **Modifs vitrine** — pages publiques / UX avant déploiement (session en cours)
+2. **Performances** — valider en mode prod local (section ci-dessus)
+3. **Session admin / CSRF** — re-test inactivité longue + formulaire après pause avant prod
 4. **Fonctionnalités métier** — selon priorités produit (v2 ci-dessous)
 
 ### v2 — Contact & intégrations (planifié)
@@ -1082,6 +1141,7 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 - **E-mails** nouveaux messages de groupe
 - **Pagination réponses** groupe (fil très long)
 - Masquage « de mon côté » pour les **messages de groupe** (au lieu du hard delete auteur)
+- Téléchargement photo **opt-in** par l’auteur (au-delà de la lightbox consultation seule)
 
 ### Autres
 
@@ -1092,6 +1152,15 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 5. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-09 — Photos messages de groupe + limites PlanetHoster
+
+- **Photos groupe** : 0–2 par message racine ; upload 3 Mo → WebP 1200 px ; recadrage optionnel (Cropper.js) ; lightbox in-page **sans téléchargement**
+- **Confidentialité** : avertissement à l’import (formulaire + modal recadrage) ; pas de route `/telecharger`
+- **Anti-spam** : rate limit photos **6/h** + **20/j** ; messages groupe **15/h** ; MP **20/h** (profil mutualisé PlanetHoster The World)
+- **Entité** : `MessagePhoto` (`ef_message_photos`) ; stockage `var/storage/message-photos/` ; purge fichiers avec messages
+- **JS** : `ef-group-message-photos.js`, `ef-message-photo-lightbox.js` ; config `ef_message_photos.yaml`
+- **README** : section photos messagerie + hébergement PlanetHoster
 
 ### 2026-06-08 — Enrichissement juridique CGU & mentions
 
@@ -1148,6 +1217,20 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 - **OAuth finalisation** : labels alignés inscription ; largeur colonne cohérente
 - **SCSS** : fusion layout auth, retrait duplication boutons / champs dans `_sign-in.scss`
 - **i18n FR** : tutoiement cookie `REMEMBERME`
+
+### 2026-06-09 — Admin EasyAdmin : polish CRUD + validation staff
+
+- **Utilisateurs** : badges rôles sur l'index (lecture seule) ; comptes soft-deleted masqués par défaut + filtre statut ; motif suspension visible à l'édition ; case suspension grisée selon droits ; e-mail déban (pied de page cohérent)
+- **Politique staff** : `AdminUserPolicyService` centralisé ; smoke test modo / super-modo / admin validé (ban, déban, rôles, suppressions)
+- **Messages** : recherche contenu ; booléens non cliquables ; fix enum `PlatformNoticeVariant` (champ virtuel + plus de warning `array_flip`)
+- **Groupes / Événements / Bannissements** : filtres traduits ; index allégés (dates et colonnes secondaires en détail)
+- **README** : tableau rubriques CRUD + statut validation admin à jour
+
+### 2026-06-09 — Avatars messagerie + badge mobile
+
+- **Fils MP / groupe** : avatar **42 px** dans chaque carte (racine + réponses) — `profile_avatar_visible()` ; partial `_user_avatar.html.twig` ; SCSS isolé `components/_messages-avatar.scss`
+- **Mobile** : badge compteur de fils compact sur `/messages/prives` et `/messages/groupe` (`ef-messages__threads-badge`)
+- **Dev** : rappel — si le CSS messagerie ne bouge pas, `composer assets:refresh` ou `php bin/console sass:build` (cache `var/sass/`)
 
 ### 2026-06-07 — Relecture Hub Messages
 
@@ -1230,10 +1313,10 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 - **Suspension site** depuis Admin → Utilisateurs (motif obligatoire, e-mail, MP, blocage connexion, recours par e-mail)
 - **Dates admin** : fuseau Europe/Paris, format `dd/MM/yyyy HH:mm` (ICU EasyAdmin ; année courte en liste)
-- **Titres CRUD** : nom de rubrique dynamique (Utilisateurs, Groupes…) ; tableau de bord « Administration EventFamily »
+- **Titres CRUD** : nom de rubrique dynamique (Utilisateurs, Groupes…) ; tableau de bord « Administration RapporFam »
 - **`MODERATION_CONTACT`** : adresse recours modération (défaut = contact)
 - **Encart login** `?suspended=1` + lien mailto ; pas de formulaire public pour les suspendus
-- **Bannissements admin** : historique lecture seule ; annonces staff / notices plateforme libellées « Administration EventFamily » ou « Système »
+- **Bannissements admin** : historique lecture seule ; annonces staff / notices plateforme libellées « Administration RapporFam » ou « Système »
 
 ### 2026-06-03 — Messagerie : masquage MP + purge 12 mois
 
@@ -1264,7 +1347,7 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 - **Déconnexion auto** après inactivité session (modale + compte à rebours, remember-me option B)
 - **Purge comptes inactifs** : avertissements 8/10/11 mois (connectés), 30/60 j (non activés), commande `app:users:purge-inactive`
 - **Escalade 3 bans** → soft-delete + e-mails + messages privés plateforme
-- Annonces **staff** site + notices plateforme (EventFamily / System)
+- Annonces **staff** site + notices plateforme (RapporFam / System)
 - Dropdowns unifiés (`ef-dropdown-menu`) — sidebar, topbar, groupe, messages, auth
 - `LoginActivitySubscriber` : `last_login_at` + reset avertissements inactivité à chaque connexion
 

@@ -1,5 +1,5 @@
 /**
- * EventFamily — messagerie (lecture auto, réponses, Turbo-safe).
+ * RapporFam — messagerie (lecture auto, réponses, Turbo-safe).
  */
 
 function initMessageReplyToggles() {

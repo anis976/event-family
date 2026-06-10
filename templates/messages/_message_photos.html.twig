@@ -1,0 +1,24 @@
+{% if message.hasPhotos %}
+    <div class="ef-messages__photos d-flex flex-wrap gap-2 mb-2">
+        {% for photo in message.photos %}
+            {% set view_url = path('app_messages_photo_show', { id: photo.id }) %}
+            <button
+                type="button"
+                class="ef-messages__photo-trigger border-0 p-0 bg-transparent"
+                data-ef-photo-view
+                data-ef-photo-url="{{ view_url }}"
+                data-ef-photo-label="{{ 'ui.messages.group.photos.alt'|trans({'%index%': loop.index}) }}"
+                aria-label="{{ 'ui.messages.group.photos.view_aria'|trans({'%index%': loop.index}) }}"
+            >
+                <img
+                    src="{{ view_url }}"
+                    alt="{{ 'ui.messages.group.photos.alt'|trans({'%index%': loop.index}) }}"
+                    class="ef-messages__photo-thumb rounded-3"
+                    loading="lazy"
+                    decoding="async"
+                    draggable="false"
+                >
+            </button>
+        {% endfor %}
+    </div>
+{% endif %}

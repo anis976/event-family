@@ -44,7 +44,7 @@ final class SiteStaffService
                 throw new \DomainException('flash.message.staff_admin_only');
             }
 
-            return PlatformNoticeVariant::EventFamily;
+            return PlatformNoticeVariant::RapporFam;
         }
 
         if ('staff_moderator' === $sendMode || 'staff' === $sendMode) {

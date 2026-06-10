@@ -1,0 +1,57 @@
+// Avatar messages — fichier isolé pour annulation facile de la fonctionnalité.
+// Retirer @use '../components/messages-avatar' dans pages/_messages.scss pour désactiver.
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+$ef-messages-avatar-size: 42px;
+
+.ef-messages__avatar-wrap,
+.ef-messages__avatar-fallback {
+    width: $ef-messages-avatar-size;
+    height: $ef-messages-avatar-size;
+    min-width: $ef-messages-avatar-size;
+    max-width: $ef-messages-avatar-size;
+    min-height: $ef-messages-avatar-size;
+    max-height: $ef-messages-avatar-size;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+}
+
+.ef-messages__avatar-wrap {
+    overflow: hidden;
+    line-height: 0;
+}
+
+.ef-messages__avatar {
+    width: $ef-messages-avatar-size;
+    height: $ef-messages-avatar-size;
+    min-width: $ef-messages-avatar-size;
+    max-width: $ef-messages-avatar-size;
+    min-height: $ef-messages-avatar-size;
+    max-height: $ef-messages-avatar-size;
+    object-fit: cover;
+    display: block;
+}
+
+.ef-messages__avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $ef-primary-orange-dark;
+
+    .bi {
+        color: #fff;
+        font-size: 1rem;
+        line-height: 1;
+    }
+
+    @include color-mode(dark) {
+        background-color: rgba($ef-soft-gold, 0.1);
+        border: 1px solid rgba($ef-soft-gold, 0.3);
+
+        .bi {
+            color: $ef-soft-gold;
+        }
+    }
+}

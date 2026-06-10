@@ -32,3 +32,11 @@ framework:
             policy: sliding_window
             limit: '%ef.messages.group_hourly_limit%'
             interval: '1 hour'
+        group_message_photo_hourly:
+            policy: sliding_window
+            limit: '%ef.message_photos.hourly_limit%'
+            interval: '1 hour'
+        group_message_photo_daily:
+            policy: sliding_window
+            limit: '%ef.message_photos.daily_limit%'
+            interval: '1 day'

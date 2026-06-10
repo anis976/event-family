@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * En dev, redirige vers l'hôte de DEFAULT_URI (ex. localhost) si le navigateur
- * utilise un autre nom (127.0.0.1, eventfamily.test, etc.) pour garder session
+ * utilise un autre nom (127.0.0.1, rapprofam.test, etc.) pour garder session
  * et redirect_uri OAuth alignés.
  */
 final class DevCanonicalHostSubscriber implements EventSubscriberInterface

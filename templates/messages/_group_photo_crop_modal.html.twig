@@ -1,0 +1,23 @@
+<div class="modal fade" id="ef-group-photo-crop-modal" tabindex="-1" aria-labelledby="ef-group-photo-crop-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title h5 mb-0" id="ef-group-photo-crop-title">{{ 'ui.messages.group.photos.crop_title'|trans }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
+            </div>
+            <div class="modal-body p-0 ef-messages__photo-crop-body">
+                <img src="" alt="" class="d-block w-100" id="ef-group-photo-crop-image">
+            </div>
+            <div class="modal-footer flex-column align-items-stretch gap-3">
+                <p class="ef-messages__photo-privacy-notice small mb-0" role="note">
+                    <i class="bi bi-shield-exclamation me-1" aria-hidden="true"></i>
+                    {{ 'ui.messages.group.photos.privacy_notice'|trans }}
+                </p>
+                <div class="d-flex flex-wrap gap-2 justify-content-end w-100">
+                    <button type="button" class="btn btn-outline-secondary" data-ef-photo-crop-skip>{{ 'ui.messages.group.photos.use_without_crop'|trans }}</button>
+                    <button type="button" class="btn btn-primary" data-ef-photo-crop-apply>{{ 'ui.messages.group.photos.apply_crop'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

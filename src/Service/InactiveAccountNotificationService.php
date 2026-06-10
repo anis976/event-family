@@ -36,7 +36,7 @@ final class InactiveAccountNotificationService
             $this->messageService->sendPlatformPrivateNotice(
                 $user,
                 $this->buildPrivateNoticeContent($step, $isVerifiedAccount, $user),
-                PlatformNoticeVariant::EventFamily,
+                PlatformNoticeVariant::RapporFam,
             );
         }
     }

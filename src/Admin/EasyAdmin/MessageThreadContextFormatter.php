@@ -83,12 +83,12 @@ final class MessageThreadContextFormatter
     private function resolveAuthorLabel(Message $message): string
     {
         if ($message->isPlatformNotice()) {
-            $variant = $message->getPlatformNoticeVariant() ?? PlatformNoticeVariant::EventFamily;
+            $variant = $message->getPlatformNoticeVariant() ?? PlatformNoticeVariant::RapporFam;
 
             return match ($variant) {
                 PlatformNoticeVariant::System => $this->translator->trans('admin.crud.message.notice_variant.system', [], 'messages'),
                 PlatformNoticeVariant::Moderator => $this->translator->trans('admin.crud.message.notice_variant.moderator', [], 'messages'),
-                PlatformNoticeVariant::EventFamily => $this->translator->trans('admin.crud.message.notice_variant.eventfamily', [], 'messages'),
+                PlatformNoticeVariant::RapporFam => $this->translator->trans('admin.crud.message.notice_variant.eventfamily', [], 'messages'),
             };
         }
 

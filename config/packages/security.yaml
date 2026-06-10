@@ -58,7 +58,8 @@ security:
         - { path: ^/locale/switch, roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^%ef.admin.path%, roles: ROLE_MODERATOR }
-        - { path: ^/, roles: ROLE_USER }
+        # ^/.+ et non ^/ : sinon "/" est exigé ROLE_USER avant la vitrine invitée (PUBLIC_ACCESS ^/$).
+        - { path: ^/.+, roles: ROLE_USER }
 
 when@test:
     security:

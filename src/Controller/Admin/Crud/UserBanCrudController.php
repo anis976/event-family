@@ -98,8 +98,8 @@ final class UserBanCrudController extends AbstractAdminCrudController
                     '%max%' => (string) BanEscalationService::MAX_BANS_BEFORE_DELETION,
                 ]);
             });
-        yield $this->entityAssociation('author', $this->t('admin.crud.ban.field_author'));
-        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName);
+        yield $this->entityAssociation('author', $this->t('admin.crud.ban.field_author'))->hideOnIndex();
+        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnIndex();
         yield $this->adminDateTimeField('endsAt', $this->t('admin.crud.ban.field_ends_at'), $pageName)
             ->formatValue(function (?\DateTimeImmutable $value, UserBan $ban): string {
                 if (!$ban->isActiveAt()) {

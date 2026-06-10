@@ -47,9 +47,9 @@ final class EventCrudController extends AbstractAdminCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('title'))
-            ->add(ChoiceFilter::new('kind')->setChoices($this->kindChoices()))
-            ->add(ChoiceFilter::new('visibility')->setChoices($this->visibilityChoices()));
+            ->add(TextFilter::new('title', $this->t('admin.crud.event.field_title')))
+            ->add(ChoiceFilter::new('kind', $this->t('admin.crud.event.field_kind'))->setChoices($this->kindChoices()))
+            ->add(ChoiceFilter::new('visibility', $this->t('admin.crud.event.field_visibility'))->setChoices($this->visibilityChoices()));
     }
 
     public function configureFields(string $pageName): iterable
@@ -78,8 +78,8 @@ final class EventCrudController extends AbstractAdminCrudController
         yield TextField::new('photoCover', $this->t('admin.crud.event.field_photo_cover'))->onlyOnDetail();
         yield TextField::new('photoDetail', $this->t('admin.crud.event.field_photo_detail'))->onlyOnDetail();
 
-        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnForm();
-        yield $this->adminDateTimeField('updatedAt', $this->t('admin.crud.common.updated_at'), $pageName)->hideOnForm();
+        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnForm()->hideOnIndex();
+        yield $this->adminDateTimeField('updatedAt', $this->t('admin.crud.common.updated_at'), $pageName)->hideOnForm()->hideOnIndex();
     }
 
     /**

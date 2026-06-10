@@ -13,6 +13,7 @@ use App\Repository\GroupMemberRepository;
 use App\Repository\MessageReadRepository;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class MessageService
 {
@@ -25,7 +26,9 @@ final class MessageService
         private readonly SiteStaffService $siteStaff,
         private readonly PrivateMessageRateLimitService $privateMessageRateLimit,
         private readonly GroupMessageRateLimitService $groupMessageRateLimit,
+        private readonly GroupMessagePhotoRateLimitService $groupMessagePhotoRateLimit,
         private readonly PrivateMessageNotificationService $privateMessageNotification,
+        private readonly MessagePhotoService $messagePhotoService,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -57,8 +60,17 @@ final class MessageService
         return $message;
     }
 
-    public function sendGroupMessage(User $author, Group $group, string $content): Message
-    {
+    /**
+     * @param list<UploadedFile>                                           $uploadedPhotos
+     * @param list<array{x: int, y: int, width: int, height: int}|null> $photoCrops
+     */
+    public function sendGroupMessage(
+        User $author,
+        Group $group,
+        string $content,
+        array $uploadedPhotos = [],
+        array $photoCrops = [],
+    ): Message {
         if (!$this->groupAccess->isMember($author, $group)) {
             throw new \DomainException('flash.message.must_be_member');
         }
@@ -67,7 +79,9 @@ final class MessageService
             throw new \DomainException('flash.message.banned_in_group');
         }
 
+        $this->messagePhotoService->validateGroupMessagePayload($content, $uploadedPhotos);
         $this->groupMessageRateLimit->assertCanSend($author);
+        $this->groupMessagePhotoRateLimit->assertCanUpload($author, $this->countValidUploadedPhotos($uploadedPhotos));
 
         $message = (new Message())
             ->setAuthor($author)
@@ -75,6 +89,7 @@ final class MessageService
             ->setContent(trim($content));
 
         $this->entityManager->persist($message);
+        $this->messagePhotoService->attachPhotosToMessage($message, $uploadedPhotos, $photoCrops);
         $this->entityManager->flush();
 
         return $message;
@@ -101,7 +116,7 @@ final class MessageService
     public function sendPlatformPrivateNotice(
         User $recipient,
         string $content,
-        PlatformNoticeVariant $variant = PlatformNoticeVariant::EventFamily,
+        PlatformNoticeVariant $variant = PlatformNoticeVariant::RapporFam,
         ?User $sentBy = null,
     ): Message {
         $message = (new Message())
@@ -461,5 +476,16 @@ final class MessageService
         }
 
         return $author;
+    }
+
+    /**
+     * @param list<UploadedFile> $uploadedPhotos
+     */
+    private function countValidUploadedPhotos(array $uploadedPhotos): int
+    {
+        return \count(array_filter(
+            $uploadedPhotos,
+            static fn (?UploadedFile $file): bool => $file instanceof UploadedFile && $file->isValid(),
+        ));
     }
 }

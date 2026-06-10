@@ -81,7 +81,7 @@ function ensureCropperLoaded() {
 }
 
 export function initProfileAvatarManager() {
-    const managerEl = document.getElementById('ef-avatar-manager');
+    const managerEl = document.querySelector('.ef-profile-avatar-manager');
     if (!managerEl) {
         return;
     }
@@ -90,7 +90,7 @@ export function initProfileAvatarManager() {
     const fileInput = document.getElementById('ef-avatar-file-input');
     const modalEl = document.getElementById('ef-avatar-crop-modal');
     const cropImage = document.getElementById('ef-avatar-crop-image');
-    const saveBtn = document.getElementById('ef-avatar-save-btn');
+    const saveBtn = document.getElementById('ef-avatar-crop-save');
     const uploadForm = document.getElementById('ef-avatar-upload-form');
 
     if (!chooseBtn || !fileInput || !modalEl || !cropImage || !saveBtn || !uploadForm) {

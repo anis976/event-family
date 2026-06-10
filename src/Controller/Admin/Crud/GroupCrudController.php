@@ -51,8 +51,8 @@ final class GroupCrudController extends AbstractAdminCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add(TextFilter::new('name'))
-            ->add(TextFilter::new('familyName'));
+            ->add(TextFilter::new('name', $this->t('admin.crud.group.field_name')))
+            ->add(TextFilter::new('familyName', $this->t('admin.crud.group.field_family_name')));
     }
 
     public function configureFields(string $pageName): iterable
@@ -82,10 +82,11 @@ final class GroupCrudController extends AbstractAdminCrudController
                 ->onlyOnForms();
         }
         yield $this->adminDateTimeField('systemNoticeUpdatedAt', $this->t('admin.crud.group.field_system_notice_updated'), $pageName)
-            ->hideOnForm();
+            ->hideOnForm()
+            ->hideOnIndex();
 
-        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnForm();
-        yield $this->adminDateTimeField('updatedAt', $this->t('admin.crud.common.updated_at'), $pageName)->hideOnForm();
+        yield $this->adminDateTimeField('createdAt', $this->t('admin.crud.common.created_at'), $pageName)->hideOnForm()->hideOnIndex();
+        yield $this->adminDateTimeField('updatedAt', $this->t('admin.crud.common.updated_at'), $pageName)->hideOnForm()->hideOnIndex();
     }
 
     /**

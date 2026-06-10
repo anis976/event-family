@@ -1,0 +1,22 @@
+{# Avatar compact pour les cartes de message — annulable avec _thread.html.twig + components/_messages-avatar.scss #}
+{% set avatarSize = 42 %}
+{% set avatarBoxStyle = 'width:' ~ avatarSize ~ 'px;height:' ~ avatarSize ~ 'px;min-width:' ~ avatarSize ~ 'px;max-width:' ~ avatarSize ~ 'px;min-height:' ~ avatarSize ~ 'px;max-height:' ~ avatarSize ~ 'px;' %}
+{% set subject = user|default(null) %}
+{% if subject and profile_avatar_visible(subject) %}
+    <div class="ef-messages__avatar-wrap" style="{{ avatarBoxStyle }}" aria-hidden="true">
+        <img
+            src="{{ path('app_profile_avatar_show', { id: subject.id, v: subject.updatedAt.timestamp }) }}"
+            alt=""
+            class="ef-messages__avatar"
+            width="{{ avatarSize }}"
+            height="{{ avatarSize }}"
+            style="{{ avatarBoxStyle }}object-fit:cover;display:block;"
+            loading="lazy"
+            decoding="async"
+        >
+    </div>
+{% else %}
+    <div class="ef-messages__avatar-fallback" style="{{ avatarBoxStyle }}" aria-hidden="true">
+        <i class="bi bi-person-fill" aria-hidden="true"></i>
+    </div>
+{% endif %}

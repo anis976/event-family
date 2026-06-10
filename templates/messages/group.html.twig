@@ -9,43 +9,45 @@
         <a href="{{ path('app_messages') }}" class="btn btn-outline-secondary btn-sm mb-3">
             <i class="bi bi-arrow-left"></i> {{ 'ui.messages.back_to_hub'|trans }}
         </a>
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-        {% if current_group and group_threads_total > 0 %}
-            <span
-                class="badge rounded-pill bg-secondary"
-                title="{{ 'ui.messages.group.showing_count'|trans({ '%visible%': group_threads|length, '%total%': group_threads_total }) }}"
-            >{{ group_threads_total }}</span>
-        {% endif %}
+        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-md-between gap-2 mb-3">
+            {% if current_group and group_threads_total > 0 %}
+                <span
+                    class="badge rounded-pill bg-secondary ef-messages__threads-badge"
+                    title="{{ 'ui.messages.group.showing_count'|trans({ '%visible%': group_threads|length, '%total%': group_threads_total }) }}"
+                >{{ group_threads_total }}</span>
+            {% endif %}
 
-        {% if user_has_group and show_group_unread_dots %}
-            <div class="dropdown">
-                <button class="btn btn-light btn-sm rounded-pill shadow-sm" type="button" data-bs-toggle="dropdown" aria-label="{{ 'ui.messages.group.picker_aria'|trans }}">
-                    <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end ef-dropdown-menu ef-messages__group-picker">
-                    <li><h6 class="dropdown-header">{{ 'ui.messages.group.picker_header'|trans }}</h6></li>
-                    {% for group in user_groups %}
-                        {% set groupUnread = unread_by_group_id[group.id]|default(0) %}
-                        {% set isCurrent = current_group and current_group.id == group.id %}
-                        <li>
-                            <a class="dropdown-item d-flex align-items-center justify-content-between gap-2{% if isCurrent %} active{% endif %}"
-                               href="{{ path('app_messages_group', { groupId: group.id }) }}">
-                                <span class="text-truncate">{{ group.name }}</span>
-                                {% if groupUnread > 0 and not isCurrent %}
-                                    <span class="ef-messages__group-unread-dot flex-shrink-0" title="{{ 'ui.messages.group.unread_count'|trans({'%count%': groupUnread}) }}" aria-hidden="true"></span>
-                                {% endif %}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
+            <div class="ef-messages__group-toolbar-actions ms-md-auto">
+                {% if user_has_group and show_group_unread_dots %}
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm rounded-pill shadow-sm" type="button" data-bs-toggle="dropdown" aria-label="{{ 'ui.messages.group.picker_aria'|trans }}">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end ef-dropdown-menu ef-messages__group-picker">
+                            <li><h6 class="dropdown-header">{{ 'ui.messages.group.picker_header'|trans }}</h6></li>
+                            {% for group in user_groups %}
+                                {% set groupUnread = unread_by_group_id[group.id]|default(0) %}
+                                {% set isCurrent = current_group and current_group.id == group.id %}
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center justify-content-between gap-2{% if isCurrent %} active{% endif %}"
+                                       href="{{ path('app_messages_group', { groupId: group.id }) }}">
+                                        <span class="text-truncate">{{ group.name }}</span>
+                                        {% if groupUnread > 0 and not isCurrent %}
+                                            <span class="ef-messages__group-unread-dot flex-shrink-0" title="{{ 'ui.messages.group.unread_count'|trans({'%count%': groupUnread}) }}" aria-hidden="true"></span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% elseif user_has_group and user_groups|length == 1 and not (is_site_staff and current_group and not is_member_of_current) %}
+                    <span class="text-muted small">{{ user_groups[0].name }}</span>
+                {% elseif is_site_staff and current_group %}
+                    <a href="{{ path('app_groups_show', { id: current_group.id }) }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-left me-1"></i> {{ 'ui.messages.group.group_sheet'|trans }}
+                    </a>
+                {% endif %}
             </div>
-        {% elseif user_has_group and user_groups|length == 1 and not (is_site_staff and current_group and not is_member_of_current) %}
-            <span class="text-muted small">{{ user_groups[0].name }}</span>
-        {% elseif is_site_staff and current_group %}
-            <a href="{{ path('app_groups_show', { id: current_group.id }) }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
-                <i class="bi bi-arrow-left me-1"></i> {{ 'ui.messages.group.group_sheet'|trans }}
-            </a>
-        {% endif %}
         </div>
     </div>
 
@@ -82,10 +84,11 @@
 
         {% if is_member_of_current %}
             <div class="ef-messages__footer mt-4">
-                {% include 'messages/_footer_form.html.twig' with {
+                {% include 'messages/_footer_form_group.html.twig' with {
                     form: form,
                     placeholder: 'ui.messages.group.placeholder_group'|trans,
                     form_action: path('app_messages_group', { groupId: current_group.id }),
+                    message_photo_max_bytes: message_photo_max_bytes,
                 } %}
             </div>
         {% endif %}
@@ -95,6 +98,14 @@
         <p class="text-muted text-center my-5">{{ 'ui.messages.group.no_groups_staff'|trans }}</p>
     {% endif %}
 </div>
+
+{% if current_group %}
+    {% include 'messages/_group_photo_view_modal.html.twig' %}
+{% endif %}
+
+{% if is_member_of_current|default(false) %}
+    {% include 'messages/_group_photo_crop_modal.html.twig' %}
+{% endif %}
 {% endblock %}
 
 {% block body_class %} ef-page-messages{% endblock %}
