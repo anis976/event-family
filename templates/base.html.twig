@@ -2,7 +2,7 @@
 <html lang="{{ app.request.locale }}" data-bs-theme="light" data-ef-consent-choice="{{ ef_consent.hasChoice ? '1' : '0' }}" data-ef-consent-marketing="{{ ef_consent.marketing ? '1' : '0' }}" data-ef-consent-analytics="{{ ef_consent.analytics ? '1' : '0' }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     {# Évite d’afficher un aperçu en cache pendant le chargement (effet « retour en arrière ») #}
     <meta name="turbo-cache-control" content="no-preview">
     <title>{% block title %}RapporFam{% endblock %}</title>

@@ -5,7 +5,7 @@
     width: 250px;
     background-color: $ef-sidebar-bg-light;
     padding: 0.8rem;
-    height: 100vh;
+    height: var(--ef-vh);
     position: sticky;
     top: 0;
     display: flex;
@@ -127,6 +127,7 @@
 
     &__settings {
         margin-top: auto;
+        flex-shrink: 0;
         padding-top: 0.5rem;
         border-top: 1px solid rgba(0, 0, 0, 0.08);
 

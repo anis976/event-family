@@ -96,7 +96,7 @@
         "assets:refresh": [
             "php -r \"$d='public/assets'; if (is_dir($d)) { $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($d, FilesystemIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST); foreach ($it as $f) { $f->isDir() ? rmdir($f->getPathname()) : unlink($f->getPathname()); } rmdir($d); }\"",
             "php bin/console sass:build",
-            "php bin/console cache:clear"
+            "php bin/console cache:clear --env=dev --no-warmup"
         ]
     },
     "conflict": {

@@ -3,7 +3,7 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: var(--ef-vh);
     background: rgba(0, 0, 0, 0.4);
     z-index: 1040;
     display: none;
@@ -19,10 +19,17 @@
         top: 0;
         left: -280px;
         width: 280px;
+        height: var(--ef-vh);
+        max-height: var(--ef-vh);
         z-index: 1055;
         transition: left 0.3s ease-in-out;
         display: flex !important;
+        flex-direction: column;
         box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: max(0.8rem, env(safe-area-inset-bottom, 0px));
     }
 
     .ef-body.ef-sidebar-open {

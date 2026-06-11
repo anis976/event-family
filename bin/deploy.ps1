@@ -35,6 +35,9 @@ try {
     $env:APP_DEBUG = "0"
     php bin/console sass:build --env=prod
     if ($LASTEXITCODE -ne 0) { throw "sass:build a echoue" }
+    # Evite de republier un ancien CSS (cache asset-mapper) alors que var/sass est a jour.
+    php bin/console cache:clear --env=prod --no-warmup
+    if ($LASTEXITCODE -ne 0) { throw "cache:clear a echoue" }
     php bin/console asset-map:compile --env=prod
     if ($LASTEXITCODE -ne 0) { throw "asset-map:compile a echoue" }
 

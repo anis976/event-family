@@ -22,6 +22,7 @@ if command -v npm >/dev/null 2>&1; then
     echo "==> Assets (npm sur le serveur)"
     npm ci --omit=dev 2>/dev/null || npm install --omit=dev
     php bin/console sass:build --env=prod
+    php bin/console cache:clear --env=prod --no-warmup
     php bin/console asset-map:compile --env=prod
 else
     echo "==> npm absent : public/assets synchronise depuis le PC"

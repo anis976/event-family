@@ -1,5 +1,11 @@
 @use 'variables' as *;
 
+// Hauteur viewport fiable sur mobile (100vh dépasse souvent la zone visible à cause de la barre d’adresse).
+:root {
+    --ef-vh: 100vh;
+    --ef-vh: 100dvh;
+}
+
 .ef-body {
     background-color: $ef-bg-light;
 
@@ -15,7 +21,7 @@
 }
 
 .ef-main-wrapper {
-    min-height: 100vh;
+    min-height: var(--ef-vh);
     --ef-sidebar-width: 250px;
     --ef-topbar-height: 3.5rem;
 }
@@ -25,7 +31,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: var(--ef-vh);
 
     @media (max-width: 991.98px) {
         margin-left: 0 !important;
