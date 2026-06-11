@@ -20,16 +20,21 @@
         bottom: 0;
         left: -280px;
         width: 280px;
-        height: auto !important;
-        max-height: none !important;
         z-index: 1055;
         transition: left 0.3s ease-in-out;
         display: flex !important;
         flex-direction: column;
         box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        // Hauteur explicite : le body flex ne doit pas pousser __settings hors écran.
+        height: 100vh !important;
+        height: var(--ef-vh) !important;
+        max-height: 100vh !important;
+        max-height: var(--ef-vh) !important;
         overflow: hidden;
 
         &__body {
+            flex: 1 1 auto;
+            min-height: 0;
             overflow-x: hidden;
             overflow-y: auto;
             overscroll-behavior: contain;
@@ -37,7 +42,11 @@
         }
 
         &__settings {
-            padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px));
+            flex: 0 0 auto;
+            position: relative;
+            z-index: 2;
+            padding: 0.5rem 0 0;
+            padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
         }
     }
 
@@ -48,6 +57,17 @@
 
         .ef-sidebar-overlay {
             display: block;
+        }
+    }
+}
+
+// Honor 360×804 et écrans étroits : padding réduit + réglages ancrés en bas.
+@media (max-width: 380px) {
+    .ef-sidebar {
+        padding: 0.5rem;
+
+        &__settings {
+            margin-top: auto;
         }
     }
 }
