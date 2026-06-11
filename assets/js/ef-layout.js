@@ -118,23 +118,8 @@ function closeSidebar() {
     document.body.classList.remove('ef-sidebar-open');
 }
 
-function syncViewportHeight() {
-    if (typeof window.efUpdateViewportHeight === 'function') {
-        window.efUpdateViewportHeight();
-    }
-}
-
 function toggleSidebar() {
-    syncViewportHeight();
     document.body.classList.toggle('ef-sidebar-open');
-    if (document.body.classList.contains('ef-sidebar-open')) {
-        requestAnimationFrame(() => {
-            syncViewportHeight();
-            const sidebar = document.getElementById('ef-sidebar');
-            const settings = sidebar?.querySelector('.ef-sidebar__settings');
-            settings?.scrollIntoView({ block: 'nearest' });
-        });
-    }
 }
 
 function updateSearchToggleState(isOpen) {
@@ -254,7 +239,6 @@ function onSystemThemeChange() {
 }
 
 export function initRapporFamLayout() {
-    syncViewportHeight();
     applyTheme(getStoredThemePreference());
     initBootstrapDropdowns();
     updateBackToTopVisibility();

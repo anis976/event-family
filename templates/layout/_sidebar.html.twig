@@ -1,4 +1,5 @@
 <nav class="ef-sidebar{% if not app.user %} ef-sidebar--guest{% endif %}" id="ef-sidebar" aria-label="{{ 'ui.sidebar.main_nav'|trans }}">
+    <div class="ef-sidebar__body">
     <button
         type="button"
         class="btn-close d-lg-none ms-auto mb-2"
@@ -69,8 +70,9 @@
         >{{ 'ui.nav.contact'|trans }}</a>
         {% endif %}
     </div>
+    </div>
 
-    <div class="mt-auto bg-transparent dropup ef-sidebar__settings">
+    <div class="bg-transparent dropup ef-sidebar__settings">
         <div
             class="d-flex align-items-center ef-sidebar__settings-trigger"
             role="button"
