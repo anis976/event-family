@@ -91,13 +91,13 @@ Le serveur ne peut pas les recevoir : faites d'abord :
         Write-Host "==> Assets : compilation sur le serveur (npm)"
     }
 
-    Write-Host "==> Deploy serveur (SSH) — mot de passe cPanel si demande"
-    $remoteCmd = "cd $remotePath && DEPLOY_EXPECTED_COMMIT=$expectedCommit bash bin/deploy-server.sh"
+    Write-Host "==> Deploy serveur (SSH) - mot de passe cPanel si demande"
+    $remoteCmd = ('cd {0}; DEPLOY_EXPECTED_COMMIT={1} bash bin/deploy-server.sh' -f $remotePath, $expectedCommit)
     $sshOutput = & ssh $sshHost $remoteCmd 2>&1 | Tee-Object -Variable sshLines
     $sshExit = $LASTEXITCODE
     if ($sshExit -ne 0) {
         $sshText = ($sshLines | Out-String).Trim()
-        throw "deploy-server.sh a echoue (code $sshExit).`n$sshText"
+        throw ("deploy-server.sh a echoue (code {0}){1}{2}" -f $sshExit, [Environment]::NewLine, $sshText)
     }
 
     $deployCommit = $null
@@ -116,7 +116,7 @@ Le serveur ne peut pas les recevoir : faites d'abord :
     }
 
     Write-Host ""
-    Write-Host "[OK] Deploy verifie — commit $deployCommit sur le serveur"
+    Write-Host "[OK] Deploy verifie - commit $deployCommit sur le serveur"
     Write-Host "     Testez : https://rapprofam.fr"
 }
 finally {
