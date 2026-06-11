@@ -1,0 +1,3 @@
+parameters:
+    env(EF_SITE_CLOSED): '0'
+    ef.site.closed: '%env(bool:EF_SITE_CLOSED)%'

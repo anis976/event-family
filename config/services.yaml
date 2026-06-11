@@ -12,6 +12,11 @@ services:
     App\DependencyInjection\GoogleOAuthRedirectUriEnvVarProcessor:
         tags: [{ name: container.env_var_processor }]
 
+    App\EventSubscriber\SiteClosedSubscriber:
+        arguments:
+            $siteClosed: '%ef.site.closed%'
+            $adminPath: '%ef.admin.path%'
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
