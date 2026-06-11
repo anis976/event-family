@@ -118,6 +118,8 @@ ui:
     no_description: No description provided.
     or: OR
     coming_soon: Coming soon
+  adsense:
+    label: Advertisement
   home:
     title: Home
     page_title: RapporFam — Home
@@ -1041,7 +1043,7 @@ legal:
       cookies_title: Cookies and trackers
       cookies_body: 'Strictly necessary cookies (session, CSRF security, language, remember-me, cookie consent storage) are set without consent. Analytics cookies (Google Analytics) and advertising cookies (Google AdSense) are only enabled after your agreement via the banner or "Manage cookies" in the footer. Category details appear in the cookie preferences window.'
       adsense_title: Online advertising (AdSense)
-      adsense_body: 'The site may display ads via Google AdSense to help cover hosting costs. Third-party cookies may be used for ad measurement and personalisation. No advertising scripts are loaded until you accept the "advertising cookies" category.'
+      adsense_body: 'The site may display ads via Google AdSense to help cover hosting costs. Third-party cookies may be used for ad measurement and personalisation. Ad placements and related cookies are only enabled after you accept the "advertising cookies" category via the banner or "Manage cookies".'
       retention_title: Retention periods
       retention_body: 'Account data: kept while the account is active; after confirmed deletion, permanently erased within 3 months. Messages: old threads automatically deleted after 12 months. Past events: associated data purged after 10 months. Inactive accounts: email warnings then deletion according to platform rules. Temporary tokens (verification, password, deletion): limited duration (from a few minutes to a few hours). Cookie choices: 6 months.'
       rights_title: Your rights
@@ -1322,7 +1324,7 @@ admin:
 cookie:
   banner:
     title: Your privacy matters
-    description: We use cookies required for the site to work. With your consent, audience measurement cookies (Google Analytics) and, later, advertising cookies (Google AdSense) may be enabled.
+    description: We use cookies required for the site to work. With your consent, audience measurement cookies (Google Analytics) and advertising cookies (Google AdSense) may be enabled.
     privacy_link: Learn more
     reject_all: Reject all
     customize: Customize
@@ -1334,6 +1336,7 @@ cookie:
     intro: You can accept or reject non-essential cookies. Strictly necessary cookies cannot be disabled because they keep the site working.
     essential_details: View necessary cookie details
     analytics_details: View audience measurement cookie details
+    marketing_details: View advertising cookie details
     reject_all: Reject all
     save: Save my choices
   category:
@@ -1349,9 +1352,17 @@ cookie:
     marketing:
       badge: Optional
       title: Advertising cookies
-      description: Allow relevant ads via Google AdSense (feature coming soon).
-      hint: Off by default. No advertising script is loaded until you accept this category.
+      description: Allow relevant ads via Google AdSense.
+      hint: Off by default. No AdSense ads or advertising cookies are enabled until you accept this category.
   optional:
+    marketing_gads:
+      name: __gads / __gpi
+      purpose: Ad delivery and measurement for Google AdSense.
+      duration: Up to 13 months
+    marketing_ide:
+      name: IDE (doubleclick.net)
+      purpose: Targeted advertising and ad frequency capping (Google).
+      duration: Up to 13 months
     analytics_ga:
       name: _ga / _ga_*
       purpose: Anonymous visit identifier (Google Analytics).

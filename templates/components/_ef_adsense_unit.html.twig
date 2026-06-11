@@ -1,0 +1,21 @@
+{# Bloc publicitaire AdSense — affiché uniquement si consentement marketing + slot configuré. #}
+{% set ad_slot = slot|default('')|trim %}
+{% if ef_google_adsense_client_id and ad_slot %}
+    <aside
+        class="ef-adsense{% if extra_class is defined and extra_class %} {{ extra_class }}{% endif %}{% if not ef_consent.marketing %} ef-adsense--hidden{% endif %}"
+        data-ef-adsense-unit
+        aria-label="{{ 'ui.adsense.label'|trans }}"
+    >
+        <p class="ef-adsense__label">{{ 'ui.adsense.label'|trans }}</p>
+        <div class="ef-adsense__inner">
+            <ins
+                class="adsbygoogle"
+                style="display:block"
+                data-ad-client="{{ ef_google_adsense_client_id|e('html_attr') }}"
+                data-ad-slot="{{ ad_slot|e('html_attr') }}"
+                data-ad-format="horizontal"
+                data-full-width-responsive="true"
+            ></ins>
+        </div>
+    </aside>
+{% endif %}

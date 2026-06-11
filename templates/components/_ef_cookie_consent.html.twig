@@ -138,6 +138,20 @@
                             </div>
                         </div>
                         <p id="ef-consent-marketing-hint" class="ef-consent-hint mb-0">{{ 'cookie.category.marketing.hint'|trans }}</p>
+                        {% if ef_consent_marketing_catalog|length > 0 %}
+                            <details class="ef-consent-details mt-2">
+                                <summary>{{ 'cookie.preferences.marketing_details'|trans }}</summary>
+                                <ul class="ef-consent-essential-list">
+                                    {% for item in ef_consent_marketing_catalog %}
+                                        <li>
+                                            <strong>{{ item.name_key|trans }}</strong>
+                                            <span class="text-muted"> — {{ item.purpose_key|trans }}</span>
+                                            <span class="d-block small text-muted">{{ item.duration_key|trans }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        {% endif %}
                     </article>
                 </div>
                 <div class="modal-footer flex-wrap justify-content-between">

@@ -52,6 +52,11 @@
             </a>
         </div>
     </div>
+
+    {% include 'components/_ef_adsense_unit.html.twig' with {
+        slot: ef_google_adsense_slot_messages,
+        extra_class: 'ef-adsense--compact',
+    } only %}
 </div>
 {% endblock %}
 

@@ -49,6 +49,8 @@
         } %}
     {% endif %}
 
+    {% include 'components/_ef_adsense_unit.html.twig' with { slot: ef_google_adsense_slot_groups } only %}
+
     <div class="d-flex justify-content-between align-items-center mb-4 ef-groups__title">
         <h2 class="mb-0">{{ 'ui.groups.all_groups'|trans }}</h2>
     </div>

@@ -119,6 +119,8 @@ ui:
     no_description: Aucune description fournie.
     or: OU
     coming_soon: Bientôt disponible
+  adsense:
+    label: Publicité
   home:
     title: Accueil
     page_title: RapporFam — Accueil
@@ -1042,7 +1044,7 @@ legal:
       cookies_title: Cookies et traceurs
       cookies_body: 'Des cookies strictement nécessaires (session, sécurité CSRF, langue, mémorisation de connexion, enregistrement de vos choix cookies) sont déposés sans consentement. Les cookies de mesure d''audience (Google Analytics) et publicitaires (Google AdSense) ne sont activés qu''après votre accord via le bandeau ou « Gérer les cookies » dans le pied de page. Le détail des catégories figure dans la fenêtre de préférences cookies.'
       adsense_title: Publicité en ligne (AdSense)
-      adsense_body: 'Le site peut afficher des publicités via Google AdSense pour contribuer aux frais d''hébergement. Des cookies tiers peuvent être utilisés pour la mesure et la personnalisation publicitaire. Aucun script publicitaire n''est chargé tant que vous n''acceptez pas la catégorie « cookies publicitaires ».'
+      adsense_body: 'Le site peut afficher des publicités via Google AdSense pour contribuer aux frais d''hébergement. Des cookies tiers peuvent être utilisés pour la mesure et la personnalisation publicitaire. Les emplacements publicitaires et les cookies associés ne sont activés qu''après votre accord via la catégorie « cookies publicitaires » du bandeau ou de « Gérer les cookies ».'
       retention_title: Durées de conservation
       retention_body: 'Données de compte : conservées tant que le compte est actif ; après confirmation de suppression, effacement définitif sous 3 mois. Messages : fils anciens supprimés automatiquement après 12 mois. Événements passés : données associées purgées après 10 mois. Comptes inactifs : avertissements par e-mail puis suppression selon les règles configurées sur la plateforme. Jetons temporaires (vérification, mot de passe, suppression) : durée limitée (de quelques minutes à quelques heures). Choix cookies : 6 mois.'
       rights_title: Vos droits
@@ -1323,7 +1325,7 @@ admin:
 cookie:
   banner:
     title: Respect de votre vie privée
-    description: Nous utilisons des cookies nécessaires au fonctionnement du site. Avec votre accord, des cookies de mesure d'audience (Google Analytics) et, plus tard, des cookies publicitaires (Google AdSense) pourront être activés.
+    description: Nous utilisons des cookies nécessaires au fonctionnement du site. Avec votre accord, des cookies de mesure d'audience (Google Analytics) et publicitaires (Google AdSense) peuvent être activés.
     privacy_link: En savoir plus
     reject_all: Tout refuser
     customize: Personnaliser
@@ -1335,6 +1337,7 @@ cookie:
     intro: Vous pouvez accepter ou refuser les cookies non essentiels. Les cookies strictement nécessaires ne peuvent pas être désactivés car ils assurent le fonctionnement du site.
     essential_details: Voir le détail des cookies nécessaires
     analytics_details: Voir le détail des cookies de mesure d'audience
+    marketing_details: Voir le détail des cookies publicitaires
     reject_all: Refuser tout
     save: Enregistrer mes choix
   category:
@@ -1350,9 +1353,17 @@ cookie:
     marketing:
       badge: Optionnels
       title: Cookies publicitaires
-      description: Permettent d'afficher des publicités pertinentes via Google AdSense (fonctionnalité à venir).
-      hint: Désactivés par défaut. Aucun script publicitaire n'est chargé tant que vous n'acceptez pas cette catégorie.
+      description: Permettent d'afficher des publicités pertinentes via Google AdSense.
+      hint: Désactivés par défaut. Aucune annonce ni cookie publicitaire AdSense n'est activé tant que vous n'acceptez pas cette catégorie.
   optional:
+    marketing_gads:
+      name: __gads / __gpi
+      purpose: Mesure et diffusion des annonces Google AdSense.
+      duration: 13 mois maximum
+    marketing_ide:
+      name: IDE (doubleclick.net)
+      purpose: Publicité ciblée et limitation de la fréquence d'affichage (Google).
+      duration: 13 mois maximum
     analytics_ga:
       name: _ga / _ga_*
       purpose: Identifiant de visite anonyme (Google Analytics).

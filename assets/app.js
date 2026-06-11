@@ -7,6 +7,7 @@ import { initContactForm } from './js/ef-contact-form.js';
 import './js/ef-notifications.js';
 import './js/ef-consent.js';
 import './js/ef-analytics.js';
+import './js/ef-adsense.js';
 // Modules page : un seul point d’entrée pour éviter que Turbo attende de nouveaux <script> dans <head>
 import './js/ef-events.js';
 import './js/ef-messages.js';

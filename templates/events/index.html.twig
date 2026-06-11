@@ -54,6 +54,8 @@
         {% endfor %}
     </nav>
 
+    {% include 'components/_ef_adsense_unit.html.twig' with { slot: ef_google_adsense_slot_events } only %}
+
     {% if events is empty %}
         {% include 'events/_empty.html.twig' with {
             message: search_query

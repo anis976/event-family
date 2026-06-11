@@ -1,0 +1,43 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+// Emplacement publicitaire discret — séparateur naturel entre sections
+.ef-adsense {
+    max-width: 728px;
+    margin: 0 auto 2.5rem;
+    padding: 0.25rem 0;
+    text-align: center;
+
+    &--hidden {
+        display: none !important;
+    }
+
+    &__label {
+        margin: 0 0 0.4rem;
+        font-size: 0.625rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $gray-500;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__inner {
+        min-height: 90px;
+        overflow: hidden;
+        border-radius: $border-radius-lg;
+        background-color: rgba($ef-border-color, 0.25);
+
+        @include color-mode(dark) {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+    }
+
+    &--compact {
+        margin-top: 2rem;
+        margin-bottom: 0;
+    }
+}

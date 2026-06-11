@@ -63,6 +63,8 @@
                 </div>
             </div>
 
+            {% include 'components/_ef_adsense_unit.html.twig' with { slot: ef_google_adsense_slot_about } only %}
+
             <section class="ef-about__section ef-about__section--list mb-4" aria-labelledby="ef-about-features-member-title">
                 <h2 id="ef-about-features-member-title" class="ef-about__section-title h5 fw-bold">
                     <i class="bi bi-check2-square me-2" aria-hidden="true"></i>{{ 'ui.about.features_member_title'|trans }}

@@ -1,0 +1,4 @@
+{# Google AdSense — balise de vérification du site (examen du compte). Aucune annonce affichée tant que Google n’a pas approuvé le compte. #}
+{% if ef_google_adsense_client_id %}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ ef_google_adsense_client_id|e('html_attr') }}" crossorigin="anonymous"></script>
+{% endif %}

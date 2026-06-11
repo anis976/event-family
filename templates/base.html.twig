@@ -41,6 +41,8 @@
         <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
     {% endif %}
+
+    {% include 'components/_ef_adsense_head.html.twig' %}
 </head>
 <body class="ef-body{% block body_class %}{% endblock %}"{% if app.user %}
     data-ef-counts-url="{{ path('app_invitations_counts') }}"

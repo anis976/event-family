@@ -100,6 +100,8 @@
             </div>
         </div>
 
+        {% include 'components/_ef_adsense_unit.html.twig' with { slot: ef_google_adsense_slot_home } only %}
+
         {% if app.user %}
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="fw-bold h4 mb-0 text-body text-truncate me-2 ef-home__section-title">

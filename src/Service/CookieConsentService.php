@@ -111,6 +111,27 @@ final class CookieConsentService
     /**
      * @return list<array{id: string, name_key: string, purpose_key: string, duration_key: string}>
      */
+    public function getMarketingCookieCatalog(): array
+    {
+        return [
+            [
+                'id' => 'gads',
+                'name_key' => 'cookie.optional.marketing_gads.name',
+                'purpose_key' => 'cookie.optional.marketing_gads.purpose',
+                'duration_key' => 'cookie.optional.marketing_gads.duration',
+            ],
+            [
+                'id' => 'ide',
+                'name_key' => 'cookie.optional.marketing_ide.name',
+                'purpose_key' => 'cookie.optional.marketing_ide.purpose',
+                'duration_key' => 'cookie.optional.marketing_ide.duration',
+            ],
+        ];
+    }
+
+    /**
+     * @return list<array{id: string, name_key: string, purpose_key: string, duration_key: string}>
+     */
     public function getEssentialCookieCatalog(): array
     {
         return [

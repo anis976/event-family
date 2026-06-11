@@ -1,0 +1,13 @@
+parameters:
+    ef_adsense_client_id_default: ''
+    ef_adsense_slot_home_default: ''
+    ef_adsense_slot_events_default: ''
+    ef_adsense_slot_groups_default: ''
+    ef_adsense_slot_about_default: ''
+    ef_adsense_slot_messages_default: ''
+    ef.adsense.client_id: '%env(default:ef_adsense_client_id_default:EF_GOOGLE_ADSENSE_CLIENT_ID)%'
+    ef.adsense.slot_home: '%env(default:ef_adsense_slot_home_default:EF_GOOGLE_ADSENSE_SLOT_HOME)%'
+    ef.adsense.slot_events: '%env(default:ef_adsense_slot_events_default:EF_GOOGLE_ADSENSE_SLOT_EVENTS)%'
+    ef.adsense.slot_groups: '%env(default:ef_adsense_slot_groups_default:EF_GOOGLE_ADSENSE_SLOT_GROUPS)%'
+    ef.adsense.slot_about: '%env(default:ef_adsense_slot_about_default:EF_GOOGLE_ADSENSE_SLOT_ABOUT)%'
+    ef.adsense.slot_messages: '%env(default:ef_adsense_slot_messages_default:EF_GOOGLE_ADSENSE_SLOT_MESSAGES)%'
