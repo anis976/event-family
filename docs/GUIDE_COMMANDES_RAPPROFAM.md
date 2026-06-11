@@ -183,12 +183,13 @@ powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 
 **Ce que fait `deploy.ps1` :**
 
-1. Compile le CSS/JS en local (`sass:build`, `asset-map:compile`)
-2. `git push` vers GitHub
-3. Envoie le dossier `public/assets/` sur le serveur (`scp`)
+1. Refuse si des fichiers ne sont pas commités (`git status`)
+2. Compile le CSS/JS en local (`sass:build`, `asset-map:compile`)
+3. `git push` vers GitHub (si nécessaire)
 4. Lance `deploy-server.sh` sur o2switch via SSH
+5. Affiche **`[OK] Deploy verifie — commit xxxxx`** si le serveur est sur le même commit que le PC
 
-**Mot de passe cPanel** : demandé 1 à 2 fois (scp + ssh).
+**Mot de passe cPanel** : demandé pour SSH. Sans la ligne `[OK] Deploy verifie`, le serveur n’est pas à jour.
 
 ### Ce que fait `deploy-server.sh` (sur le serveur, automatique)
 

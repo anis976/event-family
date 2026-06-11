@@ -117,13 +117,14 @@ Bandeau + modale **maison** (pas de CMP tiers). Conforme CNIL : refus aussi simp
 | Catégorie | État | Détail |
 |-----------|------|--------|
 | **Strictement nécessaires** | Livré | Session, CSRF, `ef_locale`, `REMEMBERME`, `ef_consent` (mémorisation du choix) |
-| **Marketing / publicité** | Prévu | **Google AdSense** — aucun script pub tant que l’utilisateur n’accepte pas (`marketing: true` dans le cookie) |
+| **Marketing / publicité** | Livré (code) | **Google AdSense** — balise `<head>` + emplacements pub ; annonces visibles seulement si `marketing: true` (`assets/js/ef-adsense.js`) |
 | **Mesure d’audience (analytics)** | Livré | GA4 via `EF_GOOGLE_ANALYTICS_ID` + `assets/js/ef-analytics.js` (chargement si `analytics: true` dans `ef_consent`) |
 
-**Feuille de route cookies (hors nécessaires)** :
+**Feuille de route cookies / pub** :
 
-1. **Analytics** — livré côté code ; renseigner `EF_GOOGLE_ANALYTICS_ID` en prod si suivi souhaité.
-2. **AdSense** — **juste avant / après déploiement** : demande d’examen sur l’URL HTTPS, puis balises sur la catégorie **marketing** (après approbation Google).
+1. **Analytics** — livré ; `EF_GOOGLE_ANALYTICS_ID` renseigné en prod.
+2. **AdSense** — ☑ code prod (`EF_GOOGLE_ADSENSE_CLIENT_ID`, `ads.txt`, emplacements discrets) · **examen Google en cours** (juin 2026).
+3. **CMP Google certifiée (EEE / UK / CH)** — **en attente** : à activer dans AdSense **après approbation** (message 3 choix : Autoriser / Ne pas consentir / Gérer) ; le bandeau maison reste pour analytics et la transparence CNIL.
 
 Ne pas ajouter de cases vides dans le bandeau avant d’avoir le service réel (recommandation CNIL).
 
@@ -496,7 +497,7 @@ Entités : `Message`, `MessageRead`, `MessagePhoto`.
 | **reCAPTCHA v3** (contact) | [reCAPTCHA Admin](https://www.google.com/recaptcha/admin) | `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY` | Clés de test possibles | **Nouvelles clés** + domaine prod (`localhost` ≠ domaine final) |
 | **OAuth 2.0** (Google) | [Cloud Console](https://console.cloud.google.com/) | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI` | OK si URI locales enregistrées | **URI de redirection** `https://DOMAIN/connect/google/check` · `DEFAULT_URI` prod |
 | **Analytics** (GA4) | [Google Analytics](https://analytics.google.com/) | `EF_GOOGLE_ANALYTICS_ID` (ex. `G-XXXXXXXX`) | ID de test possible | **Propriété / flux prod** + domaine · chargé seulement si consentement `analytics` |
-| **AdSense** (pub) | [Google AdSense](https://www.google.com/adsense/) | Publisher ID / balises (à définir) | — | Après approbation du site · catégorie **marketing** du bandeau cookies |
+| **AdSense** (pub) | [Google AdSense](https://www.google.com/adsense/) | `EF_GOOGLE_ADSENSE_CLIENT_ID` (`ca-pub-…`) · `EF_GOOGLE_ADSENSE_SLOT_*` (par page, vide = pas de bloc) | ID dans `.env` | ☑ balise + `ads.txt` prod · **examen en cours** · slots + **CMP Google** après approbation |
 
 Configurations **distinctes** (reCAPTCHA ≠ OAuth ≠ Analytics ≠ AdSense). Diagnostic OAuth local : `php bin/console ef:google-oauth:diagnose`.
 
@@ -669,7 +670,7 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | **Safe Browsing (Chrome)** | Demande d’examen déposée juin 2026 — attente levée Google (historique domaine possible) |
 | **Messenger async** | En prod, configurer worker si e-mails async |
 | **HTTPS** | Obligatoire (cookies session, remember-me) |
-| **Bandeau cookies** | Livré (nécessaires + analytics + marketing) | AdSense : balises **après** approbation, sous consentement marketing |
+| **Bandeau cookies** | Livré (nécessaires + analytics + marketing) | AdSense branché prod ; CMP Google certifiée **après** approbation AdSense |
 | **PayPal — soutien** | Bouton footer livré (lien donate hébergé) | **Avant prod** : URLs de redirection PayPal (retour / annulation) → domaine HTTPS déployé, pas localhost |
 | **Sauvegardes BDD** | Planifier backups `ef_base` |
 
@@ -791,8 +792,8 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 | 7a | **Délivrabilité e-mail** — SPF + DKIM + DMARC ; mail-tester ≥ 8/10 |
 | 7b | **PayPal Donate** — dashboard PayPal : remplacer les **URL de redirection** (retour / annulation) **locales** par les URLs **HTTPS du site déployé** ; lien : `templates/layout/_footer.html.twig` |
 | 8 | **Test crawl invité** sur l’URL prod : `/`, `/about`, `/cgu`, `/mentions-legales` (pas de redirect login) |
-| 9 | **Demande AdSense** sur le domaine final — **sans** script pub à ce stade |
-| 10 | **Après approbation AdSense** — balises pub + `ads.txt`, uniquement si consentement `marketing: true` |
+| 9 | **Demande AdSense** sur `https://rapprofam.fr` | ☑ déposée — examen en cours |
+| 10 | **Après approbation AdSense** — renseigner `EF_GOOGLE_ADSENSE_SLOT_*` · activer **CMP Google** (3 choix) · annonces sous consentement `marketing: true` |
 
 Détail ligne par ligne : [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md) (sections *Bloquant*, *Contenu & légal*, *Tests manuels*).
 
@@ -1126,7 +1127,29 @@ Réponse au mur de connexion sur `/` (bloquant l’examen AdSense). Comportement
 
 **Test manuel** : navigation privée sur `/` et `/about` — pas de redirection `/login`. Après modif SCSS : `php bin/console sass:build` ou `npm run sass:watch`, puis rechargement forcé du navigateur.
 
-**AdSense (scripts)** : pas encore branchés — catégorie **marketing** du bandeau prête ; balises **après** approbation du site et mise en prod HTTPS.
+#### AdSense — intégration prod (juin 2026)
+
+| Élément | État |
+|---------|------|
+| Balise vérification `<head>` (`adsbygoogle.js`) | ☑ prod |
+| `https://rapprofam.fr/ads.txt` | ☑ route Symfony + fichier `public/ads.txt` |
+| Emplacements discrets (accueil, événements, groupes, about, hub messages) | ☑ code · slots vides tant qu’aucune unité AdSense créée |
+| Consentement bandeau maison (`marketing`) | ☑ |
+| Demande d’examen Google | ☑ en cours |
+| **CMP Google certifiée** (EEE / UK / CH) | ☐ **en attente** — après approbation (option 3 choix dans AdSense) |
+| Unités publicitaires (`EF_GOOGLE_ADSENSE_SLOT_HOME`, `_EVENTS`, etc.) | ☐ après approbation |
+
+| Fichier / config | Rôle |
+|------------------|------|
+| `config/packages/ef_adsense.yaml` | Client ID + slots par page |
+| `templates/components/_ef_adsense_head.html.twig` | Script `<head>` |
+| `templates/components/_ef_adsense_unit.html.twig` | Bloc `<ins class="adsbygoogle">` |
+| `assets/js/ef-adsense.js` | Chargement si consentement marketing |
+| `src/Controller/LegalController.php` | Route `/ads.txt` |
+| `public/ads.txt` | Ligne `google.com, pub-…` |
+| `bin/deploy.ps1` | Vérifie que le commit local = commit serveur après deploy |
+
+**Désactiver une page** : laisser le `EF_GOOGLE_ADSENSE_SLOT_*` correspondant vide dans `.env` / `.env.local` serveur.
 
 #### Livré — enrichissement `/about` (juin 2026)
 
@@ -1138,23 +1161,33 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | `translations/messages.{fr,en}.yaml` | Clés `audience_*`, `features_member_*`, `privacy_*`, `transparency_*`, `contact_public_*`, `guest_cta_*` |
 | `assets/styles/pages/_about.scss` | Styles sections, encart, liens, CTA (clair / sombre) |
 
-#### Critères AdSense — état
+#### Critères AdSense — état (juin 2026)
 
-| Critère | Dev (local) | Prod (avant demande) |
-|---------|-------------|------------------------|
-| Site sans login sur `/`, `/about`, légal | OK | Re-tester sur URL HTTPS |
-| Contenu original (home + about) | OK | — |
-| CGU / confidentialité | OK | Relire textes juridiques |
-| Mentions complètes (hébergeur) | Placeholders | À renseigner (PRE_DEPLOY #14) |
-| Scripts AdSense | Non (volontaire) | Après approbation Google |
+| Critère | État |
+|---------|------|
+| Site sans login sur `/`, `/about`, légal | ☑ prod |
+| Contenu original (home + about) | ☑ |
+| CGU / confidentialité (mention AdSense) | ☑ |
+| Balise + `ads.txt` sur HTTPS | ☑ prod |
+| Demande d’examen | ☑ en cours |
+| CMP Google (EEE / UK / CH) | ☐ après approbation |
+| Slots publicitaires | ☐ après création des unités dans AdSense |
 
-### En attente — hors déploiement / AdSense
+### En attente — AdSense (examen Google)
 
 | Sujet | État | Quand |
 |-------|------|--------|
-| **reCAPTCHA / Analytics / OAuth / hébergeur / AdSense** | Voir tableau [Avant déploiement](#avant-déploiement--adsense-checklist--pas-maintenant) | Juste avant prod (reconfig Google + placeholders hébergeur + e-mails pro) |
-| **Google OAuth** | Backend livré en dev | Clés et URI **prod** — [PRE_DEPLOY](docs/PRE_DEPLOY.md) |
-| **WhatsApp API** | Lien `wa.me` v1 suffit | Numéro réel → PRE_DEPLOY ; API Meta → v2 |
+| **Réponse examen AdSense** | En cours | Google (quelques jours à quelques semaines) |
+| **CMP Google** (3 choix) | À configurer | **Après** approbation — ne pas activer avant |
+| **`EF_GOOGLE_ADSENSE_SLOT_*`** | Vides | Créer les unités dans AdSense après approbation |
+
+### En attente — hors AdSense
+
+| Sujet | État | Quand |
+|-------|------|--------|
+| **reCAPTCHA / hébergeur (mentions)** | Voir [PRE_DEPLOY](docs/PRE_DEPLOY.md) | Si pas encore fait en prod |
+| **Google OAuth** | Backend livré | Clés et URI **prod** — [PRE_DEPLOY](docs/PRE_DEPLOY.md) |
+| **WhatsApp API** | Lien `wa.me` v1 suffit | API Meta → v2 |
 
 ### Court terme (hors prod / AdSense)
 
@@ -1190,6 +1223,13 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 5. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-11 — Google AdSense + deploy fiable
+
+- **AdSense** : balise `<head>`, `ads.txt`, emplacements discrets (accueil, événements, groupes, about, messages index) ; consentement marketing ; `EF_GOOGLE_ADSENSE_CLIENT_ID` en prod ; demande d’examen déposée
+- **En attente** : CMP Google certifiée (3 choix) et `EF_GOOGLE_ADSENSE_SLOT_*` — **après** approbation Google
+- **Cookies** : textes bandeau / CGU AdSense à jour ; catalogue cookies marketing (`__gads`, `IDE`)
+- **Deploy** : `deploy.ps1` bloque si fichiers non commités et vérifie le commit serveur (`DEPLOY_COMMIT`)
 
 ### 2026-06-11 — SMTP o2switch + Safe Browsing Google
 
