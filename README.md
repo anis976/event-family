@@ -38,9 +38,28 @@ composer assets:refresh
 
 Puis **Ctrl+F5**. Le CSS passe par `<link href="{{ asset('styles/app.scss') }}">` (ou `error-page.scss` pour les pages d’erreur), compilé vers `var/sass/*.css` — ne pas importer le SCSS dans `app.js`.
 
-### Mailer (dev)
+### Mailer (SMTP O2Switch)
 
-Dans `.env.local` : `MAILER_DSN`, `MAILER_FROM`, `DEFAULT_URI`.
+Compte messagerie prod : **`rf_contact@rapprofam.fr`** (cPanel o2switch). Variables dans **`.env.local`** (local **et** serveur `~/rapprofam.fr/.env.local`) :
+
+```env
+MAILER_DSN=smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465
+MAILER_FROM="RapporFam <rf_contact@rapprofam.fr>"
+CONTACT_RECIPIENT=rf_contact@rapprofam.fr
+MODERATION_CONTACT=rf_contact@rapprofam.fr
+```
+
+| Paramètre | Valeur |
+|-----------|--------|
+| Serveur SMTP | `mail.rapprofam.fr` |
+| Port | **465** (SSL/TLS — schéma `smtps://` dans le DSN) |
+| Authentification | Obligatoire (identifiant = adresse complète) |
+
+Remplacer `MOT_DE_PASSE` par le mot de passe du compte cPanel. Si le mot de passe contient des caractères spéciaux (`@`, `:`, `#`…), les **encoder en URL** dans le DSN (ex. `@` → `%40`). Après modification sur le serveur : `php bin/console cache:clear --env=prod`. Test : `php bin/console mailer:test rf_contact@rapprofam.fr`.
+
+`CONTACT_RECIPIENT` alimente le formulaire `/contact`, les CGU, les mentions et la page À propos (`ef_contact_recipient` en Twig). Voir aussi [docs/GUIDE_COMMANDES_RAPPROFAM.md](docs/GUIDE_COMMANDES_RAPPROFAM.md) § `.env.local` prod et [PRE_DEPLOY § Délivrabilité](docs/PRE_DEPLOY.md).
+
+> **Compte récent** : un compte o2switch créé la veille peut mettre **24–48 h** avant d’accepter les envois SMTP. Configurer SPF/DKIM/DMARC dans cPanel pour limiter le dossier spam.
 
 En dev, les e-mails partent en **synchrone** (`config/packages/messenger.yaml` → `SendEmailMessage: sync`) — pas besoin de worker Messenger pour tester l'inscription / la vérification.
 
@@ -77,7 +96,7 @@ Services : `LocaleService`, `LocaleSubscriber`, `LocaleController`, extension Tw
 
 **Templates traduits (FR + EN)** : layout, accueil, événements, groupes, messages, invitations, profil, about, contact, auth, **pages légales** (CGU RGPD, mentions LCEN, placeholders hébergeur), composants communs, admin EasyAdmin, alertes JS avatar/contact (via `data-ef-alert-*`).
 
-**Contenu juridique long** (`legal.*` dans `messages.{fr,en}.yaml`) : CGU RGPD + mentions LCEN ☑ livré juin 2026 (données réelles, tiers Google/SMTP/PayPal, droits, CNIL, projet perso). Reste avant prod : placeholders **hébergeur** + e-mails pro (`CONTACT_RECIPIENT`, `PUBLISHER_ADDRESS` si déménagement).
+**Contenu juridique long** (`legal.*` dans `messages.{fr,en}.yaml`) : CGU RGPD + mentions LCEN ☑ livré juin 2026 (données réelles, tiers Google/SMTP/PayPal, droits, CNIL, projet perso). E-mails pro ☑ (`rf_contact@rapprofam.fr` — voir [Mailer](#mailer-smtp-o2switch)). Reste avant prod : placeholders **hébergeur** + `PUBLISHER_ADDRESS` si déménagement.
 
 Clés Twig : `'ui.nav.home'|trans` (domaine **`messages`** — ne pas séparer en `ui.fr.yaml`). Voir [docs/I18N.md](docs/I18N.md).
 
@@ -465,7 +484,7 @@ Entités : `Message`, `MessageRead`, `MessagePhoto`.
 | Mot de passe oublié / changement / suppression compte | OK |
 | Profil édition + profil public | OK |
 | Avatar profil (upload, crop, public/privé) | OK |
-| Formulaire contact | OK en dev (Ethereal, **sans** reCAPTCHA) — voir [Services Google](#services-google-dev-ok--prod-à-reconfigurer) |
+| Formulaire contact | OK en dev (SMTP o2switch ou `null://null`, **sans** reCAPTCHA si clés vides) — voir [Services Google](#services-google-dev-ok--prod-à-reconfigurer) |
 | Google OAuth | **Livré** en dev (connexion / inscription, CGU, finalisation profil) — **reconfigurer les URI et clés pour la prod** (voir [PRE_DEPLOY](docs/PRE_DEPLOY.md)) |
 
 ### Services Google (dev OK · prod à reconfigurer)
@@ -480,6 +499,21 @@ Entités : `Message`, `MessageRead`, `MessagePhoto`.
 | **AdSense** (pub) | [Google AdSense](https://www.google.com/adsense/) | Publisher ID / balises (à définir) | — | Après approbation du site · catégorie **marketing** du bandeau cookies |
 
 Configurations **distinctes** (reCAPTCHA ≠ OAuth ≠ Analytics ≠ AdSense). Diagnostic OAuth local : `php bin/console ef:google-oauth:diagnose`.
+
+#### Alerte Chrome « Site dangereux » (Safe Browsing)
+
+En juin 2026, **Chrome** peut afficher *« Site dangereux »* sur `https://rapprofam.fr` **sans que le code actuel soit en cause** : un domaine réutilisé peut conserver une **réputation négative** si un ancien propriétaire l’a utilisé pour du contenu malveillant (phishing, malware, spam). Google **ne réinitialise pas** automatiquement l’alerte au changement de site.
+
+| Étape | Action |
+|-------|--------|
+| 1 | Vérifier le statut : [Google Safe Browsing — rapport de transparence](https://transparencyreport.google.com/safe-browsing/search?url=rapprofam.fr) |
+| 2 | Ajouter la propriété **`rapprofam.fr`** dans [Google Search Console](https://search.google.com/search-console) (validation DNS ou fichier HTML) |
+| 3 | Menu **Sécurité et actions manuelles** → problèmes signalés → **Demander un examen** une fois le site propre (HTTPS, pas de malware, pas de pages trompeuses) |
+| 4 | Attendre la réponse Google (**quelques jours à 2 semaines** en général) — pas d’action côté code Symfony en attendant |
+
+**Statut juin 2026** : demande d’examen **déposée** (hypothèse : historique du nom de domaine). L’alerte peut persister sur Chrome **jusqu’à levée par Google** ; Firefox/Safari peuvent ne pas l’afficher. Ne pas paniquer : ce n’est en principe **pas** un blocage hébergeur o2switch.
+
+> Distinct de **AdSense** (monétisation) et de **reCAPTCHA** (anti-spam contact) — trois services Google séparés.
 
 ### Contact WhatsApp
 
@@ -521,7 +555,7 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 | i18n | `legal.*` + `ui.legal.*` dans `messages.{fr,en}.yaml` |
 | Config éditeur | `CONTACT_RECIPIENT` → `ef_contact_recipient` (e-mail) · `PUBLISHER_ADDRESS` → `ef_publisher_address` (adresse postale LCEN / RGPD) |
 | Contenu | Projet perso non commercial ; périmètre familial ; données alignées sur le site (OAuth, messages, cookies, Analytics, AdSense, SMTP, PayPal) ; droits RGPD + CNIL |
-| Reste avant prod | Placeholders **hébergeur** (`legal.mentions.hosting.*`) · e-mails pro (`CONTACT_RECIPIENT`, `MAILER_FROM`) — voir [PRE_DEPLOY](docs/PRE_DEPLOY.md) |
+| Reste avant prod | Placeholders **hébergeur** (`legal.mentions.hosting.*`) — voir [PRE_DEPLOY](docs/PRE_DEPLOY.md) · e-mails ☑ `rf_contact@rapprofam.fr` |
 
 **Volontairement non retenu** : vouvoiement dans le corps juridique (`legal.*`) ; Open Graph dédié sur pages légales.
 
@@ -536,7 +570,7 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 | 1 | **HTTPS** + `DEFAULT_URI=https://…` |
 | 2 | **`APP_SECRET`** unique (≠ dev) |
 | 3 | **`DATABASE_URL`** + `doctrine:migrations:migrate` |
-| 4 | **`MAILER_DSN`** + **`MAILER_FROM`** (@votre-domaine) + **SPF / DKIM / DMARC** |
+| 4 | **`MAILER_DSN`** o2switch (`smtps://rf_contact%40rapprofam.fr@mail.rapprofam.fr:465`) + **`MAILER_FROM`** + **SPF / DKIM / DMARC** cPanel |
 | 5 | **reCAPTCHA** prod (`RECAPTCHA_*`) — domaines du site |
 | 6 | **`EF_ADMIN_PATH`** personnalisé |
 | 7 | **Assets** : `sass:build`, `asset-map:compile`, `cache:clear` prod |
@@ -547,7 +581,7 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 
 | # | Sujet |
 |---|--------|
-| 10 | E-mails pro : `CONTACT_RECIPIENT`, `MODERATION_CONTACT`, `MAILER_FROM` — remplacer adresses de test |
+| 10 | E-mails pro ☑ `rf_contact@rapprofam.fr` — vérifier `MAILER_DSN` (mdp) sur le serveur + test envoi |
 | 10b | **`PUBLISHER_ADDRESS`** — vérifier l’adresse postale éditeur en prod (défaut Lagord dans `.env`) |
 | 11 | **`CONTACT_WHATSAPP`** — numéro réel pour `/contact` |
 | 12–14 | **CGU & mentions — contenu** ☑ livré (RGPD, LCEN, projet perso) — FR + EN |
@@ -560,6 +594,7 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 |---|--------|
 | 17 | **Google OAuth** — clés prod, `GOOGLE_OAUTH_REDIRECT_URI`, URI Cloud Console |
 | 5b | **Google Analytics** — `EF_GOOGLE_ANALYTICS_ID` prod + test consentement analytics |
+| 17b | **Safe Browsing** — si alerte « Site dangereux » : Search Console → demande d’examen (voir [§ Safe Browsing](#alerte-chrome-site-dangereux-safe-browsing)) |
 
 ### Synthèse — exploitation
 
@@ -590,8 +625,8 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | `APP_ENV` | `prod` |
 | `APP_SECRET` | Secret unique (≠ dev) |
 | `DATABASE_URL` | MySQL hébergeur |
-| `MAILER_DSN` | SMTP production |
-| `MAILER_FROM` | E-mail expéditeur vérifié |
+| `MAILER_DSN` | `smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465` |
+| `MAILER_FROM` | `"RapporFam <rf_contact@rapprofam.fr>"` |
 | `DEFAULT_URI` | URL publique HTTPS (ex. `https://rapprofam.fr`) |
 | `CONTACT_RECIPIENT` | E-mail de réception du formulaire contact, mentions et CGU (`ef_contact_recipient`) |
 | `PUBLISHER_ADDRESS` | Adresse postale de l’éditeur — mentions + responsable du traitement RGPD (`ef_publisher_address`) |
@@ -630,7 +665,8 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | **Délivrabilité e-mail** | Code livré (texte + HTML, List-Unsubscribe) — **SPF + DKIM + DMARC** obligatoires en prod ([PRE_DEPLOY § Délivrabilité](docs/PRE_DEPLOY.md)) |
 | **CGU & mentions — contenu juridique** | ☑ Livré juin 2026 — RGPD, LCEN, projet perso, données réelles, `PUBLISHER_ADDRESS` |
 | **CGU & mentions — hébergeur** | Remplacer les placeholders `legal.mentions.hosting.*` (nom, adresse, contact hébergeur) — FR + EN |
-| **E-mails professionnels** | Remplacer les adresses fictives (`admin@rapprofam.fr`, Ethereal, etc.) : `MAILER_FROM`, `CONTACT_RECIPIENT`, `MODERATION_CONTACT` |
+| **E-mails professionnels** | ☑ `rf_contact@rapprofam.fr` — configurer `MAILER_DSN` (mdp) dans `.env.local` serveur ; SPF/DKIM en prod |
+| **Safe Browsing (Chrome)** | Demande d’examen déposée juin 2026 — attente levée Google (historique domaine possible) |
 | **Messenger async** | En prod, configurer worker si e-mails async |
 | **HTTPS** | Obligatoire (cookies session, remember-me) |
 | **Bandeau cookies** | Livré (nécessaires + analytics + marketing) | AdSense : balises **après** approbation, sous consentement marketing |
@@ -641,7 +677,7 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 
 | Environnement | reCAPTCHA | Statut |
 |---------------|-----------|--------|
-| **Dev local** | Désactivé si clés vides | **Utilisable** — e-mail via Ethereal, honeypot, rate limit |
+| **Dev local** | Désactivé si clés vides | **Utilisable** — SMTP o2switch dans `.env.local` (ou `null://null`), honeypot, rate limit |
 | **Production** | **Obligatoire** (`RECAPTCHA_SECRET_KEY`) | Brancher **dès réception des clés** Google reCAPTCHA v3 |
 
 - Limites : **5 / heure**, **20 / jour** par compte (assouplies en `APP_ENV=dev`)
@@ -652,12 +688,13 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 **Test local** (`.env.local`) :
 
 ```env
-CONTACT_RECIPIENT=<même adresse que la boîte Ethereal>
+MAILER_DSN=smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465
+CONTACT_RECIPIENT=rf_contact@rapprofam.fr
 RECAPTCHA_SITE_KEY=          # vide = pas de reCAPTCHA (normal en attendant les clés)
 RECAPTCHA_SECRET_KEY=
 ```
 
-Après envoi : flash vert *« Ton message a bien été envoyé… »* + e-mail sur [ethereal.email](https://ethereal.email). Pas de bandeau spécial sur la page — si vous voyez une erreur, c’est un flash rouge ou une alerte de validation.
+Après envoi : flash vert *« Ton message a bien été envoyé… »* + e-mail dans la boîte `CONTACT_RECIPIENT`. Pas de bandeau spécial sur la page — si vous voyez une erreur, c’est un flash rouge ou une alerte de validation.
 
 ### Hébergement PlanetHoster The World (démarrage)
 
@@ -744,11 +781,12 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 | # | Action |
 |---|--------|
 | 1 | **HTTPS** + `DEFAULT_URI` prod · assets (`sass:build`, `asset-map:compile`) · secrets / `EF_ADMIN_PATH` |
-| 2 | **E-mails pro** — `MAILER_DSN` / `MAILER_FROM` SMTP réel ; `CONTACT_RECIPIENT` ; `MODERATION_CONTACT` ; `PUBLISHER_ADDRESS` si l’adresse a changé |
+| 2 | **E-mails pro** — `MAILER_DSN` o2switch (mdp dans `.env.local` serveur) ; `rf_contact@rapprofam.fr` ; SPF/DKIM ; `PUBLISHER_ADDRESS` si l’adresse a changé |
 | 3 | **Hébergeur** — renseigner `legal.mentions.hosting.*` (placeholders FR + EN) |
 | 4 | **Google OAuth** — clés prod ; `GOOGLE_OAUTH_REDIRECT_URI` = `https://DOMAIN/connect/google/check` ; URI enregistrée dans Cloud Console |
 | 5 | **reCAPTCHA** — clés prod + **domaines** du site (`RECAPTCHA_*`) pour `/contact` |
 | 6 | **Google Analytics** — propriété / flux **prod** ; `EF_GOOGLE_ANALYTICS_ID` ; URL du site dans GA4 ; test avec consentement cookies « analytics » |
+| 6b | **Safe Browsing** — si Chrome affiche « Site dangereux » : Search Console → [demande d’examen](#alerte-chrome-site-dangereux-safe-browsing) (historique domaine, pas forcément le site actuel) |
 | 7 | **Contact** — `CONTACT_WHATSAPP` + numéro réel (`wa.me`) |
 | 7a | **Délivrabilité e-mail** — SPF + DKIM + DMARC ; mail-tester ≥ 8/10 |
 | 7b | **PayPal Donate** — dashboard PayPal : remplacer les **URL de redirection** (retour / annulation) **locales** par les URLs **HTTPS du site déployé** ; lien : `templates/layout/_footer.html.twig` |
@@ -1152,6 +1190,12 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 5. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-11 — SMTP o2switch + Safe Browsing Google
+
+- **E-mails** : compte `rf_contact@rapprofam.fr` — SMTP o2switch (`mail.rapprofam.fr:465`, `smtps://`) ; `MAILER_FROM`, `CONTACT_RECIPIENT`, `MODERATION_CONTACT` alignés dans `.env` / `.env.local` / [GUIDE_COMMANDES](docs/GUIDE_COMMANDES_RAPPROFAM.md)
+- **Safe Browsing** : section README — alerte Chrome « Site dangereux » (réputation domaine héritée possible) ; demande d’examen Search Console déposée ; distinct d’AdSense / reCAPTCHA
+- **README** : section [Mailer](#mailer-smtp-o2switch) détaillée ; retrait références Ethereal / `admin@rapprofam.fr`
 
 ### 2026-06-09 — Photos messages de groupe + limites PlanetHoster
 

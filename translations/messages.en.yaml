@@ -1090,11 +1090,11 @@ legal:
       title: 3. Hosting
       intro: 'The site is hosted by:'
       provider: 'Provider:'
-      provider_placeholder: '[Hosting provider name — e.g. OVH Cloud]'
+      provider_placeholder: 'O2switch'
       address: 'Registered office:'
-      address_placeholder: '[Full hosting provider address]'
+      address_placeholder: 'Chem. des Pardiaux, 63000 Clermont-Ferrand'
       contact: 'Contact:'
-      contact_placeholder: '[Hosting provider phone or website]'
+      contact_placeholder: '04 44 44 60 40'
     ip:
       title: 4. Intellectual property
       body: SOUFFOUMADI Anissoir owns intellectual property rights on the site structure (logos, graphics, icons). Any reproduction, representation, modification, publication or adaptation of all or part of the site elements is prohibited without prior written authorisation.

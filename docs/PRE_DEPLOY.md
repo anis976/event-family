@@ -148,7 +148,7 @@ Les notifications (messages privés, vérification compte, etc.) doivent arriver
 
 | Règle | Exemple |
 |--------|---------|
-| `MAILER_FROM` = domaine du site | `RapporFam <noreply@rapprofam.fr>` |
+| `MAILER_FROM` = domaine du site | `RapporFam <rf_contact@rapprofam.fr>` |
 | Même domaine que `DEFAULT_URI` | Site `https://rapprofam.fr` → `@rapprofam.fr` |
 | **Pas** Ethereal / Gmail perso en prod | Réservé au dev local |
 
@@ -169,8 +169,9 @@ Vérifier après déploiement : [mail-tester.com](https://www.mail-tester.com), 
 Préférer un relay dédié (Brevo, Mailjet, SendGrid, SMTP OVH…) plutôt qu’un SMTP mutualisé non configuré. `MAILER_DSN` exemple :
 
 ```env
-MAILER_DSN=brevo+smtp://USERNAME:PASSWORD@default
-# ou smtp://user:pass@smtp.example.com:587
+# O2Switch (compte cPanel rapprofam.fr) :
+MAILER_DSN=smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465
+# ou relay dédié : brevo+smtp://USERNAME:PASSWORD@default
 ```
 
 ### 4. Bonnes pratiques côté app (livré)

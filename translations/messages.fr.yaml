@@ -1091,11 +1091,11 @@ legal:
       title: 3. Hébergement
       intro: 'Le site est hébergé par :'
       provider: 'Prestataire :'
-      provider_placeholder: '[Nom de l''hébergeur — ex. OVH Cloud]'
+      provider_placeholder: 'O2switch'
       address: 'Siège social :'
-      address_placeholder: '[Adresse complète de l''hébergeur]'
+      address_placeholder: 'Chem. des Pardiaux, 63000 Clermont-Ferrand'
       contact: 'Contact :'
-      contact_placeholder: '[Téléphone ou site de l''hébergeur]'
+      contact_placeholder: '04 44 44 60 40'
     ip:
       title: 4. Propriété intellectuelle
       body: SOUFFOUMADI Anissoir est propriétaire des droits de propriété intellectuelle sur la structure du site (logos, graphismes, icônes). Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable.

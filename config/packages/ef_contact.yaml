@@ -1,7 +1,8 @@
 parameters:
     ef.contact.min_submit_delay_seconds: 3
     ef.contact.recaptcha_min_score: 0.5
+    ef.contact.recipient_default: 'rf_contact@rapprofam.fr'
     ef.contact.whatsapp_default: ''
     ef.contact.whatsapp: '%env(default:ef.contact.whatsapp_default:CONTACT_WHATSAPP)%'
-    ef.moderation_contact: '%env(MODERATION_CONTACT)%'
-    ef.contact.recipient: '%env(CONTACT_RECIPIENT)%'
+    ef.contact.recipient: '%env(default:ef.contact.recipient_default:CONTACT_RECIPIENT)%'
+    ef.moderation_contact: '%env(default:ef.contact.recipient_default:MODERATION_CONTACT)%'

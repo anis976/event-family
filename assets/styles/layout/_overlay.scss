@@ -17,19 +17,40 @@
     .ef-sidebar {
         position: fixed !important;
         top: 0;
+        bottom: 0;
         left: -280px;
         width: 280px;
-        height: var(--ef-vh);
-        max-height: var(--ef-vh);
+        height: auto;
+        max-height: none;
         z-index: 1055;
         transition: left 0.3s ease-in-out;
         display: flex !important;
         flex-direction: column;
         box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
+        overflow-x: hidden;
         overflow-y: auto;
         overscroll-behavior: contain;
         -webkit-overflow-scrolling: touch;
         padding-bottom: max(0.8rem, env(safe-area-inset-bottom, 0px));
+
+        &__nav-top,
+        &__info,
+        &__settings {
+            flex-shrink: 0;
+        }
+
+        // Invité : grille fixe (flex + mt-auto coupe la roue dentée à ~360×804).
+        &.ef-sidebar--guest {
+            display: grid !important;
+            grid-template-rows: auto auto auto minmax(0, 1fr);
+            overflow: hidden;
+            overflow-y: hidden;
+
+            .ef-sidebar__settings {
+                margin-top: 0 !important;
+                align-self: end;
+            }
+        }
     }
 
     .ef-body.ef-sidebar-open {
