@@ -35,45 +35,89 @@ if ([string]::IsNullOrWhiteSpace($sshHost) -or [string]::IsNullOrWhiteSpace($rem
 Push-Location $root
 
 try {
+    Write-Host "==> Controle Git (fichiers non commites ?)"
+    $dirty = git status --porcelain
+    if ($dirty) {
+        Write-Host ""
+        git status --short
+        Write-Error @"
+Modifications non commitees detectees.
+Le serveur ne peut pas les recevoir : faites d'abord :
+  git add .
+  git commit -m "votre message"
+"@
+    }
+
     Write-Host "==> Build assets (local, prod)"
     $env:APP_ENV = "prod"
     $env:APP_DEBUG = "0"
     php bin/console sass:build --env=prod
     if ($LASTEXITCODE -ne 0) { throw "sass:build a echoue" }
-    # Evite de republier un ancien CSS (cache asset-mapper) alors que var/sass est a jour.
     php bin/console cache:clear --env=prod --no-warmup
     if ($LASTEXITCODE -ne 0) { throw "cache:clear a echoue" }
     php bin/console asset-map:compile --env=prod
     if ($LASTEXITCODE -ne 0) { throw "asset-map:compile a echoue" }
 
     Write-Host "==> Git push"
-    git push origin main
-    if ($LASTEXITCODE -ne 0) { throw "git push a echoue" }
+    git fetch origin
+    $localBeforePush = (git rev-parse HEAD).Trim()
+    $remoteBeforePush = (git rev-parse origin/main).Trim()
 
-    # Par defaut : le serveur recompile public/assets (deploy-server.sh + npm).
-    # SCP Windows -> o2switch echoue souvent ; utiliser -SyncAssets seulement si npm absent sur le serveur.
+    if ($localBeforePush -ne $remoteBeforePush) {
+        git push origin main
+        if ($LASTEXITCODE -ne 0) { throw "git push a echoue" }
+        git fetch origin
+    } else {
+        Write-Host "    origin/main deja a jour ($localBeforePush)"
+    }
+
+    $expectedCommit = (git rev-parse HEAD).Trim()
+    $onOrigin = (git rev-parse origin/main).Trim()
+    if ($expectedCommit -ne $onOrigin) {
+        throw "Incoherence Git : HEAD local ($expectedCommit) != origin/main ($onOrigin)"
+    }
+
+    Write-Host "    Commit a deployer : $expectedCommit"
+
     if ($SyncAssets) {
         if (-not (Test-Path "public/assets")) {
             throw "public/assets introuvable. Lancez asset-map:compile avant -SyncAssets."
         }
-        Write-Host "==> Sync public/assets vers le serveur (scp - mot de passe cPanel si demande)"
+        Write-Host "==> Sync public/assets vers le serveur (scp)"
         $remoteDest = ('{0}:{1}/public/assets' -f $sshHost, $remotePath)
         scp -o BatchMode=no -r "public/assets/." $remoteDest
-        if ($LASTEXITCODE -ne 0) { throw "scp assets a echoue (essayez sans -SyncAssets : le serveur recompile via npm)" }
+        if ($LASTEXITCODE -ne 0) { throw "scp assets a echoue" }
     } else {
-        Write-Host "==> Assets : compilation sur le serveur (npm). Pour forcer scp : -SyncAssets"
+        Write-Host "==> Assets : compilation sur le serveur (npm)"
     }
 
-    Write-Host "==> Deploy serveur (SSH)"
-    $remoteCmd = "cd $remotePath && bash bin/deploy-server.sh"
-    & ssh $sshHost $remoteCmd
+    Write-Host "==> Deploy serveur (SSH) — mot de passe cPanel si demande"
+    $remoteCmd = "cd $remotePath && DEPLOY_EXPECTED_COMMIT=$expectedCommit bash bin/deploy-server.sh"
+    $sshOutput = & ssh $sshHost $remoteCmd 2>&1 | Tee-Object -Variable sshLines
     $sshExit = $LASTEXITCODE
     if ($sshExit -ne 0) {
-        throw "deploy-server.sh a echoue (code $sshExit). Relisez les lignes ERREUR ci-dessus."
+        $sshText = ($sshLines | Out-String).Trim()
+        throw "deploy-server.sh a echoue (code $sshExit).`n$sshText"
+    }
+
+    $deployCommit = $null
+    foreach ($line in $sshLines) {
+        if ($line -match '^DEPLOY_COMMIT=(.+)$') {
+            $deployCommit = $Matches[1].Trim()
+        }
+    }
+
+    if (-not $deployCommit) {
+        throw "Verification echouee : DEPLOY_COMMIT absent dans la sortie SSH (deploy interrompu ?)"
+    }
+
+    if ($deployCommit -ne $expectedCommit) {
+        throw "Verification echouee : serveur sur $deployCommit, attendu $expectedCommit"
     }
 
     Write-Host ""
-    Write-Host "Deploy termine. Testez : https://rapprofam.fr"
+    Write-Host "[OK] Deploy verifie — commit $deployCommit sur le serveur"
+    Write-Host "     Testez : https://rapprofam.fr"
 }
 finally {
     Pop-Location

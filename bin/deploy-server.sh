@@ -15,6 +15,16 @@ echo "==> Sync code (identique a GitHub, .env.local intact)"
 git fetch origin
 git reset --hard origin/main
 
+EXPECTED_COMMIT="${DEPLOY_EXPECTED_COMMIT:-}"
+ACTUAL_COMMIT="$(git rev-parse HEAD)"
+
+if [ -n "$EXPECTED_COMMIT" ] && [ "$ACTUAL_COMMIT" != "$EXPECTED_COMMIT" ]; then
+    echo "ERREUR: commit serveur ${ACTUAL_COMMIT} != attendu ${EXPECTED_COMMIT}"
+    exit 1
+fi
+
+echo "==> Commit deploye : ${ACTUAL_COMMIT}"
+
 echo "==> Composer (prod)"
 APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --no-scripts
 
@@ -35,3 +45,4 @@ php bin/console cache:clear --env=prod
 php bin/console cache:warmup --env=prod
 
 echo "Deploy serveur termine : ${PROJECT_DIR}"
+echo "DEPLOY_COMMIT=${ACTUAL_COMMIT}"

@@ -599,3 +599,4 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 ---
 
 *Projet EventFamily / RapporFam — guide personnel de déploiement o2switch.*
+
