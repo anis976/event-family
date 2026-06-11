@@ -10,6 +10,12 @@ framework:
     #esi: true
     #fragments: true
 
+when@prod:
+    framework:
+        # Reverse proxy / load balancer (évite les boucles de redirection HTTPS).
+        trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+        trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
 when@test:
     framework:
         test: true
