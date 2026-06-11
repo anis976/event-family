@@ -44,6 +44,18 @@
         applyEarlyTheme(document);
     }
 
+    /** Hauteur réelle visible (barre d’adresse Android) — évite sidebar/footer coupés ~360×804. */
+    function efUpdateViewportHeight() {
+        const h = Math.round(window.visualViewport?.height ?? window.innerHeight);
+        document.documentElement.style.setProperty('--ef-vh', h + 'px');
+    }
+
+    window.efUpdateViewportHeight = efUpdateViewportHeight;
+    efUpdateViewportHeight();
+    window.visualViewport?.addEventListener('resize', efUpdateViewportHeight);
+    window.visualViewport?.addEventListener('scroll', efUpdateViewportHeight);
+    window.addEventListener('resize', efUpdateViewportHeight);
+
     applyEarlyTheme(document);
 
     document.addEventListener('turbo:before-render', onTurboBeforeRender);

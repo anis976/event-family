@@ -1,16 +1,9 @@
 @use 'variables' as *;
 
-// Desktop : dvh. Mobile : svh uniquement (évite le contenu coupé sur Android ~360×804).
+// Repli CSS ; ef-theme-init.js écrase --ef-vh en px (visualViewport) dès le chargement.
 :root {
     --ef-vh: 100vh;
     --ef-vh: 100svh;
-    --ef-vh: 100dvh;
-}
-
-@media (max-width: 991.98px) {
-    :root {
-        --ef-vh: 100svh;
-    }
 }
 
 .ef-body {

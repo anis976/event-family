@@ -1,6 +1,3 @@
-@use '../base/variables' as *;
-@use '../base/mixins' as *;
-
 .ef-sidebar-overlay {
     position: fixed;
     top: 0;
@@ -20,12 +17,12 @@
     .ef-sidebar {
         position: fixed !important;
         top: 0;
-        bottom: 0;
         left: -280px;
         width: 280px;
-        // Annule height: var(--ef-vh) du desktop — sinon dépasse la zone visible (~360×804).
-        height: auto !important;
-        max-height: none !important;
+        // --ef-vh = visualViewport.height (JS), pas bottom:0 (dépasse sous la barre d’adresse).
+        height: var(--ef-vh) !important;
+        max-height: var(--ef-vh) !important;
+        min-height: 0;
         z-index: 1055;
         transition: left 0.3s ease-in-out;
         display: flex !important;
@@ -43,21 +40,13 @@
             flex-shrink: 0;
         }
 
-        // Invité : pas de mt-auto (pousse la roue hors écran) — empilement naturel.
+        // Invité : empilement compact (pas de mt-auto qui pousse la roue hors écran).
         &.ef-sidebar--guest .ef-sidebar__settings {
             margin-top: 0.75rem !important;
         }
 
         &__settings {
-            position: sticky;
-            bottom: 0;
-            z-index: 1;
-            background-color: $ef-sidebar-bg-light;
             padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px));
-
-            @include color-mode(dark) {
-                background-color: #1e1e1e;
-            }
         }
     }
 
