@@ -11,8 +11,9 @@ on_error() {
 }
 trap 'on_error ${LINENO}' ERR
 
-echo "==> Git pull"
-git pull origin main
+echo "==> Sync code (identique a GitHub, .env.local intact)"
+git fetch origin
+git reset --hard origin/main
 
 echo "==> Composer (prod)"
 APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --no-scripts
