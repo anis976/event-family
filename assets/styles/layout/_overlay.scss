@@ -1,3 +1,6 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
 .ef-sidebar-overlay {
     position: fixed;
     top: 0;
@@ -20,8 +23,9 @@
         bottom: 0;
         left: -280px;
         width: 280px;
-        height: auto;
-        max-height: none;
+        // Annule height: var(--ef-vh) du desktop — sinon dépasse la zone visible (~360×804).
+        height: auto !important;
+        max-height: none !important;
         z-index: 1055;
         transition: left 0.3s ease-in-out;
         display: flex !important;
@@ -39,16 +43,20 @@
             flex-shrink: 0;
         }
 
-        // Invité : grille fixe (flex + mt-auto coupe la roue dentée à ~360×804).
-        &.ef-sidebar--guest {
-            display: grid !important;
-            grid-template-rows: auto auto auto minmax(0, 1fr);
-            overflow: hidden;
-            overflow-y: hidden;
+        // Invité : pas de mt-auto (pousse la roue hors écran) — empilement naturel.
+        &.ef-sidebar--guest .ef-sidebar__settings {
+            margin-top: 0.75rem !important;
+        }
 
-            .ef-sidebar__settings {
-                margin-top: 0 !important;
-                align-self: end;
+        &__settings {
+            position: sticky;
+            bottom: 0;
+            z-index: 1;
+            background-color: $ef-sidebar-bg-light;
+            padding-bottom: max(0.25rem, env(safe-area-inset-bottom, 0px));
+
+            @include color-mode(dark) {
+                background-color: #1e1e1e;
             }
         }
     }

@@ -134,6 +134,13 @@
         @include color-mode(dark) {
             border-top-color: rgba(255, 255, 255, 0.08);
         }
+
+        // Mobile invité : pas de marge auto (voir layout/_overlay.scss).
+        @media (max-width: 991.98px) {
+            .ef-sidebar--guest & {
+                margin-top: 0.75rem;
+            }
+        }
     }
 
     &__settings-name {
