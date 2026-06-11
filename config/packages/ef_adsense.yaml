@@ -1,5 +1,5 @@
 parameters:
-    ef_adsense_client_id_default: ''
+    ef_adsense_client_id_default: 'ca-pub-1688607663044702'
     ef_adsense_slot_home_default: ''
     ef_adsense_slot_events_default: ''
     ef_adsense_slot_groups_default: ''
