@@ -12,7 +12,8 @@ on_error() {
 trap 'on_error ${LINENO}' ERR
 
 echo "==> Sync code (identique a GitHub, .env.local intact)"
-git fetch origin
+# -q : evite « From https://github.com/... » sur stderr (faux positif PowerShell Windows)
+git fetch -q origin
 git reset --hard origin/main
 
 EXPECTED_COMMIT="${DEPLOY_EXPECTED_COMMIT:-}"

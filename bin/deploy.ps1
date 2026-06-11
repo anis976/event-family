@@ -9,6 +9,50 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+# ssh/scp/git ecrivent souvent sur stderr (ex. « From https://github.com/... ») :
+# PowerShell le traite comme une erreur fatale — on se fie uniquement a $LASTEXITCODE.
+function Convert-NativeOutputLines {
+    param([object[]]$Raw)
+    $lines = [System.Collections.Generic.List[string]]::new()
+    foreach ($item in $Raw) {
+        if ($null -eq $item) { continue }
+        if ($item -is [System.Management.Automation.ErrorRecord]) {
+            $lines.Add($item.ToString())
+        } else {
+            $lines.Add([string]$item)
+        }
+    }
+    return $lines
+}
+
+function Invoke-NativeCommand {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string[]]$Command
+    )
+    $previousErrorAction = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $exe = $Command[0]
+        $args = @()
+        if ($Command.Count -gt 1) {
+            $args = $Command[1..($Command.Count - 1)]
+        }
+        $raw = & $exe @args 2>&1
+        $exitCode = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $previousErrorAction
+    }
+    $lines = Convert-NativeOutputLines -Raw @($raw)
+    foreach ($line in $lines) {
+        Write-Host $line
+    }
+    return [PSCustomObject]@{
+        ExitCode = $exitCode
+        Lines    = $lines
+    }
+}
+
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $configFile = Join-Path $root "deploy.config"
 
@@ -85,23 +129,26 @@ Le serveur ne peut pas les recevoir : faites d'abord :
         }
         Write-Host "==> Sync public/assets vers le serveur (scp)"
         $remoteDest = ('{0}:{1}/public/assets' -f $sshHost, $remotePath)
-        scp -o BatchMode=no -r "public/assets/." $remoteDest
-        if ($LASTEXITCODE -ne 0) { throw "scp assets a echoue" }
+        $scpResult = Invoke-NativeCommand -Command @(
+            "scp", "-o", "BatchMode=no", "-r", "public/assets/.", $remoteDest
+        )
+        if ($scpResult.ExitCode -ne 0) { throw "scp assets a echoue" }
     } else {
         Write-Host "==> Assets : compilation sur le serveur (npm)"
     }
 
     Write-Host "==> Deploy serveur (SSH) - mot de passe cPanel si demande"
     $remoteCmd = ('cd {0}; DEPLOY_EXPECTED_COMMIT={1} bash bin/deploy-server.sh' -f $remotePath, $expectedCommit)
-    $sshOutput = & ssh $sshHost $remoteCmd 2>&1 | Tee-Object -Variable sshLines
-    $sshExit = $LASTEXITCODE
-    if ($sshExit -ne 0) {
-        $sshText = ($sshLines | Out-String).Trim()
-        throw ("deploy-server.sh a echoue (code {0}){1}{2}" -f $sshExit, [Environment]::NewLine, $sshText)
+    $sshResult = Invoke-NativeCommand -Command @(
+        "ssh", "-o", "BatchMode=no", $sshHost, $remoteCmd
+    )
+    if ($sshResult.ExitCode -ne 0) {
+        $sshText = ($sshResult.Lines -join [Environment]::NewLine).Trim()
+        throw ("deploy-server.sh a echoue (code {0}){1}{2}" -f $sshResult.ExitCode, [Environment]::NewLine, $sshText)
     }
 
     $deployCommit = $null
-    foreach ($line in $sshLines) {
+    foreach ($line in $sshResult.Lines) {
         if ($line -match '^DEPLOY_COMMIT=(.+)$') {
             $deployCommit = $Matches[1].Trim()
         }
