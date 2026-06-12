@@ -98,6 +98,7 @@ final class DashboardController extends AbstractDashboardController
     public function configureAssets(): Assets
     {
         return Assets::new()
+            ->addCssFile('styles/ef-admin.scss')
             ->addJsFile('js/ef-admin-idle.js');
     }
 }

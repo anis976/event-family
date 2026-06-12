@@ -37,6 +37,11 @@ if command -v npm >/dev/null 2>&1; then
     php bin/console asset-map:compile --env=prod
 else
     echo "==> npm absent : public/assets synchronise depuis le PC"
+    if ! grep -q 'styles/ef-admin.scss' public/assets/manifest.json 2>/dev/null; then
+        echo "ERREUR: ef-admin.scss absent de public/assets/manifest.json"
+        echo "Relancez deploy.ps1 avec -SyncAssets depuis le PC."
+        exit 1
+    fi
 fi
 
 echo "==> Env + cache"
