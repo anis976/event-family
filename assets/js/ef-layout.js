@@ -114,12 +114,26 @@ function initBootstrapDropdowns() {
     });
 }
 
+function syncMobileSidebarLayout() {
+    if (typeof window.efSyncMobileSidebar === 'function') {
+        window.efSyncMobileSidebar();
+        requestAnimationFrame(() => window.efSyncMobileSidebar());
+    } else if (typeof window.efUpdateViewportHeight === 'function') {
+        window.efUpdateViewportHeight();
+    }
+}
+
 function closeSidebar() {
     document.body.classList.remove('ef-sidebar-open');
+    syncMobileSidebarLayout();
 }
 
 function toggleSidebar() {
     document.body.classList.toggle('ef-sidebar-open');
+    syncMobileSidebarLayout();
+    // Barre d’adresse Android : second passage après reflow / transition.
+    window.setTimeout(syncMobileSidebarLayout, 50);
+    window.setTimeout(syncMobileSidebarLayout, 320);
 }
 
 function updateSearchToggleState(isOpen) {
@@ -251,6 +265,7 @@ export function initRapporFamLayout() {
 
     document.addEventListener('click', onLayoutClick);
     document.addEventListener('turbo:before-cache', onTurboBeforeCache);
+    document.addEventListener('turbo:render', syncMobileSidebarLayout);
 
     scrollHandler = () => updateBackToTopVisibility();
     window.addEventListener('scroll', scrollHandler, { passive: true });

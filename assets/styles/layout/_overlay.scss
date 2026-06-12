@@ -1,9 +1,9 @@
 .ef-sidebar-overlay {
     position: fixed;
-    top: 0;
+    top: var(--ef-vv-top, 0);
     left: 0;
     width: 100vw;
-    height: var(--ef-vh);
+    height: var(--ef-vv-height, 100svh);
     background: rgba(0, 0, 0, 0.4);
     z-index: 1040;
     display: none;
@@ -16,25 +16,23 @@
 @media (max-width: 991.98px) {
     .ef-sidebar {
         position: fixed !important;
-        top: 0;
-        bottom: 0;
+        top: var(--ef-vv-top, 0) !important;
         left: -280px;
         width: 280px;
+        height: var(--ef-vv-height, 100svh) !important;
+        max-height: var(--ef-vv-height, 100svh) !important;
         z-index: 1055;
         transition: left 0.3s ease-in-out;
-        display: flex !important;
-        flex-direction: column;
         box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
-        // Hauteur explicite : le body flex ne doit pas pousser __settings hors écran.
-        height: 100vh !important;
-        height: var(--ef-vh) !important;
-        max-height: 100vh !important;
-        max-height: var(--ef-vh) !important;
         overflow: hidden;
 
+        // Corps scrollable + réglages ancrés en bas (hauteur pied mesurée en JS).
         &__body {
-            flex: 1 1 auto;
-            min-height: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: var(--ef-sidebar-settings-h, 4.75rem);
             overflow-x: hidden;
             overflow-y: auto;
             overscroll-behavior: contain;
@@ -42,11 +40,25 @@
         }
 
         &__settings {
-            flex: 0 0 auto;
-            position: relative;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 2;
             padding: 0.5rem 0 0;
-            padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+            // Android : safe-area souvent à 0 — marge fixe pour la barre de navigation.
+            padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        &--guest {
+            .ef-sidebar__logo-texte {
+                margin-bottom: 1rem !important;
+            }
+
+            .ef-sidebar__info {
+                padding-top: 0.75rem !important;
+                padding-bottom: 0.75rem !important;
+            }
         }
     }
 
@@ -61,13 +73,9 @@
     }
 }
 
-// Honor 360×804 et écrans étroits : padding réduit + réglages ancrés en bas.
 @media (max-width: 380px) {
     .ef-sidebar {
         padding: 0.5rem;
-
-        &__settings {
-            margin-top: auto;
-        }
+        width: min(280px, 100vw);
     }
 }

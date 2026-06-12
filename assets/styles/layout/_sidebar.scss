@@ -143,6 +143,15 @@
             border-top-color: rgba(255, 255, 255, 0.08);
             background-color: #1e1e1e;
         }
+
+        .bi-gear {
+            flex-shrink: 0;
+            color: $ef-primary-orange;
+
+            @include color-mode(dark) {
+                color: $ef-soft-gold;
+            }
+        }
     }
 
     &__settings-name {

@@ -4,6 +4,10 @@
 :root {
     --ef-vh: 100vh;
     --ef-vh: 100svh;
+    // visualViewport (écrasé en px par ef-theme-init.js — téléphone réel ≠ inspecteur).
+    --ef-vv-top: 0px;
+    --ef-vv-height: 100svh;
+    --ef-sidebar-settings-h: 4.75rem;
 }
 
 .ef-body {
