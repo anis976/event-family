@@ -9,7 +9,6 @@ use App\Util\ParisClock;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
@@ -27,7 +26,7 @@ final class ContactMailService
     }
 
     /**
-     * @throws TransportExceptionInterface
+     * @throws \Throwable
      */
     public function sendContactMessage(User $user, string $message): void
     {
@@ -49,7 +48,7 @@ final class ContactMailService
 
         try {
             $this->mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
+        } catch (\Throwable $e) {
             $this->logger->error('Échec envoi formulaire contact.', [
                 'userId' => $user->getId(),
                 'error' => $e->getMessage(),

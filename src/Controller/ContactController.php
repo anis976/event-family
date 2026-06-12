@@ -14,7 +14,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ContactController extends AbstractAppController
@@ -47,7 +46,9 @@ final class ContactController extends AbstractAppController
                 return $this->fakeSuccessRedirect();
             }
 
-            $recaptchaToken = (string) $form->get('recaptchaToken')->getData();
+            $recaptchaToken = $form->has('recaptchaToken')
+                ? (string) $form->get('recaptchaToken')->getData()
+                : '';
             if ('' === trim($recaptchaToken)) {
                 $posted = $request->request->all('contact_form');
                 $recaptchaToken = \is_array($posted) ? (string) ($posted['recaptchaToken'] ?? '') : '';
@@ -89,7 +90,7 @@ final class ContactController extends AbstractAppController
 
             try {
                 $contactMail->sendContactMessage($user, $message);
-            } catch (TransportExceptionInterface) {
+            } catch (\Throwable) {
                 $this->addErrorFlash('flash.contact.send_failed');
 
                 return $this->renderContact($form, $user, $recaptchaSiteKey, $recaptchaEnabled, $contactWhatsApp, Response::HTTP_UNPROCESSABLE_ENTITY);

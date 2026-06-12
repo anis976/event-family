@@ -18,7 +18,8 @@ framework:
             messenger.bus.default: []
 
         routing:
-            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            # Sync : envoi immédiat + erreurs SMTP remontées au formulaire contact (pas de worker Messenger requis).
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: sync
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
 

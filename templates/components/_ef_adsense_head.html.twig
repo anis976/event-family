@@ -1,4 +1,4 @@
-{# Google AdSense — balise de vérification du site (examen du compte). Aucune annonce affichée tant que Google n’a pas approuvé le compte. #}
+{# Google AdSense — meta de vérification du site (examen du compte). Le script adsbygoogle.js est chargé après consentement marketing (ef-adsense.js). #}
 {% if ef_google_adsense_client_id %}
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ ef_google_adsense_client_id|e('html_attr') }}" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="{{ ef_google_adsense_client_id|e('html_attr') }}">
 {% endif %}

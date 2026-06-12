@@ -8,7 +8,8 @@
     data-ef-consent-has-choice="{{ ef_consent.hasChoice ? '1' : '0' }}"
     data-ef-consent-marketing="{{ ef_consent.marketing ? '1' : '0' }}"
     data-ef-consent-analytics="{{ ef_consent.analytics ? '1' : '0' }}"
-    {% if ef_google_analytics_id %}data-ef-ga-id="{{ ef_google_analytics_id }}"{% endif %}
+    {% if ef_google_analytics_id %}data-ef-ga-id="{{ ef_google_analytics_id|e('html_attr') }}"{% endif %}
+    {% if ef_google_adsense_client_id %}data-ef-adsense-client-id="{{ ef_google_adsense_client_id|e('html_attr') }}"{% endif %}
 >
     <div
         id="ef-consent-banner"
