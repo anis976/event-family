@@ -29,6 +29,9 @@ echo "==> Commit deploye : ${ACTUAL_COMMIT}"
 echo "==> Composer (prod)"
 APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --no-scripts
 
+echo "==> Bundles publics (EasyAdmin CSS/JS sous /bundles/easyadmin/)"
+php bin/console assets:install public --no-interaction --env=prod
+
 if command -v npm >/dev/null 2>&1; then
     echo "==> Assets (npm sur le serveur)"
     npm ci --omit=dev 2>/dev/null || npm install --omit=dev
