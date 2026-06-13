@@ -95,7 +95,7 @@ ui:
     manage_cookies: Gérer les cookies
     support: Soutenir le projet
     donate: Soutenir le projet
-    donate_aria: Soutenir RapproFam via PayPal.me (nouvel onglet)
+    donate_aria: Soutenir RapproFam via PayPal (nouvel onglet)
     donate_hint: '<strong>À titre informatif&nbsp;:</strong> le montant est libre. PayPal prélève des frais de <strong>0,35&nbsp;€ + 2,9&nbsp;%</strong> par transaction. Les contributions à partir de <strong>2&nbsp;€</strong> ou <strong>3&nbsp;€</strong> limitent l''impact de ces frais. Merci pour ton soutien.'
     copyright: © %year% RapproFam. Tous droits réservés.
   common:
