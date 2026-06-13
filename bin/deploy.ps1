@@ -1,16 +1,22 @@
 # Deploiement rapprofam.fr en une commande depuis Windows (Laragon)
 # Usage : powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-#         powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1 -SyncAssets  # si npm absent sur le serveur
+#         powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1 -NoSyncAssets  # si npm est installe sur le serveur
 # Config : copier deploy.config.example vers deploy.config (une seule fois)
 
 param(
-    [switch]$SyncAssets
+    [switch]$SyncAssets,
+    [switch]$NoSyncAssets
 )
+
+if ($SyncAssets -and $NoSyncAssets) {
+    Write-Error "Incompatible : -SyncAssets et -NoSyncAssets."
+}
+$SyncAssets = -not $NoSyncAssets
 
 $ErrorActionPreference = "Stop"
 
 # ssh/scp/git ecrivent souvent sur stderr (ex. « From https://github.com/... ») :
-# PowerShell le traite comme une erreur fatale — on se fie uniquement a $LASTEXITCODE.
+# PowerShell le traite comme une erreur fatale - on se fie uniquement a $LASTEXITCODE.
 function Convert-NativeOutputLines {
     param([object[]]$Raw)
     $lines = [System.Collections.Generic.List[string]]::new()
@@ -125,7 +131,7 @@ Le serveur ne peut pas les recevoir : faites d'abord :
 
     if ($SyncAssets) {
         if (-not (Test-Path "public/assets")) {
-            throw "public/assets introuvable. Lancez asset-map:compile avant -SyncAssets."
+            throw "public/assets introuvable. Lancez asset-map:compile avant le deploy."
         }
         Write-Host "==> Sync public/assets vers le serveur (scp)"
         $remoteDest = ('{0}:{1}/public/assets' -f $sshHost, $remotePath)
@@ -134,7 +140,7 @@ Le serveur ne peut pas les recevoir : faites d'abord :
         )
         if ($scpResult.ExitCode -ne 0) { throw "scp assets a echoue" }
     } else {
-        Write-Host "==> Assets : compilation sur le serveur (npm)"
+        Write-Host "==> Assets : compilation sur le serveur (npm) - NoSyncAssets actif"
     }
 
     Write-Host "==> Deploy serveur (SSH) - mot de passe cPanel si demande"
