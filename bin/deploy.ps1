@@ -129,6 +129,17 @@ Le serveur ne peut pas les recevoir : faites d'abord :
 
     Write-Host "    Commit a deployer : $expectedCommit"
 
+    $finalCacheFlag = if ($SyncAssets) { '0' } else { '1' }
+    Write-Host "==> Deploy serveur (SSH) - mot de passe cPanel si demande"
+    $remoteCmd = ('cd {0}; DEPLOY_EXPECTED_COMMIT={1} DEPLOY_FINAL_CACHE={2} bash bin/deploy-server.sh' -f $remotePath, $expectedCommit, $finalCacheFlag)
+    $sshResult = Invoke-NativeCommand -Command @(
+        "ssh", "-o", "BatchMode=no", $sshHost, $remoteCmd
+    )
+    if ($sshResult.ExitCode -ne 0) {
+        $sshText = ($sshResult.Lines -join [Environment]::NewLine).Trim()
+        throw ("deploy-server.sh a echoue (code {0}){1}{2}" -f $sshResult.ExitCode, [Environment]::NewLine, $sshText)
+    }
+
     if ($SyncAssets) {
         if (-not (Test-Path "public/assets")) {
             throw "public/assets introuvable. Lancez asset-map:compile avant le deploy."
@@ -147,18 +158,15 @@ Le serveur ne peut pas les recevoir : faites d'abord :
             throw "Verification assets serveur echouee : manifest.json sans ef-admin.scss apres scp"
         }
         Write-Host "    Assets serveur verifies (ef-admin.scss present)"
-    } else {
-        Write-Host "==> Assets : compilation sur le serveur (npm) - NoSyncAssets actif"
-    }
 
-    Write-Host "==> Deploy serveur (SSH) - mot de passe cPanel si demande"
-    $remoteCmd = ('cd {0}; DEPLOY_EXPECTED_COMMIT={1} bash bin/deploy-server.sh' -f $remotePath, $expectedCommit)
-    $sshResult = Invoke-NativeCommand -Command @(
-        "ssh", "-o", "BatchMode=no", $sshHost, $remoteCmd
-    )
-    if ($sshResult.ExitCode -ne 0) {
-        $sshText = ($sshResult.Lines -join [Environment]::NewLine).Trim()
-        throw ("deploy-server.sh a echoue (code {0}){1}{2}" -f $sshResult.ExitCode, [Environment]::NewLine, $sshText)
+        Write-Host "==> Cache prod (apres sync assets)"
+        $cacheCmd = ('cd {0} && php bin/console cache:clear --env=prod && php bin/console cache:warmup --env=prod' -f $remotePath)
+        $cacheResult = Invoke-NativeCommand -Command @(
+            "ssh", "-o", "BatchMode=no", $sshHost, $cacheCmd
+        )
+        if ($cacheResult.ExitCode -ne 0) { throw "cache:clear/warmup a echoue apres sync assets" }
+    } else {
+        Write-Host "==> Assets compiles sur le serveur (npm) - NoSyncAssets actif"
     }
 
     $deployCommit = $null

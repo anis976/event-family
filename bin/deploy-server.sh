@@ -11,6 +11,8 @@ on_error() {
 }
 trap 'on_error ${LINENO}' ERR
 
+FINAL_CACHE="${DEPLOY_FINAL_CACHE:-1}"
+
 echo "==> Sync code (identique a GitHub, .env.local intact)"
 # -q : evite « From https://github.com/... » sur stderr (faux positif PowerShell Windows)
 git fetch -q origin
@@ -39,25 +41,19 @@ if command -v npm >/dev/null 2>&1; then
     php bin/console cache:clear --env=prod --no-warmup
     php bin/console asset-map:compile --env=prod
 else
-    echo "==> npm absent : public/assets synchronise depuis le PC"
-    if [ ! -f public/assets/manifest.json ]; then
-        echo "ERREUR: public/assets/manifest.json introuvable sur le serveur"
-        echo "Relancez deploy.ps1 depuis le PC (sync assets automatique)."
-        exit 1
-    fi
-    if ! grep -q 'ef-admin.scss' public/assets/manifest.json; then
-        echo "ERREUR: ef-admin.scss absent de public/assets/manifest.json"
-        echo "Relancez deploy.ps1 depuis le PC (sync assets automatique)."
-        exit 1
-    fi
-    echo "    manifest.json OK (ef-admin.scss present)"
+    echo "==> npm absent : assets CSS/JS synchronises par deploy.ps1 (scp apres cette etape)"
 fi
 
 echo "==> Env + cache"
 composer dump-env prod
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
-php bin/console cache:clear --env=prod
-php bin/console cache:warmup --env=prod
+
+if [ "$FINAL_CACHE" = "1" ]; then
+    php bin/console cache:clear --env=prod
+    php bin/console cache:warmup --env=prod
+else
+    echo "    Cache final reporte (sync assets PC a venir)"
+fi
 
 echo "Deploy serveur termine : ${PROJECT_DIR}"
 echo "DEPLOY_COMMIT=${ACTUAL_COMMIT}"
