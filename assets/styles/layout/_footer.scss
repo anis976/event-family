@@ -45,21 +45,6 @@
         }
     }
 
-    &__support {
-        max-width: 28rem;
-    }
-
-    &__donate-hint {
-        margin-top: 0.75rem;
-        font-size: 0.8125rem;
-        line-height: 1.5;
-        color: #666;
-
-        @include color-mode(dark) {
-            color: #999;
-        }
-    }
-
     &__btn-report,
     .ef-btn-donate {
         transition:
