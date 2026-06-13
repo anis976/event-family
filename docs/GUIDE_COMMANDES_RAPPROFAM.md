@@ -1,6 +1,6 @@
 # Guide des commandes — RapproFam (rapprofam.fr)
 
-> **Fichier de secours** à garder sur votre PC (hors Cursor si besoin).  
+> **Fichier de secours** à garder sur votre PC.  
 > Projet : Symfony 8 · Hébergeur : **o2switch** · Dépôt : `https://github.com/anis976/event-family`  
 > Dernière mise à jour : juin 2026.
 
@@ -9,19 +9,15 @@
 ## Sommaire
 
 1. [Où taper quelle commande](#1-où-taper-quelle-commande)
-2. [Vos chemins importants](#2-vos-chemins-importants)
-3. [Connexion SSH o2switch](#3-connexion-ssh-o2switch)
+2. [Chemins importants](#2-chemins-importants)
+3. [Connexion SSH (serveur prod)](#3-connexion-ssh-serveur-prod)
 4. [Éditer un fichier](#4-éditer-un-fichier)
-5. [Déploiement (mise en ligne)](#5-déploiement-mise-en-ligne)
-6. [Git (versionner le code)](#6-git-versionner-le-code)
-7. [Base de données](#7-base-de-données)
-8. [Créer un compte admin](#8-créer-un-compte-admin)
-9. [Fermer / rouvrir le site au public](#9-fermer--rouvrir-le-site-au-public)
-10. [Cache Symfony](#10-cache-symfony)
-11. [Variables `.env.local` (prod)](#11-variables-envlocal-prod)
-12. [Cron (tâches automatiques)](#12-cron-tâches-automatiques)
-13. [Dépannage rapide](#13-dépannage-rapide)
-14. [Glossaire](#14-glossaire)
+5. [Git — vocabulaire minimum](#5-git--vocabulaire-minimum)
+6. [Déploiement (mise en ligne)](#6-déploiement-mise-en-ligne)
+7. [`.env.local` — PC vs serveur](#7-envlocal--pc-vs-serveur)
+8. [Opérations utiles sur le serveur](#8-opérations-utiles-sur-le-serveur)
+9. [Dépannage rapide](#9-dépannage-rapide)
+10. [MÉMO — commit & deploy selon ce que vous modifiez](#10-mémo--commit--deploy-selon-ce-que-vous-modifiez)
 
 ---
 
@@ -29,90 +25,63 @@
 
 | Où | Quand l'utiliser |
 |----|------------------|
-| **Terminal VS Code** (PowerShell) sur votre PC | Développement local Laragon, `git`, `deploy.ps1`, build CSS |
-| **SSH** (terminal connecté au serveur o2switch) | Tout ce qui touche la prod : cache, BDD, `.env.local` serveur |
-| **cPanel** (navigateur) | BDD MySQL, fichiers sans SSH, logs, certificat SSL |
+| **Terminal VS Code** (PowerShell) sur votre PC | Code PHP/Twig/SCSS, `git`, `deploy.ps1` |
+| **SSH** (terminal connecté à o2switch) | `.env.local` prod, cache, BDD, maintenance |
+| **cPanel** (navigateur) | BDD MySQL, logs, certificat SSL |
 
-### Ouvrir le terminal dans VS Code
+Ouvrir le terminal VS Code : **Ctrl + `** — le prompt doit être `PS C:\laragon\www\eventFamily>`.
 
-- Menu **Terminal** → **Nouveau terminal**
-- Ou raccourci : **Ctrl + `** (accent grave)
-- Vérifiez que le prompt ressemble à : `PS C:\laragon\www\eventFamily>`
-
-### Ne pas confondre
-
-- **Cliquer** sur un fichier `.ps1` dans l'explorateur → VS Code **ouvre** le fichier (ne l'exécute pas)
-- **Exécuter** un script → taper la commande **dans le terminal**
+> **Ne pas confondre** : cliquer sur un fichier `.ps1` l'**ouvre** dans l'éditeur. Pour l'**exécuter**, tapez la commande dans le terminal.
 
 ---
 
-## 2. Vos chemins importants
+## 2. Chemins importants
 
-### Sur votre PC (Windows / Laragon)
-
-```
-C:\laragon\www\eventFamily\          ← code source
-C:\laragon\www\eventFamily\.env.local ← secrets DEV (ne jamais commit)
-C:\laragon\www\eventFamily\deploy.config ← config deploy (mot de passe pas dedans)
-```
-
-### Sur o2switch (serveur)
+### PC (Laragon)
 
 ```
-/home/soan5627/rapprofam.fr/           ← projet Symfony COMPLET
-/home/soan5627/rapprofam.fr/public/    ← seul dossier visible sur le web
+C:\laragon\www\eventFamily\           ← code source
+C:\laragon\www\eventFamily\.env.local ← secrets DEV (jamais commit)
+C:\laragon\www\eventFamily\deploy.config ← config deploy (jamais commit)
+```
+
+### Serveur o2switch
+
+```
+/home/soan5627/rapprofam.fr/           ← projet Symfony
 /home/soan5627/rapprofam.fr/.env.local ← secrets PROD (jamais sur GitHub)
-/home/soan5627/public_html/            ← autre site / vide (cgi-bin) — pas RapproFam
 ```
-
-### URLs
 
 | URL | Rôle |
 |-----|------|
 | `https://rapprofam.fr` | Site public |
-| `https://rapprofam.fr/login` | Connexion |
-| `https://rapprofam.fr/VOTRE_CHEMIN_ADMIN` | Admin EasyAdmin (`EF_ADMIN_PATH` dans `.env.local`) |
-| cPanel | `https://VOTRE-SERVEUR.o2switch.net:2083` |
+| `https://rapprofam.fr/VOTRE_CHEMIN_ADMIN` | Admin (`EF_ADMIN_PATH` dans `.env.local` serveur) |
 
 ---
 
-## 3. Connexion SSH o2switch
-
-### Prérequis (une fois)
-
-1. E-mail **Bienvenue o2switch** : identifiant cPanel + nom du serveur (ex. `eglantier.o2switch.net`)
-2. cPanel → **Autorisation SSH** → ajouter **votre IP** (sinon connexion refusée)
-
-### Se connecter depuis VS Code / PowerShell
+## 3. Connexion SSH (serveur prod)
 
 ```powershell
 ssh soan5627@eglantier.o2switch.net
 ```
 
-- **Mot de passe** : le même que **cPanel**
-- Une fois connecté, le prompt change : `[soan5627@eglantier ~]$`
-
-### Aller dans le projet
+Mot de passe = celui du **cPanel**. Puis :
 
 ```bash
 cd ~/rapprofam.fr
 ```
 
-### Se déconnecter
-
-```bash
-exit
-```
-
-### Alternative : Terminal cPanel
-
-cPanel → **Terminal** → même shell, pas besoin d'installer SSH sur Windows.
+Pour quitter : `exit`
 
 ---
 
 ## 4. Éditer un fichier
 
-### Sur le serveur (SSH) — `nano`
+### Sur votre PC — VS Code
+
+Ouvrir le fichier, modifier, **Ctrl + S**.
+
+### Sur le serveur — `nano` (surtout pour `.env.local` prod)
 
 ```bash
 cd ~/rapprofam.fr
@@ -121,46 +90,35 @@ nano .env.local
 
 | Touche | Action |
 |--------|--------|
-| Flèches | Déplacer le curseur |
-| **Ctrl + O** | Enregistrer (Write Out) → Entrée pour confirmer |
+| **Ctrl + O** | Enregistrer → Entrée |
 | **Ctrl + X** | Quitter |
-| **Ctrl + K** | Couper une ligne |
-
-### Lire un fichier sans l'éditer
-
-```bash
-cat .env.local
-head -20 .env.local          # 20 premières lignes
-grep APP_ENV .env.local      # chercher une variable
-```
-
-### Sur votre PC — VS Code
-
-Ouvrez le fichier dans l'éditeur, modifiez, **Ctrl + S** pour enregistrer.
-
-### Envoyer UN fichier modifié sur le serveur (sans deploy complet)
-
-Depuis PowerShell sur le PC :
-
-```powershell
-cd C:\laragon\www\eventFamily
-scp config/packages/security.yaml soan5627@eglantier.o2switch.net:/home/soan5627/rapprofam.fr/config/packages/security.yaml
-```
-
-Puis sur le serveur :
-
-```bash
-cd ~/rapprofam.fr
-php bin/console cache:clear --env=prod
-```
-
-> **En pratique** : préférez `git push` + `deploy.ps1` pour ne pas oublier de fichiers.
 
 ---
 
-## 5. Déploiement (mise en ligne)
+## 5. Git — vocabulaire minimum
 
-### Configuration initiale (une fois sur le PC)
+| Commande | Rôle |
+|----------|------|
+| `git status` | Voir ce qui a changé |
+| `git add .` | Préparer **tous** les fichiers modifiés pour le commit |
+| `git commit -m "..."` | Enregistrer localement avec un message |
+| `git push` | Envoyer vers GitHub |
+
+**Ordre obligatoire** : `git add` → `git commit` → (push ou deploy)
+
+> **`git commit` seul ne suffit pas** : sans `git add` avant, rien n'est enregistré.
+
+### Fichiers JAMAIS à committer
+
+- `.env.local` (secrets)
+- `deploy.config`
+- `vendor/`, `node_modules/`, `public/assets/` (générés automatiquement)
+
+---
+
+## 6. Déploiement (mise en ligne)
+
+### Configuration initiale (une seule fois sur le PC)
 
 ```powershell
 cd C:\laragon\www\eventFamily
@@ -175,49 +133,35 @@ REMOTE_PATH=/home/soan5627/rapprofam.fr
 ASSETS_SOURCE=pc
 ```
 
-`ASSETS_SOURCE=pc` est **obligatoire sur o2switch** (pas de npm) : les CSS/JS sont compilés sur votre PC puis copiés sur le serveur. **Ne changez pas** sauf si npm est installé sur l’hébergement.
-
-### Déploiement complet — LA commande à retenir
+### LA commande de deploy
 
 ```powershell
 cd C:\laragon\www\eventFamily
 powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 ```
 
-**Une seule commande**, sans option `-SyncAssets` ni autre flag.
+**Prérequis** : tout doit être **commité** avant (sinon le script s'arrête).
 
-**Ce que fait `deploy.ps1` (5 étapes) :**
+**Ce que fait `deploy.ps1` automatiquement :**
 
-1. Refuse si des fichiers ne sont pas commités (`git status`)
-2. Compile le CSS/JS en local (`sass:build`, `asset-map:compile`) et vérifie `manifest.json`
-3. `git push` vers GitHub (si nécessaire)
-4. SSH : `deploy-server.sh` — code, Composer, `assets:install`, migrations (cache reporté)
-5. `scp` de `public/assets/` vers le serveur, puis `cache:clear` + `cache:warmup` en prod
+1. Vérifie qu'il n'y a pas de fichiers non commités
+2. Compile le CSS/JS en local (`sass:build`, SCSS inclus)
+3. **`git push`** vers GitHub (si besoin — **vous n'avez pas à le faire vous-même**)
+4. Met à jour le code sur le serveur (Composer, migrations BDD, etc.)
+5. Copie les assets compilés sur o2switch + vide le cache prod
 
-**Mot de passe cPanel** : demandé pour SSH (étapes 4 et 5). Sans la ligne **`[OK] Deploy verifie`**, le serveur n’est pas à jour.
+Mot de passe cPanel demandé pour SSH. Attendre la ligne **`[OK] Deploy verifie`**.
 
-> **Pourquoi cet ordre ?** `assets:install` sur le serveur peut écraser `public/assets/manifest.json`. Le `scp` doit donc avoir lieu **après** l’étape 4, jamais avant.
+---
 
-### Ce que fait `deploy-server.sh` (sur le serveur, automatique)
+## 7. `.env.local` — PC vs serveur
 
-1. `git reset --hard origin/main` — code identique à GitHub (`.env.local` intact)
-2. `composer install --no-dev`
-3. `assets:install` (bundles EasyAdmin sous `/bundles/easyadmin/`)
-4. `composer dump-env prod` + migrations BDD
-5. Cache prod (sauf si `deploy.ps1` enchaîne avec le `scp` — cas o2switch)
+| Fichier | Où | Comment le mettre à jour |
+|---------|-----|--------------------------|
+| `.env.local` **PC** | Laragon | VS Code → Ctrl + S. **Pas de git, pas de deploy.** |
+| `.env.local` **prod** | Serveur o2switch | SSH + `nano` → puis commandes serveur ci-dessous |
 
-### Déploiement manuel serveur seulement (déconseillé sur o2switch)
-
-```bash
-cd ~/rapprofam.fr
-bash bin/deploy-server.sh
-```
-
-Sans `deploy.ps1`, les assets CSS/JS (`public/assets/`) **ne seront pas à jour**. Préférez toujours la commande PowerShell ci-dessus.
-
-### Après modification de `.env.local` sur le serveur
-
-Le deploy ne suffit pas toujours — refaire :
+### Après modification de `.env.local` sur le **serveur**
 
 ```bash
 cd ~/rapprofam.fr
@@ -225,275 +169,54 @@ composer dump-env prod
 php bin/console cache:clear --env=prod
 ```
 
----
-
-## 6. Git (versionner le code)
-
-### Vocabulaire rapide
-
-| Commande | Définition |
-|----------|------------|
-| `git status` | Liste fichiers modifiés / non suivis |
-| `git add` | Prépare des fichiers pour un commit |
-| `git commit` | Enregistre un snapshot local avec un message |
-| `git push` | Envoie les commits vers GitHub |
-| `git pull` | Récupère les commits depuis GitHub |
-
-### Workflow habituel après modification du code (PC)
-
-```powershell
-cd C:\laragon\www\eventFamily
-git status
-git add .
-git commit -m "description courte de ce que vous avez changé"
-git push origin main
-powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-```
-
-### Voir l'historique
-
-```powershell
-git log --oneline -10
-```
-
-### Annuler des modifications locales NON commitées (attention)
-
-```powershell
-git checkout -- chemin/du/fichier
-```
-
-### Fichiers JAMAIS à committer
-
-- `.env.local` (secrets)
-- `deploy.config` (contient votre host SSH)
-- `vendor/`, `node_modules/`, `public/assets/` (générés)
+> Les changements dans `.env.local` **PC** n'impactent **pas** le site en ligne.  
+> Les changements sur le **serveur** n'ont **pas** besoin de `git commit` ni de `deploy.ps1`.
 
 ---
 
-## 7. Base de données
+## 8. Opérations utiles sur le serveur
 
-### Infos prod (exemple — les vôtres sont dans `.env.local` serveur)
+Toutes ces commandes : après `ssh` puis `cd ~/rapprofam.fr`.
 
-```
-Hôte : 127.0.0.1
-Base : soan5627_cpanel_rapproFam
-User : soan5627_rapproFamBoss
-```
-
-### Appliquer les migrations (créer / mettre à jour les tables)
+### Cache Symfony (après config, traductions déployées, etc.)
 
 ```bash
-cd ~/rapprofam.fr
-php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+php bin/console cache:clear --env=prod
+php bin/console cache:warmup --env=prod
 ```
 
-**Définition** : les fichiers dans `migrations/` décrivent l'évolution du schéma (`ef_users`, `ef_groups`, etc.).
+### Fermer / rouvrir le site (maintenance)
 
-### Voir l'état des migrations
+Dans `nano .env.local` :
 
-```bash
-php bin/console doctrine:migrations:status --env=prod
+```env
+EF_SITE_CLOSED=1   # fermé aux visiteurs
+EF_SITE_CLOSED=0   # ouvert
 ```
 
-### Marquer une migration comme déjà faite (sans l'exécuter)
+Puis : `composer dump-env prod` + `cache:clear --env=prod`.
 
-Utile si vous avez corrigé la BDD à la main :
+### Créer le premier admin
 
-```bash
-php bin/console doctrine:migrations:version "DoctrineMigrations\\Version20260610100000" --add --no-interaction --env=prod
-```
-
-### Exécuter du SQL à la main (Symfony 8)
-
-```bash
-php bin/console dbal:run-sql "SHOW TABLES" --env=prod
-php bin/console dbal:run-sql "SELECT id, email, roles FROM ef_users LIMIT 5" --env=prod
-```
-
-### Voir les tables
-
-```bash
-php bin/console dbal:run-sql "SHOW TABLES" --env=prod
-```
-
-### Créer la BDD (déjà fait sur o2switch via cPanel)
-
-En local Laragon seulement si besoin :
-
-```powershell
-php bin/console doctrine:database:create
-```
-
-### Sauvegarde BDD (cPanel)
-
-cPanel → **phpMyAdmin** → exporter la base `soan5627_cpanel_rapproFam`  
-Ou **Sauvegardes** cPanel si disponible.
-
----
-
-## 8. Créer un compte admin
-
-Il n'y a pas de commande `create-admin` dans le projet. Procédure recommandée :
-
-### Étape A — Inscription normale
-
-1. Site ouvert (`EF_SITE_CLOSED=0`)
-2. Aller sur `https://rapprofam.fr/register`
-3. Créer le compte avec **votre vrai e-mail**
-
-### Étape B — Vérifier l'e-mail
-
-- Cliquer le lien dans l'e-mail de vérification  
-- **OU** si SMTP pas encore configuré, activer à la main en SSH :
-
-```bash
-cd ~/rapprofam.fr
-php bin/console dbal:run-sql "UPDATE ef_users SET is_verified = 1 WHERE email = 'votre@email.fr'" --env=prod
-```
-
-### Étape C — Donner le rôle admin (premier compte uniquement)
+1. S'inscrire sur `https://rapprofam.fr/register`
+2. Vérifier l'e-mail (ou activer à la main en SQL si besoin)
+3. En SSH :
 
 ```bash
 php bin/console dbal:run-sql "UPDATE ef_users SET roles = '[\"ROLE_USER\",\"ROLE_ADMIN\"]' WHERE email = 'votre@email.fr'" --env=prod
 ```
 
-**Définition des rôles :**
-
-| Rôle | Accès |
-|------|--------|
-| `ROLE_USER` | Membre normal |
-| `ROLE_MODERATOR` | Modération + admin partiel |
-| `ROLE_SUPER_MODERATOR` | Plus de droits admin |
-| `ROLE_ADMIN` | Tout l'admin EasyAdmin |
-
-### Étape D — Accéder à l'admin
-
-URL : `https://rapprofam.fr/VOTRE_EF_ADMIN_PATH`  
-(valeur de `EF_ADMIN_PATH` dans `.env.local` serveur, **sans** slash au début)
-
-### Promouvoir un autre utilisateur (quand vous êtes déjà admin)
-
-Via l'interface EasyAdmin → Utilisateurs → modifier le rôle.
-
----
-
-## 9. Fermer / rouvrir le site au public
-
-### Fermer (maintenance visiteurs)
-
-Sur le serveur :
+### Migrations BDD (normalement faites par deploy)
 
 ```bash
-cd ~/rapprofam.fr
-nano .env.local
-```
-
-Ajouter ou modifier :
-
-```env
-EF_SITE_CLOSED=1
-```
-
-Puis :
-
-```bash
-composer dump-env prod
-php bin/console cache:clear --env=prod
-```
-
-- **Visiteurs** : page « RapproFam revient bientôt »
-- **Vous** (admin/modo connecté) : site normal via `/login`
-
-### Rouvrir
-
-```env
-EF_SITE_CLOSED=0
-```
-
-Puis `composer dump-env prod` + `cache:clear --env=prod`.
-
----
-
-## 10. Cache Symfony
-
-```bash
-cd ~/rapprofam.fr
-php bin/console cache:clear --env=prod
-php bin/console cache:warmup --env=prod
-```
-
-**Quand le faire** : après changement de config, `.env.local`, `security.yaml`, traductions déployées.
-
-### Vérifier que Symfony démarre
-
-```bash
-php bin/console about --env=prod
+php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 ```
 
 ---
 
-## 11. Variables `.env.local` (prod)
+## 9. Dépannage rapide
 
-Fichier **sur le serveur uniquement** : `~/rapprofam.fr/.env.local`
-
-### Minimum utile
-
-```env
-APP_ENV=prod
-APP_DEBUG=0
-APP_SECRET=un_long_secret_aleatoire_unique
-
-DEFAULT_URI=https://rapprofam.fr
-
-DATABASE_URL="mysql://USER:MDP@127.0.0.1:3306/NOM_BDD?serverVersion=10.6.20-MariaDB&charset=utf8mb4"
-
-MAILER_DSN=smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465
-MAILER_FROM="RapproFam <rf_contact@rapprofam.fr>"
-CONTACT_RECIPIENT=rf_contact@rapprofam.fr
-
-GOOGLE_OAUTH_CLIENT_ID=...
-GOOGLE_OAUTH_CLIENT_SECRET=...
-GOOGLE_OAUTH_REDIRECT_URI=https://rapprofam.fr/connect/google/check
-
-EF_ADMIN_PATH=un-chemin-secret-sans-slash
-EF_SITE_CLOSED=0
-```
-
-### Générer un secret
-
-```bash
-php -r "echo bin2hex(random_bytes(16)) . PHP_EOL;"
-```
-
-### Après TOUTE modification de `.env.local`
-
-```bash
-composer dump-env prod
-php bin/console cache:clear --env=prod
-```
-
----
-
-## 12. Cron (tâches automatiques)
-
-À configurer dans cPanel → **Tâches Cron** (fréquence au choix).
-
-```bash
-# Purge comptes inactifs (ex. tous les jours à 3h)
-0 3 * * * cd /home/soan5627/rapprofam.fr && php bin/console app:users:purge-inactive --env=prod
-
-# Purge événements passés (ex. 4h)
-0 4 * * * cd /home/soan5627/rapprofam.fr && php bin/console app:events:purge-past --env=prod
-
-# Purge vieux messages (ex. 5h)
-0 5 * * * cd /home/soan5627/rapprofam.fr && php bin/console app:messages:purge-old --env=prod
-```
-
----
-
-## 13. Dépannage rapide
-
-### Erreur 500 sur le site
+### Erreur 500
 
 ```bash
 cd ~/rapprofam.fr
@@ -501,13 +224,21 @@ php bin/console about --env=prod
 php bin/console cache:clear --env=prod
 ```
 
-Temporairement pour voir l'erreur (remettre `0` après) :
+### `deploy.ps1` refuse de partir
 
-```env
-APP_DEBUG=1
+Message « modifications non commitées » → faites `git add .` + `git commit -m "..."` puis relancez deploy.
+
+### CSS pas à jour en prod
+
+Ne lancez **pas** `deploy-server.sh` seul depuis le serveur. Toujours :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 ```
 
-### `git pull` / deploy : conflit de fichiers
+(sur o2switch, le SCSS est compilé sur **votre PC**, pas sur le serveur)
+
+### Site bloqué après deploy
 
 ```bash
 cd ~/rapprofam.fr
@@ -516,105 +247,127 @@ git reset --hard origin/main
 bash bin/deploy-server.sh
 ```
 
-### Migration : colonne déjà existante
-
-```bash
-php bin/console doctrine:migrations:version "DoctrineMigrations\\VersionXXXX" --add --no-interaction --env=prod
-```
-
-### Google OAuth : diagnostic
-
-```bash
-php bin/console ef:google-oauth:diagnose --env=prod
-```
-
-### Chrome « Site dangereux »
-
-- Search Console → Problèmes de sécurité → Demander un examen  
-- Pas lié aux e-mails de test en local  
-- Vérifier cohérence **rapprofam.fr** + marque **RapproFam**
-
-### `deploy.ps1` : erreur PowerShell sur accents
-
-Toujours lancer avec :
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-```
-
-### `sass:build` / `ef-admin.scss` / assets sur o2switch
-
-Normal si `npm` est absent sur le serveur. **Ne lancez pas** `deploy-server.sh` seul pour un deploy complet.
-
-Depuis le PC, une seule commande :
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-```
-
-Vérifiez que `deploy.config` contient `ASSETS_SOURCE=pc` (valeur par défaut si la ligne est absente).
-
-### Permissions dossiers upload
-
-```bash
-mkdir -p var/storage/avatars var/storage/events var/storage/message-photos
-chmod -R u+w var
-```
-
 ---
 
-## 14. Glossaire
+## 10. MÉMO — commit & deploy selon ce que vous modifiez
 
-| Terme | Définition |
-|-------|------------|
-| **SSH** | Connexion sécurisée en ligne de commande au serveur |
-| **scp** | Copie de fichiers vers le serveur via SSH |
-| **cPanel** | Interface web de gestion o2switch |
-| **Composer** | Gestionnaire de librairies PHP (`vendor/`) |
-| **Git** | Historique du code ; GitHub = copie en ligne |
-| **Commit** | Snapshot enregistré du code |
-| **Push** | Envoi des commits vers GitHub |
-| **Pull / reset** | Récupération du code depuis GitHub |
-| **Migration** | Script qui met à jour la structure MySQL |
-| **Cache Symfony** | Fichiers compilés de config — à vider après changement |
-| **`.env.local`** | Secrets et config par machine (non versionnés) |
-| **`dump-env prod`** | Compile `.env.local` en `.env.local.php` pour la prod |
-| **`public/`** | Seul dossier web exposé (racine document = `rapprofam.fr/public`) |
-| **`EF_SITE_CLOSED`** | `1` = maintenance visiteurs, `0` = site ouvert |
-| **`EF_ADMIN_PATH`** | URL secrète de l'admin EasyAdmin |
+> **Règle d'or** : tout ce qui est dans le code (Twig, PHP, SCSS, traductions, migrations…) passe par **Git + deploy**.  
+> **Exception** : `.env.local` prod → **SSH + nano**, jamais Git.
 
----
-
-## Récap — les 5 commandes les plus utiles
+Toujours commencer par :
 
 ```powershell
-# 1. Déployer après modification du code (PC)
 cd C:\laragon\www\eventFamily
-powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-```
-
-```bash
-# 2. Se connecter au serveur
-ssh soan5627@eglantier.o2switch.net
-cd ~/rapprofam.fr
-```
-
-```bash
-# 3. Après changement .env.local (serveur)
-composer dump-env prod && php bin/console cache:clear --env=prod
-```
-
-```bash
-# 4. Migrations BDD (serveur)
-php bin/console doctrine:migrations:migrate --no-interaction --env=prod
-```
-
-```bash
-# 5. Maintenance ON/OFF (serveur — puis dump-env + cache:clear)
-# EF_SITE_CLOSED=1 ou 0 dans .env.local
+git status
 ```
 
 ---
 
-*Projet EventFamily / RapproFam — guide personnel de déploiement o2switch.*
+### A. Fichier Twig, Controller, Entité, Service, traduction YAML, migration…
 
+Même procédure pour **tous** les fichiers versionnés du projet.
+
+```powershell
+cd C:\laragon\www\eventFamily
+git add .
+git commit -m "fix: décrire brièvement ce que vous avez changé"
+powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
+```
+
+**Vous n'avez pas besoin de `git push` à part** : `deploy.ps1` le fait à l'étape 3.
+
+Exemples de message de commit :
+
+- `fix: retour lien PayPal dans le footer`
+- `feat: filtre messages par groupe`
+- `fix: correction typo page contact`
+
+---
+
+### B. Fichier SCSS / CSS / JS (`assets/styles/…`, `assets/js/…`)
+
+**Exactement la même procédure** que pour un Twig ou un Controller.
+
+Le deploy compile le SCSS sur votre PC **automatiquement** (étape 2 de `deploy.ps1`).  
+Vous n'avez **pas** à lancer `sass:build` vous-même.
+
+```powershell
+cd C:\laragon\www\eventFamily
+git add .
+git commit -m "style: ajuster le footer"
+powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
+```
+
+---
+
+### C. `.env.local` sur votre PC (Laragon — développement local)
+
+1. Ouvrir `.env.local` dans VS Code (ou `notepad .env.local`)
+2. Modifier, **Ctrl + S**
+3. **C'est tout.** Pas de `git add`, pas de `git commit`, pas de `deploy.ps1`
+
+Si le site local se comporte bizarrement après un changement :
+
+```powershell
+cd C:\laragon\www\eventFamily
+php bin/console cache:clear
+```
+
+---
+
+### D. `.env.local` sur le serveur (production — rapprofam.fr)
+
+1. Se connecter en SSH :
+
+```powershell
+ssh soan5627@eglantier.o2switch.net
+```
+
+2. Éditer :
+
+```bash
+cd ~/rapprofam.fr
+nano .env.local
+```
+
+3. Enregistrer (**Ctrl + O**, Entrée) et quitter (**Ctrl + X**)
+
+4. Appliquer :
+
+```bash
+composer dump-env prod
+php bin/console cache:clear --env=prod
+```
+
+5. **Pas de Git, pas de deploy** pour ce cas.
+
+---
+
+### E. Résumé en une ligne
+
+| Ce que vous modifiez | Où | Commandes |
+|----------------------|-----|-----------|
+| Twig, PHP, YAML traductions, migration… | PC | `git add .` → `git commit -m "..."` → `deploy.ps1` |
+| SCSS / JS | PC | **Pareil** — deploy compile le CSS |
+| `.env.local` dev | PC Laragon | VS Code + Ctrl + S (optionnel : `cache:clear` local) |
+| `.env.local` prod | Serveur SSH | `nano` → `dump-env prod` → `cache:clear --env=prod` |
+
+---
+
+### F. Séquence complète type (copier-coller)
+
+Après une session de dev sur le PC :
+
+```powershell
+cd C:\laragon\www\eventFamily
+git status
+git add .
+git commit -m "fix: changement de scss"
+powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
+```
+
+Attendre **`[OK] Deploy verifie`**, puis tester `https://rapprofam.fr`.
+
+---
+
+*Projet RapproFam — guide personnel o2switch.*
