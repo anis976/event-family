@@ -172,7 +172,10 @@ copy deploy.config.example deploy.config
 ```ini
 SSH_HOST=soan5627@eglantier.o2switch.net
 REMOTE_PATH=/home/soan5627/rapprofam.fr
+ASSETS_SOURCE=pc
 ```
+
+`ASSETS_SOURCE=pc` est **obligatoire sur o2switch** (pas de npm) : les CSS/JS sont compilés sur votre PC puis copiés sur le serveur. **Ne changez pas** sauf si npm est installé sur l’hébergement.
 
 ### Déploiement complet — LA commande à retenir
 
@@ -181,30 +184,36 @@ cd C:\laragon\www\eventFamily
 powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 ```
 
-**Ce que fait `deploy.ps1` :**
+**Une seule commande**, sans option `-SyncAssets` ni autre flag.
+
+**Ce que fait `deploy.ps1` (5 étapes) :**
 
 1. Refuse si des fichiers ne sont pas commités (`git status`)
-2. Compile le CSS/JS en local (`sass:build`, `asset-map:compile`)
+2. Compile le CSS/JS en local (`sass:build`, `asset-map:compile`) et vérifie `manifest.json`
 3. `git push` vers GitHub (si nécessaire)
-4. Lance `deploy-server.sh` sur o2switch via SSH
-5. Affiche **`[OK] Deploy verifie — commit xxxxx`** si le serveur est sur le même commit que le PC
+4. SSH : `deploy-server.sh` — code, Composer, `assets:install`, migrations (cache reporté)
+5. `scp` de `public/assets/` vers le serveur, puis `cache:clear` + `cache:warmup` en prod
 
-**Mot de passe cPanel** : demandé pour SSH. Sans la ligne `[OK] Deploy verifie`, le serveur n’est pas à jour.
+**Mot de passe cPanel** : demandé pour SSH (étapes 4 et 5). Sans la ligne **`[OK] Deploy verifie`**, le serveur n’est pas à jour.
+
+> **Pourquoi cet ordre ?** `assets:install` sur le serveur peut écraser `public/assets/manifest.json`. Le `scp` doit donc avoir lieu **après** l’étape 4, jamais avant.
 
 ### Ce que fait `deploy-server.sh` (sur le serveur, automatique)
 
 1. `git reset --hard origin/main` — code identique à GitHub (`.env.local` intact)
 2. `composer install --no-dev`
-3. `composer dump-env prod`
-4. Migrations BDD
-5. Vide et réchauffe le cache
+3. `assets:install` (bundles EasyAdmin sous `/bundles/easyadmin/`)
+4. `composer dump-env prod` + migrations BDD
+5. Cache prod (sauf si `deploy.ps1` enchaîne avec le `scp` — cas o2switch)
 
-### Déploiement manuel serveur seulement (si besoin)
+### Déploiement manuel serveur seulement (déconseillé sur o2switch)
 
 ```bash
 cd ~/rapprofam.fr
 bash bin/deploy-server.sh
 ```
+
+Sans `deploy.ps1`, les assets CSS/JS (`public/assets/`) **ne seront pas à jour**. Préférez toujours la commande PowerShell ci-dessus.
 
 ### Après modification de `.env.local` sur le serveur
 
@@ -533,9 +542,17 @@ Toujours lancer avec :
 powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 ```
 
-### `sass:build` échoue sur le serveur
+### `sass:build` / `ef-admin.scss` / assets sur o2switch
 
-Normal si `npm` absent — les assets viennent du PC via `scp` dans `deploy.ps1`.
+Normal si `npm` est absent sur le serveur. **Ne lancez pas** `deploy-server.sh` seul pour un deploy complet.
+
+Depuis le PC, une seule commande :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
+```
+
+Vérifiez que `deploy.config` contient `ASSETS_SOURCE=pc` (valeur par défaut si la ligne est absente).
 
 ### Permissions dossiers upload
 

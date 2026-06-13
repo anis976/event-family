@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-# Deploiement prod o2switch - lancer depuis ~/rapprofam.fr
+# Deploiement prod o2switch - lance par deploy.ps1 (PC) ou manuellement sur le serveur.
+#
+# Contrat avec deploy.ps1 (ASSETS_SOURCE=pc, o2switch sans npm) :
+#   1. Ce script : git + composer + assets:install (+ migrations, dump-env)
+#   2. deploy.ps1 : scp public/assets/ depuis le PC (APRES assets:install)
+#   3. deploy.ps1 : cache:clear + cache:warmup
+#
+# Ne pas inverser 1 et 2 : assets:install ecrase manifest.json si scp est fait avant.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -12,9 +19,9 @@ on_error() {
 trap 'on_error ${LINENO}' ERR
 
 FINAL_CACHE="${DEPLOY_FINAL_CACHE:-1}"
+ORCHESTRATED="${DEPLOY_ORCHESTRATED:-0}"
 
 echo "==> Sync code (identique a GitHub, .env.local intact)"
-# -q : evite « From https://github.com/... » sur stderr (faux positif PowerShell Windows)
 git fetch -q origin
 git reset --hard origin/main
 
@@ -41,18 +48,23 @@ if command -v npm >/dev/null 2>&1; then
     php bin/console cache:clear --env=prod --no-warmup
     php bin/console asset-map:compile --env=prod
 else
-    echo "==> npm absent : assets CSS/JS synchronises par deploy.ps1 (scp apres cette etape)"
+    echo "==> npm absent : assets CSS/JS fournis par deploy.ps1 (scp apres cette etape)"
+    if [ "$ORCHESTRATED" != "1" ]; then
+        echo "ATTENTION: sans deploy.ps1, public/assets/ ne sera pas a jour."
+        echo "Depuis le PC : powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1"
+    fi
 fi
 
-echo "==> Env + cache"
+echo "==> Env + migrations"
 composer dump-env prod
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
 
 if [ "$FINAL_CACHE" = "1" ]; then
+    echo "==> Cache prod"
     php bin/console cache:clear --env=prod
     php bin/console cache:warmup --env=prod
 else
-    echo "    Cache final reporte (sync assets PC a venir)"
+    echo "==> Cache prod reporte (sync assets PC a venir)"
 fi
 
 echo "Deploy serveur termine : ${PROJECT_DIR}"

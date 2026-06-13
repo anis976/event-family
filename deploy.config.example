@@ -1,5 +1,9 @@
-# Copier ce fichier en deploy.config (non versionné) et adapter une seule fois.
+# Copier ce fichier en deploy.config (non versionne) et adapter une seule fois.
 # SSH_HOST = identifiant@serveur.o2switch.net (voir e-mail bienvenue o2switch)
 SSH_HOST=soan5627@eglantier.o2switch.net
-# Chemin du projet Symfony sur l'hébergement
+# Chemin du projet Symfony sur l'hebergement
 REMOTE_PATH=/home/soan5627/rapprofam.fr
+# Source des assets CSS/JS :
+#   pc     = o2switch sans npm (defaut) : build local + scp public/assets/
+#   server = npm installe sur le serveur : compilation distante
+ASSETS_SOURCE=pc

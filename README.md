@@ -1147,7 +1147,7 @@ Réponse au mur de connexion sur `/` (bloquant l’examen AdSense). Comportement
 | `assets/js/ef-adsense.js` | Chargement si consentement marketing |
 | `src/Controller/LegalController.php` | Route `/ads.txt` |
 | `public/ads.txt` | Ligne `google.com, pub-…` |
-| `bin/deploy.ps1` | Vérifie que le commit local = commit serveur après deploy |
+| `bin/deploy.ps1` | Deploy complet o2switch : build assets PC → push → code serveur → scp `public/assets/` → cache prod ; vérifie `DEPLOY_COMMIT` |
 
 **Désactiver une page** : laisser le `EF_GOOGLE_ADSENSE_SLOT_*` correspondant vide dans `.env` / `.env.local` serveur.
 
@@ -1229,7 +1229,7 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 - **AdSense** : balise `<head>`, `ads.txt`, emplacements discrets (accueil, événements, groupes, about, messages index) ; consentement marketing ; `EF_GOOGLE_ADSENSE_CLIENT_ID` en prod ; demande d’examen déposée
 - **En attente** : CMP Google certifiée (3 choix) et `EF_GOOGLE_ADSENSE_SLOT_*` — **après** approbation Google
 - **Cookies** : textes bandeau / CGU AdSense à jour ; catalogue cookies marketing (`__gads`, `IDE`)
-- **Deploy** : `deploy.ps1` bloque si fichiers non commités et vérifie le commit serveur (`DEPLOY_COMMIT`)
+- **Deploy** : `deploy.ps1` — une commande (`ASSETS_SOURCE=pc` dans `deploy.config`) ; bloque si fichiers non commités ; vérifie `DEPLOY_COMMIT`
 
 ### 2026-06-11 — SMTP o2switch + Safe Browsing Google
 
