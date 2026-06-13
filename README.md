@@ -1,4 +1,4 @@
-# RapporFam
+# RapproFam
 
 Plateforme Symfony 8 de gestion d'événements familiaux.
 
@@ -44,7 +44,7 @@ Compte messagerie prod : **`rf_contact@rapprofam.fr`** (cPanel o2switch). Variab
 
 ```env
 MAILER_DSN=smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465
-MAILER_FROM="RapporFam <rf_contact@rapprofam.fr>"
+MAILER_FROM="RapproFam <rf_contact@rapprofam.fr>"
 CONTACT_RECIPIENT=rf_contact@rapprofam.fr
 MODERATION_CONTACT=rf_contact@rapprofam.fr
 ```
@@ -194,7 +194,7 @@ Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, e
 |---------|--------|
 | URL | `/%EF_ADMIN_PATH%/` (défaut `ef-console-8f3a2c91`) — **à personnaliser en prod** (`.env.local`) |
 | Sidebar site | Lien « Administration » visible staff site uniquement, ouverture **nouvel onglet** |
-| Tableau de bord | Titre **« Administration RapporFam »** ; cartes vers chaque rubrique |
+| Tableau de bord | Titre **« Administration RapproFam »** ; cartes vers chaque rubrique |
 | Titres de rubrique | En-tête de chaque CRUD = nom de la section (Utilisateurs, Groupes, Événements, Messages, Bannissements) — plus le mot générique « Administration » |
 | Droits | Hiérarchie **modo → super-modo → admin** (`AdminUserPolicyService`) : édition / ban selon le palier ; **suppression comptes** : super-modo + admin (admin seul pour un compte admin) ; **suppression** groupes / événements / messages : admin seul |
 | CRUD | Utilisateurs, groupes, événements, **messages** (consultation litige), **bannissements** (historique lecture seule) — listes allégées, filtres traduits FR/EN |
@@ -416,7 +416,7 @@ Variables (secondes) — prod dans `.env`, tests courts dans `.env.dev` :
 - Chaque connexion : `last_login_at` mis à jour + reset des avertissements (`LoginActivitySubscriber`)
 - Suppression : soft-delete + **retrait automatique des groupes** (membre) + fermeture bans actifs
 - **Exclus** : admin/modo site, chefs de groupe (owner)
-- Notifications : e-mail + message privé RapporFam (vérifiés) ; e-mail seul si jamais activé
+- Notifications : e-mail + message privé RapproFam (vérifiés) ; e-mail seul si jamais activé
 
 **Tester en local :**
 
@@ -434,8 +434,8 @@ Services : `InactiveAccountPurgeService`, `InactiveAccountNotificationService`, 
 Entités : `Message`, `MessageRead`, `MessagePhoto`.
 
 - **Message système** (tête du fil groupe) : toujours affiché, non supprimable / non répondable par les membres ; édition **staff site** (`GroupSystemNoticeService`, `Group.systemNoticeContent`)
-- **Annonces staff** (admin/modo site) : fil privé orange « RapporFam », sans réponse (`PlatformNoticeVariant::RapporFam`)
-- **Notices plateforme** (bans, inactivité) : messages privés système (`PlatformNoticeVariant::System` / `RapporFam`)
+- **Annonces staff** (admin/modo site) : fil privé orange « RapproFam », sans réponse (`PlatformNoticeVariant::RapproFam`)
+- **Notices plateforme** (bans, inactivité) : messages privés système (`PlatformNoticeVariant::System` / `RapproFam`)
 - **Privé** : **1 fil actif par paire** d'utilisateurs ; réponses illimitées (pagination 30 → 200 par fil) ; rate limit **20/h**
 - **E-mail nouveau MP** : opt-in Mon espace → Notifications (`notifyPrivateMessageEmail`) ; throttle 30 min / conversation ; texte + HTML + `List-Unsubscribe`
 - **Accusé de lecture** : « Lu le… » visible par l'expéditeur (MP uniquement)
@@ -544,7 +544,7 @@ En juin 2026, **Chrome** peut afficher *« Site dangereux »* sur `https://rappr
 | Prévisualisation dev | `/_error/404` (firewall `dev` : `/_error` sans auth) |
 | Comportement site | URL inconnue : **invité** → redirection login (sauf routes publiques ci-dessus) ; **connecté** → page 404 personnalisée |
 
-Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/404`) ; marque RapporFam en pied de carte.
+Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/404`) ; marque RapproFam en pied de carte.
 
 ### Pages légales (livré — juin 2026)
 
@@ -627,7 +627,7 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | `APP_SECRET` | Secret unique (≠ dev) |
 | `DATABASE_URL` | MySQL hébergeur |
 | `MAILER_DSN` | `smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465` |
-| `MAILER_FROM` | `"RapporFam <rf_contact@rapprofam.fr>"` |
+| `MAILER_FROM` | `"RapproFam <rf_contact@rapprofam.fr>"` |
 | `DEFAULT_URI` | URL publique HTTPS (ex. `https://rapprofam.fr`) |
 | `CONTACT_RECIPIENT` | E-mail de réception du formulaire contact, mentions et CGU (`ef_contact_recipient`) |
 | `PUBLISHER_ADDRESS` | Adresse postale de l’éditeur — mentions + responsable du traitement RGPD (`ef_publisher_address`) |
@@ -712,7 +712,7 @@ Calibrage **juin 2026** pour un compte N0C mutualisé (CPU / RAM / I/O limités)
 | Messages privés / h | 20 | idem |
 | Purge messages + photos | 12 mois | idem |
 
-**Recommandation compte N0C** : allouer **≥ 2 Go RAM** au projet RapporFam si possible (traitement GD + Symfony). Sauvegardes **BDD + `var/storage/`** (avatars, events, message-photos).
+**Recommandation compte N0C** : allouer **≥ 2 Go RAM** au projet RapproFam si possible (traitement GD + Symfony). Sauvegardes **BDD + `var/storage/`** (avatars, events, message-photos).
 
 ### Avatars
 
@@ -1397,10 +1397,10 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 - **Suspension site** depuis Admin → Utilisateurs (motif obligatoire, e-mail, MP, blocage connexion, recours par e-mail)
 - **Dates admin** : fuseau Europe/Paris, format `dd/MM/yyyy HH:mm` (ICU EasyAdmin ; année courte en liste)
-- **Titres CRUD** : nom de rubrique dynamique (Utilisateurs, Groupes…) ; tableau de bord « Administration RapporFam »
+- **Titres CRUD** : nom de rubrique dynamique (Utilisateurs, Groupes…) ; tableau de bord « Administration RapproFam »
 - **`MODERATION_CONTACT`** : adresse recours modération (défaut = contact)
 - **Encart login** `?suspended=1` + lien mailto ; pas de formulaire public pour les suspendus
-- **Bannissements admin** : historique lecture seule ; annonces staff / notices plateforme libellées « Administration RapporFam » ou « Système »
+- **Bannissements admin** : historique lecture seule ; annonces staff / notices plateforme libellées « Administration RapproFam » ou « Système »
 
 ### 2026-06-03 — Messagerie : masquage MP + purge 12 mois
 
@@ -1431,7 +1431,7 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 - **Déconnexion auto** après inactivité session (modale + compte à rebours, remember-me option B)
 - **Purge comptes inactifs** : avertissements 8/10/11 mois (connectés), 30/60 j (non activés), commande `app:users:purge-inactive`
 - **Escalade 3 bans** → soft-delete + e-mails + messages privés plateforme
-- Annonces **staff** site + notices plateforme (RapporFam / System)
+- Annonces **staff** site + notices plateforme (RapproFam / System)
 - Dropdowns unifiés (`ef-dropdown-menu`) — sidebar, topbar, groupe, messages, auth
 - `LoginActivitySubscriber` : `last_login_at` + reset avertissements inactivité à chaque connexion
 

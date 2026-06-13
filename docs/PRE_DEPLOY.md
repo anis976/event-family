@@ -148,7 +148,7 @@ Les notifications (messages privés, vérification compte, etc.) doivent arriver
 
 | Règle | Exemple |
 |--------|---------|
-| `MAILER_FROM` = domaine du site | `RapporFam <rf_contact@rapprofam.fr>` |
+| `MAILER_FROM` = domaine du site | `RapproFam <rf_contact@rapprofam.fr>` |
 | Même domaine que `DEFAULT_URI` | Site `https://rapprofam.fr` → `@rapprofam.fr` |
 | **Pas** Ethereal / Gmail perso en prod | Réservé au dev local |
 

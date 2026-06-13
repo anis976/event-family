@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Twig\Environment;
 
 /**
- * Affiche les pages d'erreur RapporFam (404, 403 site) au lieu des écrans Symfony bruts
+ * Affiche les pages d'erreur RapproFam (404, 403 site) au lieu des écrans Symfony bruts
  * (« No route found… », « Access Denied. ») — y compris en environnement de développement.
  */
 final class HttpExceptionPageSubscriber implements EventSubscriberInterface

@@ -11,7 +11,7 @@ final class Version20260530120000 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Annonces staff RapporFam dans les messages de groupe (ef_messages.is_staff_announcement)';
+        return 'Annonces staff RapproFam dans les messages de groupe (ef_messages.is_staff_announcement)';
     }
 
     public function up(Schema $schema): void

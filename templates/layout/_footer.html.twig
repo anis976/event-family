@@ -3,7 +3,7 @@
         {% if app.user %}
         <div class="row ef-footer__row g-3 g-md-4">
             <div class="col-12 col-md-4 ef-footer__col">
-                <h6 class="fw-bold">RapporFam</h6>
+                <h6 class="fw-bold">RapproFam</h6>
                 <p class="text-muted small mb-2">{{ 'ui.footer.tagline'|trans }}</p>
                 <a href="{{ path('app_contact') }}" class="ef-footer__btn-report">{{ 'ui.footer.report_issue'|trans }}</a>
             </div>
@@ -23,13 +23,16 @@
             </div>
             <div class="col-12 col-md-4 ef-footer__col">
                 <h6 class="fw-bold">{{ 'ui.footer.support'|trans }}</h6>
-                <a
-                    href="https://www.paypal.com/donate/?hosted_button_id=E8ULND24DQE2W"
-                    class="btn ef-btn-donate px-4"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="{{ 'ui.footer.donate_aria'|trans }}"
-                >{{ 'ui.footer.donate'|trans }}</a>
+                <div class="ef-footer__support">
+                    <a
+                        href="https://paypal.me/rapprofam"
+                        class="btn ef-btn-donate px-4"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="{{ 'ui.footer.donate_aria'|trans }}"
+                    >{{ 'ui.footer.donate'|trans }}</a>
+                    <p class="ef-footer__donate-hint mb-0">{{ 'ui.footer.donate_hint'|trans|raw }}</p>
+                </div>
             </div>
         </div>
         {% else %}

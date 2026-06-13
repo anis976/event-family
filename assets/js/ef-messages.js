@@ -1,5 +1,5 @@
 /**
- * RapporFam — messagerie (lecture auto, réponses, Turbo-safe).
+ * RapproFam — messagerie (lecture auto, réponses, Turbo-safe).
  */
 
 function initMessageReplyToggles() {

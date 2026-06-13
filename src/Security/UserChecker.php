@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class UserChecker implements UserCheckerInterface
 {
-    private const SUSPENDED_MESSAGE = 'Accès refusé. Ton compte a été suspendu par la modération RapporFam. Consulte l\'e-mail reçu pour le motif et les démarches de recours.';
+    private const SUSPENDED_MESSAGE = 'Accès refusé. Ton compte a été suspendu par la modération RapproFam. Consulte l\'e-mail reçu pour le motif et les démarches de recours.';
 
     public function __construct(
         private readonly UserBanRepository $userBanRepository,

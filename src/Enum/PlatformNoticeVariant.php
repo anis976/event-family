@@ -8,5 +8,5 @@ enum PlatformNoticeVariant: string
 {
     case System = 'system';
     case Moderator = 'moderator';
-    case RapporFam = 'eventfamily';
+    case RapproFam = 'eventfamily';
 }

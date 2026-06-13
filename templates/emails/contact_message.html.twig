@@ -14,6 +14,12 @@
         <li><strong>{{ 'email.contact.sent_at'|trans(locale=ef_email_locale) }}</strong> {{ sentAt|ef_datetime(ef_email_locale|default('fr')) }} ({{ 'email.common.paris_time'|trans(locale=ef_email_locale) }})</li>
     </ul>
     <hr>
-    <p style="white-space: pre-wrap;">{{ message }}</p>
+    <p style="white-space: pre-wrap;">{{ message|e|nl2br }}</p>
+    <p style="margin-top: 1.5rem;">
+        <a href="mailto:{{ user.email }}?subject={{ ('Re: RapproFam — ' ~ user.firstName ~ ' ' ~ user.lastName)|url_encode }}"
+           style="color: #f37a1f; font-weight: bold;">
+            {{ 'email.contact.reply_mailto'|trans({'%email%': user.email}, locale=ef_email_locale) }}
+        </a>
+    </p>
     <p style="font-size: 0.85rem; color: #999;">{{ 'email.contact.reply_hint'|trans(locale=ef_email_locale) }}</p>
 {% endblock %}

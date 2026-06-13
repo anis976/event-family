@@ -1,4 +1,4 @@
-# Guide des commandes — RapporFam (rapprofam.fr)
+# Guide des commandes — RapproFam (rapprofam.fr)
 
 > **Fichier de secours** à garder sur votre PC (hors Cursor si besoin).  
 > Projet : Symfony 8 · Hébergeur : **o2switch** · Dépôt : `https://github.com/anis976/event-family`  
@@ -62,7 +62,7 @@ C:\laragon\www\eventFamily\deploy.config ← config deploy (mot de passe pas ded
 /home/soan5627/rapprofam.fr/           ← projet Symfony COMPLET
 /home/soan5627/rapprofam.fr/public/    ← seul dossier visible sur le web
 /home/soan5627/rapprofam.fr/.env.local ← secrets PROD (jamais sur GitHub)
-/home/soan5627/public_html/            ← autre site / vide (cgi-bin) — pas RapporFam
+/home/soan5627/public_html/            ← autre site / vide (cgi-bin) — pas RapproFam
 ```
 
 ### URLs
@@ -392,7 +392,7 @@ composer dump-env prod
 php bin/console cache:clear --env=prod
 ```
 
-- **Visiteurs** : page « RapporFam revient bientôt »
+- **Visiteurs** : page « RapproFam revient bientôt »
 - **Vous** (admin/modo connecté) : site normal via `/login`
 
 ### Rouvrir
@@ -439,7 +439,7 @@ DEFAULT_URI=https://rapprofam.fr
 DATABASE_URL="mysql://USER:MDP@127.0.0.1:3306/NOM_BDD?serverVersion=10.6.20-MariaDB&charset=utf8mb4"
 
 MAILER_DSN=smtps://rf_contact%40rapprofam.fr:MOT_DE_PASSE@mail.rapprofam.fr:465
-MAILER_FROM="RapporFam <rf_contact@rapprofam.fr>"
+MAILER_FROM="RapproFam <rf_contact@rapprofam.fr>"
 CONTACT_RECIPIENT=rf_contact@rapprofam.fr
 
 GOOGLE_OAUTH_CLIENT_ID=...
@@ -523,7 +523,7 @@ php bin/console ef:google-oauth:diagnose --env=prod
 
 - Search Console → Problèmes de sécurité → Demander un examen  
 - Pas lié aux e-mails de test en local  
-- Vérifier cohérence **rapprofam.fr** + marque **RapporFam**
+- Vérifier cohérence **rapprofam.fr** + marque **RapproFam**
 
 ### `deploy.ps1` : erreur PowerShell sur accents
 
@@ -599,5 +599,5 @@ php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
 ---
 
-*Projet EventFamily / RapporFam — guide personnel de déploiement o2switch.*
+*Projet EventFamily / RapproFam — guide personnel de déploiement o2switch.*
 

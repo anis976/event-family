@@ -20,10 +20,10 @@ auth:
     email_missing: "Google did not provide a usable email address. Choose another Google account or register by email."
     profile_invalid: "Incomplete Google profile. Try again or contact support."
     use_password_login: "An account already exists with this email (classic registration). Sign in with your password."
-    account_conflict: "This Google account does not match your RapporFam profile. Contact support if needed."
+    account_conflict: "This Google account does not match your RapproFam profile. Contact support if needed."
     signup_terms_required: "Accept the terms of use before signing up with Google."
     csrf_invalid: "Session expired. Reload the page and try again."
-    registration_complete: "Your profile is complete. Welcome to RapporFam!"
+    registration_complete: "Your profile is complete. Welcome to RapproFam!"
     profile_unique_conflict: "This first/last name or username is already taken. Update your details."
 
 profile:
@@ -49,6 +49,8 @@ messages:
 ui:
   brand:
     tagline: Family Events
+  site:
+    meta_description: RapproFam — a private platform to organize family events among invited relatives. Family groups, shared calendar, and messaging.
   nav:
     home: Home
     events: Events
@@ -91,9 +93,10 @@ ui:
     cgu: Terms & privacy
     manage_cookies: Manage cookies
     support: Support the project
-    donate: Give a little boost
-    donate_aria: Support RapporFam via PayPal (opens in new tab)
-    copyright: © %year% RapporFam. All rights reserved.
+    donate: Support the project
+    donate_aria: Support RapproFam via PayPal.me (opens in new tab)
+    donate_hint: '<strong>For your information:</strong> any amount is welcome. PayPal charges a fee of <strong>€0.35 + 2.9%</strong> per transaction. Contributions from <strong>€2</strong> or <strong>€3</strong> upward make the most of your support. Thank you.'
+    copyright: © %year% RapproFam. All rights reserved.
   common:
     back_to_top: Back to top
     close: Close
@@ -122,8 +125,8 @@ ui:
     label: Advertisement
   home:
     title: Home
-    page_title: RapporFam — Home
-    welcome: Welcome to RapporFam
+    page_title: RapproFam — Home
+    welcome: Welcome to RapproFam
     lead: The platform that brings your family events together
     feature_groups_title: Create family groups
     feature_groups_text: Join us to create and share your family moments
@@ -134,9 +137,9 @@ ui:
     upcoming_events: Upcoming public events
     view_all_events: View all events
     no_public_events: No public upcoming events at the moment.
-    guest_page_title: RapporFam — Organize your family events
-    guest_meta_description: Create family groups, plan events, and stay in touch. RapporFam is a private space for registered members only.
-    guest_welcome: RapporFam, your private family space
+    guest_page_title: RapproFam — Organize your family events
+    guest_meta_description: Create family groups, plan events, and stay in touch. RapproFam is a private space for registered members only.
+    guest_welcome: RapproFam, your private family space
     guest_lead: Create groups, plan events, and stay in touch — content access is for registered members only.
     guest_how_title: How it works
     guest_step1_title: Create an account
@@ -145,13 +148,13 @@ ui:
     guest_step2_text: The group owner invites you; you then access the group’s events and messages.
     guest_step3_title: Share your moments
     guest_step3_text: Publish events, chat with members, and stay connected day to day.
-    guest_private_notice: Events, groups, and messages are only visible after sign-in. RapporFam is a private space, not a public directory.
+    guest_private_notice: Events, groups, and messages are only visible after sign-in. RapproFam is a private space, not a public directory.
     guest_cta_register: Create an account
     guest_cta_login: Sign in
     guest_about_cta: Learn more about the project
   events:
     title: Events
-    page_title: RapporFam — Events
+    page_title: RapproFam — Events
     create: Create an event
     member_notice: To publish an event, join a group and contact its owner.
     view_groups: View groups
@@ -176,9 +179,9 @@ ui:
     create_form_hint: Publish an event for one of your groups.
     publish: Publish event
     edit_form_title: Edit event
-    edit_page_title: RapporFam — Edit event
+    edit_page_title: RapproFam — Edit event
     show:
-      page_title: RapporFam — %title%
+      page_title: RapproFam — %title%
       breadcrumb_aria: Breadcrumb
       location_detail: Location / detail
       propose_title: Suggest an event to the group
@@ -206,7 +209,7 @@ ui:
     breadcrumb_aria: Breadcrumb
     back_to_group: Back to group
     title: Groups
-    page_title: RapporFam — Groups
+    page_title: RapproFam — Groups
     my_groups: My groups
     create: Create a group
     create_first: Create my first group
@@ -222,10 +225,10 @@ ui:
     breadcrumb: Groups
     breadcrumb_new: New
     breadcrumb_edit: Edit
-    create_page_title: RapporFam — Create a group
+    create_page_title: RapproFam — Create a group
     create_limit_hint: Only one group can be created per account.
     submit_create: Create group
-    edit_page_title: RapporFam — Edit group
+    edit_page_title: RapproFam — Edit group
     edit_title: Edit group
     edit_info_heading: Edit information
     show:
@@ -270,19 +273,19 @@ ui:
       role_moderator: MOD
       role_member: MEMBER
       ban_modal_title: Ban %name%
-      ban_modal_hint: The member will be banned from this group. RapporFam will automatically send a warning (1/3, 2/3) or delete the account on the 3rd platform-wide ban.
+      ban_modal_hint: The member will be banned from this group. RapproFam will automatically send a warning (1/3, 2/3) or delete the account on the 3rd platform-wide ban.
       ban_reason_label: Reason for ban
       ban_reason_placeholder: Clearly describe the reason for the ban…
       ban_confirm: Confirm ban
     manage_requests:
-      page_title: RapporFam — Requests — %name%
+      page_title: RapproFam — Requests — %name%
       page_heading: Join requests
       breadcrumb: Requests
       pending_title: Pending requests
       empty: No pending requests at the moment.
       column_date: Date
     invite:
-      page_title: RapporFam — Invite — %name%
+      page_title: RapproFam — Invite — %name%
       page_heading: Invite members
       breadcrumb: Invite
       search_heading: Search for a member
@@ -302,7 +305,7 @@ ui:
       invite_button: Invite
   messages:
     title: Messages
-    page_title: RapporFam — Messages
+    page_title: RapproFam — Messages
     hub_title: Messages hub
     hub:
       link_private: Private messages
@@ -312,7 +315,7 @@ ui:
     private:
       title: Private messages
       subtitle: One-to-one conversations with your contacts
-      page_title: RapporFam — Private messages
+      page_title: RapproFam — Private messages
       empty: No private messages yet.
       showing_count: '{0} No conversations shown|{1} %visible% conversation shown of %total%|]1,Inf[ %visible% conversations shown of %total%'
       load_older: Load older conversations
@@ -321,12 +324,12 @@ ui:
     group:
       title: Group messages
       subtitle: Discussions in your groups
-      page_title: RapporFam — Group messages
+      page_title: RapproFam — Group messages
       picker_aria: Choose a group
       picker_header: My groups
       unread_count: '{1} %count% unread message|]1,Inf[ %count% unread messages'
       group_sheet: Group page
-      staff_readonly: Viewing as RapporFam staff. You can publish official announcements, but not member messages.
+      staff_readonly: Viewing as RapproFam staff. You can publish official announcements, but not member messages.
       empty: No messages published in this group yet.
       showing_count: '{0} No threads shown|{1} %visible% thread shown of %total%|]1,Inf[ %visible% threads shown of %total%'
       load_older: Load older messages
@@ -366,11 +369,11 @@ ui:
     placeholder: Write a message…
     send_aria: Send
     staff:
-      form_label: Official RapporFam announcement
+      form_label: Official RapproFam announcement
       no_reply: — no replies allowed
       placeholder: Write an announcement for this group…
       publish_aria: Publish announcement
-      announcement_aria: Official RapporFam announcement
+      announcement_aria: Official RapproFam announcement
       badge: Announcement
       badge_moderator: Moderation
       confirm_delete: Delete this official announcement?
@@ -380,12 +383,12 @@ ui:
       badge: Info
       reset: Reset
     platform:
-      notice_aria: Official RapporFam message
+      notice_aria: Official RapproFam message
     direct:
       send_as: Send as
       mode_member: Member (personal message)
-      mode_moderator: RapporFam moderation
-      mode_admin: RapporFam administration
+      mode_moderator: RapproFam moderation
+      mode_admin: RapproFam administration
     staff_private:
       form_title: Official message to a member
       recipient_label: Recipient
@@ -403,7 +406,7 @@ ui:
       content_max: Message cannot exceed {{ limit }} characters.
   invitations:
     title: Invitations
-    page_title: RapporFam — Invitations
+    page_title: RapproFam — Invitations
     received:
       title: Invitations received
       subtitle: Personal invitations to join a group.
@@ -426,10 +429,10 @@ ui:
       stay: Stay signed in
   about:
     title: About
-    page_title: RapporFam — About
-    meta_description: RapporFam — a private platform to organize family events among invited relatives. Learn about the project, privacy, and how to contact us.
+    page_title: RapproFam — About
+    meta_description: RapproFam — a private platform to organize family events among invited relatives. Learn about the project, privacy, and how to contact us.
     subtitle: Family event management platform
-    intro: RapporFam is a platform designed to bring families closer together and facilitate the organization of family events.
+    intro: RapproFam is a platform designed to bring families closer together and facilitate the organization of family events.
     feature_groups_title: Create family groups
     feature_groups_text: Gather your family in private groups for better organization.
     feature_events_title: Organize events
@@ -438,8 +441,8 @@ ui:
     feature_connect_text: Communicate easily with group members through integrated messaging.
     mission_title: Our Mission
     mission_text: We believe that family is at the heart of our lives. Our mission is to create simple and effective tools to keep family bonds strong, regardless of distance.
-    audience_title: Who is RapporFam for?
-    audience_text: RapporFam is for families and close relatives who want to organize shared moments in an online space reserved for invited people. It is not an open social network open to everyone—each group is private and managed by its owner.
+    audience_title: Who is RapproFam for?
+    audience_text: RapproFam is for families and close relatives who want to organize shared moments in an online space reserved for invited people. It is not an open social network open to everyone—each group is private and managed by its owner.
     features_member_title: Features for registered members
     features_member_intro: 'After creating an account and joining a family group by invitation, you can:'
     features_member_groups: create or join private family groups;
@@ -448,14 +451,14 @@ ui:
     privacy_title: Privacy
     privacy_text: Events, member lists, and conversations are not available to visitors who are not signed in. Only this information page, the public home page, legal pages, and sign-in or registration screens are visible without an account.
     transparency_title: What this site is not
-    transparency_text: RapporFam does not publish a public event directory, does not sell family data, and does not display group content on the open web. Public pages exist only to present the service and allow registration.
+    transparency_text: RapproFam does not publish a public event directory, does not sell family data, and does not display group content on the open web. Public pages exist only to present the service and allow registration.
     contact_public_title: Contact and publisher
     contact_public_html: 'Publisher details are in the <a href="%mentions_url%">legal notice</a>. For a general inquiry, email <a href="%email%">%email%</a>. The <a href="%contact_url%">contact form</a> is available to signed-in members only.'
     guest_cta_register: Create an account
     guest_cta_login: Sign in
   contact:
     title: Contact
-    page_title: RapporFam — Contact
+    page_title: RapproFam — Contact
     heading: Contact us
     subtitle: Have a question? Feel free to write to us.
     form_title: Send a message
@@ -463,8 +466,8 @@ ui:
     field_email: Email address
     message_min: At least %min% characters to describe your request.
     channel_whatsapp: WhatsApp
-    whatsapp_prefill: "Hello, I have a question about RapporFam."
-    whatsapp_link_aria: Contact RapporFam on WhatsApp (opens in a new tab)
+    whatsapp_prefill: "Hello, I have a question about RapproFam."
+    whatsapp_link_aria: Contact RapproFam on WhatsApp (opens in a new tab)
     whatsapp_open_hint: Opens WhatsApp with a pre-filled message
     alert_recaptcha_unavailable: Anti-spam verification unavailable. Reload the page and try again.
     alert_recaptcha_v3_required: These keys are not reCAPTCHA v3 compatible. Create a "Score (v3)" site in Google reCAPTCHA and update RECAPTCHA_SITE_KEY / RECAPTCHA_SECRET_KEY.
@@ -479,13 +482,13 @@ ui:
         message_min: 'Describe your request in at least %min% characters (avoid messages like just « hi » or « hello »).'
   auth:
     login:
-      page_title: RapporFam — Sign in
-      title: Sign in to RapporFam
+      page_title: RapproFam — Sign in
+      title: Sign in to RapproFam
       idle_title: Session expired
       idle_message: You were signed out after a period of inactivity. Sign in again to continue.
       suspended_title: Account suspended
-      suspended_message: Your account was suspended by RapporFam moderation. Check the email you received for the reason and next steps.
-      suspended_contact: 'To contest this decision, email <a href="mailto:%email%" class="ef-link-orange">%email%</a> from your RapporFam email address.'
+      suspended_message: Your account was suspended by RapproFam moderation. Check the email you received for the reason and next steps.
+      suspended_contact: 'To contest this decision, email <a href="mailto:%email%" class="ef-link-orange">%email%</a> from your RapproFam email address.'
       error_title: Sign-in failed
       google: Sign in with Google
       google_terms_hint: "First time with Google? You will need to accept the terms of use right after."
@@ -517,7 +520,7 @@ ui:
       email_label: Your email address
       submit: Resend activation email
     register:
-      page_title: RapporFam — Sign up
+      page_title: RapproFam — Sign up
       title: Create an account
       google: Sign up with Google
       google_terms_hint: "After Google sign-in, you must accept the terms of use to activate your account."
@@ -528,19 +531,19 @@ ui:
       login_link: Sign in
       illustration_alt: Sign-up illustration
     google_complete:
-      page_title: RapporFam — Complete your account
+      page_title: RapproFam — Complete your account
       title: Complete your profile
-      intro: "Last step after Google: verify your identity on RapporFam and accept the terms of use to activate your account."
-      submit: Enter RapporFam
+      intro: "Last step after Google: verify your identity on RapproFam and accept the terms of use to activate your account."
+      submit: Enter RapproFam
       cancel: Cancel and return to sign-in
     forgot:
-      page_title: RapporFam — Forgot password
+      page_title: RapproFam — Forgot password
       title: Forgot password
       hint: Enter your account email address. If it is recognized, you will receive a secure link (valid for 1 h). Otherwise, ignore the email.
       submit: Send reset link
       back_to_login: Back to sign in
     reset:
-      page_title: RapporFam — New password
+      page_title: RapproFam — New password
       title: New password
       hint: Choose a strong password (at least 8 characters). This link is single-use.
       submit: Save password
@@ -569,12 +572,12 @@ ui:
   legal:
     back_home: Back to home
     cgu_title: Terms & Privacy Policy
-    cgu_meta_description: Terms of use, privacy policy and cookies — RapporFam.
+    cgu_meta_description: Terms of use, privacy policy and cookies — RapproFam.
     mentions_title: Legal notice
-    mentions_meta_description: Publisher, hosting and intellectual property — RapporFam.
+    mentions_meta_description: Publisher, hosting and intellectual property — RapproFam.
   error:
     not_found:
-      page_title: RapporFam — Page not found
+      page_title: RapproFam — Page not found
       code: '404'
       title: Page not found
       message: The page you are looking for does not exist or has been moved.
@@ -583,7 +586,7 @@ ui:
       contact: Contact us
       about: About the site
     forbidden:
-      page_title: RapporFam — Access denied
+      page_title: RapproFam — Access denied
       code: '403'
       title: Access denied
       message: You do not have permission to access this page.
@@ -593,7 +596,7 @@ ui:
       login: Log in
   profile:
     my_space: My space
-    my_space_page_title: RapporFam — My space
+    my_space_page_title: RapproFam — My space
     personal_space_title: My personal space
     personal_space_subtitle: Manage your private account information
     username: Username
@@ -616,9 +619,9 @@ ui:
     update_profile: Update my profile
     notifications: Notifications
     notify_private_message_email: Email me when I receive a new private message
-    notify_private_message_email_help: You will get an email when someone writes to you on RapporFam (at most one reminder every 30 minutes per conversation).
+    notify_private_message_email_help: You will get an email when someone writes to you on RapproFam (at most one reminder every 30 minutes per conversation).
     show:
-      page_title: RapporFam — %name%'s profile
+      page_title: RapproFam — %name%'s profile
       page_heading: Member profile
       title: Member profile
       subtitle: View circle member information
@@ -653,19 +656,19 @@ ui:
       alert_cropper_unavailable: Cropping tool unavailable. Reload the page.
       alert_upload_failed: Unable to upload the photo. Try again.
     password_change:
-      page_title: RapporFam — Change password
+      page_title: RapproFam — Change password
       page_heading: Account security
       back_aria: Back
       hint: Choose a strong password (at least 8 characters). A confirmation email will be sent; the change only takes effect after you click the link. If this wasn't you, ignore the email.
       submit: Update my password
     delete_account:
-      page_title: RapporFam — Delete my account
+      page_title: RapproFam — Delete my account
       page_heading: Account deletion
       heading: Delete my account
-      alert: 'This is permanent. After submitting, you will be signed out: open the link in the email (1 h) to confirm. Close other RapporFam tabs and do not register a new account before confirming.'
+      alert: 'This is permanent. After submitting, you will be signed out: open the link in the email (1 h) to confirm. Close other RapproFam tabs and do not register a new account before confirming.'
       submit: Receive confirmation email
     delete_blocked:
-      page_title: RapporFam — Deletion unavailable
+      page_title: RapproFam — Deletion unavailable
       heading: Account deletion temporarily unavailable
       intro: 'You own at least one family group. Before deleting your account, you must either:'
       option_successor: designate a successor (group owner),
@@ -748,7 +751,7 @@ group:
     default: |
       Welcome to this group's message space.
 
-      Respect other members, stay courteous and report inappropriate behaviour to the group owner or moderator. RapporFam platform rules apply here.
+      Respect other members, stay courteous and report inappropriate behaviour to the group owner or moderator. RapproFam platform rules apply here.
   form:
     name: Group name
     name_placeholder: e.g. The Smiths
@@ -771,108 +774,110 @@ email:
     single_use: single use
     ignore_if_not_you: If you did not initiate this action, ignore this email.
     paris_time: Paris time
-    also_in_messages: You will also find this message in your RapporFam private messages.
+    also_in_messages: You will also find this message in your RapproFam private messages.
   verification:
-    subject: RapporFam — Activate your account
-    title: RapporFam activation
-    thanks: Thank you for signing up on <strong>RapporFam</strong>.
+    subject: RapproFam — Activate your account
+    title: RapproFam activation
+    thanks: Thank you for signing up on <strong>RapproFam</strong>.
     cta_intro: 'Click the button below to activate your account (%expires%):'
     cta: Activate my account
     ignore: If you did not create an account, ignore this email.
   password_reset:
-    subject: RapporFam — Reset your password
+    subject: RapproFam — Reset your password
     title: Password reset
-    intro: A <strong>password reset</strong> request was received for your RapporFam account.
+    intro: A <strong>password reset</strong> request was received for your RapproFam account.
     cta_intro: 'If this was you, click the button below (%expires%, <strong>%single_use%</strong>):'
     cta: Reset my password
     ignore: 'If you did not request this reset, <strong>ignore this email</strong> and check that you can still sign in. Your password will not change without clicking the link.'
   password_reset_done:
-    subject: RapporFam — Your password was changed
+    subject: RapproFam — Your password was changed
     title: Password changed
-    success: Your RapporFam password was <strong>successfully changed</strong> on %date% (%timezone%).
+    success: Your RapproFam password was <strong>successfully changed</strong> on %date% (%timezone%).
     no_action: If you made this change, no further action is needed.
     alert: '<strong>If you did not request this change</strong>, contact the site administrator immediately and try to recover access to your account.'
   password_change:
-    subject: RapporFam — Confirm password change
+    subject: RapproFam — Confirm password change
     title: Confirm password change
-    intro: A <strong>password change</strong> was requested on your RapporFam account.
+    intro: A <strong>password change</strong> was requested on your RapproFam account.
     cta_intro: 'If this was you, click the button below to confirm (%expires%):'
     cta: Confirm new password
     ignore: 'If you did not request this change, <strong>ignore this email</strong>: your current password will remain unchanged.'
   account_deletion_confirm:
-    subject: RapporFam — Confirm account deletion
+    subject: RapproFam — Confirm account deletion
     title: Confirm account deletion
-    intro: A request to <strong>permanently delete</strong> your RapporFam account was recorded.
+    intro: A request to <strong>permanently delete</strong> your RapproFam account was recorded.
     cta_intro: 'If this was you, click the button below (%expires%, <strong>%single_use%</strong>):'
     cta: Confirm deletion of my account
     ignore: 'If you did not request this deletion, <strong>ignore this email</strong>. Your account will remain active.'
   account_deletion_done:
-    subject: RapporFam — Your account was deleted
+    subject: RapproFam — Your account was deleted
     title: Account deleted
-    body: Your RapporFam account was <strong>permanently deleted</strong> on %date% (%timezone%).
+    body: Your RapproFam account was <strong>permanently deleted</strong> on %date% (%timezone%).
     alert: If you did not initiate this action, contact the site administrator immediately.
   inactive_warning:
-    subject_unverified: RapporFam — Activate your account before deletion
-    subject_step1: 'RapporFam — Inactivity: first reminder (1/2)'
-    subject_step2: 'RapporFam — Inactivity: final reminder (2/2)'
+    subject_unverified: RapproFam — Activate your account before deletion
+    subject_step1: 'RapproFam — Inactivity: first reminder (1/2)'
+    subject_step2: 'RapproFam — Inactivity: final reminder (2/2)'
     title: Inactive account
-    unverified: Your RapporFam account <strong>has not been activated yet</strong>.
+    unverified: Your RapproFam account <strong>has not been activated yet</strong>.
     unverified_hint: Confirm your email address using the link received when you signed up. Without activation, your account will be deleted automatically.
-    step1: Your RapporFam account has been <strong>inactive for a long time</strong>. This is your <strong>first reminder (1/2)</strong>.
+    step1: Your RapproFam account has been <strong>inactive for a long time</strong>. This is your <strong>first reminder (1/2)</strong>.
     step1_hint: Sign in to keep your account, groups and messages.
-    step2: Your RapporFam account is <strong>still inactive</strong>. This is your <strong>final reminder (2/2)</strong>.
+    step2: Your RapproFam account is <strong>still inactive</strong>. This is your <strong>final reminder (2/2)</strong>.
     step2_alert: '<strong>Without signing in soon, your account will be deleted and you will be removed from your groups.</strong>'
   inactive_deleted:
-    subject: RapporFam — Your account was deleted due to inactivity
+    subject: RapproFam — Your account was deleted due to inactivity
     title: Account deleted
-    body: Your RapporFam account was <strong>automatically deleted</strong> on %date% (%timezone%) due to prolonged inactivity.
+    body: Your RapproFam account was <strong>automatically deleted</strong> on %date% (%timezone%) due to prolonged inactivity.
     verified_hint: You were removed from all your groups. Your messages remain anonymised on the platform.
     unverified_hint: The account had never been activated after registration.
     footer: You can create a new account at any time if you wish to return.
   ban_warning:
-    subject_step1: RapporFam — Warning 1/3 after a ban
-    subject_step2: RapporFam — Final warning 2/3
-    subject_step3: RapporFam — Your account was deleted (3/3)
+    subject_step1: RapproFam — Warning 1/3 after a ban
+    subject_step2: RapproFam — Final warning 2/3
+    subject_step3: RapproFam — Your account was deleted (3/3)
     title: Ban warning
-    step1: 'You were <strong>banned from a group</strong> on RapporFam. This is your <strong>first warning (1/%max%)</strong>.'
+    step1: 'You were <strong>banned from a group</strong> on RapproFam. This is your <strong>first warning (1/%max%)</strong>.'
     step2: 'You were <strong>banned from a group again</strong>. This is your <strong>final warning (2/%max%)</strong>.'
     step2_alert: '<strong>On the next ban, your account will be permanently deleted.</strong>'
     group: 'Group: %name% (%family%)'
     reason_label: 'Reason for ban:'
   ban_deleted:
-    subject: RapporFam — Your account was deleted
+    subject: RapproFam — Your account was deleted
     title: Account deleted
-    body: Your RapporFam account was <strong>permanently deleted</strong> after %count% ban(s) recorded on the platform.
+    body: Your RapproFam account was <strong>permanently deleted</strong> after %count% ban(s) recorded on the platform.
     last_group: 'Last group concerned: %name% (%family%)'
     reason_label: 'Reason for ban:'
     contact: If you believe this is an error, contact the site administration.
   platform_ban:
-    subject: RapporFam — Your account was suspended
+    subject: RapproFam — Your account was suspended
     title: Account suspended
-    intro: Your RapporFam account was <strong>suspended by moderation</strong>. You cannot sign in while this suspension is active.
-    contact: 'To contest this decision, email <a href="mailto:%email%">%email%</a> from your RapporFam email address.'
-    footer: Include your RapporFam email address in your message so moderation can identify you.
+    intro: Your RapproFam account was <strong>suspended by moderation</strong>. You cannot sign in while this suspension is active.
+    contact: 'To contest this decision, email <a href="mailto:%email%">%email%</a> from your RapproFam email address.'
+    footer: Include your RapproFam email address in your message so moderation can identify you.
   platform_unban:
-    subject: RapporFam — Suspension lifted
+    subject: RapproFam — Suspension lifted
     title: Account reactivated
-    intro: The suspension on your RapporFam account has been <strong>lifted</strong>. You can sign in again.
+    intro: The suspension on your RapproFam account has been <strong>lifted</strong>. You can sign in again.
     footer: If you did not expect this reactivation, contact moderation.
   private_message:
-    subject: '%name% wrote to you on RapporFam'
+    subject: '%name% wrote to you on RapproFam'
     title: New private message
-    intro: '<strong>%name%</strong> sent you a message on RapporFam:'
+    intro: '<strong>%name%</strong> sent you a message on RapproFam:'
     cta: Read message
     opt_out: 'You can turn off these alerts in <strong>My space</strong> → notifications.'
   contact:
-    subject: 'RapporFam — Contact from %name%'
-    title: RapporFam contact
+    subject: 'RapproFam — Contact from %name%'
+    title: RapproFam contact
     heading: New message via the contact form
     name: 'Name:'
     email: 'Email:'
     pseudo: 'Username:'
     account_id: 'Account #:'
     sent_at: 'Sent on:'
-    reply_hint: Replying to this email will contact the user directly.
+    reply_to_name: '%name% (via RapproFam)'
+    reply_mailto: 'Reply to %email%'
+    reply_hint: Replying to this email will contact the user directly (address shown above).
 
 flash:
   session_expired: Session expired. Please try again.
@@ -969,7 +974,7 @@ flash:
     thread_not_found: Conversation thread not found.
     rate_hourly: You have sent too many private messages recently. Try again in a few minutes.
     rate_hourly_group: You have posted too many group messages recently. Try again in a few minutes.
-    no_reply_staff: Official RapporFam announcements cannot receive replies.
+    no_reply_staff: Official RapproFam announcements cannot receive replies.
     no_reply_platform: This official message cannot receive replies.
     thread_closed: This conversation is closed. You can still read it, but replies are no longer possible.
     access_denied: Access denied.
@@ -1012,26 +1017,26 @@ flash:
 
 notice:
   inactive:
-    unverified: "Your RapporFam account has not been activated yet.\n\nSign in and confirm your email address before your account is automatically deleted for inactivity."
-    step1: "Your RapporFam account has been inactive for a long time. This is your first reminder (1/2).\n\nSign in to keep your account. Without signing in, you will receive a final reminder then your account will be automatically deleted."
-    step2: "Your RapporFam account is still inactive. This is your final reminder (2/2).\n\nSign in soon. Without action, your account will be automatically deleted and you will be removed from your groups."
+    unverified: "Your RapproFam account has not been activated yet.\n\nSign in and confirm your email address before your account is automatically deleted for inactivity."
+    step1: "Your RapproFam account has been inactive for a long time. This is your first reminder (1/2).\n\nSign in to keep your account. Without signing in, you will receive a final reminder then your account will be automatically deleted."
+    step2: "Your RapproFam account is still inactive. This is your final reminder (2/2).\n\nSign in soon. Without action, your account will be automatically deleted and you will be removed from your groups."
   ban:
     group_line: 'Group concerned: %name% (%family%).'
     group_unknown: 'Group concerned: not specified.'
-    step1: "You were banned from a group on RapporFam. This is your first warning (1/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nFurther bans on the platform may lead to additional sanctions, up to permanent account deletion on the 3rd ban."
-    step2: "You were banned from a group again on RapporFam. This is your final warning (2/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nOn the next ban, your RapporFam account will be permanently deleted."
-    step3: "You have reached your 3rd ban on RapporFam. Your account will be permanently deleted.\n\n%group_line%\n\nReason for ban:\n%reason%\n\nYou will no longer be able to sign in with this account. A confirmation email has also been sent to you."
-    platform_admin: "RapporFam moderation has suspended your account.\n\nReason:\n%reason%\n\nDetails of this decision were sent to you by email. To contest it, email %contact% from your RapporFam email address."
+    step1: "You were banned from a group on RapproFam. This is your first warning (1/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nFurther bans on the platform may lead to additional sanctions, up to permanent account deletion on the 3rd ban."
+    step2: "You were banned from a group again on RapproFam. This is your final warning (2/3).\n\n%group_line%\n\nReason for ban:\n%reason%\n\nOn the next ban, your RapproFam account will be permanently deleted."
+    step3: "You have reached your 3rd ban on RapproFam. Your account will be permanently deleted.\n\n%group_line%\n\nReason for ban:\n%reason%\n\nYou will no longer be able to sign in with this account. A confirmation email has also been sent to you."
+    platform_admin: "RapproFam moderation has suspended your account.\n\nReason:\n%reason%\n\nDetails of this decision were sent to you by email. To contest it, email %contact% from your RapproFam email address."
 
 legal:
   cgu:
     privacy:
       title: Personal data protection
-      intro: In accordance with the General Data Protection Regulation (GDPR), RapporFam is committed to protecting members' privacy and processing personal data transparently.
+      intro: In accordance with the General Data Protection Regulation (GDPR), RapproFam is committed to protecting members' privacy and processing personal data transparently.
       controller_title: Data controller
-      controller_body: 'The data controller is <strong>SOUFFOUMADI Anissoir</strong>, domiciled at %address%. Contact: <a href="mailto:%email%">%email%</a>. RapporFam is a personal project, developed as a passion project, with no commercial activity.'
+      controller_body: 'The data controller is <strong>SOUFFOUMADI Anissoir</strong>, domiciled at %address%. Contact: <a href="mailto:%email%">%email%</a>. RapproFam is a personal project, developed as a passion project, with no commercial activity.'
       nature_title: Purpose of the site
-      nature_body: RapporFam provides a private space for family members to share events (weddings, parties, gatherings…) and organise family meet-ups. The service is not intended for other types of social networking.
+      nature_body: RapproFam provides a private space for family members to share events (weddings, parties, gatherings…) and organise family meet-ups. The service is not intended for other types of social networking.
       collection_title: Data collected
       collection_body: 'Depending on features used: account identifiers (email address, securely stored password, first name, last name, optional username, interface language); Google sign-in (Google ID and associated email); profile (optional photo, crop, visibility); published content (family groups, events with titles, dates, locations, descriptions and photos, private and group messages); preferences (email notifications for private messages, cookie consent choices); contact form for signed-in members only (subject and message); technical data (login dates, temporary tokens for email verification, password change or reset, account deletion). No "city of residence" is requested.'
       purposes_title: Purposes of processing
@@ -1056,9 +1061,9 @@ legal:
     terms:
       title: Terms of Use
       purpose_title: Purpose of the service
-      purpose_body: RapporFam is a private family networking platform. It allows creating groups, publishing events (weddings, parties, gatherings…) and messaging. Member content is reserved for signed-in, authorised users.
+      purpose_body: RapproFam is a private family networking platform. It allows creating groups, publishing events (weddings, parties, gatherings…) and messaging. Member content is reserved for signed-in, authorised users.
       scope_title: Scope of use
-      scope_body: The service is exclusively for sharing events and organising meet-ups within the family. RapporFam is not a general dating site or marketplace. Any misuse or use contrary to this family purpose may result in account suspension.
+      scope_body: The service is exclusively for sharing events and organising meet-ups within the family. RapproFam is not a general dating site or marketplace. Any misuse or use contrary to this family purpose may result in account suspension.
       account_title: Account and registration
       account_body: 'Registration requires a valid email address and acceptance of these Terms. Email verification may be required. Google sign-in is available; additional registration steps may apply. You are responsible for keeping your credentials confidential.'
       user_resp_title: User responsibility
@@ -1066,9 +1071,9 @@ legal:
       moderation_title: Moderation and sanctions
       moderation_body: Group owners and the moderation team may warn, suspend or remove a member for rule violations. Progressive warnings on the platform may lead to permanent account deletion. Moderation decisions may be discussed by email with the team.
       publisher_resp_title: Publisher responsibility
-      publisher_resp_body: RapporFam is a personal project developed voluntarily to improve families'' daily lives. SOUFFOUMADI Anissoir cannot be held liable for content published by members, false information they exchange, or indirect damages from use of the site. The publisher strives to maintain a secure, available service, without guaranteeing uninterrupted operation.
+      publisher_resp_body: RapproFam is a personal project developed voluntarily to improve families'' daily lives. SOUFFOUMADI Anissoir cannot be held liable for content published by members, false information they exchange, or indirect damages from use of the site. The publisher strives to maintain a secure, available service, without guaranteeing uninterrupted operation.
       ip_title: Intellectual property
-      ip_body: Photos and texts published by members remain their property. By publishing, the user grants RapporFam the right to display this content on the platform for authorised members only. The site structure (design, logo, code) remains the property of the publisher.
+      ip_body: Photos and texts published by members remain their property. By publishing, the user grants RapproFam the right to display this content on the platform for authorised members only. The site structure (design, logo, code) remains the property of the publisher.
       changes_title: Changes to the Terms
       changes_body: These Terms may be updated to reflect service or regulatory changes. In case of substantial changes, members will be informed on next sign-in or by email if needed. Continued use of the site constitutes acceptance of the current Terms.
       law_title: Applicable law
@@ -1076,7 +1081,7 @@ legal:
   mentions:
     editor:
       title: 1. Site publisher
-      intro: 'Under Article 6 of French law no. 2004-575 of 21 June 2004 on confidence in the digital economy, users of <strong>RapporFam</strong> are informed of the identity of those involved in creating and maintaining the site:'
+      intro: 'Under Article 6 of French law no. 2004-575 of 21 June 2004 on confidence in the digital economy, users of <strong>RapproFam</strong> are informed of the identity of those involved in creating and maintaining the site:'
       owner: 'Owner & Publisher:'
       owner_name: SOUFFOUMADI Anissoir
       address: 'Address:'
@@ -1084,10 +1089,10 @@ legal:
       director: 'Publication director:'
       director_name: SOUFFOUMADI Anissoir
       status: 'Status:'
-      status_body: Personal project developed as a passion project, with no commercial activity. RapporFam is not a company.
+      status_body: Personal project developed as a passion project, with no commercial activity. RapproFam is not a company.
     nature:
       title: 2. Purpose of the site
-      body: RapporFam is a private space for family members to share events and organise family meet-ups (weddings, parties, gatherings…). The site is not intended for other types of social networking.
+      body: RapproFam is a private space for family members to share events and organise family meet-ups (weddings, parties, gatherings…). The site is not intended for other types of social networking.
     hosting:
       title: 3. Hosting
       intro: 'The site is hosted by:'
@@ -1103,7 +1108,7 @@ legal:
 
 admin:
   dashboard:
-    title: RapporFam Administration
+    title: RapproFam Administration
     open_site: Open site
     intro: Area reserved for site administrators and moderators. Deletion actions require a super moderator or administrator role.
     users_title: Users
@@ -1123,17 +1128,17 @@ admin:
     bans_btn: View bans
     idle_notice: This area signs out automatically after %seconds% seconds of inactivity.
   access:
-    session_changed: You are signed in with an account that cannot access administration. Returning to RapporFam.
+    session_changed: You are signed in with an account that cannot access administration. Returning to RapproFam.
     csrf_expired: Your session expired or the page is outdated. Reload the page and try again.
     denied: This action is not allowed in administration.
   system_notice:
-    page_title: RapporFam — System message — %name%
+    page_title: RapproFam — System message — %name%
     page_heading: Groups — System message
     breadcrumb_aria: Breadcrumb
     breadcrumb_messages: Group messages
     title: System message — %name%
     hint: This message is shown at the top of the thread for all members. Only an administrator can edit or reset it.
-  title: RapporFam — Administration
+  title: RapproFam — Administration
   locale:
     fr: Français
     en: English
@@ -1282,8 +1287,8 @@ admin:
         other: Other
       notice_variant:
         system: System
-        moderator: RapporFam moderation
-        eventfamily: RapporFam administration
+        moderator: RapproFam moderation
+        eventfamily: RapproFam administration
       thread:
         parent: Parent message
         viewed: Viewed message

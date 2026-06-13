@@ -1,5 +1,5 @@
 /**
- * RapporFam — badges invitations / messages (AJAX + polling + Turbo).
+ * RapproFam — badges invitations / messages (AJAX + polling + Turbo).
  * Les compteurs ne sont plus calculés côté serveur à chaque page HTML.
  */
 

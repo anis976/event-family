@@ -30,21 +30,31 @@ final class ContactMailService
      */
     public function sendContactMessage(User $user, string $message): void
     {
+        $displayName = trim($user->getFirstName().' '.$user->getLastName());
+        $fromAddress = Address::create($this->mailerFrom);
+
         $email = $this->emailHelper->prepareForAdmin(
             (new TemplatedEmail())
-                ->from(Address::create($this->mailerFrom))
+                ->from($fromAddress)
+                ->sender($fromAddress)
                 ->to(Address::create($this->contactRecipient))
-                ->replyTo($user->getEmail())
+                ->replyTo(new Address(
+                    $user->getEmail(),
+                    $this->emailHelper->transForAdmin('email.contact.reply_to_name', ['%name%' => $displayName]),
+                ))
                 ->subject($this->emailHelper->transForAdmin('email.contact.subject', [
-                    '%name%' => trim($user->getFirstName().' '.$user->getLastName()),
+                    '%name%' => $displayName,
                 ]))
-                ->htmlTemplate('emails/contact_message.html.twig'),
+                ->htmlTemplate('emails/contact_message.html.twig')
+                ->textTemplate('emails/contact_message.txt.twig'),
             context: [
                 'user' => $user,
                 'message' => $message,
                 'sentAt' => ParisClock::now(),
             ],
         );
+
+        $this->emailHelper->applyContactFormHeaders($email);
 
         try {
             $this->mailer->send($email);

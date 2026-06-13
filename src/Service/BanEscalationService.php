@@ -49,12 +49,12 @@ final class BanEscalationService
         }
 
         if (2 === $banCount) {
-            $this->notifyWarning($user, $group, $reason, 2, PlatformNoticeVariant::RapporFam);
+            $this->notifyWarning($user, $group, $reason, 2, PlatformNoticeVariant::RapproFam);
 
             return;
         }
 
-        $this->notifyWarning($user, $group, $reason, 1, PlatformNoticeVariant::RapporFam);
+        $this->notifyWarning($user, $group, $reason, 1, PlatformNoticeVariant::RapproFam);
     }
 
     /**

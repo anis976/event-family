@@ -1,5 +1,5 @@
 /**
- * RapporFam — layout UI (Turbo-safe, idempotent).
+ * RapproFam — layout UI (Turbo-safe, idempotent).
  */
 
 const STORAGE_THEME_KEY = 'ef-theme';
@@ -252,7 +252,7 @@ function onSystemThemeChange() {
     }
 }
 
-export function initRapporFamLayout() {
+export function initRapproFamLayout() {
     applyTheme(getStoredThemePreference());
     initBootstrapDropdowns();
     updateBackToTopVisibility();

@@ -77,4 +77,16 @@ final class TransactionalEmailHelper
 
         return $email;
     }
+
+    /**
+     * En-têtes pour les messages du formulaire contact (admin) — multipart + Reply-To formaté côté appelant.
+     */
+    public function applyContactFormHeaders(TemplatedEmail $email): TemplatedEmail
+    {
+        $headers = $email->getHeaders();
+        $headers->addTextHeader('X-Auto-Response-Suppress', 'OOF, AutoReply');
+        $headers->addTextHeader('X-RapproFam-Message-Type', 'contact-form');
+
+        return $email;
+    }
 }

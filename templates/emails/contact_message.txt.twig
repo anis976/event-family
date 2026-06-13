@@ -1,0 +1,16 @@
+{{ 'email.contact.heading'|trans(locale=ef_email_locale) }}
+
+{{ 'email.contact.name'|trans(locale=ef_email_locale) }} {{ user.firstName }} {{ user.lastName }}
+{{ 'email.contact.email'|trans(locale=ef_email_locale) }} {{ user.email }}
+{% if user.pseudo %}{{ 'email.contact.pseudo'|trans(locale=ef_email_locale) }} @{{ user.pseudo }}
+{% endif %}{{ 'email.contact.account_id'|trans(locale=ef_email_locale) }} {{ user.id }}
+{{ 'email.contact.sent_at'|trans(locale=ef_email_locale) }} {{ sentAt|ef_datetime(ef_email_locale|default('fr')) }} ({{ 'email.common.paris_time'|trans(locale=ef_email_locale) }})
+
+---
+
+{{ message }}
+
+---
+
+{{ 'email.contact.reply_hint'|trans(locale=ef_email_locale) }}
+{{ user.email }}

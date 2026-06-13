@@ -9,6 +9,8 @@
 {% block meta_description %}
     {% if not app.user %}
         <meta name="description" content="{{ 'ui.home.guest_meta_description'|trans }}">
+    {% else %}
+        {{ parent() }}
     {% endif %}
 {% endblock %}
 

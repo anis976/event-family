@@ -116,7 +116,7 @@ final class MessageService
     public function sendPlatformPrivateNotice(
         User $recipient,
         string $content,
-        PlatformNoticeVariant $variant = PlatformNoticeVariant::RapporFam,
+        PlatformNoticeVariant $variant = PlatformNoticeVariant::RapproFam,
         ?User $sentBy = null,
     ): Message {
         $message = (new Message())
