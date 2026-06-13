@@ -17,7 +17,12 @@
 7. [`.env.local` — PC vs serveur](#7-envlocal--pc-vs-serveur)
 8. [Opérations utiles sur le serveur](#8-opérations-utiles-sur-le-serveur)
 9. [Dépannage rapide](#9-dépannage-rapide)
-10. [MÉMO — commit & deploy selon ce que vous modifiez](#10-mémo--commit--deploy-selon-ce-que-vous-modifiez)
+10. [MÉMO — commit & deploy selon ce que vous modifiez](#10-mémo--commit--deploy-selon-ce-que-vous-modifiez)  
+    - [E. Tableau récap](#e-tableau-récap-vue-densemble)  
+    - [F. PC ou serveur ?](#f-pc-ou-serveur--à-ne-plus-confondre)  
+    - [G. Scénario code (Twig, SCSS…)](#g-scénario-1--modifier-du-code-twig-controller-scss)  
+    - [H. Scénario `.env.local`](#h-scénario-2--modifier-envlocal)  
+    - [I. Maintenance + deploy](#i-scénario-3--grosse-modification-avec-maintenance)
 
 ---
 
@@ -251,122 +256,134 @@ bash bin/deploy-server.sh
 
 ## 10. MÉMO — commit & deploy selon ce que vous modifiez
 
-> **Règle d'or** : tout ce qui est dans le code (Twig, PHP, SCSS, traductions, migrations…) passe par **Git + deploy**.  
-> **Exception** : `.env.local` prod → **SSH + nano**, jamais Git.
+> **Par où commencer ?** Lis d'abord **F** (PC vs serveur), puis le scénario qui te concerne : **G** (code), **H** (`.env.local`) ou **I** (maintenance + deploy).
 
-Toujours commencer par :
+> **Règle d'or** : tout ce qui est dans le code (Twig, PHP, SCSS, traductions, migrations…) passe par **Git + deploy**.  
+> **Exception** : `.env.local` **serveur** → **SSH + nano**, jamais Git.
+
+---
+
+### E. Tableau récap (vue d'ensemble)
+
+| Ce que vous modifiez | Où ? | Que faire ? |
+|----------------------|------|-------------|
+| Twig, PHP, SCSS, traductions, migration… | **PC** (Laragon) | `git add .` → `git commit` → `deploy.ps1` |
+| `.env.local` pour tester en local | **PC** (Laragon) | VS Code + Ctrl + S — **pas de git, pas de deploy** |
+| `.env.local` du site en ligne | **Serveur** (SSH) | `nano` → `dump-env prod` → `cache:clear --env=prod` — **pas de git, pas de deploy** |
+
+---
+
+### F. PC ou serveur ? (à ne plus confondre)
+
+| | **PC (PowerShell)** | **Serveur (SSH → bash)** |
+|---|---------------------|---------------------------|
+| **C'est quoi ?** | Ton Laragon, développement local | o2switch, le vrai site `rapprofam.fr` |
+| **Terminal** | VS Code → prompt `PS C:\laragon\...>` | Après `ssh soan5627@...` → prompt `[soan5627@...]$` |
+| **Fichier `.env.local`** | `C:\laragon\www\eventFamily\.env.local` | `/home/soan5627/rapprofam.fr/.env.local` |
+| **Commande cache** | `php bin/console cache:clear` | `php bin/console cache:clear --env=prod` |
+| **`dump-env prod`** | ❌ Ne pas utiliser sur le PC | ✅ Uniquement sur le serveur, après `nano .env.local` |
+
+> **Astuce** : si tu vois `--env=prod` ou `dump-env prod`, tu es sur le **serveur**, pas dans PowerShell Windows.
+
+---
+
+### G. Scénario 1 — Modifier du code (Twig, Controller, SCSS…)
+
+**Étape 1 — Travailler et tester en local (PC)**
+
+1. Modifier les fichiers dans VS Code
+2. Tester sur ton site Laragon (ex. `http://eventfamily.test` ou ton URL locale)
+3. Corriger jusqu'à ce que **ça te convienne**
+
+**Étape 2 — Mettre en ligne (PC, PowerShell)**
+
+> Ne lance **`deploy.ps1` que si tu es satisfait** de ce que tu as testé en local.
 
 ```powershell
 cd C:\laragon\www\eventFamily
 git status
-```
-
----
-
-### A. Fichier Twig, Controller, Entité, Service, traduction YAML, migration…
-
-Même procédure pour **tous** les fichiers versionnés du projet.
-
-```powershell
-cd C:\laragon\www\eventFamily
 git add .
 git commit -m "fix: décrire brièvement ce que vous avez changé"
 powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
+
+POUR AJOUTER UN FICHIER DANS LE DEPOT GIT EX
+git add README.md docs/GUIDE_COMMANDES_RAPPROFAM.md
+git commit -m "docs: état projet juin 2026, diffusion et mémo deploy"
+
 ```
 
-**Vous n'avez pas besoin de `git push` à part** : `deploy.ps1` le fait à l'étape 3.
+**Notes :**
 
-Exemples de message de commit :
+- `git status` → voir ce qui va être enregistré (utile, pas obligatoire)
+- `git commit -m "..."` → décrire ce que tu as changé (ex. `style: sidebar mobile`, `fix: footer PayPal`)
+- `git push` → **pas besoin** : `deploy.ps1` le fait tout seul
+- Attendre **`[OK] Deploy verifie`**, puis vérifier `https://rapprofam.fr`
 
-- `fix: retour lien PayPal dans le footer`
-- `feat: filtre messages par groupe`
-- `fix: correction typo page contact`
+**SCSS / JS** : même procédure. Le deploy compile le CSS sur ton PC automatiquement.
 
 ---
 
-### B. Fichier SCSS / CSS / JS (`assets/styles/…`, `assets/js/…`)
+### H. Scénario 2 — Modifier `.env.local`
 
-**Exactement la même procédure** que pour un Twig ou un Controller.
+#### Cas A — Fichier sur ton PC (Laragon)
 
-Le deploy compile le SCSS sur votre PC **automatiquement** (étape 2 de `deploy.ps1`).  
-Vous n'avez **pas** à lancer `sass:build` vous-même.
+Pour tester quelque chose en local uniquement.
 
-```powershell
-cd C:\laragon\www\eventFamily
-git add .
-git commit -m "style: ajuster le footer"
-powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-```
+1. Ouvrir `.env.local` dans VS Code
+2. Modifier → **Ctrl + S**
+3. **C'est tout** — pas de `git add`, pas de `commit`, pas de `deploy.ps1`
 
----
-
-### C. `.env.local` sur votre PC (Laragon — développement local)
-
-1. Ouvrir `.env.local` dans VS Code (ou `notepad .env.local`)
-2. Modifier, **Ctrl + S**
-3. **C'est tout.** Pas de `git add`, pas de `git commit`, pas de `deploy.ps1`
-
-Si le site local se comporte bizarrement après un changement :
+Si le site local bugue après :
 
 ```powershell
 cd C:\laragon\www\eventFamily
 php bin/console cache:clear
 ```
 
----
+#### Cas B — Fichier sur le serveur (site en ligne)
 
-### D. `.env.local` sur le serveur (production — rapprofam.fr)
+Pour la maintenance, les secrets prod, `EF_ADMIN_PATH`, etc.
 
-1. Se connecter en SSH :
+**1. Se connecter (depuis PowerShell, mais les commandes suivantes sont sur le serveur) :**
 
 ```powershell
 ssh soan5627@eglantier.o2switch.net
 ```
 
-2. Éditer :
+**2. Éditer le fichier (maintenant tu es en SSH / bash) :**
 
 ```bash
 cd ~/rapprofam.fr
 nano .env.local
 ```
 
-3. Enregistrer (**Ctrl + O**, Entrée) et quitter (**Ctrl + X**)
+Modifier (ex. `EF_SITE_CLOSED=1` pour maintenance) → **Ctrl + O**, Entrée → **Ctrl + X**
 
-4. Appliquer :
+**3. Appliquer les changements (toujours en SSH / bash) :**
 
 ```bash
 composer dump-env prod
 php bin/console cache:clear --env=prod
 ```
 
-5. **Pas de Git, pas de deploy** pour ce cas.
+**4. C'est fini** — pas de `git commit`, pas de `deploy.ps1`.
+
+Pour **rouvrir** le site après maintenance : remettre `EF_SITE_CLOSED=0`, puis refaire les 2 commandes ci-dessus.
 
 ---
 
-### E. Résumé en une ligne
+### I. Scénario 3 — Grosse modification avec maintenance
 
-| Ce que vous modifiez | Où | Commandes |
-|----------------------|-----|-----------|
-| Twig, PHP, YAML traductions, migration… | PC | `git add .` → `git commit -m "..."` → `deploy.ps1` |
-| SCSS / JS | PC | **Pareil** — deploy compile le CSS |
-| `.env.local` dev | PC Laragon | VS Code + Ctrl + S (optionnel : `cache:clear` local) |
-| `.env.local` prod | Serveur SSH | `nano` → `dump-env prod` → `cache:clear --env=prod` |
+Ordre recommandé quand tu veux cacher le site aux visiteurs pendant que tu travailles :
 
----
+| Étape | Où | Action |
+|-------|-----|--------|
+| 1 | **Serveur SSH** | `EF_SITE_CLOSED=1` → `dump-env prod` → `cache:clear --env=prod` |
+| 2 | **PC** | Faire tes modifs, tester en local (Laragon) |
+| 3 | **PC PowerShell** | `git add .` → `git commit` → `deploy.ps1` (si tout te convient) |
+| 4 | **Serveur SSH** | `EF_SITE_CLOSED=0` → `dump-env prod` → `cache:clear --env=prod` |
 
-### F. Séquence complète type (copier-coller)
-
-Après une session de dev sur le PC :
-
-```powershell
-cd C:\laragon\www\eventFamily
-git status
-git add .
-git commit -m "fix: décrire vos changements"
-powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
-```
-
-Attendre **`[OK] Deploy verifie`**, puis tester `https://rapprofam.fr`.
+> Le deploy **ne touche pas** au `.env.local` serveur : la maintenance reste active tant que tu ne la désactives pas toi-même (étape 4).
 
 ---
 

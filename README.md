@@ -2,6 +2,24 @@
 
 Plateforme Symfony 8 de gestion d'événements familiaux.
 
+## État du projet (juin 2026)
+
+| Sujet | Statut |
+|-------|--------|
+| **Site en prod** | ☑ `https://rapprofam.fr` — déploiement o2switch via `bin/deploy.ps1` |
+| **Google Analytics (GA4)** | ☑ Configuré en prod · consentement cookies `analytics` |
+| **Google AdSense** | ☑ Code + `ads.txt` prod · **examen Google en cours** (juin 2026) |
+| **Safe Browsing (Chrome « Site dangereux »)** | ☑ **Levé** — réputation héritée de l’ancien propriétaire du domaine ; demande d’examen Search Console acceptée |
+| **PayPal Donate** | ☑ Bouton footer « Soutenir le projet » → page hébergée (`hosted_button_id=E8ULND24DQE2W`) |
+| **Guide perso commit / deploy** | ☑ [docs/GUIDE_COMMANDES_RAPPROFAM.md](docs/GUIDE_COMMANDES_RAPPROFAM.md) § 10 (mémo PC vs serveur) |
+
+### Diffusion prévue
+
+1. **Courte vidéo de présentation** du projet — partage privé avec les **premiers amis / proches** (inscription, groupes, événements).
+2. **Élargissement progressif** — partage du lien `https://rapprofam.fr` à d’autres personnes une fois la vidéo faite et le retour des premiers testeurs intégré.
+
+> **En attente Google** : réponse examen **AdSense** · slots publicitaires + **CMP Google certifiée** (3 choix) **après** approbation.
+
 ## Stack
 
 - **PHP** 8.4+ · **Symfony** 8.0
@@ -122,7 +140,7 @@ Bandeau + modale **maison** (pas de CMP tiers). Conforme CNIL : refus aussi simp
 
 **Feuille de route cookies / pub** :
 
-1. **Analytics** — livré ; `EF_GOOGLE_ANALYTICS_ID` renseigné en prod.
+1. **Analytics** — ☑ livré et **validé en prod** (`EF_GOOGLE_ANALYTICS_ID` + consentement cookies).
 2. **AdSense** — ☑ code prod (`EF_GOOGLE_ADSENSE_CLIENT_ID`, `ads.txt`, emplacements discrets) · **examen Google en cours** (juin 2026).
 3. **CMP Google certifiée (EEE / UK / CH)** — **en attente** : à activer dans AdSense **après approbation** (message 3 choix : Autoriser / Ne pas consentir / Gérer) ; le bandeau maison reste pour analytics et la transparence CNIL.
 
@@ -135,9 +153,9 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 | Élément | Détail |
 |---------|--------|
 | Emplacement | Footer site — colonne **« Soutenir le projet »** (membres connectés uniquement) |
-| Bouton | **« Offrir un coup de pouce »** / **« Give a little boost »** (`ui.footer.donate`) |
+| Bouton | **« Soutenir le projet »** / **« Support the project »** (`ui.footer.donate`) |
 | Lien | Page PayPal Donate hébergée — `templates/layout/_footer.html.twig` (`hosted_button_id=E8ULND24DQE2W`) |
-| Comportement | Nouvel onglet (`target="_blank"`, `rel="noopener noreferrer"`) |
+| Comportement | Nouvel onglet (`target="_blank"`, `rel="noopener noreferrer"`) — **bouton seul**, sans texte sous le lien |
 | i18n | `ui.footer.donate_aria` — libellé accessible FR / EN |
 
 > **Avant déploiement** : dans le [tableau de bord PayPal](https://www.paypal.com/donate/), remplacer les **URL de redirection** (retour / annulation) configurées en **local** par les **URLs HTTPS du site en production** — voir [checklist déploiement](#déploiement-checklist) et [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md).
@@ -496,7 +514,7 @@ Entités : `Message`, `MessageRead`, `MessagePhoto`.
 |---------|----------------|------------------|-----|------|
 | **reCAPTCHA v3** (contact) | [reCAPTCHA Admin](https://www.google.com/recaptcha/admin) | `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY` | Clés de test possibles | **Nouvelles clés** + domaine prod (`localhost` ≠ domaine final) |
 | **OAuth 2.0** (Google) | [Cloud Console](https://console.cloud.google.com/) | `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REDIRECT_URI` | OK si URI locales enregistrées | **URI de redirection** `https://DOMAIN/connect/google/check` · `DEFAULT_URI` prod |
-| **Analytics** (GA4) | [Google Analytics](https://analytics.google.com/) | `EF_GOOGLE_ANALYTICS_ID` (ex. `G-XXXXXXXX`) | ID de test possible | **Propriété / flux prod** + domaine · chargé seulement si consentement `analytics` |
+| **Analytics** (GA4) | [Google Analytics](https://analytics.google.com/) | `EF_GOOGLE_ANALYTICS_ID` (ex. `G-XXXXXXXX`) | ID de test possible | ☑ **prod OK** — flux + domaine · chargé si consentement `analytics` |
 | **AdSense** (pub) | [Google AdSense](https://www.google.com/adsense/) | `EF_GOOGLE_ADSENSE_CLIENT_ID` (`ca-pub-…`) · `EF_GOOGLE_ADSENSE_SLOT_*` (par page, vide = pas de bloc) | ID dans `.env` | ☑ balise + `ads.txt` prod · **examen en cours** · slots + **CMP Google** après approbation |
 
 Configurations **distinctes** (reCAPTCHA ≠ OAuth ≠ Analytics ≠ AdSense). Diagnostic OAuth local : `php bin/console ef:google-oauth:diagnose`.
@@ -512,7 +530,7 @@ En juin 2026, **Chrome** peut afficher *« Site dangereux »* sur `https://rappr
 | 3 | Menu **Sécurité et actions manuelles** → problèmes signalés → **Demander un examen** une fois le site propre (HTTPS, pas de malware, pas de pages trompeuses) |
 | 4 | Attendre la réponse Google (**quelques jours à 2 semaines** en général) — pas d’action côté code Symfony en attendant |
 
-**Statut juin 2026** : demande d’examen **déposée** (hypothèse : historique du nom de domaine). L’alerte peut persister sur Chrome **jusqu’à levée par Google** ; Firefox/Safari peuvent ne pas l’afficher. Ne pas paniquer : ce n’est en principe **pas** un blocage hébergeur o2switch.
+**Statut juin 2026** : ☑ **alerte levée** après demande d’examen dans Search Console. Cause probable : **réputation négative héritée** de l’ancien propriétaire du nom de domaine (contenu malveillant antérieur) — **sans lien avec le code RapproFam actuel**. En cas de réapparition : revérifier le [rapport Safe Browsing](https://transparencyreport.google.com/safe-browsing/search?url=rapprofam.fr) et refaire une demande d’examen.
 
 > Distinct de **AdSense** (monétisation) et de **reCAPTCHA** (anti-spam contact) — trois services Google séparés.
 
@@ -594,8 +612,8 @@ Actions : retour accueil ; contact (connecté) ou about (invité / dev `/_error/
 | # | Sujet |
 |---|--------|
 | 17 | **Google OAuth** — clés prod, `GOOGLE_OAUTH_REDIRECT_URI`, URI Cloud Console |
-| 5b | **Google Analytics** — `EF_GOOGLE_ANALYTICS_ID` prod + test consentement analytics |
-| 17b | **Safe Browsing** — si alerte « Site dangereux » : Search Console → demande d’examen (voir [§ Safe Browsing](#alerte-chrome-site-dangereux-safe-browsing)) |
+| 5b | **Google Analytics** — ☑ prod OK (`EF_GOOGLE_ANALYTICS_ID` + consentement cookies) |
+| 17b | **Safe Browsing** — ☑ alerte levée juin 2026 (historique domaine) |
 
 ### Synthèse — exploitation
 
@@ -661,13 +679,13 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 |---------|------|
 | **Google OAuth** | Code livré — **clés + URI de redirection prod** ([PRE_DEPLOY](docs/PRE_DEPLOY.md)) |
 | **reCAPTCHA v3** | Code livré — **clés + domaines prod** pour `/contact` |
-| **Google Analytics** | Bandeau cookies + `EF_GOOGLE_ANALYTICS_ID` — **propriété GA4 prod** et URL du site |
+| **Google Analytics** | ☑ Prod OK — bandeau cookies + `EF_GOOGLE_ANALYTICS_ID` |
 | **WhatsApp contact** | **Livré (v1)** — `CONTACT_WHATSAPP` + lien `wa.me` sur `/contact` ; numéro réel en prod. API Meta → v2 |
 | **Délivrabilité e-mail** | Code livré (texte + HTML, List-Unsubscribe) — **SPF + DKIM + DMARC** obligatoires en prod ([PRE_DEPLOY § Délivrabilité](docs/PRE_DEPLOY.md)) |
 | **CGU & mentions — contenu juridique** | ☑ Livré juin 2026 — RGPD, LCEN, projet perso, données réelles, `PUBLISHER_ADDRESS` |
 | **CGU & mentions — hébergeur** | Remplacer les placeholders `legal.mentions.hosting.*` (nom, adresse, contact hébergeur) — FR + EN |
 | **E-mails professionnels** | ☑ `rf_contact@rapprofam.fr` — configurer `MAILER_DSN` (mdp) dans `.env.local` serveur ; SPF/DKIM en prod |
-| **Safe Browsing (Chrome)** | Demande d’examen déposée juin 2026 — attente levée Google (historique domaine possible) |
+| **Safe Browsing (Chrome)** | ☑ Alerte « Site dangereux » levée juin 2026 (historique domaine) |
 | **Messenger async** | En prod, configurer worker si e-mails async |
 | **HTTPS** | Obligatoire (cookies session, remember-me) |
 | **Bandeau cookies** | Livré (nécessaires + analytics + marketing) | AdSense branché prod ; CMP Google certifiée **après** approbation AdSense |
@@ -773,29 +791,31 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 
 ## Prochaines étapes
 
-> Le développement **accueil public / about / cookies / analytics / pages légales** est livré en local. **Déploiement, hébergeur, e-mails pro, AdSense et tests prod** sont regroupés dans [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md) — à exécuter **juste avant** la mise en ligne.
+> **Juin 2026** : site **déployé** en prod · Analytics ☑ · Safe Browsing ☑ · AdSense **en examen**. Détail technique : [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md).
 
-### Avant déploiement & AdSense (checklist — pas maintenant)
+### Diffusion & lancement (priorité actuelle)
 
-À faire **en une passe** avant d’ouvrir le site au public et de demander l’examen AdSense :
+| # | Action | Statut |
+|---|--------|--------|
+| 1 | **Vidéo de présentation** (courte démo : inscription, groupes, événements, messages) | À faire |
+| 2 | **Partage privé** avec amis / proches proches — retours UX | Après vidéo |
+| 3 | **Ouverture élargie** — lien `https://rapprofam.fr` à d’autres personnes | Après retours phase 2 |
+| 4 | **Réponse AdSense** — slots + CMP Google si approuvé | En attente Google |
 
-| # | Action |
-|---|--------|
-| 1 | **HTTPS** + `DEFAULT_URI` prod · assets (`sass:build`, `asset-map:compile`) · secrets / `EF_ADMIN_PATH` |
-| 2 | **E-mails pro** — `MAILER_DSN` o2switch (mdp dans `.env.local` serveur) ; `rf_contact@rapprofam.fr` ; SPF/DKIM ; `PUBLISHER_ADDRESS` si l’adresse a changé |
-| 3 | **Hébergeur** — renseigner `legal.mentions.hosting.*` (placeholders FR + EN) |
-| 4 | **Google OAuth** — clés prod ; `GOOGLE_OAUTH_REDIRECT_URI` = `https://DOMAIN/connect/google/check` ; URI enregistrée dans Cloud Console |
-| 5 | **reCAPTCHA** — clés prod + **domaines** du site (`RECAPTCHA_*`) pour `/contact` |
-| 6 | **Google Analytics** — propriété / flux **prod** ; `EF_GOOGLE_ANALYTICS_ID` ; URL du site dans GA4 ; test avec consentement cookies « analytics » |
-| 6b | **Safe Browsing** — si Chrome affiche « Site dangereux » : Search Console → [demande d’examen](#alerte-chrome-site-dangereux-safe-browsing) (historique domaine, pas forcément le site actuel) |
-| 7 | **Contact** — `CONTACT_WHATSAPP` + numéro réel (`wa.me`) |
-| 7a | **Délivrabilité e-mail** — SPF + DKIM + DMARC ; mail-tester ≥ 8/10 |
-| 7b | **PayPal Donate** — dashboard PayPal : remplacer les **URL de redirection** (retour / annulation) **locales** par les URLs **HTTPS du site déployé** ; lien : `templates/layout/_footer.html.twig` |
-| 8 | **Test crawl invité** sur l’URL prod : `/`, `/about`, `/cgu`, `/mentions-legales` (pas de redirect login) |
-| 9 | **Demande AdSense** sur `https://rapprofam.fr` | ☑ déposée — examen en cours |
-| 10 | **Après approbation AdSense** — renseigner `EF_GOOGLE_ADSENSE_SLOT_*` · activer **CMP Google** (3 choix) · annonces sous consentement `marketing: true` |
+### Checklist prod — points encore à vérifier
 
-Détail ligne par ligne : [docs/PRE_DEPLOY.md](docs/PRE_DEPLOY.md) (sections *Bloquant*, *Contenu & légal*, *Tests manuels*).
+| # | Sujet | Statut |
+|---|--------|--------|
+| 1 | **reCAPTCHA** prod — clés + domaines pour `/contact` | Voir [PRE_DEPLOY](docs/PRE_DEPLOY.md) |
+| 2 | **Google OAuth** — URI de redirection prod | Voir [PRE_DEPLOY](docs/PRE_DEPLOY.md) |
+| 3 | **Hébergeur** — placeholders `legal.mentions.hosting.*` (FR + EN) | Si pas encore remplacés |
+| 4 | **`PUBLISHER_ADDRESS`** — adresse postale éditeur en prod | À confirmer |
+| 5 | **`CONTACT_WHATSAPP`** — numéro réel sur `/contact` | Si souhaité |
+| 6 | **PayPal** — URLs retour / annulation dashboard → HTTPS prod | Vérifier une fois |
+| 7 | **Cron o2switch** — purge comptes / événements / messages | cPanel → Tâches Cron |
+| 8 | **Sauvegardes BDD** — phpMyAdmin ou cPanel | Planifier |
+| 9 | **SPF / DKIM / DMARC** — délivrabilité e-mails | cPanel |
+| 10 | **Admin EasyAdmin** — relecture UX / i18n rapide | Reste à faire |
 
 ### À faire — relecture site (en cours)
 
@@ -1105,7 +1125,7 @@ Réponse au mur de connexion sur `/` (bloquant l’examen AdSense). Comportement
 | **Reste du site** | → **login** | Accès complet |
 | **Home `/`** | Hero (image locale) + 3 cartes + « Comment ça marche » (3 étapes) + encart espace privé + CTA inscription/connexion + lien about — **sans** liste d’événements ; **meta description** + Open Graph | Hero + cartes **cliquables** (groupes / événements / messages) + aperçu **3 événements publics** |
 | **Sidebar** | Accueil + lien **À propos** ; dropup connexion / inscription / langue (pas de lien Contact — page réservée aux connectés) | Sidebar complète |
-| **Footer** | CGU + mentions + copyright (+ cookies si choix fait) | Footer complet (dont **Offrir un coup de pouce** → PayPal) |
+| **Footer** | CGU + mentions + copyright (+ cookies si choix fait) | Footer complet (dont **Soutenir le projet** → PayPal) |
 | **Topbar** | Titre contexte (`<p>`, pas de h1) + thème uniquement | Recherche + notifications + thème |
 
 **Fichiers concernés** :
@@ -1178,7 +1198,8 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | Sujet | État | Quand |
 |-------|------|--------|
 | **Réponse examen AdSense** | En cours | Google (quelques jours à quelques semaines) |
-| **CMP Google** (3 choix) | À configurer | **Après** approbation — ne pas activer avant |
+| **Safe Browsing** | ☑ Levé juin 2026 | — |
+| **CMP Google** (3 choix) | À configurer | **Après** approbation AdSense |
 | **`EF_GOOGLE_ADSENSE_SLOT_*`** | Vides | Créer les unités dans AdSense après approbation |
 
 ### En attente — hors AdSense
@@ -1189,12 +1210,11 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | **Google OAuth** | Backend livré | Clés et URI **prod** — [PRE_DEPLOY](docs/PRE_DEPLOY.md) |
 | **WhatsApp API** | Lien `wa.me` v1 suffit | API Meta → v2 |
 
-### Court terme (hors prod / AdSense)
+### Court terme
 
-1. **Modifs vitrine** — pages publiques / UX avant déploiement (session en cours)
-2. **Performances** — valider en mode prod local (section ci-dessus)
-3. **Session admin / CSRF** — re-test inactivité longue + formulaire après pause avant prod
-4. **Fonctionnalités métier** — selon priorités produit (v2 ci-dessous)
+1. **Vidéo de présentation** + partage amis → retours UX
+2. **Admin EasyAdmin** — relecture rapide UX / i18n
+3. **Performances prod** — valider avec cache warmup si besoin
 
 ### v2 — Contact & intégrations (planifié)
 
@@ -1216,13 +1236,22 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 ### Autres
 
-1. OAuth Google + reCAPTCHA + Analytics — **reconfig prod** (voir [Services Google](#services-google-dev-ok--prod-à-reconfigurer))
+1. OAuth Google + reCAPTCHA — **vérifier clés prod** si pas déjà fait ([PRE_DEPLOY](docs/PRE_DEPLOY.md)) · Analytics ☑ prod
 2. WhatsApp **v2** (API Meta) — v1 `wa.me` livré
 3. Modales Turbo · Tarteaucitron
 4. **i18n** — couverture FR/EN complète ☑ ; contenu juridique enrichi ☑ (relecture avocat optionnelle avant prod)
 5. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-13 — Diffusion, Google, PayPal, guide deploy
+
+- **README** : section [État du projet](#état-du-projet-juin-2026) · plan diffusion (vidéo → amis → public élargi)
+- **Google Analytics** : ☑ validé en prod
+- **Safe Browsing** : ☑ alerte Chrome « Site dangereux » levée (réputation domaine héritée)
+- **AdSense** : examen Google toujours en cours
+- **PayPal** : retour lien Donate hébergé · bouton « Soutenir le projet » sans texte sous le lien
+- **Guide perso** : [GUIDE_COMMANDES_RAPPROFAM.md](docs/GUIDE_COMMANDES_RAPPROFAM.md) § 10 — mémo commit / deploy (PC vs serveur)
 
 ### 2026-06-11 — Google AdSense + deploy fiable
 
