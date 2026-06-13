@@ -362,7 +362,7 @@ Après une session de dev sur le PC :
 cd C:\laragon\www\eventFamily
 git status
 git add .
-git commit -m "fix: changement de scss"
+git commit -m "fix: décrire vos changements"
 powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 ```
 
