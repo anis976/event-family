@@ -40,11 +40,17 @@ if command -v npm >/dev/null 2>&1; then
     php bin/console asset-map:compile --env=prod
 else
     echo "==> npm absent : public/assets synchronise depuis le PC"
-    if ! grep -q 'styles/ef-admin.scss' public/assets/manifest.json 2>/dev/null; then
-        echo "ERREUR: ef-admin.scss absent de public/assets/manifest.json"
-        echo "Relancez deploy.ps1 avec -SyncAssets depuis le PC."
+    if [ ! -f public/assets/manifest.json ]; then
+        echo "ERREUR: public/assets/manifest.json introuvable sur le serveur"
+        echo "Relancez deploy.ps1 depuis le PC (sync assets automatique)."
         exit 1
     fi
+    if ! grep -q 'ef-admin.scss' public/assets/manifest.json; then
+        echo "ERREUR: ef-admin.scss absent de public/assets/manifest.json"
+        echo "Relancez deploy.ps1 depuis le PC (sync assets automatique)."
+        exit 1
+    fi
+    echo "    manifest.json OK (ef-admin.scss present)"
 fi
 
 echo "==> Env + cache"

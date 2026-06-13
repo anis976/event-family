@@ -139,6 +139,14 @@ Le serveur ne peut pas les recevoir : faites d'abord :
             "scp", "-o", "BatchMode=no", "-r", "public/assets/.", $remoteDest
         )
         if ($scpResult.ExitCode -ne 0) { throw "scp assets a echoue" }
+        $verifyCmd = ('grep -q ''ef-admin.scss'' {0}/public/assets/manifest.json && echo ASSETS_SYNC_OK' -f $remotePath)
+        $verifyResult = Invoke-NativeCommand -Command @(
+            "ssh", "-o", "BatchMode=no", $sshHost, $verifyCmd
+        )
+        if ($verifyResult.ExitCode -ne 0 -or -not ($verifyResult.Lines -match 'ASSETS_SYNC_OK')) {
+            throw "Verification assets serveur echouee : manifest.json sans ef-admin.scss apres scp"
+        }
+        Write-Host "    Assets serveur verifies (ef-admin.scss present)"
     } else {
         Write-Host "==> Assets : compilation sur le serveur (npm) - NoSyncAssets actif"
     }
