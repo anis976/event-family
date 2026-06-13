@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\User;
+use App\Util\ParisClock;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -44,6 +45,7 @@ final class TransactionalEmailHelper
         $resolvedLocale = $this->resolveLocale($user, $locale);
 
         return $email
+            ->date(ParisClock::now())
             ->locale($resolvedLocale)
             ->context(array_merge($context, ['ef_email_locale' => $resolvedLocale]));
     }
