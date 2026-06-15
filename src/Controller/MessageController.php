@@ -164,7 +164,7 @@ final class MessageController extends AbstractAppController
     public function groupMessages(Request $request, ?int $groupId = null): Response
     {
         $user = $this->requireUser();
-        $userGroups = $this->groupMemberRepository->findGroupsForUser($user);
+        $userGroups = $this->groupMemberRepository->findGroupsForMessaging($user);
         $userHasGroup = [] !== $userGroups;
         $showGroupUnreadDots = \count($userGroups) > 1;
         $isSiteStaff = $this->siteStaff->isSiteStaff($user);

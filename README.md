@@ -7,6 +7,8 @@ Plateforme Symfony 8 de gestion d'événements familiaux.
 | Sujet | Statut |
 |-------|--------|
 | **Site en prod** | ☑ `https://rapprofam.fr` — déploiement o2switch via `bin/deploy.ps1` |
+| **Cercle des responsables** | ☑ Groupe système (chefs / modos) · sync auto au deploy · messagerie de groupe ☑ |
+| **Modération membres (admin + site)** | ☑ Ajout / invitation / retrait admin · quitter un groupe (chef → successeur) |
 | **Google Analytics (GA4)** | ☑ Configuré en prod · consentement cookies `analytics` |
 | **Google AdSense** | ☑ Code + `ads.txt` prod · **examen Google en cours** (juin 2026) |
 | **Safe Browsing (Chrome « Site dangereux »)** | ☑ **Levé** — réputation héritée de l’ancien propriétaire du domaine ; demande d’examen Search Console acceptée |
@@ -251,7 +253,7 @@ Contrôleurs : `DashboardController`, `UserCrudController`, `GroupCrudController
 | Rubrique | Index | Édition / actions | Notes |
 |----------|-------|-------------------|-------|
 | **Utilisateurs** | Badges rôles staff ; comptes actifs par défaut (filtre *Comptes supprimés*) ; lignes non éditables non cliquables | Rôles : **admin seul** ; ban/déban selon palier ; motif suspension en lecture seule si déjà suspendu ; case suspension grisée si interdit | Comptes **admin** masqués aux non-admins |
-| **Groupes** | Nom, famille, responsable | Réassignation responsable ; message système : **admin seul** | Suppression : admin seul |
+| **Groupes** | Nom, famille, responsable | Réassignation responsable ; membres (ajout / retrait / réconciliation rôles) ; message système : **admin seul** ; cercle responsables : libellés traduits | Suppression : admin seul |
 | **Événements** | Titre, type, début, groupe | CRUD standard staff | Suppression : admin seul |
 | **Messages** | Extrait, auteur, destinataire, groupe, métadonnées | **Lecture seule** + détail fil litige ; recherche ID + contenu | Suppression : admin seul ; variante notice = champ virtuel (plus d'erreur enum) |
 | **Bannissements** | Utilisateur, motif (extrait), groupe, palier, statut | **Lecture seule** (+ détail) | Suppression : admin seul |
@@ -334,7 +336,18 @@ Services : `MessageService`, `MessageRepository`, `PrivateMessageNotificationSer
 | **Nom du groupe** | Unique (contrainte BDD) |
 | **Nom de famille** | Doublon autorisé — avertissement si une famille existe déjà |
 
-Entités : `Group`, `GroupMember`, `GroupRequest`, `UserBan`.  
+### Cercle des responsables (groupe système)
+
+| Fonctionnalité | Détail |
+|----------------|--------|
+| **Membres** | Chefs et modérateurs de chaque groupe classique — adhésion **automatique** (`ef:staff-circle:sync` au deploy) |
+| **Fiche groupe** | Section dédiée sur `/groupes` · événements publics partagés par les autres groupes |
+| **Messagerie** | Fil de groupe classique : publier, répondre, photos (0–2) · visible dans le **sélecteur** si plusieurs groupes |
+| **Restrictions** | Pas d’invitation / demande d’adhésion / quitter manuellement · membres gérés en admin (lecture seule) |
+| **i18n** | Nom, famille et description traduits à l’affichage (FR/EN) même si la BDD contient le libellé FR |
+
+Entités : `Group.isStaffCircle`, `Event.sharedInStaffCircle`. Services : `StaffCircleService`, commande `ef:staff-circle:sync`.
+
 Statuts demandes : `PENDING`, `INVITED`, `ACCEPTED`, `REFUSED`.
 
 ### Bannissement (3 strikes — groupe)
@@ -821,7 +834,7 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 
 | Priorité | Tâche | Statut |
 |----------|--------|--------|
-| 1 | **Messagerie** (privé + groupe + **photos groupe**) | ☑ livré juin 2026 |
+| 1 | **Messagerie** (privé + groupe + **photos groupe** + **cercle responsables**) | ☑ livré juin 2026 |
 | 2 | **Relecture page par page** | En cours — **Accueil** ☑ · **Hub Messages** ☑ · **Auth** ☑ · **Profil** ☑ · **Groupes** ☑ · **Événements** ☑ · **About** ☑ · **Contact** ☑ · **Invitations** ☑ · **Légal + 404** ☑ (juin 2026) · reste : **Admin EasyAdmin** |
 | 3 | **Bugs** repérés lors de la relecture | — |
 | 4 | **Perfs prod** — `APP_ENV=prod` + cache warmup | Avant déploiement |
@@ -1216,6 +1229,11 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 2. **Admin EasyAdmin** — relecture rapide UX / i18n
 3. **Performances prod** — valider avec cache warmup si besoin
 
+### v2 — Cercle des responsables (planifié)
+
+- Notifications e-mail des nouveaux messages du cercle
+- Message système dédié (texte par défaut spécifique au cercle)
+
 ### v2 — Contact & intégrations (planifié)
 
 - **WhatsApp Business API** : réception/envoi de messages depuis le site (webhooks Meta — compte Business, numéro dédié, **clés API**, facturation). Distinct du simple lien `wa.me` (v1, sans clé).
@@ -1243,6 +1261,12 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 5. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-16 — Cercle des responsables : messagerie + admin
+
+- **Messagerie** : le cercle des responsables apparaît dans le sélecteur de groupes ; publication, réponses et photos comme un groupe classique
+- **Admin groupes** : correction erreur liste (`trans` → `t`) ; traduction description du cercle (FR/EN)
+- **Deploy** : cache prod forcé avant sync ; commande `ef:staff-circle:sync` tolérante aux échecs
 
 ### 2026-06-13 — Diffusion, Google, PayPal, guide deploy
 

@@ -35,6 +35,27 @@ class GroupMemberRepository extends ServiceEntityRepository
     }
 
     /**
+     * Tous les groupes dont l'utilisateur est membre, y compris le cercle des responsables (sélecteur messagerie).
+     *
+     * @return list<Group>
+     */
+    public function findGroupsForMessaging(User $user): array
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('g', 'owner')
+            ->from(Group::class, 'g')
+            ->innerJoin('g.groupMembers', 'gm')
+            ->leftJoin('g.owner', 'owner')
+            ->andWhere('gm.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('CASE WHEN g.isStaffCircle = true THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('CASE WHEN g.owner = :user THEN 0 ELSE 1 END', 'ASC')
+            ->addOrderBy('g.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Liste légère pour le sélecteur de groupe (messages de groupe).
      *
      * @return list<array{id: int, name: string}>
