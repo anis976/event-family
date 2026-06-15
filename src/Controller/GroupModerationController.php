@@ -13,9 +13,11 @@ use App\Repository\GroupRequestRepository;
 use App\Repository\UserRepository;
 use App\Service\GroupAccessService;
 use App\Service\GroupMemberModerationService;
+use App\Service\GroupOwnerTransferService;
 use App\Service\GroupRequestService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -31,6 +33,7 @@ final class GroupModerationController extends AbstractAppController
         private readonly GroupRequestService $groupRequestService,
         private readonly GroupMemberRepository $groupMemberRepository,
         private readonly GroupMemberModerationService $memberModerationService,
+        private readonly GroupOwnerTransferService $groupOwnerTransfer,
     ) {
     }
 
@@ -179,6 +182,73 @@ final class GroupModerationController extends AbstractAppController
         return $this->handleUserInvitationAction($id, $requestId, $request, 'refuse-invitation', function (User $user, $groupRequest): void {
             $this->groupRequestService->refuseInvitation($user, $groupRequest);
         }, 'flash.group.invitation_declined');
+    }
+
+    #[Route('/membres/{memberId}/transferer-chef', name: '_transfer_ownership', requirements: ['memberId' => '\d+'], methods: ['POST'])]
+    public function transferOwnership(int $memberId, Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $actor = $this->requireUser();
+        $member = $this->groupMemberRepository->findOneWithGroupAndUser($memberId);
+        if (null === $member) {
+            throw $this->createNotFoundException();
+        }
+
+        $group = $member->getGroup();
+        $successor = $member->getUser();
+
+        if (!$this->groupAccess->isOwner($actor, $group)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($successor->getId() === $actor->getId()) {
+            $this->addErrorFlash('flash.group.transfer_self');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        if (!$this->isCsrfTokenValid('transfer-owner'.$memberId, (string) $request->request->get('_token'))) {
+            $this->addErrorFlash('flash.session_expired');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        $payload = $request->request->all('transfer_ownership');
+        if (!\is_array($payload)) {
+            $this->addErrorFlash('flash.group.transfer_invalid');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        $password = trim((string) ($payload['currentPassword'] ?? ''));
+        $becomeModerator = isset($payload['becomeModerator']);
+
+        if ('' === $password) {
+            $this->addErrorFlash('ui.profile.form.validation.current_password_required');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        if (!$passwordHasher->isPasswordValid($actor, $password)) {
+            $this->addErrorFlash('ui.profile.form.validation.current_password_invalid');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        try {
+            $this->groupOwnerTransfer->transferOwnershipByCurrentOwner(
+                $actor,
+                $group,
+                $successor,
+                $becomeModerator,
+            );
+            $this->addSuccessFlash('flash.group.ownership_transferred', [
+                '%name%' => $successor->getFirstName(),
+            ]);
+        } catch (\DomainException $e) {
+            $this->addErrorFlash($e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
     }
 
     #[Route('/membres/{memberId}/modo', name: '_toggle_modo', requirements: ['memberId' => '\d+'], methods: ['POST'])]

@@ -147,6 +147,56 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @return list<GroupMember>
+     */
+    public function findModeratorsInGroup(Group $group): array
+    {
+        return $this->createQueryBuilder('gm')
+            ->addSelect('u')
+            ->innerJoin('gm.user', 'u')
+            ->andWhere('gm.group = :group')
+            ->andWhere('gm.role = :role')
+            ->setParameter('group', $group)
+            ->setParameter('role', GroupMemberRole::Moderator)
+            ->addOrderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<GroupMember>
+     */
+    public function findModeratorsInGroupExcluding(Group $group, User $excludeUser): array
+    {
+        return $this->createQueryBuilder('gm')
+            ->andWhere('gm.group = :group')
+            ->andWhere('gm.role = :role')
+            ->andWhere('gm.user != :user')
+            ->setParameter('group', $group)
+            ->setParameter('role', GroupMemberRole::Moderator)
+            ->setParameter('user', $excludeUser)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<GroupMember>
+     */
+    public function findOwnerMembersInGroupExcluding(Group $group, User $excludeUser): array
+    {
+        return $this->createQueryBuilder('gm')
+            ->andWhere('gm.group = :group')
+            ->andWhere('gm.role = :role')
+            ->andWhere('gm.user != :user')
+            ->setParameter('group', $group)
+            ->setParameter('role', GroupMemberRole::Owner)
+            ->setParameter('user', $excludeUser)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function countOtherMembersInGroup(Group $group, User $excludeUser): int
     {
         return (int) $this->createQueryBuilder('gm')
@@ -272,6 +322,27 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->setParameter('moderatorRole', GroupMemberRole::Moderator->value)
             ->setFirstResult($offset)
             ->setMaxResults($perPage)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Tous les membres d'un groupe (fiche admin), triés par rôle puis nom.
+     *
+     * @return list<GroupMember>
+     */
+    public function findAllByGroupOrdered(Group $group): array
+    {
+        return $this->createQueryBuilder('gm')
+            ->addSelect('u')
+            ->innerJoin('gm.user', 'u')
+            ->andWhere('gm.group = :group')
+            ->setParameter('group', $group)
+            ->addOrderBy('CASE WHEN gm.role = :ownerRole THEN 0 WHEN gm.role = :moderatorRole THEN 1 ELSE 2 END', 'ASC')
+            ->addOrderBy('u.lastName', 'ASC')
+            ->addOrderBy('u.firstName', 'ASC')
+            ->setParameter('ownerRole', GroupMemberRole::Owner->value)
+            ->setParameter('moderatorRole', GroupMemberRole::Moderator->value)
             ->getQuery()
             ->getResult();
     }

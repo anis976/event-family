@@ -45,51 +45,134 @@ final class GroupOwnerTransferService
      */
     public function bindOwnerOnGroupCreate(Group $group, User $owner): void
     {
-        $this->assertUserCanBecomeOwner($owner, $group);
+        $this->assertUserCanBecomeOwner($owner, $group->getId());
 
         $group->setOwner($owner);
 
-        $membership = $this->groupMemberRepository->findOneByUserAndGroup($owner, $group);
-        if (null === $membership) {
-            $membership = (new GroupMember())
-                ->setUser($owner)
-                ->setGroup($group);
-            $group->addGroupMember($membership);
-            $this->entityManager->persist($membership);
-        }
-
+        $membership = $this->resolveOrCreateMembership($group, $owner, true);
         $membership->setRole(GroupMemberRole::Owner);
         $this->demoteOtherOwnerRoles($group, $owner);
     }
 
     /**
+     * Réassignation depuis l'admin : le nouveau chef est ajouté au groupe s'il n'y est pas encore.
+     *
      * @throws \DomainException
      */
-    public function transferOwnership(Group $group, User $newOwner, ?User $previousOwner): void
+    public function assignOwnerFromAdmin(Group $group, User $newOwner, ?User $previousOwner): void
     {
+        $this->releaseOtherOwnedGroups($newOwner, $group->getId());
+
+        $this->transferOwnership(
+            $group,
+            $newOwner,
+            $previousOwner,
+            GroupMemberRole::Member,
+            ensureMembership: true,
+        );
+    }
+
+    /**
+     * Création / réassignation admin : libère les autres groupes dirigés par le même compte.
+     *
+     * @throws \DomainException
+     */
+    public function bindOwnerOnGroupCreateFromAdmin(Group $group, User $owner): void
+    {
+        $this->releaseOtherOwnedGroups($owner, $group->getId());
+        $this->bindOwnerOnGroupCreate($group, $owner);
+    }
+
+    /**
+     * @throws \DomainException
+     */
+    public function transferOwnership(
+        Group $group,
+        User $newOwner,
+        ?User $previousOwner,
+        GroupMemberRole $previousOwnerNewRole = GroupMemberRole::Member,
+        bool $ensureMembership = false,
+    ): void {
         if (null !== $previousOwner && $previousOwner->getId() === $newOwner->getId()) {
             return;
         }
 
-        if (null === $this->groupMemberRepository->findOneByUserAndGroup($newOwner, $group)) {
-            throw new \DomainException('admin.crud.group.error_owner_not_member');
+        if ($this->groupAccess->isBannedInGroup($newOwner, $group)) {
+            throw new \DomainException('admin.crud.group.error_owner_banned');
         }
 
-        $this->assertUserCanBecomeOwner($newOwner, $group);
+        $this->assertUserCanBecomeOwner($newOwner, $group->getId());
 
         $group->setOwner($newOwner);
 
-        $newMembership = $this->groupMemberRepository->findOneByUserAndGroup($newOwner, $group);
-        $newMembership?->setRole(GroupMemberRole::Owner);
+        $newMembership = $this->resolveOrCreateMembership($group, $newOwner, $ensureMembership);
+        $newMembership->setRole(GroupMemberRole::Owner);
 
         if (null !== $previousOwner && $previousOwner->getId() !== $newOwner->getId()) {
             $previousMembership = $this->groupMemberRepository->findOneByUserAndGroup($previousOwner, $group);
             if (null !== $previousMembership && GroupMemberRole::Owner === $previousMembership->getRole()) {
-                $previousMembership->setRole(GroupMemberRole::Member);
+                if (GroupMemberRole::Moderator === $previousOwnerNewRole) {
+                    $this->demoteOtherModerators($group, $previousOwner);
+                    $previousMembership->setRole(GroupMemberRole::Moderator);
+                } else {
+                    $previousMembership->setRole(GroupMemberRole::Member);
+                }
             }
         }
 
         $this->demoteOtherOwnerRoles($group, $newOwner);
+    }
+
+    /**
+     * Transfert volontaire par le chef actuel (confirmation mot de passe côté contrôleur).
+     *
+     * @throws \DomainException clés flash.group.*
+     */
+    public function transferOwnershipByCurrentOwner(
+        User $currentOwner,
+        Group $group,
+        User $newOwner,
+        bool $becomeModeratorAfterTransfer,
+    ): void {
+        if (!$this->groupAccess->isOwner($currentOwner, $group)) {
+            throw new \DomainException('flash.group.owner_only_transfer');
+        }
+
+        if ($currentOwner->getId() === $newOwner->getId()) {
+            throw new \DomainException('flash.group.transfer_self');
+        }
+
+        try {
+            $this->transferOwnership(
+                $group,
+                $newOwner,
+                $currentOwner,
+                $becomeModeratorAfterTransfer ? GroupMemberRole::Moderator : GroupMemberRole::Member,
+            );
+        } catch (\DomainException $exception) {
+            throw new \DomainException($this->mapOwnershipErrorToFlashKey($exception->getMessage()));
+        }
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Dissout un groupe dont l'utilisateur est le seul membre (ex. avant suppression de compte).
+     *
+     * @throws \DomainException
+     */
+    public function dissolveGroupAsOwner(User $owner, Group $group): void
+    {
+        if (!$this->groupAccess->isOwner($owner, $group)) {
+            throw new \DomainException('flash.group.owner_only_dissolve');
+        }
+
+        if ($this->groupMemberRepository->countOtherMembersInGroup($group, $owner) > 0) {
+            throw new \DomainException('flash.group.dissolve_requires_sole_member');
+        }
+
+        $this->entityManager->remove($group);
+        $this->entityManager->flush();
     }
 
     public function clearOwnership(Group $group, ?User $previousOwner): void
@@ -111,29 +194,85 @@ final class GroupOwnerTransferService
     }
 
     /**
+     * Vérifie qu'un utilisateur peut devenir chef (un seul groupe par compte).
+     *
      * @throws \DomainException
      */
-    private function assertUserCanBecomeOwner(User $user, Group $group): void
+    public function assertNewOwnerCanLeadGroup(User $user, ?int $forGroupId): void
+    {
+        $this->assertUserCanBecomeOwner($user, $forGroupId);
+    }
+
+    /**
+     * @throws \DomainException
+     */
+    private function assertUserCanBecomeOwner(User $user, ?int $forGroupId): void
     {
         if (null !== $user->getDeletedAt()) {
             throw new \DomainException('admin.crud.group.error_owner_deleted');
         }
 
-        if ($this->groupRepository->countOwnedByUser($user) > 0 && !$this->groupAccess->isOwner($user, $group)) {
+        if ($this->groupRepository->countOwnedByUserExcludingGroup($user, $forGroupId) > 0) {
             throw new \DomainException('admin.crud.group.error_owner_already_leads');
+        }
+    }
+
+    private function mapOwnershipErrorToFlashKey(string $message): string
+    {
+        return match ($message) {
+            'admin.crud.group.error_owner_not_member' => 'flash.group.transfer_target_not_member',
+            'admin.crud.group.error_owner_already_leads' => 'flash.group.transfer_target_already_owner',
+            'admin.crud.group.error_owner_deleted' => 'flash.group.transfer_target_deleted',
+            'admin.crud.group.error_owner_banned' => 'flash.group.transfer_target_banned',
+            default => $message,
+        };
+    }
+
+    private function demoteOtherModerators(Group $group, User $exceptUser): void
+    {
+        foreach ($this->groupMemberRepository->findModeratorsInGroupExcluding($group, $exceptUser) as $member) {
+            $member->setRole(GroupMemberRole::Member);
         }
     }
 
     private function demoteOtherOwnerRoles(Group $group, User $newOwner): void
     {
-        foreach ($group->getGroupMembers() as $member) {
-            if ($member->getUser()->getId() === $newOwner->getId()) {
+        foreach ($this->groupMemberRepository->findOwnerMembersInGroupExcluding($group, $newOwner) as $member) {
+            $member->setRole(GroupMemberRole::Member);
+        }
+    }
+
+    private function releaseOtherOwnedGroups(User $user, ?int $exceptGroupId): void
+    {
+        foreach ($this->groupRepository->findOwnedByUser($user) as $otherGroup) {
+            if (null !== $exceptGroupId && $otherGroup->getId() === $exceptGroupId) {
                 continue;
             }
 
-            if (GroupMemberRole::Owner === $member->getRole()) {
-                $member->setRole(GroupMemberRole::Member);
-            }
+            $this->clearOwnership($otherGroup, $user);
         }
+    }
+
+    /**
+     * @throws \DomainException
+     */
+    private function resolveOrCreateMembership(Group $group, User $user, bool $createIfMissing): GroupMember
+    {
+        $membership = $this->groupMemberRepository->findOneByUserAndGroup($user, $group);
+        if (null !== $membership) {
+            return $membership;
+        }
+
+        if (!$createIfMissing) {
+            throw new \DomainException('admin.crud.group.error_owner_not_member');
+        }
+
+        $membership = (new GroupMember())
+            ->setUser($user)
+            ->setGroup($group);
+        $group->addGroupMember($membership);
+        $this->entityManager->persist($membership);
+
+        return $membership;
     }
 }

@@ -1,0 +1,21 @@
+<div class="form-fieldset ef-admin-group-members-panel mb-4">
+    <fieldset>
+        <div class="form-fieldset-header">
+            <div class="form-fieldset-title">
+                <span class="not-collapsible form-fieldset-title-content">
+                    {{ ef_group_members_title|trans }}
+                </span>
+            </div>
+            {% if ef_group_members_hint is defined and ef_group_members_hint %}
+                <div class="form-fieldset-help">{{ ef_group_members_hint|trans|raw }}</div>
+            {% endif %}
+        </div>
+        <div class="form-fieldset-body without-header">
+            <div class="row">
+                <div class="col-12">
+                    {{ ef_group_members_html|raw }}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>

@@ -22,12 +22,38 @@ class GroupRepository extends ServiceEntityRepository
 
     public function countOwnedByUser(User $user): int
     {
-        return (int) $this->createQueryBuilder('g')
+        return $this->countOwnedByUserExcludingGroup($user, null);
+    }
+
+    public function countOwnedByUserExcludingGroup(User $user, ?int $excludeGroupId): int
+    {
+        $qb = $this->createQueryBuilder('g')
             ->select('COUNT(g.id)')
             ->andWhere('g.owner = :user')
-            ->setParameter('user', $user)
+            ->setParameter('user', $user);
+
+        if (null !== $excludeGroupId) {
+            $qb->andWhere('g.id != :excludeGroupId')
+                ->setParameter('excludeGroupId', $excludeGroupId);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    public function findOwnerIdForGroup(int $groupId): ?int
+    {
+        $ownerId = $this->createQueryBuilder('g')
+            ->select('IDENTITY(g.owner)')
+            ->andWhere('g.id = :id')
+            ->setParameter('id', $groupId)
             ->getQuery()
             ->getSingleScalarResult();
+
+        if (null === $ownerId || '' === $ownerId || false === $ownerId) {
+            return null;
+        }
+
+        return (int) $ownerId;
     }
 
     /**
@@ -55,6 +81,7 @@ class GroupRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('g')
             ->andWhere('g.owner = :user')
+            ->setParameter('user', $user)
             ->orderBy('g.name', 'ASC')
             ->getQuery()
             ->getResult();

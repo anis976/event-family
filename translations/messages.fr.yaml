@@ -41,7 +41,7 @@ profile:
   account_deletion_invalid_token: "Ce lien de confirmation est invalide, expiré ou déjà utilisé."
   account_deletion_done: "Ton compte a été supprimé. À bientôt."
   account_deletion_done_no_notify: "Ton compte a été supprimé, mais l'e-mail de notification n'a pas pu être envoyé."
-  account_deletion_blocked_groups: "Tu ne peux pas supprimer ton compte tant que tu es chef d'un groupe. La gestion des successeurs arrive avec le module Groupes."
+  account_deletion_blocked_groups: "Tu ne peux pas supprimer ton compte tant que tu es chef d'un groupe. Transfère d'abord la responsabilité depuis la page de suppression."
 
 messages:
   direct_coming_soon: "Message validé. L'envoi sera activé dès que la messagerie sera branchée."
@@ -262,6 +262,7 @@ ui:
       view_profile: Voir profil
       remove_moderator: Retirer modérateur
       make_moderator: Passer modérateur
+      transfer_ownership: Nommer chef du groupe
       ban: Bannir
       kick: Exclure
       send_message: Envoyer un message
@@ -277,6 +278,11 @@ ui:
       ban_reason_label: Motif du bannissement
       ban_reason_placeholder: Décris clairement la raison du bannissement…
       ban_confirm: Confirmer le bannissement
+    transfer:
+      modal_title: Transférer le rôle de chef à %name%
+      modal_hint: Cette action est irréversible. Confirme avec ton mot de passe pour prouver que c'est bien toi.
+      become_moderator: Je souhaite devenir modérateur du groupe (le modérateur actuel perdra ce titre)
+      confirm: Confirmer le transfert
     manage_requests:
       page_title: RapproFam — Demandes — %name%
       page_heading: Demandes d'adhésion
@@ -669,11 +675,19 @@ ui:
       submit: Recevoir l'e-mail de confirmation
     delete_blocked:
       page_title: RapproFam — Suppression impossible
-      heading: Suppression temporairement impossible
+      heading: Avant de supprimer ton compte
       intro: 'Tu es propriétaire d''au moins un groupe familial. Avant de supprimer ton compte, il faudra soit :'
+      intro_active: 'Tu es chef d''au moins un groupe. Transfère la responsabilité ou dissous ton groupe, puis tu pourras poursuivre la suppression de ton compte.'
       option_successor: désigner un successeur (chef de groupe),
       option_delete: supprimer le groupe sans successeur (le modérateur prendra le relais automatiquement).
-      coming_soon: Cette étape sera disponible avec le module Groupes (prochainement).
+      successor_label: Nouveau chef du groupe
+      successor_placeholder: Choisir un membre
+      successor_required: Choisis un successeur pour ce groupe.
+      sole_member_hint: Tu es le seul membre de ce groupe. Tu peux le dissoudre pour libérer ton compte.
+      dissolve_group: Je confirme vouloir dissoudre ce groupe
+      dissolve_required: Tu dois confirmer la dissolution du groupe.
+      submit: Valider et continuer
+      succession_done: La responsabilité de tes groupes a été transférée. Tu peux maintenant supprimer ton compte.
       back: Retour à mon espace
     form:
       validation:
@@ -954,6 +968,16 @@ flash:
     self_action: Tu ne peux pas effectuer cette action sur ton propre compte.
     owner_cannot_ban: Le chef du groupe ne peut pas être banni.
     moderator_ban_member_only: Un modérateur ne peut bannir que des membres simples.
+    owner_only_transfer: Seul le chef du groupe peut transférer son rôle.
+    transfer_self: Tu ne peux pas te nommer toi-même chef.
+    transfer_invalid: Le transfert n'a pas pu être validé. Vérifie ton mot de passe.
+    transfer_target_not_member: Le successeur doit être membre du groupe.
+    transfer_target_already_owner: Ce membre est déjà chef d'un autre groupe. Un compte ne peut diriger qu'un seul groupe.
+    transfer_target_deleted: Ce membre n'est plus disponible.
+    transfer_target_banned: Un membre banni ne peut pas devenir chef du groupe.
+    ownership_transferred: Le rôle de chef a été transféré à %name%.
+    owner_only_dissolve: Seul le chef du groupe peut dissoudre le groupe.
+    dissolve_requires_sole_member: Tu ne peux dissoudre le groupe que si tu en es le seul membre.
   message:
     group_not_found: Groupe introuvable.
     group_inaccessible: Groupe introuvable ou inaccessible.
@@ -1233,10 +1257,32 @@ admin:
       field_system_notice_updated: Message système modifié le
       no_owner: Groupe sans chef
       help_owner: Un utilisateur ne peut être responsable que d'un seul groupe.
-      help_owner_reassign: "Réassignation : privilégier le modérateur du groupe, sinon un autre membre. Laisser vide = groupe sans chef. Le nouveau responsable doit déjà être membre du groupe."
+      help_owner_reassign: "Réassignation : privilégier le modérateur du groupe, sinon un autre membre. Laisser vide = groupe sans chef. Si l'utilisateur n'est pas membre, il sera ajouté. S'il est déjà chef d'un autre groupe, il sera retiré de cette responsabilité automatiquement."
       error_owner_not_member: Le responsable doit être membre du groupe.
-      error_owner_already_leads: Cet utilisateur est déjà responsable d'un autre groupe.
+      error_owner_already_leads: Cet utilisateur est déjà chef d'un autre groupe. Un compte ne peut diriger qu'un seul groupe.
       error_owner_deleted: Impossible de nommer un compte supprimé comme responsable.
+      error_owner_banned: Un membre banni ne peut pas être nommé responsable.
+      fieldset_members: Membres du groupe
+      field_members_table: Liste des membres
+      members_hint: Consulte cette liste avant de modifier le responsable. Tu peux nommer ou retirer le modérateur directement dans le tableau, ou modifier le responsable via le formulaire ci-dessous.
+      members_empty: Aucun membre enregistré pour ce groupe.
+      members_column_user: Membre
+      members_column_role: Rôle dans le groupe
+      members_column_joined: Membre depuis
+      members_column_actions: Modération
+      action_make_moderator: Nommer modérateur
+      action_remove_moderator: Retirer modérateur
+      moderator_assigned: '%name% est maintenant modérateur du groupe.'
+      moderator_removed: Le rôle modérateur a été retiré à %name%.
+      error_moderator_not_member: Ce modérateur doit être membre du groupe.
+      error_moderator_is_owner: Le chef du groupe ne peut pas être modérateur.
+      error_moderator_banned: Un membre banni ne peut pas être modérateur.
+      error_moderator_wrong_group: Ce membre n'appartient pas à ce groupe.
+      error_moderator_not_moderator: Ce membre n'est pas modérateur.
+      member_role_owner: Chef
+      member_role_moderator: Modérateur
+      member_role_member: Membre
+      member_role_mismatch: Responsable du groupe en base, mais rôle membre incohérent
     event:
       entity_singular: événement
       entity_plural: événements

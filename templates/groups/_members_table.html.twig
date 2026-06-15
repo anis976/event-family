@@ -58,6 +58,16 @@
 
                                         {% if isOwner and not is_self and not is_target_owner %}
                                             <li>
+                                                <button
+                                                    type="button"
+                                                    class="dropdown-item"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#transfer-owner-modal-{{ member.id }}"
+                                                >
+                                                    <i class="bi bi-star me-2"></i>{{ 'ui.groups.members.transfer_ownership'|trans }}
+                                                </button>
+                                            </li>
+                                            <li>
                                                 <form action="{{ path('app_groups_toggle_modo', { memberId: member.id }) }}" method="POST" data-turbo="false">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('toggle-modo' ~ member.id) }}">
                                                     <button type="submit" class="dropdown-item">
@@ -201,3 +211,50 @@
         </div>
     {% endif %}
 {% endfor %}
+
+{% if isOwner %}
+    {% for member in groupMembers %}
+        {% set is_self = member.user.id == app.user.id %}
+        {% set is_target_owner = member.role.value == 'OWNER' %}
+        {% if not is_self and not is_target_owner %}
+            <div class="modal fade ef-GroupShow__transfer-modal" id="transfer-owner-modal-{{ member.id }}" tabindex="-1" aria-labelledby="transfer-owner-modal-label-{{ member.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow">
+                        <form action="{{ path('app_groups_transfer_ownership', { memberId: member.id }) }}" method="POST" data-turbo="false">
+                            <input type="hidden" name="_token" value="{{ csrf_token('transfer-owner' ~ member.id) }}">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title" id="transfer-owner-modal-label-{{ member.id }}">
+                                    {{ 'ui.groups.transfer.modal_title'|trans({'%name%': member.user.firstName ~ ' ' ~ member.user.lastName}) }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-muted small mb-3">{{ 'ui.groups.transfer.modal_hint'|trans }}</p>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" name="transfer_ownership[becomeModerator]" value="1" id="transfer-become-modo-{{ member.id }}">
+                                    <label class="form-check-label" for="transfer-become-modo-{{ member.id }}">
+                                        {{ 'ui.groups.transfer.become_moderator'|trans }}
+                                    </label>
+                                </div>
+                                <label for="transfer-password-{{ member.id }}" class="form-label fw-medium">{{ 'ui.profile.form.label.current_password'|trans }} <span class="text-danger">*</span></label>
+                                <input
+                                    type="password"
+                                    id="transfer-password-{{ member.id }}"
+                                    name="transfer_ownership[currentPassword]"
+                                    class="form-control ef-input"
+                                    autocomplete="current-password"
+                                    required
+                                    placeholder="{{ 'ui.auth.placeholder.password_current'|trans }}"
+                                >
+                            </div>
+                            <div class="modal-footer border-0">
+                                <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
+                                <button type="submit" class="btn btn-danger">{{ 'ui.groups.transfer.confirm'|trans }}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}

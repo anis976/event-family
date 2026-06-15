@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Group;
 use App\Entity\GroupMember;
 use App\Entity\User;
 use App\Entity\UserBan;
@@ -50,6 +51,56 @@ final class GroupMemberModerationService
         }
 
         $targetMember->setRole(GroupMemberRole::Moderator);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Désigne le modérateur depuis l'admin (un seul modérateur : l'ancien perd le titre).
+     *
+     * @throws \DomainException
+     */
+    public function assignModeratorFromAdmin(Group $group, User $newModerator): void
+    {
+        $membership = $this->groupMemberRepository->findOneByUserAndGroup($newModerator, $group);
+        if (null === $membership) {
+            throw new \DomainException('admin.crud.group.error_moderator_not_member');
+        }
+
+        if (GroupMemberRole::Owner === $membership->getRole()) {
+            throw new \DomainException('admin.crud.group.error_moderator_is_owner');
+        }
+
+        if ($this->groupAccess->isBannedInGroup($newModerator, $group)) {
+            throw new \DomainException('admin.crud.group.error_moderator_banned');
+        }
+
+        foreach ($this->groupMemberRepository->findModeratorsInGroupExcluding($group, $newModerator) as $moderator) {
+            $moderator->setRole(GroupMemberRole::Member);
+        }
+
+        if (GroupMemberRole::Moderator !== $membership->getRole()) {
+            $membership->setRole(GroupMemberRole::Moderator);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * Retire le rôle modérateur (admin).
+     *
+     * @throws \DomainException
+     */
+    public function clearModeratorFromAdmin(Group $group, GroupMember $targetMember): void
+    {
+        if ($targetMember->getGroup()->getId() !== $group->getId()) {
+            throw new \DomainException('admin.crud.group.error_moderator_wrong_group');
+        }
+
+        if (GroupMemberRole::Moderator !== $targetMember->getRole()) {
+            throw new \DomainException('admin.crud.group.error_moderator_not_moderator');
+        }
+
+        $targetMember->setRole(GroupMemberRole::Member);
         $this->entityManager->flush();
     }
 
@@ -133,7 +184,7 @@ final class GroupMemberModerationService
         }
     }
 
-    private function assertStaffCanActOnTargetRole(User $actor, \App\Entity\Group $group, GroupMember $targetMember): void
+    private function assertStaffCanActOnTargetRole(User $actor, Group $group, GroupMember $targetMember): void
     {
         if (GroupMemberRole::Owner === $targetMember->getRole()) {
             throw new \DomainException('flash.group.owner_cannot_ban');

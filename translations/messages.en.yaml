@@ -40,7 +40,7 @@ profile:
   account_deletion_invalid_token: "This confirmation link is invalid, expired, or already used."
   account_deletion_done: "Your account has been deleted. See you soon."
   account_deletion_done_no_notify: "Your account has been deleted, but the notification email could not be sent."
-  account_deletion_blocked_groups: "You cannot delete your account while you are a group owner. Successor management will arrive with the Groups module."
+  account_deletion_blocked_groups: "You cannot delete your account while you are a group owner. Transfer responsibility first from the deletion page."
 
 messages:
   direct_coming_soon: "Message validated. Sending will be enabled once messaging is connected."
@@ -261,6 +261,7 @@ ui:
       view_profile: View profile
       remove_moderator: Remove moderator
       make_moderator: Make moderator
+      transfer_ownership: Make group owner
       ban: Ban
       kick: Remove from group
       send_message: Send a message
@@ -276,6 +277,11 @@ ui:
       ban_reason_label: Reason for ban
       ban_reason_placeholder: Clearly describe the reason for the ban…
       ban_confirm: Confirm ban
+    transfer:
+      modal_title: Transfer ownership to %name%
+      modal_hint: This action cannot be undone. Confirm with your password to prove it's really you.
+      become_moderator: I want to become group moderator (the current moderator will lose that title)
+      confirm: Confirm transfer
     manage_requests:
       page_title: RapproFam — Requests — %name%
       page_heading: Join requests
@@ -668,11 +674,19 @@ ui:
       submit: Receive confirmation email
     delete_blocked:
       page_title: RapproFam — Deletion unavailable
-      heading: Account deletion temporarily unavailable
+      heading: Before deleting your account
       intro: 'You own at least one family group. Before deleting your account, you must either:'
+      intro_active: 'You are the owner of at least one group. Transfer responsibility or dissolve your group, then you can continue deleting your account.'
       option_successor: designate a successor (group owner),
       option_delete: delete the group with no successor (a moderator will take over automatically).
-      coming_soon: This step will be available with the Groups module (coming soon).
+      successor_label: New group owner
+      successor_placeholder: Choose a member
+      successor_required: Choose a successor for this group.
+      sole_member_hint: You are the only member of this group. You can dissolve it to free your account.
+      dissolve_group: I confirm I want to dissolve this group
+      dissolve_required: You must confirm dissolving the group.
+      submit: Confirm and continue
+      succession_done: Your group responsibilities have been transferred. You can now delete your account.
       back: Back to my space
     form:
       validation:
@@ -953,6 +967,16 @@ flash:
     self_action: You cannot perform this action on your own account.
     owner_cannot_ban: The group owner cannot be banned.
     moderator_ban_member_only: A moderator can only ban regular members.
+    owner_only_transfer: Only the group owner can transfer their role.
+    transfer_self: You cannot make yourself owner.
+    transfer_invalid: The transfer could not be validated. Check your password.
+    transfer_target_not_member: The successor must be a member of the group.
+    transfer_target_already_owner: This member already owns another group. One account can only lead one group.
+    transfer_target_deleted: This member is no longer available.
+    transfer_target_banned: A banned member cannot become group owner.
+    ownership_transferred: Ownership has been transferred to %name%.
+    owner_only_dissolve: Only the group owner can dissolve the group.
+    dissolve_requires_sole_member: You can only dissolve the group if you are its only member.
   message:
     group_not_found: Group not found.
     group_inaccessible: Group not found or inaccessible.
@@ -1232,10 +1256,32 @@ admin:
       field_system_notice_updated: System message updated at
       no_owner: Group without owner
       help_owner: A user can only be owner of one group.
-      help_owner_reassign: 'Reassignment: prefer the group moderator, otherwise another member. Leave empty = group without owner. The new owner must already be a group member.'
+      help_owner_reassign: 'Reassignment: prefer the group moderator, otherwise another member. Leave empty = group without owner. Non-members are added automatically. If the user already owns another group, they are released from that role first.'
       error_owner_not_member: The owner must be a member of the group.
-      error_owner_already_leads: This user already owns another group.
+      error_owner_already_leads: This user already owns another group. One account can only lead one group.
       error_owner_deleted: A deleted account cannot be assigned as owner.
+      error_owner_banned: A banned member cannot be assigned as owner.
+      fieldset_members: Group members
+      field_members_table: Member list
+      members_hint: Review this list before changing the owner. You can assign or remove the moderator in the table, or change the owner in the form below.
+      members_empty: No members registered for this group.
+      members_column_user: Member
+      members_column_role: Role in group
+      members_column_joined: Member since
+      members_column_actions: Moderation
+      action_make_moderator: Make moderator
+      action_remove_moderator: Remove moderator
+      moderator_assigned: '%name% is now group moderator.'
+      moderator_removed: Moderator role removed from %name%.
+      error_moderator_not_member: The moderator must be a group member.
+      error_moderator_is_owner: The group owner cannot be moderator.
+      error_moderator_banned: A banned member cannot be moderator.
+      error_moderator_wrong_group: This member does not belong to this group.
+      error_moderator_not_moderator: This member is not a moderator.
+      member_role_owner: Owner
+      member_role_moderator: Moderator
+      member_role_member: Member
+      member_role_mismatch: Group owner in database but inconsistent member role
     event:
       entity_singular: event
       entity_plural: events

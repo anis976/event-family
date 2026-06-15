@@ -1,0 +1,74 @@
+{% if members is empty %}
+    <p class="text-muted mb-0">{{ 'admin.crud.group.members_empty'|trans }}</p>
+{% else %}
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-0 ef-admin-group-members">
+            <thead>
+                <tr>
+                    <th scope="col">{{ 'admin.crud.group.members_column_user'|trans }}</th>
+                    <th scope="col">{{ 'admin.crud.group.members_column_role'|trans }}</th>
+                    <th scope="col">{{ 'admin.crud.group.members_column_joined'|trans }}</th>
+                    {% if can_manage_moderator|default(false) %}
+                        <th scope="col" class="text-end">{{ 'admin.crud.group.members_column_actions'|trans }}</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                    {% set user = member.user %}
+                    {% set is_group_owner = owner_id is not null and user.id == owner_id %}
+                    <tr>
+                        <td>
+                            <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\UserCrudController').setAction('detail').setEntityId(user.id).generateUrl() }}">
+                                {{ user }}
+                            </a>
+                            {% if user.pseudo %}
+                                <span class="text-muted small d-block">@{{ user.pseudo }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if member.role.value == 'OWNER' %}
+                                <span class="badge text-bg-warning">{{ 'admin.crud.group.member_role_owner'|trans }}</span>
+                            {% elseif member.role.value == 'MODERATOR' %}
+                                <span class="badge text-bg-info">{{ 'admin.crud.group.member_role_moderator'|trans }}</span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">{{ 'admin.crud.group.member_role_member'|trans }}</span>
+                            {% endif %}
+                            {% if is_group_owner and member.role.value != 'OWNER' %}
+                                <span class="badge text-bg-danger ms-1" title="{{ 'admin.crud.group.member_role_mismatch'|trans }}">!</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-nowrap">
+                            {% if member.joinedAt %}
+                                {{ member.joinedAt|date('d/m/Y') }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        {% if can_manage_moderator|default(false) %}
+                            <td class="text-end text-nowrap">
+                                {% if member.role.value == 'MODERATOR' %}
+                                    <form action="{{ path('app_admin_groups_clear_moderator', { groupId: group_id, memberId: member.id }) }}" method="post" class="d-inline" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin-clear-moderator' ~ member.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                            {{ 'admin.crud.group.action_remove_moderator'|trans }}
+                                        </button>
+                                    </form>
+                                {% elseif member.role.value == 'MEMBER' and not is_group_owner %}
+                                    <form action="{{ path('app_admin_groups_set_moderator', { groupId: group_id, memberId: member.id }) }}" method="post" class="d-inline" data-turbo="false">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('admin-set-moderator' ~ member.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                            {{ 'admin.crud.group.action_make_moderator'|trans }}
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted small">—</span>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endif %}

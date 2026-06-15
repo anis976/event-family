@@ -1,0 +1,8 @@
+{% extends '@!EasyAdmin/crud/edit.html.twig' %}
+
+{% block edit_form %}
+    {% if ef_group_members_html is defined %}
+        {% include 'admin/crud/group/_members_panel.html.twig' %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

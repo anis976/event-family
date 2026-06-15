@@ -8,23 +8,39 @@
     <section class="ef-profile-section py-3 py-lg-5">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-12 col-md-8 col-lg-6">
+                <div class="col-12 col-md-10 col-lg-8">
                     <div class="card ef-profile-card border-0 shadow-sm">
                         <div class="card-body p-4 p-md-5">
                             <h1 class="h5 text-danger fw-bold mb-3">{{ 'ui.profile.delete_blocked.heading'|trans }}</h1>
-                            <p class="mb-3">
-                                {{ 'ui.profile.delete_blocked.intro'|trans }}
-                            </p>
-                            <ul class="small text-muted mb-4">
-                                <li>{{ 'ui.profile.delete_blocked.option_successor'|trans }}</li>
-                                <li>{{ 'ui.profile.delete_blocked.option_delete'|trans }}</li>
-                            </ul>
-                            <p class="small text-muted mb-4">
-                                {{ 'ui.profile.delete_blocked.coming_soon'|trans }}
-                            </p>
-                            <a href="{{ path('app_profile') }}" class="btn btn-save-profile w-100 py-2 fw-bold">
-                                {{ 'ui.profile.delete_blocked.back'|trans }}
-                            </a>
+                            <p class="mb-4">{{ 'ui.profile.delete_blocked.intro_active'|trans }}</p>
+
+                            {{ form_start(successionForm) }}
+                                {% for config in groupConfigs %}
+                                    {% set group = config.group %}
+                                    <div class="border rounded-3 p-3 mb-4 bg-light">
+                                        <h2 class="h6 fw-bold mb-3">{{ group.name }} <span class="text-muted fw-normal">— {{ group.familyName }}</span></h2>
+
+                                        {% if config.hasOtherMembers %}
+                                            {{ form_row(successionForm['successor_' ~ group.id]) }}
+                                            {{ form_row(successionForm['become_moderator_' ~ group.id]) }}
+                                        {% else %}
+                                            <p class="small text-muted mb-3">{{ 'ui.profile.delete_blocked.sole_member_hint'|trans }}</p>
+                                            {{ form_row(successionForm['dissolve_' ~ group.id]) }}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+
+                                {{ form_row(successionForm.currentPassword) }}
+
+                                <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+                                    <button type="submit" class="btn btn-save-profile flex-grow-1 py-2 fw-bold">
+                                        {{ 'ui.profile.delete_blocked.submit'|trans }}
+                                    </button>
+                                    <a href="{{ path('app_profile') }}" class="btn ef-groups-form__btn-cancel flex-grow-1 py-2 text-center">
+                                        {{ 'ui.profile.delete_blocked.back'|trans }}
+                                    </a>
+                                </div>
+                            {{ form_end(successionForm) }}
                         </div>
                     </div>
                 </div>
