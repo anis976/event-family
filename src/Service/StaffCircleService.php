@@ -29,6 +29,11 @@ final class StaffCircleService
     ) {
     }
 
+    public function transCommandMessage(string $id, array $parameters = []): string
+    {
+        return $this->translator->trans($id, $parameters);
+    }
+
     public function isStaffCircle(Group $group): bool
     {
         return $group->isStaffCircle();

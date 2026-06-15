@@ -57,16 +57,17 @@ fi
 
 echo "==> Env + migrations"
 composer dump-env prod
-# Reconstruire le conteneur Symfony avant migrations / commandes metier (o2switch sans npm ne vide pas le cache avant).
-php bin/console cache:clear --env=prod --no-warmup
-
+rm -rf var/cache/prod
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
+php bin/console cache:warmup --env=prod
 
 echo "==> Cercle des responsables (chefs / modos existants)"
+trap - ERR
 set +e
 php bin/console ef:staff-circle:sync --no-interaction --no-notify --env=prod
 SYNC_EXIT=$?
 set -e
+trap 'on_error ${LINENO}' ERR
 if [ "$SYNC_EXIT" -ne 0 ]; then
     echo "ATTENTION: ef:staff-circle:sync a echoue (code ${SYNC_EXIT})."
     if [ -f var/log/prod.log ]; then

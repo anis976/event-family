@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[AsCommand(
     name: 'ef:staff-circle:sync',
@@ -21,7 +20,6 @@ final class SyncStaffCircleCommand extends Command
 {
     public function __construct(
         private readonly StaffCircleService $staffCircleService,
-        private readonly TranslatorInterface $translator,
     ) {
         parent::__construct();
     }
@@ -73,6 +71,6 @@ final class SyncStaffCircleCommand extends Command
 
     private function trans(string $id, array $parameters = []): string
     {
-        return $this->translator->trans($id, $parameters);
+        return $this->staffCircleService->transCommandMessage($id, $parameters);
     }
 }
