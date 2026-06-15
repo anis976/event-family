@@ -78,6 +78,11 @@ final class GroupCrudController extends AbstractAdminCrudController
 
     public function edit(AdminContext $context): KeyValueStore|Response
     {
+        $entity = $context->getEntity()->getInstance();
+        if ($entity instanceof Group) {
+            $this->applyStaffCircleTranslatedLabels($entity);
+        }
+
         try {
             return parent::edit($context);
         } catch (\DomainException $exception) {
@@ -119,7 +124,14 @@ final class GroupCrudController extends AbstractAdminCrudController
                 return (string) $value;
             });
         yield TextareaField::new('description', $this->t('admin.crud.group.field_description'))
-            ->hideOnIndex();
+            ->hideOnIndex()
+            ->formatValue(function (mixed $value, mixed $entity): string {
+                if ($entity instanceof Group && $entity->isStaffCircle()) {
+                    return $this->t('staff_circle.default_description');
+                }
+
+                return (string) ($value ?? '');
+            });
 
         yield FormField::addFieldset($this->t('admin.crud.group.fieldset_owners'));
         yield $this->entityAssociation('owner', $this->t('admin.crud.group.field_owner'))
@@ -200,6 +212,11 @@ final class GroupCrudController extends AbstractAdminCrudController
                 $entityInstance->setSystemNoticeContent($originalNotice['systemNoticeContent']);
                 $entityInstance->setSystemNoticeUpdatedAt($originalNotice['systemNoticeUpdatedAt']);
             }
+        }
+
+        if ($entityInstance->isStaffCircle()) {
+            $originalData = $entityManager->getUnitOfWork()->getOriginalEntityData($entityInstance);
+            $entityInstance->setDescription($originalData['description'] ?? null);
         }
 
         try {
@@ -323,5 +340,14 @@ final class GroupCrudController extends AbstractAdminCrudController
             'users' => $users,
             'user_status_rules' => $userStatusRules,
         ]);
+    }
+
+    private function applyStaffCircleTranslatedLabels(Group $group): void
+    {
+        if (!$group->isStaffCircle()) {
+            return;
+        }
+
+        $group->setDescription($this->t('staff_circle.default_description'));
     }
 }
