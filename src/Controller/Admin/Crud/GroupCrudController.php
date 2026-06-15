@@ -105,7 +105,7 @@ final class GroupCrudController extends AbstractAdminCrudController
         yield TextField::new('name', $this->t('admin.crud.group.field_name'))
             ->formatValue(function (mixed $value, mixed $entity): string {
                 if ($entity instanceof Group && $entity->isStaffCircle()) {
-                    return $this->trans('ui.groups.staff_circle.group_name');
+                    return $this->t('ui.groups.staff_circle.group_name');
                 }
 
                 return (string) $value;
@@ -113,7 +113,7 @@ final class GroupCrudController extends AbstractAdminCrudController
         yield TextField::new('familyName', $this->t('admin.crud.group.field_family_name'))
             ->formatValue(function (mixed $value, mixed $entity): string {
                 if ($entity instanceof Group && $entity->isStaffCircle()) {
-                    return $this->trans('ui.groups.staff_circle.group_family');
+                    return $this->t('ui.groups.staff_circle.group_family');
                 }
 
                 return (string) $value;
