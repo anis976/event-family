@@ -14,6 +14,7 @@ use App\Enum\PlatformNoticeVariant;
 use App\Repository\GroupMemberRepository;
 use App\Repository\GroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class StaffCircleService
@@ -24,6 +25,7 @@ final class StaffCircleService
         private readonly MessageService $messageService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -57,35 +59,57 @@ final class StaffCircleService
     }
 
     /**
-     * Synchronise tous les chefs et modérateurs des groupes classiques.
+     * @return array{added: int, removed: int, eligible: int, current: int}
      */
-    public function syncAllMembers(): int
+    public function syncAllMembers(bool $notify = true): array
     {
         $circle = $this->ensureStaffCircleExists();
         $eligibleUserIds = $this->groupMemberRepository->findAllStaffUserIdsExcludingStaffCircle();
         $currentMemberIds = $this->groupMemberRepository->findUserIdsInGroup($circle);
 
-        $added = 0;
+        $addedUsers = [];
         foreach ($eligibleUserIds as $userId) {
             if (!\in_array($userId, $currentMemberIds, true)) {
-                $user = $this->entityManager->getReference(User::class, $userId);
-                $this->addUserToCircle($circle, $user, notify: true);
-                ++$added;
+                $user = $this->entityManager->find(User::class, $userId);
+                if (null === $user || null !== $user->getDeletedAt()) {
+                    continue;
+                }
+                $this->persistMembership($circle, $user);
+                $addedUsers[] = $user;
             }
         }
 
+        $removedUsers = [];
         foreach ($currentMemberIds as $memberId) {
             if (!\in_array($memberId, $eligibleUserIds, true)) {
-                $user = $this->entityManager->getReference(User::class, $memberId);
-                $this->removeUserFromCircle($circle, $user, notify: true);
+                $user = $this->entityManager->find(User::class, $memberId);
+                if (null === $user) {
+                    continue;
+                }
+                $this->removeMembership($circle, $user);
+                $removedUsers[] = $user;
             }
         }
 
-        if ($added > 0 || \count($currentMemberIds) !== \count(array_intersect($currentMemberIds, $eligibleUserIds))) {
+        if ([] !== $addedUsers || [] !== $removedUsers) {
             $this->entityManager->flush();
         }
 
-        return $added;
+        if ($notify) {
+            foreach ($addedUsers as $user) {
+                $this->safeNotifyAdded($user);
+            }
+            foreach ($removedUsers as $user) {
+                $this->safeNotifyRemoved($user);
+            }
+        }
+
+        return [
+            'added' => \count($addedUsers),
+            'removed' => \count($removedUsers),
+            'eligible' => \count($eligibleUserIds),
+            'current' => \count($this->groupMemberRepository->findUserIdsInGroup($circle)),
+        ];
     }
 
     public function syncUser(User $user): void
@@ -99,20 +123,26 @@ final class StaffCircleService
         $membership = $this->groupMemberRepository->findOneByUserAndGroup($user, $circle);
 
         if ($isEligible && null === $membership) {
-            $this->addUserToCircle($circle, $user, notify: true);
+            $this->persistMembership($circle, $user);
             $this->entityManager->flush();
+            $this->safeNotifyAdded($user);
 
             return;
         }
 
         if (!$isEligible && null !== $membership) {
-            $this->removeUserFromCircle($circle, $user, notify: true);
+            $this->removeMembership($circle, $user);
             $this->entityManager->flush();
+            $this->safeNotifyRemoved($user);
         }
     }
 
     public function isUserEligibleForStaffCircle(User $user): bool
     {
+        if (null === $user->getId() || null !== $user->getDeletedAt()) {
+            return false;
+        }
+
         return \in_array($user->getId(), $this->groupMemberRepository->findAllStaffUserIdsExcludingStaffCircle(), true);
     }
 
@@ -137,24 +167,16 @@ final class StaffCircleService
         $event->setSharedInStaffCircle($wantsToShare && EventVisibility::Public === $event->getVisibility());
     }
 
-    private function addUserToCircle(Group $circle, User $user, bool $notify): void
+    private function persistMembership(Group $circle, User $user): void
     {
         $membership = (new GroupMember())
             ->setUser($user)
             ->setRole(GroupMemberRole::Member);
         $circle->addGroupMember($membership);
         $this->entityManager->persist($membership);
-
-        if ($notify) {
-            $this->messageService->sendPlatformPrivateNotice(
-                $user,
-                $this->translator->trans('staff_circle.notice.added'),
-                PlatformNoticeVariant::RapproFam,
-            );
-        }
     }
 
-    private function removeUserFromCircle(Group $circle, User $user, bool $notify): void
+    private function removeMembership(Group $circle, User $user): void
     {
         $membership = $this->groupMemberRepository->findOneByUserAndGroup($user, $circle);
         if (null === $membership) {
@@ -163,13 +185,37 @@ final class StaffCircleService
 
         $circle->removeGroupMember($membership);
         $this->entityManager->remove($membership);
+    }
 
-        if ($notify) {
+    private function safeNotifyAdded(User $user): void
+    {
+        try {
+            $this->messageService->sendPlatformPrivateNotice(
+                $user,
+                $this->translator->trans('staff_circle.notice.added'),
+                PlatformNoticeVariant::RapproFam,
+            );
+        } catch (\Throwable $exception) {
+            $this->logger->warning('Notification ajout cercle responsables non envoyée.', [
+                'user_id' => $user->getId(),
+                'exception' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    private function safeNotifyRemoved(User $user): void
+    {
+        try {
             $this->messageService->sendPlatformPrivateNotice(
                 $user,
                 $this->translator->trans('staff_circle.notice.removed'),
                 PlatformNoticeVariant::RapproFam,
             );
+        } catch (\Throwable $exception) {
+            $this->logger->warning('Notification retrait cercle responsables non envoyée.', [
+                'user_id' => $user->getId(),
+                'exception' => $exception->getMessage(),
+            ]);
         }
     }
 }

@@ -26,8 +26,29 @@ final class SyncStaffCircleCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $added = $this->staffCircleService->syncAllMembers();
-        $io->success(sprintf('Synchronisation terminée — %d nouveau(x) membre(s) ajouté(s).', $added));
+        $result = $this->staffCircleService->syncAllMembers();
+
+        $io->table(
+            ['Éligibles', 'Membres actuels', 'Ajoutés', 'Retirés'],
+            [[
+                (string) $result['eligible'],
+                (string) $result['current'],
+                (string) $result['added'],
+                (string) $result['removed'],
+            ]],
+        );
+
+        if (0 === $result['eligible']) {
+            $io->warning('Aucun chef ou modérateur trouvé dans les groupes classiques.');
+        } elseif (0 === $result['added'] && 0 === $result['removed']) {
+            $io->success('Synchronisation terminée — déjà à jour.');
+        } else {
+            $io->success(sprintf(
+                'Synchronisation terminée — %d ajouté(s), %d retiré(s).',
+                $result['added'],
+                $result['removed'],
+            ));
+        }
 
         return Command::SUCCESS;
     }

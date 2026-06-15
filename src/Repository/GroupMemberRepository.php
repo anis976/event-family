@@ -96,28 +96,33 @@ class GroupMemberRepository extends ServiceEntityRepository
     }
 
     /**
+     * Chefs (FK owner ou rôle OWNER) et modérateurs des groupes classiques, comptes actifs uniquement.
+     *
      * @return list<int>
      */
     public function findAllStaffUserIdsExcludingStaffCircle(): array
     {
-        $ownerIds = $this->getEntityManager()->createQueryBuilder()
+        $fromOwnerFk = $this->getEntityManager()->createQueryBuilder()
             ->select('DISTINCT IDENTITY(g.owner) AS userId')
             ->from(Group::class, 'g')
+            ->innerJoin('g.owner', 'u')
             ->andWhere('g.isStaffCircle = false')
-            ->andWhere('g.owner IS NOT NULL')
+            ->andWhere('u.deletedAt IS NULL')
             ->getQuery()
             ->getSingleColumnResult();
 
-        $moderatorIds = $this->createQueryBuilder('gm')
+        $fromMembership = $this->createQueryBuilder('gm')
             ->select('DISTINCT IDENTITY(gm.user) AS userId')
+            ->innerJoin('gm.user', 'u')
             ->innerJoin('gm.group', 'g')
             ->andWhere('g.isStaffCircle = false')
-            ->andWhere('gm.role = :moderatorRole')
-            ->setParameter('moderatorRole', GroupMemberRole::Moderator)
+            ->andWhere('gm.role IN (:staffRoles)')
+            ->andWhere('u.deletedAt IS NULL')
+            ->setParameter('staffRoles', [GroupMemberRole::Owner, GroupMemberRole::Moderator])
             ->getQuery()
             ->getSingleColumnResult();
 
-        $ids = array_map('intval', [...$ownerIds, ...$moderatorIds]);
+        $ids = array_map('intval', [...$fromOwnerFk, ...$fromMembership]);
 
         return array_values(array_unique(array_filter($ids, static fn (int $id): bool => $id > 0)));
     }

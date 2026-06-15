@@ -311,6 +311,7 @@ git add README.md docs/GUIDE_COMMANDES_RAPPROFAM.md
 git commit -m "docs: état projet juin 2026, diffusion et mémo deploy"
 
 Avant depploy on peux lancer : php bin/console lint:container   
+php bin/console ef:staff-circle:sync --env=prod
 Cette commande est optionel
 php bin/console lint:container vérifie que le conteneur Symfony est cohérent : pour chaque service enregistré, Symfony contrôle que les types déclarés constructeur, arguments injectés, etc. correspondent bien à ce qui est réellement injecté.
 

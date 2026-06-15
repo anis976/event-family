@@ -59,6 +59,9 @@ echo "==> Env + migrations"
 composer dump-env prod
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
 
+echo "==> Cercle des responsables (chefs / modos existants)"
+php bin/console ef:staff-circle:sync --no-interaction --env=prod
+
 if [ "$FINAL_CACHE" = "1" ]; then
     echo "==> Cache prod"
     php bin/console cache:clear --env=prod
