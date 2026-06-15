@@ -46,6 +46,17 @@ final class StaffCircleService
             return $circle;
         }
 
+        $legacyName = $this->translator->trans('ui.groups.staff_circle.group_name', locale: 'fr');
+        $legacy = $this->groupRepository->findOneBy(['name' => $legacyName]);
+        if (null !== $legacy) {
+            if (!$legacy->isStaffCircle()) {
+                $legacy->setIsStaffCircle(true);
+                $this->entityManager->flush();
+            }
+
+            return $legacy;
+        }
+
         $circle = (new Group())
             ->setName($this->translator->trans('ui.groups.staff_circle.group_name', locale: 'fr'))
             ->setFamilyName($this->translator->trans('ui.groups.staff_circle.group_family', locale: 'fr'))

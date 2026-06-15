@@ -60,7 +60,15 @@ composer dump-env prod
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
 
 echo "==> Cercle des responsables (chefs / modos existants)"
-php bin/console ef:staff-circle:sync --no-interaction --env=prod
+set +e
+php bin/console ef:staff-circle:sync --no-interaction --no-notify --env=prod
+SYNC_EXIT=$?
+set -e
+if [ "$SYNC_EXIT" -ne 0 ]; then
+    echo "ATTENTION: ef:staff-circle:sync a echoue (code ${SYNC_EXIT})."
+    echo "Deploy poursuivi — verifiez doctrine:migrations:status et var/log/prod.log,"
+    echo "puis relancez : php bin/console ef:staff-circle:sync --env=prod"
+fi
 
 if [ "$FINAL_CACHE" = "1" ]; then
     echo "==> Cache prod"

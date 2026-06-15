@@ -28,15 +28,26 @@ final class Version20260615100000 extends AbstractMigration
 
         $existing = $this->connection->fetchOne('SELECT id FROM ef_groups WHERE is_staff_circle = 1 LIMIT 1');
         if (false === $existing || null === $existing) {
-            $description = 'Espace réservé aux chefs et modérateurs de chaque groupe familial. '
-                .'Vous y êtes ajouté(e) automatiquement lorsque vous obtenez ce rôle. '
-                .'Partagez ici vos événements publics pour informer les autres responsables de ce qui se passe dans votre groupe.';
-            $now = (new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')))->format('Y-m-d H:i:s');
-
-            $this->connection->executeStatement(
-                'INSERT INTO ef_groups (name, family_name, description, is_staff_circle, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)',
-                ['Cercle des responsables', 'RapproFam', $description, $now, $now],
+            $legacyId = $this->connection->fetchOne(
+                'SELECT id FROM ef_groups WHERE name = ? LIMIT 1',
+                ['Cercle des responsables'],
             );
+            if (false !== $legacyId && null !== $legacyId) {
+                $this->connection->executeStatement(
+                    'UPDATE ef_groups SET is_staff_circle = 1 WHERE id = ?',
+                    [$legacyId],
+                );
+            } else {
+                $description = 'Espace réservé aux chefs et modérateurs de chaque groupe familial. '
+                    .'Vous y êtes ajouté(e) automatiquement lorsque vous obtenez ce rôle. '
+                    .'Partagez ici vos événements publics pour informer les autres responsables de ce qui se passe dans votre groupe.';
+                $now = (new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris')))->format('Y-m-d H:i:s');
+
+                $this->connection->executeStatement(
+                    'INSERT INTO ef_groups (name, family_name, description, is_staff_circle, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?)',
+                    ['Cercle des responsables', 'RapproFam', $description, $now, $now],
+                );
+            }
         }
     }
 
