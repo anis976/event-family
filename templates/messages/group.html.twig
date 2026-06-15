@@ -31,7 +31,7 @@
                                 <li>
                                     <a class="dropdown-item d-flex align-items-center justify-content-between gap-2{% if isCurrent %} active{% endif %}"
                                        href="{{ path('app_messages_group', { groupId: group.id }) }}">
-                                        <span class="text-truncate">{{ group.name }}</span>
+                                        <span class="text-truncate">{{ ef_group_name(group) }}</span>
                                         {% if groupUnread > 0 and not isCurrent %}
                                             <span class="ef-messages__group-unread-dot flex-shrink-0" title="{{ 'ui.messages.group.unread_count'|trans({'%count%': groupUnread}) }}" aria-hidden="true"></span>
                                         {% endif %}
@@ -41,7 +41,7 @@
                         </ul>
                     </div>
                 {% elseif user_has_group and user_groups|length == 1 and not (is_site_staff and current_group and not is_member_of_current) %}
-                    <span class="text-muted small">{{ user_groups[0].name }}</span>
+                    <span class="text-muted small">{{ ef_group_name(user_groups[0]) }}</span>
                 {% elseif is_site_staff and current_group %}
                     <a href="{{ path('app_groups_show', { id: current_group.id }) }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
                         <i class="bi bi-arrow-left me-1"></i> {{ 'ui.messages.group.group_sheet'|trans }}
@@ -52,7 +52,7 @@
     </div>
 
     {% if current_group %}
-        <p class="text-muted small mb-3">{{ current_group.name }} — {{ current_group.familyName }}</p>
+        <p class="text-muted small mb-3">{{ ef_group_name(current_group) }} — {{ ef_group_family_name(current_group) }}</p>
 
         {% if is_site_staff and not is_member_of_current %}
             <div class="ef-alert ef-alert--info ef-alert--compact mb-4" role="status">

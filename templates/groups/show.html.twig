@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}RapproFam — {{ group.name }}{% endblock %}
-{% block page_title %}{{ group.name }}{% endblock %}
+{% block title %}RapproFam — {{ ef_group_name(group) }}{% endblock %}
+{% block page_title %}{{ ef_group_name(group) }}{% endblock %}
 
 {% block body %}
 <div class="container py-5 ef-GroupShow">
-    <h1 class="visually-hidden">{{ group.name }}</h1>
+    <h1 class="visually-hidden">{{ ef_group_name(group) }}</h1>
 
     <nav aria-label="{{ 'ui.groups.breadcrumb_aria'|trans }}" class="mb-4">
         <ol class="breadcrumb">
             <li class="breadcrumb-item ef-GroupShow__nav-link">
                 <a href="{{ path('app_groups') }}">{{ isMember ? 'ui.groups.show.my_groups_breadcrumb'|trans : 'ui.groups.breadcrumb'|trans }}</a>
             </li>
-            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">{{ group.name }}</li>
+            <li class="breadcrumb-item active ef-GroupShow__nav-link" aria-current="page">{{ ef_group_name(group) }}</li>
         </ol>
     </nav>
 
@@ -70,14 +70,14 @@
                         <span class="badge mb-2 px-3 ef-badge-role-modo"><i class="bi bi-shield-check me-1" aria-hidden="true"></i>{{ 'ui.groups.show.role_moderator'|trans }}</span>
                     {% endif %}
 
-                    <p class="ef-GroupShow__family-text mb-2">{{ group.familyName }}</p>
-                    <p class="ef-GroupShow__group-name h4 mb-1">{{ group.name }}</p>
+                    <p class="ef-GroupShow__family-text mb-2">{{ ef_group_family_name(group) }}</p>
+                    <p class="ef-GroupShow__group-name h4 mb-1">{{ ef_group_name(group) }}</p>
                     <p class="mb-4 ef-GroupShow__createdAt">{{ 'ui.groups.show.created_on'|trans({'%date%': group.createdAt|ef_date}) }}</p>
                     <hr class="opacity-10">
 
                     <div class="mb-4">
                         <h3 class="text-uppercase text-muted small h6">{{ 'ui.common.description'|trans }}</h3>
-                        <p class="ef-GroupShow__desc-full">{{ group.description|default('ui.common.no_description'|trans) }}</p>
+                        <p class="ef-GroupShow__desc-full">{{ ef_group_description(group)|default('ui.common.no_description'|trans) }}</p>
                     </div>
 
                     {% if isMember and isOwner %}

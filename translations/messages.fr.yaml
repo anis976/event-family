@@ -223,6 +223,8 @@ ui:
     member_count: '{0} aucun membre|{1} %count% membre|]1,Inf[ %count% membres'
     staff_circle:
       section_title: Espace responsables
+      group_name: Cercle des responsables
+      group_family: RapproFam
       badge: Responsables
       view_only: Consulter
       purpose_title: À quoi sert ce cercle ?
@@ -279,7 +281,8 @@ ui:
       successor_placeholder: Choisir un membre…
       owner_confirm: Transférer et quitter
     members:
-      title: Membres du cercle
+      title: Membres du groupe
+      title_staff_circle: Membres du cercle
       pagination_aria: Pagination des membres du groupe
       column_member: Membre
       column_role: Rôle
@@ -795,6 +798,16 @@ staff_circle:
       Tu n'es plus membre du Cercle des responsables.
 
       Tu as perdu ton rôle de chef ou de modérateur dans tous les groupes. Si tu redeviens responsable d'un groupe, tu seras à nouveau ajouté(e) automatiquement.
+
+command:
+  staff_circle_sync:
+    table_eligible: Éligibles
+    table_current: Membres actuels
+    table_added: Ajoutés
+    table_removed: Retirés
+    warning_no_staff: Aucun chef ou modérateur trouvé dans les groupes classiques.
+    success_up_to_date: Synchronisation terminée — déjà à jour.
+    success_done: 'Synchronisation terminée — %added% ajouté(s), %removed% retiré(s).'
 
 message:
   form:
@@ -1349,6 +1362,7 @@ admin:
       error_member_wrong_group: Ce membre n'appartient pas à ce groupe.
       error_cannot_remove_owner: Impossible de retirer le chef du groupe. Réassigne d'abord le responsable.
       error_staff_circle_members: Les membres du Cercle des responsables sont gérés automatiquement.
+      staff_circle_members_hint: Ce groupe système regroupe automatiquement les chefs et modérateurs. Les membres ne s'ajoutent ni ne se retirent pas manuellement ici.
       action_reconcile_roles: Corriger les rôles chef
       reconcile_roles_hint: Utile si plusieurs membres affichent « chef » à tort.
       roles_reconciled: Les rôles chef ont été réalignés sur le responsable officiel du groupe.

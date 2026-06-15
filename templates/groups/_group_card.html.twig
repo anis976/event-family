@@ -1,11 +1,11 @@
 <div class="col">
     <a href="{{ card_href }}" class="card h-100 ef-groups__card border-0 shadow-sm text-body text-decoration-none{% if is_staff_circle|default(false) %} ef-groups__card--staff-circle{% endif %}" aria-label="{{ 'ui.groups.card_link_aria'|trans({
-        '%name%': group.name,
+        '%name%': ef_group_name(group),
         '%members%': 'ui.groups.member_count'|trans({'%count%': member_count|default(group.groupMembers|length)}),
     }) }}">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-start mb-1 gap-2">
-                <h2 class="h5 card-title mb-0">{{ group.name }}</h2>
+                <h2 class="h5 card-title mb-0">{{ ef_group_name(group) }}</h2>
                 {% if is_staff_circle|default(false) %}
                     <span class="ef-groups__badge-staff-circle flex-shrink-0" aria-hidden="true">
                         <i class="bi bi-people-fill me-1" aria-hidden="true"></i>{{ 'ui.groups.staff_circle.badge'|trans }}
@@ -17,10 +17,10 @@
                 {% endif %}
             </div>
 
-            <p class="mb-2 card-famyliName">{{ group.familyName }}</p>
+            <p class="mb-2 card-famyliName">{{ ef_group_family_name(group) }}</p>
 
             <p class="ef-groups__card-description mb-3">
-                {% set desc = group.description|default('') %}
+                {% set desc = ef_group_description(group)|default('') %}
                 {% if desc %}
                     {{ desc|length > 100 ? desc|slice(0, 100) ~ '…' : desc }}
                 {% else %}

@@ -102,8 +102,22 @@ final class GroupCrudController extends AbstractAdminCrudController
         yield IdField::new('id')->onlyOnIndex();
 
         yield FormField::addFieldset($this->t('admin.crud.group.fieldset_group'));
-        yield TextField::new('name', $this->t('admin.crud.group.field_name'));
-        yield TextField::new('familyName', $this->t('admin.crud.group.field_family_name'));
+        yield TextField::new('name', $this->t('admin.crud.group.field_name'))
+            ->formatValue(function (mixed $value, mixed $entity): string {
+                if ($entity instanceof Group && $entity->isStaffCircle()) {
+                    return $this->trans('ui.groups.staff_circle.group_name');
+                }
+
+                return (string) $value;
+            });
+        yield TextField::new('familyName', $this->t('admin.crud.group.field_family_name'))
+            ->formatValue(function (mixed $value, mixed $entity): string {
+                if ($entity instanceof Group && $entity->isStaffCircle()) {
+                    return $this->trans('ui.groups.staff_circle.group_family');
+                }
+
+                return (string) $value;
+            });
         yield TextareaField::new('description', $this->t('admin.crud.group.field_description'))
             ->hideOnIndex();
 
@@ -251,7 +265,12 @@ final class GroupCrudController extends AbstractAdminCrudController
                 $responseParameters->set('ef_group_can_reconcile_roles', $canManageMembers);
                 $responseParameters->set('ef_group_id', $entity->getId());
                 $responseParameters->set('ef_group_members_title', 'admin.crud.group.fieldset_members');
-                $responseParameters->set('ef_group_members_hint', 'admin.crud.group.members_hint');
+                $responseParameters->set(
+                    'ef_group_members_hint',
+                    $entity->isStaffCircle()
+                        ? 'admin.crud.group.staff_circle_members_hint'
+                        : 'admin.crud.group.members_hint',
+                );
                 $responseParameters->set('ef_group_add_members_html', $isEditPage && $canManageMembers
                     ? $this->renderAddMembersHtml($entity, $memberSearchQuery, $addMemberUsers, $addMemberStatusRules)
                     : '');

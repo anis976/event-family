@@ -222,6 +222,8 @@ ui:
     member_count: '{0} no members|{1} %count% member|]1,Inf[ %count% members'
     staff_circle:
       section_title: Staff space
+      group_name: Staff Circle
+      group_family: RapproFam
       badge: Staff
       view_only: View
       purpose_title: What is this circle for?
@@ -278,7 +280,8 @@ ui:
       successor_placeholder: Choose a member…
       owner_confirm: Transfer and leave
     members:
-      title: Circle members
+      title: Group members
+      title_staff_circle: Circle members
       pagination_aria: Group members pagination
       column_member: Member
       column_role: Role
@@ -794,6 +797,16 @@ staff_circle:
       You are no longer a member of the Staff Circle.
 
       You are no longer an owner or moderator in any group. If you become a group leader again, you will be added back automatically.
+
+command:
+  staff_circle_sync:
+    table_eligible: Eligible
+    table_current: Current members
+    table_added: Added
+    table_removed: Removed
+    warning_no_staff: No owners or moderators found in regular groups.
+    success_up_to_date: Sync complete — already up to date.
+    success_done: 'Sync complete — %added% added, %removed% removed.'
 
 message:
   form:
@@ -1348,6 +1361,7 @@ admin:
       error_member_wrong_group: This member does not belong to this group.
       error_cannot_remove_owner: Cannot remove the group owner. Reassign the owner first.
       error_staff_circle_members: Staff Circle members are managed automatically.
+      staff_circle_members_hint: This system group automatically includes group owners and moderators. Members cannot be added or removed manually here.
       action_reconcile_roles: Fix owner roles
       reconcile_roles_hint: Use when several members incorrectly show as owner.
       roles_reconciled: Owner roles have been realigned with the official group leader.

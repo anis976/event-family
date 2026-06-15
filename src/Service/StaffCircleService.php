@@ -47,9 +47,9 @@ final class StaffCircleService
         }
 
         $circle = (new Group())
-            ->setName('Cercle des responsables')
-            ->setFamilyName('RapproFam')
-            ->setDescription($this->translator->trans('staff_circle.default_description'))
+            ->setName($this->translator->trans('ui.groups.staff_circle.group_name', locale: 'fr'))
+            ->setFamilyName($this->translator->trans('ui.groups.staff_circle.group_family', locale: 'fr'))
+            ->setDescription($this->translator->trans('staff_circle.default_description', locale: 'fr'))
             ->setIsStaffCircle(true);
 
         $this->entityManager->persist($circle);
@@ -192,7 +192,7 @@ final class StaffCircleService
         try {
             $this->messageService->sendPlatformPrivateNotice(
                 $user,
-                $this->translator->trans('staff_circle.notice.added'),
+                $this->translator->trans('staff_circle.notice.added', locale: $user->getLocale()),
                 PlatformNoticeVariant::RapproFam,
             );
         } catch (\Throwable $exception) {
@@ -208,7 +208,7 @@ final class StaffCircleService
         try {
             $this->messageService->sendPlatformPrivateNotice(
                 $user,
-                $this->translator->trans('staff_circle.notice.removed'),
+                $this->translator->trans('staff_circle.notice.removed', locale: $user->getLocale()),
                 PlatformNoticeVariant::RapproFam,
             );
         } catch (\Throwable $exception) {
