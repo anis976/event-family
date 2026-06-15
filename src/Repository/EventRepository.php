@@ -192,6 +192,30 @@ class EventRepository extends ServiceEntityRepository
     /**
      * @return list<Event>
      */
+    public function findSharedInStaffCircleByFilter(EventTimeFilter $filter, int $limit = 6): array
+    {
+        $now = ParisClock::now();
+        $qb = $this->createQueryBuilder('e')
+            ->addSelect('g', 'author')
+            ->innerJoin('e.relatedGroup', 'g')
+            ->leftJoin('e.author', 'author')
+            ->andWhere('e.sharedInStaffCircle = true')
+            ->andWhere('e.visibility = :publicVisibility')
+            ->andWhere('g.isStaffCircle = false')
+            ->setParameter('publicVisibility', EventVisibility::Public);
+
+        $this->applyTimeFilter($qb, $filter, $now);
+        $this->applyTimeOrder($qb, $filter);
+
+        return $qb
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<Event>
+     */
     public function findByGroupAndFilter(Group $group, EventTimeFilter $filter, int $limit = 6): array
     {
         $now = ParisClock::now();

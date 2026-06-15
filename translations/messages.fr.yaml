@@ -221,6 +221,16 @@ ui:
     role:
       leader_badge: Chef
     member_count: '{0} aucun membre|{1} %count% membre|]1,Inf[ %count% membres'
+    staff_circle:
+      section_title: Espace responsables
+      badge: Responsables
+      view_only: Consulter
+      purpose_title: À quoi sert ce cercle ?
+      purpose_body: Espace réservé aux chefs et modérateurs de chaque groupe familial. Les responsables y sont ajoutés automatiquement et peuvent y faire connaître leurs événements publics aux autres responsables de la plateforme.
+      members_only_hint: L'adhésion est automatique lorsque tu deviens chef ou modérateur d'un groupe.
+      no_join: Ce cercle est réservé aux chefs et modérateurs de groupe. L'adhésion est automatique.
+      shared_events: Événements partagés entre responsables
+      no_shared_events: Aucun événement public n'a encore été partagé ici.
     card_link_aria: 'Voir le groupe %name% — %members%'
     breadcrumb: Groupes
     breadcrumb_new: Nouveau
@@ -740,6 +750,8 @@ event:
     current_detail: Lieu / détail actuel
     remove_cover: Supprimer la photo de couverture
     remove_detail: Supprimer la photo lieu / détail
+    share_in_staff_circle: Partager dans le Cercle des responsables
+    share_in_staff_circle_help: Visible par les chefs et modérateurs des autres groupes. Uniquement si l'événement est public — il sera retiré automatiquement si tu le repasses en privé.
     validation:
       group_required: Le groupe est obligatoire.
       title_required: Le titre est obligatoire.
@@ -754,6 +766,18 @@ event:
   visibility:
     public: Public (tous les utilisateurs du site)
     group: Privé (membres du groupe uniquement)
+
+staff_circle:
+  default_description: Espace réservé aux chefs et modérateurs de chaque groupe familial. Vous y êtes ajouté(e) automatiquement lorsque vous obtenez ce rôle. Partagez ici vos événements publics pour informer les autres responsables de ce qui se passe dans votre groupe.
+  notice:
+    added: |
+      Tu as été ajouté(e) au Cercle des responsables.
+
+      Cet espace réunit automatiquement les chefs et modérateurs de chaque groupe familial. Tu peux y consulter les événements publics partagés par les autres responsables et proposer les tiens lorsque tu publies un événement public dans ton groupe.
+    removed: |
+      Tu n'es plus membre du Cercle des responsables.
+
+      Tu as perdu ton rôle de chef ou de modérateur dans tous les groupes. Si tu redeviens responsable d'un groupe, tu seras à nouveau ajouté(e) automatiquement.
 
 message:
   form:
@@ -955,6 +979,8 @@ flash:
     access_denied: Accès refusé.
     invitation_not_for_you: Cette invitation ne t'est pas destinée.
     invitation_invalid: Cette invitation n'est plus valide.
+    staff_circle_no_join: Ce cercle est réservé aux chefs et modérateurs. L'adhésion est automatique.
+    staff_circle_no_invite: Les invitations ne sont pas possibles dans le Cercle des responsables.
     owner_only_moderator: Seul le chef du groupe peut gérer les modérateurs.
     owner_cannot_change: Le chef du groupe ne peut pas être modifié.
     single_moderator: Ce groupe ne peut avoir qu'un seul modérateur.
@@ -1032,6 +1058,7 @@ flash:
     image_save_failed: Impossible d'enregistrer l'image.
     publish_staff_only: La publication est réservée au responsable du groupe. Contacte le responsable de ton groupe.
     published: L'événement a été publié.
+    shared_in_staff_circle: L'événement a été partagé dans le Cercle des responsables.
     updated: L'événement a été mis à jour.
     deleted: L'événement a été supprimé.
     contact_min_length: Le message doit contenir au moins 15 caractères.

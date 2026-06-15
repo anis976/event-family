@@ -19,6 +19,7 @@ use App\Service\EventAccessService;
 use App\Service\GroupAccessService;
 use App\Service\GroupRequestService;
 use App\Service\SiteStaffService;
+use App\Service\StaffCircleService;
 use App\Util\Pagination;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,7 @@ final class GroupController extends AbstractAppController
         private readonly GroupRequestService $groupRequestService,
         private readonly UserBanRepository $userBanRepository,
         private readonly SiteStaffService $siteStaff,
+        private readonly StaffCircleService $staffCircleService,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -79,11 +81,20 @@ final class GroupController extends AbstractAppController
             self::GROUPS_PER_PAGE,
         );
 
+        $staffCircle = $this->staffCircleService->findStaffCircle();
+        $isStaffCircleMember = null !== $staffCircle && $this->groupAccess->isMember($user, $staffCircle);
+
         return $this->render('groups/index.html.twig', [
             'myGroups' => $myGroups,
             'myGroupsPagination' => $myGroupsPagination,
             'otherGroups' => $otherGroups,
-            'member_counts' => $this->buildMemberCountsMap([...$myGroups, ...$otherGroups]),
+            'staffCircle' => $staffCircle,
+            'is_staff_circle_member' => $isStaffCircleMember,
+            'member_counts' => $this->buildMemberCountsMap(array_filter([
+                ...$myGroups,
+                ...$otherGroups,
+                $staffCircle,
+            ])),
             'memberGroupIds' => array_flip($memberGroupIds),
             'can_create' => $this->groupAccess->canCreateGroup($user),
             'othersPagination' => $othersPagination,
@@ -123,6 +134,8 @@ final class GroupController extends AbstractAppController
             $this->entityManager->persist($group);
             $this->entityManager->flush();
 
+            $this->staffCircleService->syncUser($user);
+
             $this->addSuccessFlash('flash.group.created');
 
             return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
@@ -149,6 +162,10 @@ final class GroupController extends AbstractAppController
         }
 
         if (!$this->groupAccess->isOwner($user, $group)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($this->groupAccess->isStaffCircle($group)) {
             throw $this->createAccessDeniedException();
         }
 
@@ -187,7 +204,8 @@ final class GroupController extends AbstractAppController
 
         $joinState = $this->groupRequestService->getVisitorJoinState($user, $group);
         $isStaff = $isMember && $this->groupAccess->isStaff($user, $group);
-        $pendingRequestsCount = $isStaff
+        $isStaffCircle = $this->groupAccess->isStaffCircle($group);
+        $pendingRequestsCount = $isStaff && !$isStaffCircle
             ? $this->groupRequestRepository->countUnreadPendingByGroup($group)
             : 0;
 
@@ -199,6 +217,14 @@ final class GroupController extends AbstractAppController
             self::MEMBERS_PER_PAGE,
         );
 
+        if ($isStaffCircle) {
+            $groupEventsUpcoming = $this->eventRepository->findSharedInStaffCircleByFilter(EventTimeFilter::Upcoming);
+            $groupEventsOngoing = $this->eventRepository->findSharedInStaffCircleByFilter(EventTimeFilter::Ongoing);
+        } else {
+            $groupEventsUpcoming = $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Upcoming) : [];
+            $groupEventsOngoing = $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Ongoing) : [];
+        }
+
         return $this->render('groups/show.html.twig', [
             'group' => $group,
             'groupMembers' => $groupMembers,
@@ -209,15 +235,16 @@ final class GroupController extends AbstractAppController
             'isChef' => $isOwner,
             'isModerator' => $isModerator,
             'isStaff' => $isStaff,
+            'isStaffCircle' => $isStaffCircle,
             'isSiteStaff' => $this->siteStaff->isSiteStaff($user),
             'currentMember' => $currentMember,
             'bannedUserIds' => $bannedUserIds,
             'joinState' => $joinState,
             'pendingRequestsCount' => $pendingRequestsCount,
-            'groupEventsUpcoming' => $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Upcoming) : [],
-            'groupEventsOngoing' => $isMember ? $this->eventRepository->findByGroupAndFilter($group, EventTimeFilter::Ongoing) : [],
-            'can_create_event' => $isMember && $this->eventAccess->canCreateInGroup($user, $group),
-            'is_regular_member' => $isMember && !$this->eventAccess->canCreateInGroup($user, $group),
+            'groupEventsUpcoming' => $groupEventsUpcoming,
+            'groupEventsOngoing' => $groupEventsOngoing,
+            'can_create_event' => $isMember && !$isStaffCircle && $this->eventAccess->canCreateInGroup($user, $group),
+            'is_regular_member' => $isMember && !$isStaffCircle && !$this->eventAccess->canCreateInGroup($user, $group),
         ]);
     }
 

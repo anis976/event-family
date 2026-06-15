@@ -34,6 +34,14 @@ final class GroupRequestService
      */
     public function getVisitorJoinState(User $user, Group $group): array
     {
+        if ($group->isStaffCircle()) {
+            if ($this->groupAccess->isMember($user, $group)) {
+                return ['state' => 'member', 'request' => null, 'refused_count' => 0];
+            }
+
+            return ['state' => 'staff_circle', 'request' => null, 'refused_count' => 0];
+        }
+
         if ($this->groupAccess->isMember($user, $group)) {
             return ['state' => 'member', 'request' => null, 'refused_count' => 0];
         }
@@ -62,6 +70,10 @@ final class GroupRequestService
 
     public function createJoinRequest(User $user, Group $group): GroupRequest
     {
+        if ($group->isStaffCircle()) {
+            throw new \DomainException('flash.group.staff_circle_no_join');
+        }
+
         if ($this->groupAccess->isMember($user, $group)) {
             throw new \DomainException('flash.group.already_member');
         }
@@ -91,6 +103,10 @@ final class GroupRequestService
 
     public function inviteUser(User $inviter, Group $group, User $target): GroupRequest
     {
+        if ($group->isStaffCircle()) {
+            throw new \DomainException('flash.group.staff_circle_no_invite');
+        }
+
         if (!$this->groupAccess->isStaff($inviter, $group)) {
             throw new \DomainException('flash.group.staff_only_invite');
         }

@@ -16,7 +16,14 @@
         </ol>
     </nav>
 
-    {% if isStaff or isSiteStaff %}
+    {% if isStaffCircle and isSiteStaff %}
+        <div class="d-flex flex-wrap gap-2 mb-4 ef-GroupShow__staff-actions">
+            <a href="{{ path('app_messages_group', { groupId: group.id }) }}" class="btn ef-GroupShow__btn-edit">
+                <i class="bi bi-megaphone me-2" aria-hidden="true"></i> {{ 'ui.groups.show.group_messages'|trans }}
+            </a>
+        </div>
+    {% elseif isStaff or isSiteStaff %}
+        {% if not isStaffCircle %}
         <div class="d-flex flex-wrap gap-2 mb-4 ef-GroupShow__staff-actions">
             {% if isStaff %}
                 <a href="{{ path('app_groups_manage_requests', { id: group.id }) }}" class="btn ef-GroupShow__btn-edit"{% if pendingRequestsCount > 0 %} aria-label="{{ 'ui.groups.show.manage_requests_aria'|trans({'%count%': pendingRequestsCount}) }}"{% endif %}>
@@ -34,6 +41,22 @@
                     <i class="bi bi-megaphone me-2" aria-hidden="true"></i> {{ 'ui.groups.show.group_messages'|trans }}
                 </a>
             {% endif %}
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if isStaffCircle %}
+        <div class="alert alert-info border-0 shadow-sm mb-4 ef-GroupShow__staff-circle-notice" role="status">
+            <div class="d-flex gap-3">
+                <i class="bi bi-info-circle-fill fs-4 flex-shrink-0" aria-hidden="true"></i>
+                <div>
+                    <p class="fw-bold mb-1">{{ 'ui.groups.staff_circle.purpose_title'|trans }}</p>
+                    <p class="mb-0 small">{{ 'ui.groups.staff_circle.purpose_body'|trans }}</p>
+                    {% if not isMember %}
+                        <p class="mb-0 mt-2 small text-muted">{{ 'ui.groups.staff_circle.members_only_hint'|trans }}</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     {% endif %}
 
@@ -83,12 +106,17 @@
                                 <button type="button" class="btn btn-secondary w-100 py-2" disabled>
                                     <i class="bi bi-hourglass-split me-2" aria-hidden="true"></i> {{ 'ui.groups.show.request_pending'|trans }}
                                 </button>
-                            {% elseif joinState.state == 'blocked' %}
-                                <div class="alert alert-danger mb-0 small">
-                                    <i class="bi bi-slash-circle me-1" aria-hidden="true"></i>
-                                    {{ 'ui.groups.show.join_blocked'|trans }}
-                                </div>
-                            {% elseif joinState.state == 'available' %}
+                    {% elseif joinState.state == 'blocked' %}
+                        <div class="alert alert-danger mb-0 small">
+                            <i class="bi bi-slash-circle me-1" aria-hidden="true"></i>
+                            {{ 'ui.groups.show.join_blocked'|trans }}
+                        </div>
+                    {% elseif joinState.state == 'staff_circle' %}
+                        <div class="alert alert-secondary mb-0 small">
+                            <i class="bi bi-shield-lock me-1" aria-hidden="true"></i>
+                            {{ 'ui.groups.staff_circle.no_join'|trans }}
+                        </div>
+                    {% elseif joinState.state == 'available' %}
                                 <form action="{{ path('app_groups_request_join', { id: group.id }) }}" method="POST" data-turbo="false">
                                     <input type="hidden" name="_token" value="{{ csrf_token('join-group' ~ group.id) }}">
                                     <button type="submit" class="btn btn-save-profile w-100 py-2 fw-bold">
@@ -103,10 +131,16 @@
         </div>
 
         <div class="col-lg-8">
-            {% if isMember %}
+            {% if isMember or isStaffCircle %}
                 <div class="mb-4">
                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                        <h3 class="h5 fw-bold mb-0">{{ 'ui.groups.show.group_events'|trans }}</h3>
+                        <h3 class="h5 fw-bold mb-0">
+                            {% if isStaffCircle %}
+                                {{ 'ui.groups.staff_circle.shared_events'|trans }}
+                            {% else %}
+                                {{ 'ui.groups.show.group_events'|trans }}
+                            {% endif %}
+                        </h3>
                         <div class="d-flex flex-wrap gap-2">
                             {% if can_create_event %}
                                 <a href="{{ path('app_events_new', { groupe: group.id }) }}" class="btn btn-sm ef-GroupShow__btn-edit" data-turbo="false">
@@ -142,12 +176,16 @@
                             {% endfor %}
                         </div>
                     {% elseif groupEventsOngoing is empty %}
-                        {% include 'events/_empty.html.twig' with { message: 'ui.groups.show.no_group_events'|trans } %}
+                        {% include 'events/_empty.html.twig' with {
+                            message: isStaffCircle
+                                ? 'ui.groups.staff_circle.no_shared_events'|trans
+                                : 'ui.groups.show.no_group_events'|trans
+                        } %}
                     {% endif %}
                 </div>
             {% endif %}
 
-            {% include 'groups/_members_table.html.twig' %}
+            {% include 'groups/_members_table.html.twig' with { hide_moderation: isStaffCircle } %}
         </div>
     </div>
 </div>

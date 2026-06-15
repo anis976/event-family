@@ -9,6 +9,7 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Enum\EventTimeFilter;
 use App\Enum\EventPhotoSlot;
+use App\Enum\EventVisibility;
 use App\Enum\GroupMemberRole;
 use App\Form\EventFormType;
 use App\Repository\EventRepository;
@@ -18,6 +19,7 @@ use App\Service\EventAccessService;
 use App\Service\EventImageService;
 use App\Service\MessageService;
 use App\Service\SiteStaffService;
+use App\Service\StaffCircleService;
 use App\Util\Pagination;
 use App\Util\ParisClock;
 use Doctrine\ORM\EntityManagerInterface;
@@ -41,6 +43,7 @@ final class EventController extends AbstractAppController
         private readonly EventImageService $eventImageService,
         private readonly MessageService $messageService,
         private readonly SiteStaffService $siteStaff,
+        private readonly StaffCircleService $staffCircleService,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -96,6 +99,7 @@ final class EventController extends AbstractAppController
         $form = $this->createForm(EventFormType::class, $event, [
             'member_groups' => $creatableGroups,
             'preselected_group' => $preselectedGroup,
+            'show_staff_circle_share' => true,
         ]);
         $form->handleRequest($request);
 
@@ -116,10 +120,17 @@ final class EventController extends AbstractAppController
                 ]);
             }
 
+            $wantsStaffCircleShare = $form->has('sharedInStaffCircle')
+                && (bool) $form->get('sharedInStaffCircle')->getData();
+            $this->staffCircleService->applyEventStaffCircleSharing($event, $wantsStaffCircleShare);
+
             $this->entityManager->persist($event);
             $this->entityManager->flush();
 
             $this->addSuccessFlash('flash.event.published');
+            if ($event->isVisibleInStaffCircle()) {
+                $this->addSuccessFlash('flash.event.shared_in_staff_circle');
+            }
 
             return $this->redirectToRoute('app_events_show', ['id' => $event->getId()]);
         }
@@ -146,6 +157,7 @@ final class EventController extends AbstractAppController
         $form = $this->createForm(EventFormType::class, $event, [
             'member_groups' => $creatableGroups,
             'allow_remove_photo' => true,
+            'show_staff_circle_share' => !$event->getRelatedGroup()?->isStaffCircle(),
         ]);
         $form->handleRequest($request);
 
@@ -172,6 +184,11 @@ final class EventController extends AbstractAppController
                     'eventForm' => $form,
                 ]);
             }
+
+            $wantsStaffCircleShare = $form->has('sharedInStaffCircle')
+                ? (bool) $form->get('sharedInStaffCircle')->getData()
+                : $event->isSharedInStaffCircle();
+            $this->staffCircleService->applyEventStaffCircleSharing($event, $wantsStaffCircleShare);
 
             $this->entityManager->flush();
             $this->addSuccessFlash('flash.event.updated');
@@ -307,10 +324,10 @@ final class EventController extends AbstractAppController
     private function getCreatableGroups(User $user): array
     {
         if ($this->siteStaff->isSiteStaff($user)) {
-            return $this->groupMemberRepository->findGroupsForUser($user);
+            return $this->filterCreatableGroups($this->groupMemberRepository->findGroupsForUser($user));
         }
 
-        return $this->groupMemberRepository->findStaffGroupsForUser($user);
+        return $this->filterCreatableGroups($this->groupMemberRepository->findStaffGroupsForUser($user));
     }
 
     /**
@@ -325,6 +342,19 @@ final class EventController extends AbstractAppController
         }
 
         return null;
+    }
+
+    /**
+     * @param list<Group> $groups
+     *
+     * @return list<Group>
+     */
+    private function filterCreatableGroups(array $groups): array
+    {
+        return array_values(array_filter(
+            $groups,
+            static fn (Group $group): bool => !$group->isStaffCircle(),
+        ));
     }
 
     private function handlePhotoUploads(\Symfony\Component\Form\FormInterface $form, Event $event): void

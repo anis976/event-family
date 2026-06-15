@@ -56,6 +56,10 @@ class Event implements EfAdminLabelInterface
     #[ORM\Column(length: 20, enumType: EventVisibility::class)]
     private EventVisibility $visibility = EventVisibility::Group;
 
+    /** Partagé dans le cercle des responsables (visible uniquement si l'événement est public). */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $sharedInStaffCircle = false;
+
     #[ORM\Column(name: 'photo_cover', length: 255, nullable: true)]
     private ?string $photoCover = null;
 
@@ -164,6 +168,23 @@ class Event implements EfAdminLabelInterface
         $this->visibility = $visibility;
 
         return $this;
+    }
+
+    public function isSharedInStaffCircle(): bool
+    {
+        return $this->sharedInStaffCircle;
+    }
+
+    public function setSharedInStaffCircle(bool $sharedInStaffCircle): static
+    {
+        $this->sharedInStaffCircle = $sharedInStaffCircle;
+
+        return $this;
+    }
+
+    public function isVisibleInStaffCircle(): bool
+    {
+        return $this->sharedInStaffCircle && EventVisibility::Public === $this->visibility;
     }
 
     public function getPhotoCover(): ?string

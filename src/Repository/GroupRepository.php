@@ -20,6 +20,15 @@ class GroupRepository extends ServiceEntityRepository
         parent::__construct($registry, Group::class);
     }
 
+    public function findStaffCircle(): ?Group
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.isStaffCircle = true')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function countOwnedByUser(User $user): int
     {
         return $this->countOwnedByUserExcludingGroup($user, null);
@@ -97,6 +106,7 @@ class GroupRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('g')
             ->addSelect('owner')
             ->leftJoin('g.owner', 'owner')
+            ->andWhere('g.isStaffCircle = false')
             ->orderBy('g.createdAt', 'DESC')
             ->setFirstResult(max(0, ($page - 1) * $perPage))
             ->setMaxResults($perPage);
@@ -115,7 +125,8 @@ class GroupRepository extends ServiceEntityRepository
     public function countOthers(array $excludeGroupIds): int
     {
         $qb = $this->createQueryBuilder('g')
-            ->select('COUNT(g.id)');
+            ->select('COUNT(g.id)')
+            ->andWhere('g.isStaffCircle = false');
 
         if ([] !== $excludeGroupIds) {
             $qb->andWhere('g.id NOT IN (:excludeIds)')

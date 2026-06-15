@@ -20,6 +20,16 @@
         {{ form_errors(eventForm.visibility) }}
     </div>
 </div>
+{% if eventForm.sharedInStaffCircle is defined %}
+    <div class="mb-3 form-check">
+        {{ form_widget(eventForm.sharedInStaffCircle) }}
+        {{ form_label(eventForm.sharedInStaffCircle, null, { label_attr: { class: 'form-check-label' } }) }}
+        {% if eventForm.sharedInStaffCircle.vars.help is not empty %}
+            <div class="form-text">{{ eventForm.sharedInStaffCircle.vars.help }}</div>
+        {% endif %}
+        {{ form_errors(eventForm.sharedInStaffCircle) }}
+    </div>
+{% endif %}
 <div class="row g-3 mb-3">
     <div class="col-md-6">
         {{ form_label(eventForm.startDate, null, { label_attr: { class: 'form-label fw-medium' } }) }}

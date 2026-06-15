@@ -98,7 +98,17 @@ final class EventFormType extends AbstractType
                 'label' => $t('event.form.visibility'),
                 'choice_label' => fn (EventVisibility $visibility): string => $this->translator->trans($visibility->label()),
                 'attr' => ['class' => 'form-select ef-input'],
-            ])
+            ]);
+
+        if ($options['show_staff_circle_share']) {
+            $builder->add('sharedInStaffCircle', CheckboxType::class, [
+                'required' => false,
+                'label' => $t('event.form.share_in_staff_circle'),
+                'help' => $t('event.form.share_in_staff_circle_help'),
+            ]);
+        }
+
+        $builder
             ->add('description', TextareaType::class, [
                 'required' => false,
                 'label' => $t('event.form.description'),
@@ -166,9 +176,11 @@ final class EventFormType extends AbstractType
             'member_groups' => [],
             'preselected_group' => null,
             'allow_remove_photo' => false,
+            'show_staff_circle_share' => false,
         ]);
 
         $resolver->setAllowedTypes('member_groups', 'array');
         $resolver->setAllowedTypes('preselected_group', ['null', Group::class]);
+        $resolver->setAllowedTypes('show_staff_circle_share', 'bool');
     }
 }

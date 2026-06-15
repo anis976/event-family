@@ -41,7 +41,7 @@ final class GroupModerationController extends AbstractAppController
     public function manageRequests(int $id): Response
     {
         $user = $this->requireUser();
-        $group = $this->requireGroup($id);
+        $group = $this->requireModeratableGroup($id);
 
         if (!$this->groupAccess->isStaff($user, $group)) {
             throw $this->createAccessDeniedException();
@@ -75,7 +75,7 @@ final class GroupModerationController extends AbstractAppController
     public function inviteSearch(int $id, Request $request): Response
     {
         $user = $this->requireUser();
-        $group = $this->requireGroup($id);
+        $group = $this->requireModeratableGroup($id);
 
         if (!$this->groupAccess->isStaff($user, $group)) {
             throw $this->createAccessDeniedException();
@@ -114,7 +114,7 @@ final class GroupModerationController extends AbstractAppController
     public function inviteUser(int $id, int $userId, Request $request): Response
     {
         $staff = $this->requireUser();
-        $group = $this->requireGroup($id);
+        $group = $this->requireModeratableGroup($id);
 
         if (!$this->groupAccess->isStaff($staff, $group)) {
             throw $this->createAccessDeniedException();
@@ -305,6 +305,10 @@ final class GroupModerationController extends AbstractAppController
 
         $group = $member->getGroup();
 
+        if ($group->isStaffCircle()) {
+            throw $this->createAccessDeniedException();
+        }
+
         if (!$this->groupAccess->isMember($actor, $group)) {
             throw $this->createAccessDeniedException();
         }
@@ -343,7 +347,7 @@ final class GroupModerationController extends AbstractAppController
         string $successMessage,
     ): Response {
         $staff = $this->requireUser();
-        $group = $this->requireGroup($groupId);
+        $group = $this->requireModeratableGroup($groupId);
 
         if (!$this->groupAccess->isStaff($staff, $group)) {
             throw $this->createAccessDeniedException();
@@ -428,6 +432,16 @@ final class GroupModerationController extends AbstractAppController
         $group = $this->groupRepository->findOneWithMembers($id);
         if (null === $group) {
             throw $this->createNotFoundException();
+        }
+
+        return $group;
+    }
+
+    private function requireModeratableGroup(int $id): Group
+    {
+        $group = $this->requireGroup($id);
+        if ($group->isStaffCircle()) {
+            throw $this->createAccessDeniedException();
         }
 
         return $group;

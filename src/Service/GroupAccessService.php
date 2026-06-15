@@ -26,6 +26,16 @@ final class GroupAccessService
         return $this->groupRepository->countOwnedByUser($user) < 1;
     }
 
+    public function isStaffCircle(Group $group): bool
+    {
+        return $group->isStaffCircle();
+    }
+
+    public function canRequestJoin(Group $group): bool
+    {
+        return !$group->isStaffCircle();
+    }
+
     public function isOwner(User $user, Group $group): bool
     {
         return null !== $group->getOwner() && $group->getOwner()->getId() === $user->getId();

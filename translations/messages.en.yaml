@@ -220,6 +220,16 @@ ui:
     role:
       leader_badge: Owner
     member_count: '{0} no members|{1} %count% member|]1,Inf[ %count% members'
+    staff_circle:
+      section_title: Staff space
+      badge: Staff
+      view_only: View
+      purpose_title: What is this circle for?
+      purpose_body: Reserved for owners and moderators of each family group. Staff are added automatically and can share their public events with other group leaders on the platform.
+      members_only_hint: Membership is automatic when you become a group owner or moderator.
+      no_join: This circle is for group owners and moderators only. Membership is automatic.
+      shared_events: Events shared among group staff
+      no_shared_events: No public events have been shared here yet.
     card_link_aria: 'View group %name% — %members%'
     breadcrumb: Groups
     breadcrumb_new: New
@@ -739,6 +749,8 @@ event:
     current_detail: Current location / detail
     remove_cover: Remove cover photo
     remove_detail: Remove location / detail photo
+    share_in_staff_circle: Share in the Staff Circle
+    share_in_staff_circle_help: Visible to owners and moderators of other groups. Only when the event is public — it is removed automatically if you switch back to private.
     validation:
       group_required: Group is required.
       title_required: Title is required.
@@ -753,6 +765,18 @@ event:
   visibility:
     public: Public (all site users)
     group: Private (group members only)
+
+staff_circle:
+  default_description: Reserved for owners and moderators of each family group. You are added automatically when you receive this role. Share your public events here to keep other group leaders informed about what is happening in your group.
+  notice:
+    added: |
+      You have been added to the Staff Circle.
+
+      This space automatically brings together owners and moderators of each family group. You can view public events shared by other leaders and share your own when you publish a public event in your group.
+    removed: |
+      You are no longer a member of the Staff Circle.
+
+      You are no longer an owner or moderator in any group. If you become a group leader again, you will be added back automatically.
 
 message:
   form:
@@ -954,6 +978,8 @@ flash:
     access_denied: Access denied.
     invitation_not_for_you: This invitation is not for you.
     invitation_invalid: This invitation is no longer valid.
+    staff_circle_no_join: This circle is for group owners and moderators only. Membership is automatic.
+    staff_circle_no_invite: Invitations are not allowed in the Staff Circle.
     owner_only_moderator: Only the group owner can manage moderators.
     owner_cannot_change: The group owner cannot be changed.
     single_moderator: This group can only have one moderator.
@@ -1031,6 +1057,7 @@ flash:
     image_save_failed: Unable to save the image.
     publish_staff_only: Only the group owner can publish events. Contact your group owner.
     published: The event was published.
+    shared_in_staff_circle: The event was shared in the Staff Circle.
     updated: The event was updated.
     deleted: The event was deleted.
     contact_min_length: Message must be at least 15 characters.

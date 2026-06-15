@@ -64,6 +64,7 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->select('COUNT(DISTINCT g.id)')
             ->innerJoin('gm.group', 'g')
             ->andWhere('gm.user = :user')
+            ->andWhere('g.isStaffCircle = false')
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
@@ -84,6 +85,7 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->innerJoin('g.groupMembers', 'gm')
             ->leftJoin('g.owner', 'owner')
             ->andWhere('gm.user = :user')
+            ->andWhere('g.isStaffCircle = false')
             ->setParameter('user', $user)
             ->orderBy('CASE WHEN g.owner = :user THEN 0 ELSE 1 END', 'ASC')
             ->addOrderBy('g.name', 'ASC')
@@ -91,6 +93,48 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->setMaxResults($perPage)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function findAllStaffUserIdsExcludingStaffCircle(): array
+    {
+        $ownerIds = $this->getEntityManager()->createQueryBuilder()
+            ->select('DISTINCT IDENTITY(g.owner) AS userId')
+            ->from(Group::class, 'g')
+            ->andWhere('g.isStaffCircle = false')
+            ->andWhere('g.owner IS NOT NULL')
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        $moderatorIds = $this->createQueryBuilder('gm')
+            ->select('DISTINCT IDENTITY(gm.user) AS userId')
+            ->innerJoin('gm.group', 'g')
+            ->andWhere('g.isStaffCircle = false')
+            ->andWhere('gm.role = :moderatorRole')
+            ->setParameter('moderatorRole', GroupMemberRole::Moderator)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        $ids = array_map('intval', [...$ownerIds, ...$moderatorIds]);
+
+        return array_values(array_unique(array_filter($ids, static fn (int $id): bool => $id > 0)));
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function findUserIdsInGroup(Group $group): array
+    {
+        $rows = $this->createQueryBuilder('gm')
+            ->select('IDENTITY(gm.user) AS userId')
+            ->andWhere('gm.group = :group')
+            ->setParameter('group', $group)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_map(static fn (array $row): int => (int) $row['userId'], $rows);
     }
 
     /**
@@ -241,6 +285,7 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->select('DISTINCT g.id AS groupId')
             ->from(Group::class, 'g')
             ->leftJoin('g.groupMembers', 'gm', 'WITH', 'gm.user = :user')
+            ->andWhere('g.isStaffCircle = false')
             ->andWhere('g.owner = :user OR gm.role = :moderatorRole')
             ->setParameter('user', $user)
             ->setParameter('moderatorRole', GroupMemberRole::Moderator)
@@ -268,6 +313,7 @@ class GroupMemberRepository extends ServiceEntityRepository
             ->leftJoin('allGm.user', 'memberUser')
             ->leftJoin('g.owner', 'owner')
             ->andWhere('gm.user = :user')
+            ->andWhere('g.isStaffCircle = false')
             ->andWhere('g.owner = :user OR gm.role IN (:staffRoles)')
             ->setParameter('user', $user)
             ->setParameter('staffRoles', [GroupMemberRole::Owner, GroupMemberRole::Moderator])

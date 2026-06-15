@@ -1,4 +1,5 @@
 <div class="card border-0 shadow-sm ef-GroupShow__card-member">
+    {% set hide_moderation = hide_moderation|default(false) %}
     <div class="card-header bg-transparent border-0 py-4 px-4 d-flex justify-content-between align-items-center">
         <h3 class="mb-0 h5">{{ 'ui.groups.members.title'|trans }} <span class="badge bg-secondary ms-2">{{ membersTotal }}</span></h3>
     </div>
@@ -17,7 +18,7 @@
                     {% set is_banned = isMember and bannedUserIds[member.user.id] is defined %}
                     {% set is_self = member.user.id == app.user.id %}
                     {% set is_target_owner = member.role.value == 'OWNER' %}
-                    {% set can_staff_ban = isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
+                    {% set can_staff_ban = not hide_moderation and isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
                     <tr class="ef-member-row{% if is_banned %} opacity-50 bg-light{% endif %}">
                         <td class="ps-4 py-3">
                             <div class="d-flex align-items-center">
@@ -56,7 +57,7 @@
                                             </a>
                                         </li>
 
-                                        {% if isOwner and not is_self and not is_target_owner %}
+                                        {% if not hide_moderation and isOwner and not is_self and not is_target_owner %}
                                             <li>
                                                 <button
                                                     type="button"
@@ -91,7 +92,7 @@
                                             </li>
                                         {% endif %}
 
-                                        {% if isOwner and not is_self and not is_target_owner %}
+                                        {% if not hide_moderation and isOwner and not is_self and not is_target_owner %}
                                             <li>
                                                 <form action="{{ path('app_groups_kick_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('kick' ~ member.id) }}">
@@ -173,7 +174,7 @@
 {% for member in groupMembers %}
     {% set is_self = member.user.id == app.user.id %}
     {% set is_target_owner = member.role.value == 'OWNER' %}
-    {% set can_staff_ban = isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
+    {% set can_staff_ban = not hide_moderation and isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
     {% if can_staff_ban %}
         <div class="modal fade ef-GroupShow__ban-modal" id="ban-modal-{{ member.id }}" tabindex="-1" aria-labelledby="ban-modal-label-{{ member.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">

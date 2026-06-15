@@ -18,6 +18,7 @@ final class GroupOwnerTransferService
         private readonly GroupRepository $groupRepository,
         private readonly GroupMemberRepository $groupMemberRepository,
         private readonly GroupAccessService $groupAccess,
+        private readonly StaffCircleService $staffCircleService,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -52,6 +53,7 @@ final class GroupOwnerTransferService
         $membership = $this->resolveOrCreateMembership($group, $owner, true);
         $membership->setRole(GroupMemberRole::Owner);
         $this->demoteOtherOwnerRoles($group, $owner);
+        $this->staffCircleService->syncUser($owner);
     }
 
     /**
@@ -121,6 +123,10 @@ final class GroupOwnerTransferService
         }
 
         $this->demoteOtherOwnerRoles($group, $newOwner);
+        $this->staffCircleService->syncUser($newOwner);
+        if (null !== $previousOwner) {
+            $this->staffCircleService->syncUser($previousOwner);
+        }
     }
 
     /**

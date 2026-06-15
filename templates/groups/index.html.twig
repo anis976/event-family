@@ -7,6 +7,23 @@
 <div class="ef-main-content-padding ef-groups">
     <h1 class="visually-hidden">{{ 'ui.groups.title'|trans }}</h1>
 
+    {% if staffCircle %}
+        <section class="mb-5 ef-groups__staff-circle-section" aria-labelledby="staff-circle-heading">
+            <div class="d-flex justify-content-between align-items-center mb-3 ef-groups__title">
+                <h2 id="staff-circle-heading" class="mb-0">{{ 'ui.groups.staff_circle.section_title'|trans }}</h2>
+            </div>
+            <div class="row row-cols-1 g-4">
+                {% include 'groups/_group_card.html.twig' with {
+                    group: staffCircle,
+                    card_href: path('app_groups_show', { id: staffCircle.id }),
+                    member_count: member_counts[staffCircle.id]|default(0),
+                    is_staff_circle: true,
+                    is_staff_circle_member: is_staff_circle_member,
+                } %}
+            </div>
+        </section>
+    {% endif %}
+
     <div class="d-flex justify-content-between align-items-center mb-4 ef-groups__title">
         <h2 class="mb-0">{{ 'ui.groups.my_groups'|trans }}</h2>
         {% if can_create %}

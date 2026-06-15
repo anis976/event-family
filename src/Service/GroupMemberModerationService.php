@@ -21,6 +21,7 @@ final class GroupMemberModerationService
         private readonly GroupMemberRepository $groupMemberRepository,
         private readonly UserBanRepository $userBanRepository,
         private readonly BanEscalationService $banEscalation,
+        private readonly StaffCircleService $staffCircleService,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -42,6 +43,7 @@ final class GroupMemberModerationService
         if (GroupMemberRole::Moderator === $targetMember->getRole()) {
             $targetMember->setRole(GroupMemberRole::Member);
             $this->entityManager->flush();
+            $this->staffCircleService->syncUser($targetMember->getUser());
 
             return;
         }
@@ -52,6 +54,7 @@ final class GroupMemberModerationService
 
         $targetMember->setRole(GroupMemberRole::Moderator);
         $this->entityManager->flush();
+        $this->staffCircleService->syncUser($targetMember->getUser());
     }
 
     /**
@@ -74,8 +77,10 @@ final class GroupMemberModerationService
             throw new \DomainException('admin.crud.group.error_moderator_banned');
         }
 
+        $demotedUsers = [];
         foreach ($this->groupMemberRepository->findModeratorsInGroupExcluding($group, $newModerator) as $moderator) {
             $moderator->setRole(GroupMemberRole::Member);
+            $demotedUsers[] = $moderator->getUser();
         }
 
         if (GroupMemberRole::Moderator !== $membership->getRole()) {
@@ -83,6 +88,11 @@ final class GroupMemberModerationService
         }
 
         $this->entityManager->flush();
+
+        $this->staffCircleService->syncUser($newModerator);
+        foreach ($demotedUsers as $demotedUser) {
+            $this->staffCircleService->syncUser($demotedUser);
+        }
     }
 
     /**
@@ -102,6 +112,7 @@ final class GroupMemberModerationService
 
         $targetMember->setRole(GroupMemberRole::Member);
         $this->entityManager->flush();
+        $this->staffCircleService->syncUser($targetMember->getUser());
     }
 
     public function banMember(User $actor, GroupMember $targetMember, string $reason): void
@@ -175,6 +186,7 @@ final class GroupMemberModerationService
         $group->removeGroupMember($targetMember);
         $this->entityManager->remove($targetMember);
         $this->entityManager->flush();
+        $this->staffCircleService->syncUser($targetMember->getUser());
     }
 
     private function assertCanModerateTarget(User $actor, GroupMember $targetMember): void

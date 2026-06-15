@@ -42,6 +42,10 @@ class Group implements EfAdminLabelInterface
     #[Assert\Length(max: 500, maxMessage: 'group.description.max')]
     private ?string $description = null;
 
+    /** Groupe plateforme réservé aux chefs et modérateurs (adhésion automatique). */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isStaffCircle = false;
+
     /** Message système affiché en tête du fil de groupe (null = texte par défaut plateforme). */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $systemNoticeContent = null;
@@ -139,6 +143,18 @@ class Group implements EfAdminLabelInterface
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function isStaffCircle(): bool
+    {
+        return $this->isStaffCircle;
+    }
+
+    public function setIsStaffCircle(bool $isStaffCircle): static
+    {
+        $this->isStaffCircle = $isStaffCircle;
 
         return $this;
     }
