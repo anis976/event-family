@@ -84,6 +84,31 @@
                         <a href="{{ path('app_groups_edit', { id: group.id }) }}" class="btn w-100 ef-GroupShow__btn-edit">
                             <i class="bi bi-pencil-square me-2" aria-hidden="true"></i>{{ 'ui.groups.show.edit_info'|trans }}
                         </a>
+                    {% endif %}
+
+                    {% if isMember and can_leave_group|default(false) %}
+                        {% if has_stale_owner_role|default(false) %}
+                            <div class="alert alert-warning border-0 small py-2 mb-2" role="status">
+                                {{ 'ui.groups.show.stale_owner_role_notice'|trans }}
+                            </div>
+                        {% endif %}
+                        {% if isOwner and owner_is_sole_member|default(false) %}
+                            <button type="button" class="btn w-100 btn-outline-danger{% if isOwner %} mt-2{% endif %}" data-bs-toggle="modal" data-bs-target="#leave-group-dissolve-modal">
+                                <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>{{ 'ui.groups.show.leave_dissolve'|trans }}
+                            </button>
+                        {% elseif isOwner and leave_successor_candidates is not empty %}
+                            <button type="button" class="btn w-100 btn-outline-danger mt-2" data-bs-toggle="modal" data-bs-target="#leave-group-owner-modal">
+                                <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>{{ 'ui.groups.show.leave_group'|trans }}
+                            </button>
+                        {% elseif isOwner and owner_has_other_members|default(false) %}
+                            <div class="alert alert-warning border-0 small py-2 mb-0 mt-2" role="status">
+                                {{ 'ui.groups.show.leave_no_successor'|trans }}
+                            </div>
+                        {% elseif not isOwner %}
+                            <button type="button" class="btn w-100 btn-outline-danger{% if isOwner %} mt-2{% endif %}" data-bs-toggle="modal" data-bs-target="#leave-group-modal">
+                                <i class="bi bi-box-arrow-right me-2" aria-hidden="true"></i>{{ 'ui.groups.show.leave_group'|trans }}
+                            </button>
+                        {% endif %}
                     {% elseif not isMember %}
                         <div class="ef-GroupShow__join-box">
                             {% if joinState.state == 'invited' and joinState.request %}
@@ -189,4 +214,92 @@
         </div>
     </div>
 </div>
+
+{% if can_leave_group|default(false) %}
+    {% if not isOwner %}
+        <div class="modal fade" id="leave-group-modal" tabindex="-1" aria-labelledby="leave-group-modal-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <form action="{{ path('app_groups_leave', { id: group.id }) }}" method="POST" data-turbo="false">
+                        <input type="hidden" name="_token" value="{{ csrf_token('leave-group' ~ group.id) }}">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="leave-group-modal-label">{{ 'ui.groups.leave.modal_title'|trans }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted small mb-0">{{ 'ui.groups.leave.modal_hint'|trans }}</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'ui.groups.leave.confirm'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% elseif owner_is_sole_member|default(false) %}
+        <div class="modal fade" id="leave-group-dissolve-modal" tabindex="-1" aria-labelledby="leave-group-dissolve-modal-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <form action="{{ path('app_groups_leave', { id: group.id }) }}" method="POST" data-turbo="false">
+                        <input type="hidden" name="_token" value="{{ csrf_token('leave-group' ~ group.id) }}">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="leave-group-dissolve-modal-label">{{ 'ui.groups.leave.dissolve_modal_title'|trans }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted small mb-0">{{ 'ui.groups.leave.dissolve_modal_hint'|trans }}</p>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'ui.groups.leave.dissolve_confirm'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% elseif leave_successor_candidates is not empty %}
+        <div class="modal fade" id="leave-group-owner-modal" tabindex="-1" aria-labelledby="leave-group-owner-modal-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <form action="{{ path('app_groups_leave', { id: group.id }) }}" method="POST" data-turbo="false">
+                        <input type="hidden" name="_token" value="{{ csrf_token('leave-group' ~ group.id) }}">
+                        <div class="modal-header border-0">
+                            <h5 class="modal-title" id="leave-group-owner-modal-label">{{ 'ui.groups.leave.owner_modal_title'|trans }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'ui.common.close'|trans }}"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted small mb-3">{{ 'ui.groups.leave.owner_modal_hint'|trans }}</p>
+                            <label for="leave-successor-id" class="form-label fw-medium">{{ 'ui.groups.leave.successor_label'|trans }} <span class="text-danger">*</span></label>
+                            <select id="leave-successor-id" name="successor_id" class="form-select ef-input mb-3" required>
+                                <option value="">{{ 'ui.groups.leave.successor_placeholder'|trans }}</option>
+                                {% for candidate in leave_successor_candidates %}
+                                    {% set candidate_user = candidate.user %}
+                                    <option value="{{ candidate_user.id }}">
+                                        {{ candidate_user.firstName|capitalize }} {{ candidate_user.lastName|upper }}
+                                        {% if candidate.role.value == 'MODERATOR' %} ({{ 'ui.groups.members.role_moderator'|trans }}){% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <label for="leave-current-password" class="form-label fw-medium">{{ 'ui.profile.form.label.current_password'|trans }} <span class="text-danger">*</span></label>
+                            <input
+                                type="password"
+                                id="leave-current-password"
+                                name="current_password"
+                                class="form-control ef-input"
+                                autocomplete="current-password"
+                                required
+                                placeholder="{{ 'ui.auth.placeholder.password_current'|trans }}"
+                            >
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn ef-groups-form__btn-cancel px-4" data-bs-dismiss="modal">{{ 'ui.common.cancel'|trans }}</button>
+                            <button type="submit" class="btn btn-danger">{{ 'ui.groups.leave.owner_confirm'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
 {% endblock %}

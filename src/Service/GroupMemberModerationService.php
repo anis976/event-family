@@ -22,6 +22,7 @@ final class GroupMemberModerationService
         private readonly UserBanRepository $userBanRepository,
         private readonly BanEscalationService $banEscalation,
         private readonly StaffCircleService $staffCircleService,
+        private readonly GroupOwnerTransferService $groupOwnerTransfer,
         private readonly EntityManagerInterface $entityManager,
     ) {
     }
@@ -178,15 +179,115 @@ final class GroupMemberModerationService
             throw new \DomainException('flash.group.owner_cannot_kick');
         }
 
-        $activeBan = $this->userBanRepository->findActiveBanForUserInGroup($targetMember->getUser(), $group);
+        $this->removeMembership($targetMember);
+    }
+
+    /**
+     * Retrait d'un membre depuis l'admin.
+     *
+     * @throws \DomainException
+     */
+    public function removeMemberFromAdmin(Group $group, GroupMember $targetMember): void
+    {
+        if ($targetMember->getGroup()->getId() !== $group->getId()) {
+            throw new \DomainException('admin.crud.group.error_member_wrong_group');
+        }
+
+        if ($this->groupAccess->isOwner($targetMember->getUser(), $group)) {
+            throw new \DomainException('admin.crud.group.error_cannot_remove_owner');
+        }
+
+        $this->removeMembership($targetMember);
+    }
+
+    /**
+     * Quitter un groupe (membre ou modérateur). Le chef seul dissout le groupe.
+     *
+     * @throws \DomainException
+     */
+    public function leaveGroup(User $user, Group $group): void
+    {
+        if ($group->isStaffCircle()) {
+            throw new \DomainException('flash.group.staff_circle_no_leave');
+        }
+
+        if (!$this->groupAccess->isMember($user, $group)) {
+            throw new \DomainException('flash.group.not_member');
+        }
+
+        if ($this->groupAccess->isOwner($user, $group)) {
+            if ($this->groupOwnerTransfer->hasOtherMembers($group, $user)) {
+                throw new \DomainException('flash.group.owner_must_designate_successor');
+            }
+
+            $this->groupOwnerTransfer->dissolveGroupAsOwner($user, $group);
+
+            return;
+        }
+
+        $membership = $this->groupMemberRepository->findOneByUserAndGroup($user, $group);
+        if (null === $membership) {
+            throw new \DomainException('flash.group.not_member');
+        }
+
+        $this->removeMembership($membership);
+    }
+
+    /**
+     * Le chef quitte le groupe après avoir désigné un successeur.
+     *
+     * @throws \DomainException
+     */
+    public function leaveGroupAsOwner(User $owner, Group $group, User $successor): void
+    {
+        if ($group->isStaffCircle()) {
+            throw new \DomainException('flash.group.staff_circle_no_leave');
+        }
+
+        if (!$this->groupAccess->isOwner($owner, $group)) {
+            throw new \DomainException('flash.group.owner_only_leave');
+        }
+
+        if ($owner->getId() === $successor->getId()) {
+            throw new \DomainException('flash.group.transfer_self');
+        }
+
+        $this->groupOwnerTransfer->reconcileOwnerRoles($group);
+
+        $this->groupOwnerTransfer->transferOwnership(
+            $group,
+            $successor,
+            $owner,
+            GroupMemberRole::Member,
+        );
+
+        $ownerMembership = $this->groupMemberRepository->findOneByUserAndGroup($owner, $group);
+        if (null !== $ownerMembership) {
+            $this->removeMembership($ownerMembership, false);
+        }
+
+        $this->entityManager->flush();
+        $this->staffCircleService->syncUser($owner);
+    }
+
+    private function removeMembership(GroupMember $targetMember, bool $flush = true): void
+    {
+        $group = $targetMember->getGroup();
+        $targetUser = $targetMember->getUser();
+
+        $activeBan = $this->userBanRepository->findActiveBanForUserInGroup($targetUser, $group);
         if (null !== $activeBan) {
             $activeBan->setEndsAt(ParisClock::now());
         }
 
         $group->removeGroupMember($targetMember);
         $this->entityManager->remove($targetMember);
-        $this->entityManager->flush();
-        $this->staffCircleService->syncUser($targetMember->getUser());
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+
+        $this->staffCircleService->syncUser($targetUser);
     }
 
     private function assertCanModerateTarget(User $actor, GroupMember $targetMember): void

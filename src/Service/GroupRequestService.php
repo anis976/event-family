@@ -111,35 +111,49 @@ final class GroupRequestService
             throw new \DomainException('flash.group.staff_only_invite');
         }
 
-        if ($this->groupAccess->isMember($target, $group)) {
-            throw new \DomainException('flash.group.target_already_member');
+        return $this->createInvitation($group, $target);
+    }
+
+    /**
+     * Invitation depuis l'admin (pas de vérification chef/modo).
+     *
+     * @throws \DomainException
+     */
+    public function inviteUserFromAdmin(Group $group, User $target): GroupRequest
+    {
+        if ($group->isStaffCircle()) {
+            throw new \DomainException('admin.crud.group.error_staff_circle_members');
         }
 
-        if ($target->isBanned()) {
-            throw new \DomainException('flash.group.target_suspended');
+        return $this->createInvitation($group, $target);
+    }
+
+    /**
+     * Ajout direct depuis l'admin (adhésion immédiate, sans consentement).
+     *
+     * @throws \DomainException
+     */
+    public function addMemberFromAdmin(Group $group, User $user): void
+    {
+        if ($group->isStaffCircle()) {
+            throw new \DomainException('admin.crud.group.error_staff_circle_members');
         }
 
-        if ($this->groupAccess->isBannedInGroup($target, $group)) {
-            throw new \DomainException('flash.group.target_banned');
+        $this->assertUserEligibleForMembership($user, $group);
+
+        if ($this->groupAccess->isMember($user, $group)) {
+            throw new \DomainException('admin.crud.group.error_member_already_in');
         }
 
-        if (null !== $this->groupRequestRepository->findPendingForUserAndGroup($target, $group)) {
-            throw new \DomainException('flash.group.target_pending_request');
-        }
+        $this->resolveOutstandingRequestsAsAccepted($user, $group);
 
-        if (null !== $this->groupRequestRepository->findInvitedForUserAndGroup($target, $group)) {
-            throw new \DomainException('flash.group.target_pending_invitation');
-        }
+        $membership = (new GroupMember())
+            ->setUser($user)
+            ->setRole(GroupMemberRole::Member);
+        $group->addGroupMember($membership);
 
-        $request = (new GroupRequest())
-            ->setUser($target)
-            ->setRelatedGroup($group)
-            ->setStatus(GroupRequestStatus::Invited);
-
-        $this->entityManager->persist($request);
+        $this->entityManager->persist($membership);
         $this->entityManager->flush();
-
-        return $request;
     }
 
     public function acceptJoinRequest(User $staff, GroupRequest $request): void
@@ -213,6 +227,63 @@ final class GroupRequestService
     public function buildInviteStatusMap(Group $group, array $userIds): array
     {
         return $this->groupRequestRepository->buildInviteStatusMap($group, $userIds);
+    }
+
+    private function createInvitation(Group $group, User $target): GroupRequest
+    {
+        $this->assertUserEligibleForMembership($target, $group);
+
+        if ($this->groupAccess->isMember($target, $group)) {
+            throw new \DomainException('flash.group.target_already_member');
+        }
+
+        if (null !== $this->groupRequestRepository->findPendingForUserAndGroup($target, $group)) {
+            throw new \DomainException('flash.group.target_pending_request');
+        }
+
+        if (null !== $this->groupRequestRepository->findInvitedForUserAndGroup($target, $group)) {
+            throw new \DomainException('flash.group.target_pending_invitation');
+        }
+
+        $request = (new GroupRequest())
+            ->setUser($target)
+            ->setRelatedGroup($group)
+            ->setStatus(GroupRequestStatus::Invited);
+
+        $this->entityManager->persist($request);
+        $this->entityManager->flush();
+
+        return $request;
+    }
+
+    private function assertUserEligibleForMembership(User $user, Group $group): void
+    {
+        if (null !== $user->getDeletedAt()) {
+            throw new \DomainException('admin.crud.group.error_member_deleted');
+        }
+
+        if ($user->isBanned()) {
+            throw new \DomainException('flash.group.target_suspended');
+        }
+
+        if ($this->groupAccess->isBannedInGroup($user, $group)) {
+            throw new \DomainException('flash.group.target_banned');
+        }
+    }
+
+    private function resolveOutstandingRequestsAsAccepted(User $user, Group $group): void
+    {
+        $pending = $this->groupRequestRepository->findPendingForUserAndGroup($user, $group);
+        if (null !== $pending) {
+            $pending->setStatus(GroupRequestStatus::Accepted);
+            $pending->markAsRead();
+        }
+
+        $invited = $this->groupRequestRepository->findInvitedForUserAndGroup($user, $group);
+        if (null !== $invited) {
+            $invited->setStatus(GroupRequestStatus::Accepted);
+            $invited->markAsRead();
+        }
     }
 
     private function addMemberFromRequest(GroupRequest $request, GroupRequestStatus $finalStatus): void

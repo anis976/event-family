@@ -17,8 +17,10 @@
                 {% for member in groupMembers %}
                     {% set is_banned = isMember and bannedUserIds[member.user.id] is defined %}
                     {% set is_self = member.user.id == app.user.id %}
-                    {% set is_target_owner = member.role.value == 'OWNER' %}
-                    {% set can_staff_ban = not hide_moderation and isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
+                    {% set canonical_owner_id = group.owner ? group.owner.id : null %}
+                    {% set is_canonical_owner = canonical_owner_id is not null and member.user.id == canonical_owner_id %}
+                    {% set has_stale_owner_role = member.role.value == 'OWNER' and not is_canonical_owner %}
+                    {% set can_staff_ban = not hide_moderation and isStaff and not is_self and not is_canonical_owner and (isOwner or member.role.value == 'MEMBER') %}
                     <tr class="ef-member-row{% if is_banned %} opacity-50 bg-light{% endif %}">
                         <td class="ps-4 py-3">
                             <div class="d-flex align-items-center">
@@ -35,8 +37,10 @@
                         <td class="ef-GroupShow__card-table-badge py-3">
                             {% if is_banned %}
                                 <span class="badge ef-badge-role-banni"><i class="bi bi-slash-circle me-1"></i>{{ 'ui.groups.members.role_banned'|trans }}</span>
-                            {% elseif is_target_owner %}
+                            {% elseif is_canonical_owner %}
                                 <span class="badge ef-badge-role-chef"><i class="bi bi-star-fill me-1"></i>{{ 'ui.groups.members.role_owner'|trans }}</span>
+                            {% elseif has_stale_owner_role %}
+                                <span class="badge ef-badge-role-member" title="{{ 'ui.groups.members.stale_owner_role_hint'|trans }}">{{ 'ui.groups.members.role_member'|trans }}</span>
                             {% elseif member.role.value == 'MODERATOR' %}
                                 <span class="badge ef-badge-role-modo"><i class="bi bi-shield-check me-1"></i>{{ 'ui.groups.members.role_moderator'|trans }}</span>
                             {% else %}
@@ -57,7 +61,7 @@
                                             </a>
                                         </li>
 
-                                        {% if not hide_moderation and isOwner and not is_self and not is_target_owner %}
+                                        {% if not hide_moderation and isOwner and not is_self and not is_canonical_owner %}
                                             <li>
                                                 <button
                                                     type="button"
@@ -92,7 +96,7 @@
                                             </li>
                                         {% endif %}
 
-                                        {% if not hide_moderation and isOwner and not is_self and not is_target_owner %}
+                                        {% if not hide_moderation and isOwner and not is_self and not is_canonical_owner %}
                                             <li>
                                                 <form action="{{ path('app_groups_kick_member', { memberId: member.id }) }}" method="POST" data-turbo="false">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('kick' ~ member.id) }}">
@@ -173,8 +177,9 @@
 
 {% for member in groupMembers %}
     {% set is_self = member.user.id == app.user.id %}
-    {% set is_target_owner = member.role.value == 'OWNER' %}
-    {% set can_staff_ban = not hide_moderation and isStaff and not is_self and not is_target_owner and (isOwner or member.role.value == 'MEMBER') %}
+    {% set canonical_owner_id = group.owner ? group.owner.id : null %}
+    {% set is_canonical_owner = canonical_owner_id is not null and member.user.id == canonical_owner_id %}
+    {% set can_staff_ban = not hide_moderation and isStaff and not is_self and not is_canonical_owner and (isOwner or member.role.value == 'MEMBER') %}
     {% if can_staff_ban %}
         <div class="modal fade ef-GroupShow__ban-modal" id="ban-modal-{{ member.id }}" tabindex="-1" aria-labelledby="ban-modal-label-{{ member.id }}" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -216,8 +221,8 @@
 {% if isOwner %}
     {% for member in groupMembers %}
         {% set is_self = member.user.id == app.user.id %}
-        {% set is_target_owner = member.role.value == 'OWNER' %}
-        {% if not is_self and not is_target_owner %}
+        {% set is_canonical_owner = group.owner and member.user.id == group.owner.id %}
+        {% if not is_self and not is_canonical_owner %}
             <div class="modal fade ef-GroupShow__transfer-modal" id="transfer-owner-modal-{{ member.id }}" tabindex="-1" aria-labelledby="transfer-owner-modal-label-{{ member.id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content border-0 shadow">

@@ -17,6 +17,7 @@ use App\Repository\GroupRequestRepository;
 use App\Repository\UserBanRepository;
 use App\Service\EventAccessService;
 use App\Service\GroupAccessService;
+use App\Service\GroupOwnerTransferService;
 use App\Service\GroupRequestService;
 use App\Service\SiteStaffService;
 use App\Service\StaffCircleService;
@@ -44,6 +45,7 @@ final class GroupController extends AbstractAppController
         private readonly EventAccessService $eventAccess,
         private readonly GroupRequestRepository $groupRequestRepository,
         private readonly GroupRequestService $groupRequestService,
+        private readonly GroupOwnerTransferService $groupOwnerTransfer,
         private readonly UserBanRepository $userBanRepository,
         private readonly SiteStaffService $siteStaff,
         private readonly StaffCircleService $staffCircleService,
@@ -195,6 +197,11 @@ final class GroupController extends AbstractAppController
         }
 
         $isMember = $this->groupAccess->isMember($user, $group);
+        if ($isMember && !$this->groupAccess->isStaffCircle($group)) {
+            $this->groupOwnerTransfer->reconcileOwnerRoles($group);
+            $this->entityManager->refresh($group);
+        }
+
         $isOwner = $isMember && $this->groupAccess->isOwner($user, $group);
         $currentMember = $isMember ? $this->groupAccess->findMembership($user, $group) : null;
         $isModerator = $isMember && $this->groupAccess->isModerator($user, $group);
@@ -245,6 +252,17 @@ final class GroupController extends AbstractAppController
             'groupEventsOngoing' => $groupEventsOngoing,
             'can_create_event' => $isMember && !$isStaffCircle && $this->eventAccess->canCreateInGroup($user, $group),
             'is_regular_member' => $isMember && !$isStaffCircle && !$this->eventAccess->canCreateInGroup($user, $group),
+            'can_leave_group' => $isMember && !$isStaffCircle,
+            'leave_successor_candidates' => $isOwner && !$isStaffCircle
+                ? $this->groupOwnerTransfer->findEligibleLeaveSuccessors($group, $user)
+                : [],
+            'owner_has_other_members' => $isOwner && !$isStaffCircle
+                && $this->groupOwnerTransfer->hasOtherMembers($group, $user),
+            'owner_is_sole_member' => $isOwner && !$isStaffCircle
+                && !$this->groupOwnerTransfer->hasOtherMembers($group, $user),
+            'has_stale_owner_role' => $isMember && !$isStaffCircle && !$isOwner
+                && null !== $currentMember
+                && GroupMemberRole::Owner === $currentMember->getRole(),
         ]);
     }
 

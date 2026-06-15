@@ -4,5 +4,10 @@
     {% if ef_group_members_html is defined %}
         {% include 'admin/crud/group/_members_panel.html.twig' %}
     {% endif %}
+    {% if ef_group_add_members_html is defined and ef_group_add_members_html %}
+        <div class="form-fieldset mb-4">
+            {{ ef_group_add_members_html|raw }}
+        </div>
+    {% endif %}
     {{ parent() }}
 {% endblock %}

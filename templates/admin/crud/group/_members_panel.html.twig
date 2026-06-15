@@ -11,6 +11,15 @@
             {% endif %}
         </div>
         <div class="form-fieldset-body without-header">
+            {% if ef_group_can_reconcile_roles|default(false) %}
+                <form action="{{ path('app_admin_groups_reconcile_roles', { groupId: ef_group_id }) }}" method="post" class="mb-3" data-turbo="false">
+                    <input type="hidden" name="_token" value="{{ csrf_token('admin-reconcile-roles' ~ ef_group_id) }}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                        {{ 'admin.crud.group.action_reconcile_roles'|trans }}
+                    </button>
+                    <span class="text-muted small ms-2">{{ 'admin.crud.group.reconcile_roles_hint'|trans }}</span>
+                </form>
+            {% endif %}
             <div class="row">
                 <div class="col-12">
                     {{ ef_group_members_html|raw }}

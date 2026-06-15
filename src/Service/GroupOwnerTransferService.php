@@ -210,6 +210,126 @@ final class GroupOwnerTransferService
     }
 
     /**
+     * Successeurs éligibles pour un départ de chef (non banni, peut diriger ce groupe).
+     *
+     * @return list<GroupMember>
+     */
+    public function findEligibleLeaveSuccessors(Group $group, User $departingOwner): array
+    {
+        $eligible = [];
+
+        foreach ($this->groupMemberRepository->findOtherMembersOrdered($group, $departingOwner) as $member) {
+            $candidate = $member->getUser();
+
+            if ($this->groupAccess->isBannedInGroup($candidate, $group)) {
+                continue;
+            }
+
+            try {
+                $this->assertUserCanBecomeOwner($candidate, $group->getId());
+            } catch (\DomainException) {
+                continue;
+            }
+
+            $eligible[] = $member;
+        }
+
+        return $eligible;
+    }
+
+    /**
+     * Aligne les rôles OWNER des membres sur {@see Group::getOwner()} (source de vérité).
+     * Corrige les groupes où plusieurs membres affichent « chef » à tort.
+     *
+     * @return bool true si des corrections ont été enregistrées
+     */
+    public function reconcileOwnerRoles(Group $group): bool
+    {
+        if ($group->isStaffCircle()) {
+            return false;
+        }
+
+        $changed = false;
+        $usersToSync = [];
+
+        $owner = $group->getOwner();
+
+        if (null === $owner) {
+            $ownerRoleMembers = $this->groupMemberRepository->findOwnerMembersInGroup($group);
+
+            if (1 === \count($ownerRoleMembers)) {
+                $owner = $ownerRoleMembers[0]->getUser();
+                $group->setOwner($owner);
+                $changed = true;
+            } elseif (\count($ownerRoleMembers) > 1) {
+                $owner = $this->pickCanonicalOwnerFromStaleRoles($ownerRoleMembers);
+                if (null !== $owner) {
+                    $group->setOwner($owner);
+                    $changed = true;
+                }
+            }
+        }
+
+        if (null !== $owner) {
+            foreach ($this->groupMemberRepository->findOwnerMembersInGroupExcluding($group, $owner) as $staleOwner) {
+                $staleOwner->setRole(GroupMemberRole::Member);
+                $usersToSync[] = $staleOwner->getUser();
+                $changed = true;
+            }
+
+            $ownerMembership = $this->groupMemberRepository->findOneByUserAndGroup($owner, $group);
+            if (null !== $ownerMembership && GroupMemberRole::Owner !== $ownerMembership->getRole()) {
+                $ownerMembership->setRole(GroupMemberRole::Owner);
+                $changed = true;
+            }
+
+            $usersToSync[] = $owner;
+        }
+
+        if (!$changed) {
+            return false;
+        }
+
+        $this->entityManager->flush();
+
+        foreach ($this->uniqueUsers($usersToSync) as $user) {
+            $this->staffCircleService->syncUser($user);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param list<GroupMember> $ownerRoleMembers membres avec rôle OWNER en base (ordre : ancienneté)
+     */
+    private function pickCanonicalOwnerFromStaleRoles(array $ownerRoleMembers): ?User
+    {
+        return $ownerRoleMembers[0]?->getUser();
+    }
+
+    /**
+     * @param list<User> $users
+     *
+     * @return list<User>
+     */
+    private function uniqueUsers(array $users): array
+    {
+        $seen = [];
+        $unique = [];
+
+        foreach ($users as $user) {
+            $id = $user->getId();
+            if (null === $id || isset($seen[$id])) {
+                continue;
+            }
+            $seen[$id] = true;
+            $unique[] = $user;
+        }
+
+        return $unique;
+    }
+
+    /**
      * @throws \DomainException
      */
     private function assertUserCanBecomeOwner(User $user, ?int $forGroupId): void

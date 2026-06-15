@@ -1,0 +1,81 @@
+<div class="ef-admin-group-add-members mb-4">
+    <h6 class="fw-semibold mb-2">{{ 'admin.crud.group.add_members_heading'|trans }}</h6>
+    <p class="text-muted small mb-3">{{ 'admin.crud.group.add_members_hint'|trans|raw }}</p>
+
+    <form method="get" action="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\GroupCrudController').setAction('edit').setEntityId(group_id).generateUrl() }}" class="row g-2 align-items-end mb-3" data-turbo="false">
+        <div class="col-md-8">
+            <label for="admin-group-member-q" class="form-label small mb-1">{{ 'admin.crud.group.add_members_search_label'|trans }}</label>
+            <input
+                type="search"
+                id="admin-group-member-q"
+                name="member_q"
+                class="form-control form-control-sm"
+                value="{{ search_query }}"
+                placeholder="{{ 'admin.crud.group.add_members_search_placeholder'|trans }}"
+                minlength="2"
+            >
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-sm btn-primary w-100">
+                <i class="fa fa-search me-1" aria-hidden="true"></i>
+                {{ 'admin.crud.group.add_members_search_button'|trans }}
+            </button>
+        </div>
+    </form>
+
+    {% if search_query is not empty %}
+        {% if search_query|length < 2 %}
+            <p class="text-muted small mb-0">{{ 'admin.crud.group.add_members_search_min'|trans }}</p>
+        {% elseif users is empty %}
+            <p class="text-muted small mb-0">{{ 'admin.crud.group.add_members_no_results'|trans }}</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-sm table-striped align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ 'admin.crud.group.add_members_column_user'|trans }}</th>
+                            <th scope="col" class="text-end">{{ 'admin.crud.group.add_members_column_actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            {% set rules = user_status_rules[user.id]|default({ pending_or_invited: false, refused_count: 0 }) %}
+                            <tr>
+                                <td>
+                                    <a href="{{ ea_url().setController('App\\Controller\\Admin\\Crud\\UserCrudController').setAction('detail').setEntityId(user.id).generateUrl() }}">
+                                        {{ user }}
+                                    </a>
+                                    {% if user.pseudo %}
+                                        <span class="text-muted small d-block">@{{ user.pseudo }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    {% if rules.refused_count >= 3 %}
+                                        <span class="badge text-bg-danger">{{ 'admin.crud.group.add_members_status_blocked'|trans }}</span>
+                                    {% elseif rules.pending_or_invited %}
+                                        <span class="badge text-bg-secondary">{{ 'admin.crud.group.add_members_status_pending'|trans }}</span>
+                                    {% else %}
+                                        <form action="{{ path('app_admin_groups_invite_member', { groupId: group_id, userId: user.id }) }}" method="post" class="d-inline" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin-invite-member' ~ user.id) }}">
+                                            <input type="hidden" name="member_q" value="{{ search_query }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary" title="{{ 'admin.crud.group.action_invite_member_hint'|trans }}">
+                                                {{ 'admin.crud.group.action_invite_member'|trans }}
+                                            </button>
+                                        </form>
+                                        <form action="{{ path('app_admin_groups_add_member', { groupId: group_id, userId: user.id }) }}" method="post" class="d-inline ms-1" data-turbo="false">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('admin-add-member' ~ user.id) }}">
+                                            <input type="hidden" name="member_q" value="{{ search_query }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-success" title="{{ 'admin.crud.group.action_add_member_direct_hint'|trans }}">
+                                                {{ 'admin.crud.group.action_add_member_direct'|trans }}
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>

@@ -262,6 +262,22 @@ ui:
       filter_ongoing: En cours
       filter_upcoming: À venir
       no_group_events: Aucun événement à venir ou en cours pour ce groupe.
+      leave_group: Quitter le groupe
+      leave_dissolve: Dissoudre le groupe
+      stale_owner_role_notice: Ton compte affichait à tort le rôle chef. Le vrai responsable est celui indiqué dans le groupe. Tu peux quitter normalement ci-dessous.
+      leave_no_successor: Aucun autre membre ne peut devenir chef (déjà responsable d'un autre groupe ou banni). Contacte la modération ou retire des membres depuis l'administration.
+    leave:
+      modal_title: Quitter le groupe
+      modal_hint: Tu ne feras plus partie de ce groupe et n'auras plus accès à ses événements ni à sa messagerie.
+      confirm: Confirmer et quitter
+      dissolve_modal_title: Dissoudre le groupe
+      dissolve_modal_hint: Tu es le seul membre. Quitter dissoudra définitivement ce groupe et ses données associées.
+      dissolve_confirm: Dissoudre le groupe
+      owner_modal_title: Quitter en tant que chef
+      owner_modal_hint: Avant de partir, tu dois désigner un nouveau chef du groupe. Cette action est irréversible.
+      successor_label: Nouveau chef du groupe
+      successor_placeholder: Choisir un membre…
+      owner_confirm: Transférer et quitter
     members:
       title: Membres du cercle
       pagination_aria: Pagination des membres du groupe
@@ -288,6 +304,7 @@ ui:
       ban_reason_label: Motif du bannissement
       ban_reason_placeholder: Décris clairement la raison du bannissement…
       ban_confirm: Confirmer le bannissement
+      stale_owner_role_hint: Rôle chef obsolète en base — seul le responsable officiel du groupe est chef.
     transfer:
       modal_title: Transférer le rôle de chef à %name%
       modal_hint: Cette action est irréversible. Confirme avec ton mot de passe pour prouver que c'est bien toi.
@@ -1004,6 +1021,13 @@ flash:
     ownership_transferred: Le rôle de chef a été transféré à %name%.
     owner_only_dissolve: Seul le chef du groupe peut dissoudre le groupe.
     dissolve_requires_sole_member: Tu ne peux dissoudre le groupe que si tu en es le seul membre.
+    not_member: Tu n'es pas membre de ce groupe.
+    staff_circle_no_leave: Tu ne peux pas quitter le Cercle des responsables manuellement.
+    owner_must_designate_successor: En tant que chef, tu dois d'abord désigner un nouveau responsable avant de quitter.
+    owner_only_leave: Seul le chef du groupe peut utiliser cette procédure de départ.
+    leave_successor_required: Choisis le membre qui deviendra chef du groupe.
+    left: Tu as quitté le groupe.
+    left_as_owner: Tu as quitté le groupe. %name% est maintenant chef du groupe.
   message:
     group_not_found: Groupe introuvable.
     group_inaccessible: Groupe introuvable ou inaccessible.
@@ -1291,14 +1315,45 @@ admin:
       error_owner_banned: Un membre banni ne peut pas être nommé responsable.
       fieldset_members: Membres du groupe
       field_members_table: Liste des membres
-      members_hint: Consulte cette liste avant de modifier le responsable. Tu peux nommer ou retirer le modérateur directement dans le tableau, ou modifier le responsable via le formulaire ci-dessous.
+      members_hint: 'Consulte cette liste avant de modifier le responsable. Tu peux nommer ou retirer le modérateur, ajouter ou retirer des membres, ou modifier le responsable via le formulaire ci-dessous. <strong>Privilégie l''invitation</strong> pour respecter le consentement du membre ; l''ajout direct est réservé aux cas exceptionnels.'
       members_empty: Aucun membre enregistré pour ce groupe.
       members_column_user: Membre
       members_column_role: Rôle dans le groupe
       members_column_joined: Membre depuis
-      members_column_actions: Modération
+      members_column_actions: Actions
       action_make_moderator: Nommer modérateur
       action_remove_moderator: Retirer modérateur
+      action_remove_member: Retirer du groupe
+      remove_member_confirm: Retirer ce membre du groupe ?
+      action_invite_member: Inviter
+      action_invite_member_hint: Envoie une invitation que le membre peut accepter ou refuser.
+      action_add_member_direct: Ajouter
+      action_add_member_direct_hint: Ajoute immédiatement sans demander le consentement (à utiliser avec discernement).
+      add_members_heading: Ajouter des membres
+      add_members_hint: 'Recherche un utilisateur du site qui n''est pas encore dans ce groupe. <strong>Inviter</strong> est recommandé : le membre reçoit une invitation qu''il peut accepter ou refuser. <strong>Ajouter</strong> l''inscrit directement sans son accord.'
+      add_members_search_label: Rechercher un utilisateur
+      add_members_search_placeholder: Prénom, nom, pseudo ou e-mail…
+      add_members_search_button: Rechercher
+      add_members_search_min: Saisis au moins 2 caractères pour lancer une recherche.
+      add_members_no_results: Aucun utilisateur trouvé pour cette recherche.
+      add_members_column_user: Utilisateur
+      add_members_column_actions: Actions
+      add_members_status_blocked: Bloqué (3 rejets)
+      add_members_status_pending: Déjà en attente
+      member_invited: Invitation envoyée à %name%.
+      member_added: '%name% a été ajouté(e) au groupe.'
+      member_removed: '%name% a été retiré(e) du groupe.'
+      error_member_not_found: Utilisateur introuvable.
+      error_member_already_in: Cet utilisateur est déjà membre du groupe.
+      error_member_deleted: Impossible d'ajouter un compte supprimé.
+      error_member_wrong_group: Ce membre n'appartient pas à ce groupe.
+      error_cannot_remove_owner: Impossible de retirer le chef du groupe. Réassigne d'abord le responsable.
+      error_staff_circle_members: Les membres du Cercle des responsables sont gérés automatiquement.
+      action_reconcile_roles: Corriger les rôles chef
+      reconcile_roles_hint: Utile si plusieurs membres affichent « chef » à tort.
+      roles_reconciled: Les rôles chef ont été réalignés sur le responsable officiel du groupe.
+      roles_already_ok: Les rôles chef sont déjà cohérents.
+      member_stale_owner_role: Rôle chef en base mais ce n'est pas le responsable officiel du groupe.
       moderator_assigned: '%name% est maintenant modérateur du groupe.'
       moderator_removed: Le rôle modérateur a été retiré à %name%.
       error_moderator_not_member: Ce modérateur doit être membre du groupe.

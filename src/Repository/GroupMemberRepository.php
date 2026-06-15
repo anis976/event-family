@@ -233,6 +233,23 @@ class GroupMemberRepository extends ServiceEntityRepository
     /**
      * @return list<GroupMember>
      */
+    public function findOwnerMembersInGroup(Group $group): array
+    {
+        return $this->createQueryBuilder('gm')
+            ->addSelect('u')
+            ->innerJoin('gm.user', 'u')
+            ->andWhere('gm.group = :group')
+            ->andWhere('gm.role = :role')
+            ->setParameter('group', $group)
+            ->setParameter('role', GroupMemberRole::Owner)
+            ->addOrderBy('gm.joinedAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<GroupMember>
+     */
     public function findOwnerMembersInGroupExcluding(Group $group, User $excludeUser): array
     {
         return $this->createQueryBuilder('gm')

@@ -285,6 +285,91 @@ final class GroupModerationController extends AbstractAppController
         }, 'flash.group.member_kicked');
     }
 
+    #[Route('/{id}/quitter', name: '_leave', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function leaveGroup(int $id, Request $request, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $user = $this->requireUser();
+        $group = $this->requireModeratableGroup($id);
+
+        if (!$this->groupAccess->isMember($user, $group)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->isCsrfTokenValid('leave-group'.$group->getId(), (string) $request->request->get('_token'))) {
+            $this->addErrorFlash('flash.session_expired');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        if ($this->groupAccess->isOwner($user, $group) && $this->groupOwnerTransfer->hasOtherMembers($group, $user)) {
+            return $this->handleOwnerLeave($user, $group, $request, $passwordHasher);
+        }
+
+        try {
+            $this->memberModerationService->leaveGroup($user, $group);
+            $this->addSuccessFlash('flash.group.left');
+        } catch (\DomainException $e) {
+            $this->addErrorFlash($e->getMessage());
+        }
+
+        return $this->redirectAfterLeave($group);
+    }
+
+    private function handleOwnerLeave(
+        User $owner,
+        Group $group,
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+    ): Response {
+        $successorId = (int) $request->request->get('successor_id', 0);
+        if ($successorId <= 0) {
+            $this->addErrorFlash('flash.group.leave_successor_required');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        $successor = $this->userRepository->findActiveById($successorId);
+        if (null === $successor) {
+            $this->addErrorFlash('flash.group.transfer_target_deleted');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        $password = trim((string) $request->request->get('current_password', ''));
+        if ('' === $password) {
+            $this->addErrorFlash('ui.profile.form.validation.current_password_required');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        if (!$passwordHasher->isPasswordValid($owner, $password)) {
+            $this->addErrorFlash('ui.profile.form.validation.current_password_invalid');
+
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        try {
+            $this->memberModerationService->leaveGroupAsOwner($owner, $group, $successor);
+            $this->addSuccessFlash('flash.group.left_as_owner', [
+                '%name%' => $successor->getFirstName(),
+            ]);
+        } catch (\DomainException $e) {
+            $this->addErrorFlash($e->getMessage());
+        }
+
+        return $this->redirectAfterLeave($group);
+    }
+
+    private function redirectAfterLeave(Group $group): Response
+    {
+        $user = $this->getUser();
+        if ($user instanceof User && $this->groupAccess->isMember($user, $group)) {
+            return $this->redirectToRoute('app_groups_show', ['id' => $group->getId()]);
+        }
+
+        return $this->redirectToRoute('app_groups');
+    }
+
     /**
      * @param callable(User, GroupMember): void $action
      */

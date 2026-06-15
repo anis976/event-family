@@ -261,6 +261,22 @@ ui:
       filter_ongoing: Ongoing
       filter_upcoming: Upcoming
       no_group_events: No upcoming or ongoing events for this group.
+      leave_group: Leave group
+      leave_dissolve: Dissolve group
+      stale_owner_role_notice: Your account incorrectly showed the owner role. The real group leader is the one designated officially. You can leave normally below.
+      leave_no_successor: No other member can become owner (already leads another group or is banned). Contact moderation or remove members from the admin panel.
+    leave:
+      modal_title: Leave group
+      modal_hint: You will no longer be part of this group and will lose access to its events and messages.
+      confirm: Confirm and leave
+      dissolve_modal_title: Dissolve group
+      dissolve_modal_hint: You are the only member. Leaving will permanently dissolve this group and its related data.
+      dissolve_confirm: Dissolve group
+      owner_modal_title: Leave as group owner
+      owner_modal_hint: Before leaving, you must designate a new group owner. This action cannot be undone.
+      successor_label: New group owner
+      successor_placeholder: Choose a member…
+      owner_confirm: Transfer and leave
     members:
       title: Circle members
       pagination_aria: Group members pagination
@@ -287,6 +303,7 @@ ui:
       ban_reason_label: Reason for ban
       ban_reason_placeholder: Clearly describe the reason for the ban…
       ban_confirm: Confirm ban
+      stale_owner_role_hint: Stale owner role in database — only the official group leader is owner.
     transfer:
       modal_title: Transfer ownership to %name%
       modal_hint: This action cannot be undone. Confirm with your password to prove it's really you.
@@ -1003,6 +1020,13 @@ flash:
     ownership_transferred: Ownership has been transferred to %name%.
     owner_only_dissolve: Only the group owner can dissolve the group.
     dissolve_requires_sole_member: You can only dissolve the group if you are its only member.
+    not_member: You are not a member of this group.
+    staff_circle_no_leave: You cannot leave the Staff Circle manually.
+    owner_must_designate_successor: As owner, you must designate a new leader before leaving.
+    owner_only_leave: Only the group owner can use this leave procedure.
+    leave_successor_required: Choose the member who will become group owner.
+    left: You have left the group.
+    left_as_owner: You have left the group. %name% is now group owner.
   message:
     group_not_found: Group not found.
     group_inaccessible: Group not found or inaccessible.
@@ -1290,14 +1314,45 @@ admin:
       error_owner_banned: A banned member cannot be assigned as owner.
       fieldset_members: Group members
       field_members_table: Member list
-      members_hint: Review this list before changing the owner. You can assign or remove the moderator in the table, or change the owner in the form below.
+      members_hint: 'Review this list before changing the owner. You can assign or remove the moderator, add or remove members, or change the owner in the form below. <strong>Prefer inviting</strong> to respect member consent; direct add is for exceptional cases only.'
       members_empty: No members registered for this group.
       members_column_user: Member
       members_column_role: Role in group
       members_column_joined: Member since
-      members_column_actions: Moderation
+      members_column_actions: Actions
       action_make_moderator: Make moderator
       action_remove_moderator: Remove moderator
+      action_remove_member: Remove from group
+      remove_member_confirm: Remove this member from the group?
+      action_invite_member: Invite
+      action_invite_member_hint: Sends an invitation the member can accept or decline.
+      action_add_member_direct: Add
+      action_add_member_direct_hint: Adds immediately without asking for consent (use with care).
+      add_members_heading: Add members
+      add_members_hint: 'Search for a site user who is not in this group yet. <strong>Invite</strong> is recommended: the member receives an invitation they can accept or decline. <strong>Add</strong> enrolls them immediately without their agreement.'
+      add_members_search_label: Search for a user
+      add_members_search_placeholder: First name, last name, username or email…
+      add_members_search_button: Search
+      add_members_search_min: Enter at least 2 characters to search.
+      add_members_no_results: No users found for this search.
+      add_members_column_user: User
+      add_members_column_actions: Actions
+      add_members_status_blocked: Blocked (3 refusals)
+      add_members_status_pending: Already pending
+      member_invited: Invitation sent to %name%.
+      member_added: '%name% has been added to the group.'
+      member_removed: '%name% has been removed from the group.'
+      error_member_not_found: User not found.
+      error_member_already_in: This user is already a group member.
+      error_member_deleted: Cannot add a deleted account.
+      error_member_wrong_group: This member does not belong to this group.
+      error_cannot_remove_owner: Cannot remove the group owner. Reassign the owner first.
+      error_staff_circle_members: Staff Circle members are managed automatically.
+      action_reconcile_roles: Fix owner roles
+      reconcile_roles_hint: Use when several members incorrectly show as owner.
+      roles_reconciled: Owner roles have been realigned with the official group leader.
+      roles_already_ok: Owner roles are already consistent.
+      member_stale_owner_role: Owner role in database but not the official group leader.
       moderator_assigned: '%name% is now group moderator.'
       moderator_removed: Moderator role removed from %name%.
       error_moderator_not_member: The moderator must be a group member.

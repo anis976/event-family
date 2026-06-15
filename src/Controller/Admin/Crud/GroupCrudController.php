@@ -9,7 +9,9 @@ use App\Entity\Group;
 use App\Entity\User;
 use App\Repository\GroupMemberRepository;
 use App\Repository\GroupRepository;
+use App\Repository\UserRepository;
 use App\Service\GroupOwnerTransferService;
+use App\Service\GroupRequestService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -32,6 +34,8 @@ final class GroupCrudController extends AbstractAdminCrudController
         private readonly GroupOwnerTransferService $groupOwnerTransfer,
         private readonly GroupRepository $groupRepository,
         private readonly GroupMemberRepository $groupMemberRepository,
+        private readonly UserRepository $userRepository,
+        private readonly GroupRequestService $groupRequestService,
         private readonly Environment $twig,
     ) {
     }
@@ -212,9 +216,45 @@ final class GroupCrudController extends AbstractAdminCrudController
         ) {
             $entity = $context->getEntity()->getInstance();
             if ($entity instanceof Group) {
-                $responseParameters->set('ef_group_members_html', $this->renderMembersDetailHtml($entity));
+                $isEditPage = Crud::PAGE_EDIT === $context->getCrud()->getCurrentPage();
+                $canManageMembers = !$entity->isStaffCircle();
+
+                if ($canManageMembers) {
+                    $this->groupOwnerTransfer->reconcileOwnerRoles($entity);
+                }
+
+                $memberSearchQuery = '';
+                $addMemberUsers = [];
+                $addMemberStatusRules = [];
+
+                if ($isEditPage && $canManageMembers) {
+                    $request = $this->container->get('request_stack')->getCurrentRequest();
+                    $memberSearchQuery = null !== $request
+                        ? trim((string) $request->query->get('member_q', ''))
+                        : '';
+
+                    if ('' !== $memberSearchQuery && mb_strlen($memberSearchQuery) >= 2) {
+                        $memberIds = array_map(
+                            static fn ($member) => $member->getUser()->getId(),
+                            $entity->getGroupMembers()->toArray(),
+                        );
+                        $addMemberUsers = $this->userRepository->searchForGroupInvite($memberIds, $memberSearchQuery);
+                        $userIds = array_map(static fn (User $u): int => $u->getId(), $addMemberUsers);
+                        $addMemberStatusRules = $this->groupRequestService->buildInviteStatusMap($entity, $userIds);
+                    }
+                }
+
+                $responseParameters->set('ef_group_members_html', $this->renderMembersDetailHtml(
+                    $entity,
+                    $canManageMembers,
+                ));
+                $responseParameters->set('ef_group_can_reconcile_roles', $canManageMembers);
+                $responseParameters->set('ef_group_id', $entity->getId());
                 $responseParameters->set('ef_group_members_title', 'admin.crud.group.fieldset_members');
                 $responseParameters->set('ef_group_members_hint', 'admin.crud.group.members_hint');
+                $responseParameters->set('ef_group_add_members_html', $isEditPage && $canManageMembers
+                    ? $this->renderAddMembersHtml($entity, $memberSearchQuery, $addMemberUsers, $addMemberStatusRules)
+                    : '');
             }
         }
 
@@ -237,13 +277,32 @@ final class GroupCrudController extends AbstractAdminCrudController
         return $this->redirect($urlGenerator->generateUrl());
     }
 
-    private function renderMembersDetailHtml(Group $group): string
+    private function renderMembersDetailHtml(Group $group, bool $canRemoveMembers): string
     {
         return $this->twig->render('admin/crud/group/_members_detail.html.twig', [
             'members' => $this->groupMemberRepository->findAllByGroupOrdered($group),
             'owner_id' => $group->getOwner()?->getId(),
             'group_id' => $group->getId(),
             'can_manage_moderator' => true,
+            'can_remove_members' => $canRemoveMembers && !$group->isStaffCircle(),
+        ]);
+    }
+
+    /**
+     * @param list<User> $users
+     * @param array<int, array{pending_or_invited: bool, refused_count: int}> $userStatusRules
+     */
+    private function renderAddMembersHtml(
+        Group $group,
+        string $searchQuery,
+        array $users,
+        array $userStatusRules,
+    ): string {
+        return $this->twig->render('admin/crud/group/_members_add.html.twig', [
+            'group_id' => $group->getId(),
+            'search_query' => $searchQuery,
+            'users' => $users,
+            'user_status_rules' => $userStatusRules,
         ]);
     }
 }
