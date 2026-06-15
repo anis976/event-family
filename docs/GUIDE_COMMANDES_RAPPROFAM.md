@@ -310,6 +310,18 @@ POUR AJOUTER UN FICHIER DANS LE DEPOT GIT EX
 git add README.md docs/GUIDE_COMMANDES_RAPPROFAM.md
 git commit -m "docs: état projet juin 2026, diffusion et mémo deploy"
 
+Avant depploy on peux lancer : php bin/console lint:container   
+Cette commande est optionel
+php bin/console lint:container vérifie que le conteneur Symfony est cohérent : pour chaque service enregistré, Symfony contrôle que les types déclarés constructeur, arguments injectés, etc. correspondent bien à ce qui est réellement injecté.
+
+Pour envoyer sur git uniquement la modification de fichier text : 
+cd C:\laragon\www\eventFamily
+git add docs/GUIDE_COMMANDES_RAPPROFAM.md
+git commit -m "docs: mise à jour du guide commandes"
+
+Pour le README à la racine
+git add README.md
+git commit -m "docs: mise à jour du README"
 ```
 
 **Notes :**
