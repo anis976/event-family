@@ -239,19 +239,58 @@
             border: 2px solid rgba($ef-primary-orange, 0.35) !important;
             background: linear-gradient(135deg, rgba($ef-primary-orange, 0.06) 0%, rgba(255, 255, 255, 0) 55%);
 
+            .ef-groups__badge-staff-circle {
+                @include custom-btn(0.12, 0.3rem 0.75rem);
+                font-size: 0.8rem;
+                font-weight: 600;
+                border-radius: 6px;
+                color: $ef-primary-orange !important;
+                background-image: none !important;
+                border: 1px solid rgba($ef-primary-orange, 0.45) !important;
+
+                i {
+                    color: inherit !important;
+                }
+
+                &:hover {
+                    color: #131926 !important;
+                }
+            }
+
             @include color-mode(dark) {
-                background: linear-gradient(135deg, rgba($ef-primary-orange, 0.12) 0%, rgba(255, 255, 255, 0.02) 55%);
-                border-color: rgba($ef-primary-orange, 0.45) !important;
+                border-color: rgba(255, 255, 255, 0.08) !important;
+                background: transparent;
+
+                .ef-groups__card-link-hint {
+                    color: $gray-600-dark !important;
+                }
+
+                .ef-groups__badge-staff-circle {
+                    color: $ef-primary-orange-dark !important;
+                    background-color: rgba($ef-primary-orange-dark, 0.1) !important;
+                    border-color: $ef-primary-orange-dark !important;
+
+                    &:hover {
+                        background-color: $ef-primary-orange-dark !important;
+                        color: #fff !important;
+                    }
+                }
+
+                &:hover {
+                    border-color: rgba($ef-primary-orange, 0.45) !important;
+                    background: linear-gradient(135deg, rgba($ef-primary-orange, 0.12) 0%, rgba(255, 255, 255, 0.02) 55%);
+
+                    .ef-groups__card-link-hint {
+                        color: $ef-primary-orange-dark !important;
+                    }
+
+                    .ef-groups__badge-staff-circle {
+                        background-color: $ef-primary-orange-dark !important;
+                        color: #fff !important;
+                    }
+                }
             }
         }
-    }
-
-    &__badge-staff-circle {
-        @include custom-btn(1, 0.3rem 0.75rem);
-        color: #fff;
-        font-size: 0.8rem;
-        border-radius: 6px;
-        background: linear-gradient(135deg, $ef-primary-orange 0%, $ef-primary-orange-dark 100%);
     }
 }
 
