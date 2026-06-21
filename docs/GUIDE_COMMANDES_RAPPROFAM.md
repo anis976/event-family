@@ -323,6 +323,12 @@ git commit -m "docs: mise à jour du guide commandes"
 Pour le README à la racine
 git add README.md
 git commit -m "docs: mise à jour du README"
+
+si le scss ne charge pas : 
+cd C:\laragon\www\eventFamily
+Remove-Item -Recurse -Force .\public\assets\* -ErrorAction SilentlyContinue
+npm run sass:build
+php bin/console asset-map:compile
 ```
 
 **Notes :**
