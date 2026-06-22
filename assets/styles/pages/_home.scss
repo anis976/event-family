@@ -122,26 +122,7 @@
     }
 
     .ef-icon-box {
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background-color: $ef-primary-orange;
-        color: white;
         margin: 0 auto 1.5rem;
-        font-size: 1.5rem;
-
-        @include color-mode(dark) {
-            background-color: rgba($ef-soft-gold, 0.2);
-            border: 1px solid rgba($ef-soft-gold, 0.4);
-            color: $ef-soft-gold;
-
-            .bi {
-                color: $ef-soft-gold;
-            }
-        }
     }
 }
 
@@ -194,19 +175,27 @@
 
 // Vitrine invité (accueil public — examen AdSense)
 .ef-home-guest {
-    max-width: 960px;
+    max-width: 1040px;
     margin: 0 auto;
     padding-top: 0.5rem;
 
-    &__how {
-        margin-bottom: 2.5rem;
+    .ef-icon-box:not(.ef-icon-box--sm) {
+        margin: 0 0 1rem;
     }
 
-    &__how-title {
+    .ef-icon-box--sm {
+        margin: 0;
+    }
+
+    &__use-case .ef-icon-box:not(.ef-icon-box--sm) {
+        margin: 0 auto 0.85rem;
+    }
+
+    &__section-title {
         text-align: center;
         font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 2rem;
+        margin-bottom: 0.75rem;
         color: $ef-text-gray;
         position: relative;
         padding-bottom: 1rem;
@@ -230,6 +219,420 @@
                 background: linear-gradient(90deg, transparent, $ef-primary-orange-dark, transparent);
             }
         }
+    }
+
+    &__section-lead {
+        text-align: center;
+        max-width: 42rem;
+        margin: 0 auto 2rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__features {
+        margin-bottom: 3rem;
+    }
+
+    &__feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    &__feature-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        align-items: center;
+
+        @include media-breakpoint-up(lg) {
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+
+            &--reverse {
+                .ef-home-guest__feature-copy {
+                    order: 2;
+                }
+
+                .ef-home-guest__mock {
+                    order: 1;
+                }
+            }
+        }
+    }
+
+    &__feature-heading {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin: 0 0 0.75rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__feature-text {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__mock {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba($ef-border-color, 0.75);
+        box-shadow: $box-shadow;
+        background: #fff;
+
+        @include color-mode(dark) {
+            background: #1e1e1e;
+            border-color: rgba($ef-white-color-dark, 0.12);
+            box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    &__mock-bar {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.65rem 0.85rem;
+        background: rgba($ef-primary-orange, 0.08);
+        border-bottom: 1px solid rgba($ef-border-color, 0.5);
+
+        span {
+            width: 0.55rem;
+            height: 0.55rem;
+            border-radius: 50%;
+            background: rgba($ef-primary-orange, 0.45);
+
+            &:first-child {
+                background: #e57373;
+            }
+
+            &:nth-child(2) {
+                background: #ffb74d;
+            }
+
+            &:nth-child(3) {
+                background: #81c784;
+            }
+        }
+
+        @include color-mode(dark) {
+            background: rgba($ef-primary-orange-dark, 0.12);
+            border-bottom-color: rgba($ef-white-color-dark, 0.1);
+        }
+    }
+
+    &__mock-body {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    &__mock-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 10px;
+        background: rgba($ef-primary-orange, 0.06);
+        border: 1px solid rgba($ef-primary-orange, 0.15);
+
+        strong {
+            display: block;
+            font-size: 0.85rem;
+            color: $ef-text-gray;
+        }
+
+        small {
+            font-size: 0.75rem;
+            color: $gray-600;
+        }
+
+        &--muted {
+            opacity: 0.75;
+            background: transparent;
+            border-color: rgba($ef-border-color, 0.6);
+        }
+
+        @include color-mode(dark) {
+            background: rgba($ef-primary-orange-dark, 0.1);
+            border-color: rgba($ef-soft-gold, 0.2);
+
+            strong {
+                color: $ef-white-color-dark;
+            }
+
+            small {
+                color: $gray-600-dark;
+            }
+
+            &--muted {
+                background: rgba(255, 255, 255, 0.03);
+                border-color: rgba($ef-white-color-dark, 0.1);
+            }
+        }
+    }
+
+    &__mock-event {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        padding: 0.65rem 0.75rem;
+        border-radius: 10px;
+        border: 1px solid rgba($ef-border-color, 0.55);
+
+        strong {
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        small {
+            font-size: 0.75rem;
+            color: $gray-600;
+        }
+
+        @include color-mode(dark) {
+            border-color: rgba($ef-white-color-dark, 0.1);
+
+            small {
+                color: $gray-600-dark;
+            }
+        }
+    }
+
+    &__mock-event-date {
+        flex-shrink: 0;
+        min-width: 3.25rem;
+        padding: 0.35rem 0.4rem;
+        text-align: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        line-height: 1.2;
+        border-radius: 8px;
+        color: #fff;
+        background: linear-gradient(135deg, $ef-primary-orange, $ef-soft-gold);
+
+        &--alt {
+            background: linear-gradient(135deg, darken($ef-soft-gold, 8%), $ef-primary-orange);
+        }
+
+        @include color-mode(dark) {
+            background: linear-gradient(135deg, $ef-primary-orange-dark, $ef-soft-gold);
+        }
+    }
+
+    &__mock-invite {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        padding: 0.75rem;
+
+        strong {
+            display: block;
+            font-size: 0.85rem;
+        }
+
+        small {
+            font-size: 0.75rem;
+            color: $gray-600;
+        }
+
+        @include color-mode(dark) {
+            small {
+                color: $gray-600-dark;
+            }
+        }
+    }
+
+    &__mock-pill {
+        margin-left: auto;
+        flex-shrink: 0;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        border-radius: 50px;
+        color: #fff;
+        background: $ef-primary-orange;
+        align-self: center;
+
+        @include color-mode(dark) {
+            background: $ef-primary-orange-dark;
+        }
+    }
+
+    &__mock-message {
+        display: flex;
+        gap: 0.5rem;
+        align-items: flex-start;
+
+        &--reply {
+            padding-left: 1.5rem;
+        }
+    }
+
+    &__mock-avatar {
+        flex-shrink: 0;
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, $ef-primary-orange, $ef-soft-gold);
+
+        &--alt {
+            background: linear-gradient(135deg, $gray-500, $gray-600);
+        }
+    }
+
+    &__mock-bubble {
+        flex: 1;
+        padding: 0.55rem 0.75rem;
+        border-radius: 10px;
+        background: rgba($ef-primary-orange, 0.08);
+        border: 1px solid rgba($ef-primary-orange, 0.12);
+
+        strong {
+            display: block;
+            font-size: 0.75rem;
+            margin-bottom: 0.2rem;
+        }
+
+        p {
+            margin: 0;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            color: $gray-700;
+        }
+
+        @include color-mode(dark) {
+            background: rgba($ef-primary-orange-dark, 0.12);
+            border-color: rgba($ef-soft-gold, 0.15);
+
+            p {
+                color: $gray-600-dark;
+            }
+        }
+    }
+
+    &__use-cases {
+        margin-bottom: 3rem;
+    }
+
+    &__use-case {
+        height: 100%;
+        padding: 1.35rem 1.25rem;
+        border-radius: 15px;
+        background: #fff;
+        border: 1px solid rgba($ef-border-color, 0.6);
+        box-shadow: $box-shadow;
+        text-align: center;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+
+        &:hover {
+            transform: translateY(-3px);
+            box-shadow: $box-shadow-lg;
+            border-color: rgba($ef-primary-orange, 0.3);
+        }
+
+        @include color-mode(dark) {
+            background: #252525;
+            border-color: rgba($ef-white-color-dark, 0.12);
+
+            &:hover {
+                border-color: rgba($ef-soft-gold, 0.35);
+            }
+        }
+    }
+
+    &__use-case-title {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__use-case-text {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__faq-teaser {
+        margin: 0 0 3rem;
+        font-size: 0.9rem;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__faq-teaser-label {
+        display: block;
+        margin-bottom: 0.35rem;
+    }
+
+    &__faq-teaser-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-weight: 600;
+        color: $ef-primary-orange;
+        text-decoration: none;
+
+        .bi {
+            transition: transform 0.25s ease;
+        }
+
+        &:hover {
+            color: $ef-active-hover-orange;
+
+            .bi {
+                transform: translateX(4px);
+            }
+        }
+
+        @include color-mode(dark) {
+            color: $ef-primary-orange-dark;
+
+            &:hover {
+                color: $ef-soft-gold;
+            }
+        }
+    }
+
+    &__how {
+        margin-bottom: 2.5rem;
+    }
+
+    &__how-title {
+        @extend .ef-home-guest__section-title;
     }
 
     &__steps {

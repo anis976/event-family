@@ -59,6 +59,7 @@ ui:
     messages: Messages
     admin: Administration
     about: About
+    faq: FAQ
     contact: Contact
   sidebar:
     guest: Guest
@@ -137,9 +138,55 @@ ui:
     view_all_events: View all events
     no_public_events: No public upcoming events at the moment.
     guest_page_title: RapproFam — Organize your family events
-    guest_meta_description: Create family groups, plan events, and stay in touch. RapproFam is a private space for registered members only.
+    guest_meta_description: 'RapproFam helps families create groups, plan birthdays, Christmas or reunions, manage invitations and chat privately. Free, secure space for registered members.'
     guest_welcome: RapproFam, your private family space
-    guest_lead: Create groups, plan events, and stay in touch — content access is for registered members only.
+    guest_lead: Plan the moments that matter — groups, shared calendar, invitations and messaging in one place.
+    guest_card_groups_text: One group per family or branch — owner, moderator, members and built-in moderation.
+    guest_card_events_text: Publish events with date, location and visibility (group-only or public among members).
+    guest_card_connect_text: Private messages, group threads and notifications so you never miss an update.
+    guest_features_title: Everything you need to organize your family
+    guest_features_lead: RapproFam brings calendar, invitations and conversations together in a simple interface built for relatives — not for the open web.
+    guest_feature_groups_title: Structured family groups
+    guest_feature_groups_text: Create a dedicated space for your family (name, branch, description). The owner invites relatives, handles join requests and can appoint a moderator. Each member sees group events and messages once accepted.
+    guest_feature_events_title: Shared calendar and events
+    guest_feature_events_text: Publish birthdays, holiday meals, reunions or gatherings with start and end dates, location and photos. Filter upcoming, ongoing or past events. “Public” events are visible to all signed-in members; private events stay within the group.
+    guest_feature_invites_title: Invitations and join requests
+    guest_feature_invites_text: The owner or moderator invites a member by username or email. Relatives can also request to join a group. Invitations and requests are grouped in a dedicated hub with badges so nothing is missed.
+    guest_feature_messages_title: Messaging and notifications
+    guest_feature_messages_text: Chat in private messages or the group thread (text and photos). The bell icon and sidebar show unread invitations and messages. You can opt in to email alerts for new private messages.
+    guest_mock_groups_aria: Preview of the family groups list
+    guest_mock_groups_name: Martin family
+    guest_mock_groups_meta: 12 members · Owner Marie
+    guest_mock_groups_name2: Paternal cousins
+    guest_mock_groups_meta2: 8 members · Owner Pierre
+    guest_mock_events_aria: Preview of the events calendar
+    guest_mock_event_date: Jun 15
+    guest_mock_event_title: Léa's birthday
+    guest_mock_event_place: At the grandparents'
+    guest_mock_event_date2: Dec 24
+    guest_mock_event_title2: Christmas Eve dinner
+    guest_mock_event_place2: Community hall — Lagord
+    guest_mock_invites_aria: Preview of a group invitation
+    guest_mock_invite_title: Invitation — Martin family
+    guest_mock_invite_text: Marie invited you to join the group.
+    guest_mock_invite_badge: New
+    guest_mock_messages_aria: Preview of a group conversation
+    guest_mock_message_author: Marie
+    guest_mock_message_text: Who can bring dessert on Saturday?
+    guest_mock_message_author2: Thomas
+    guest_mock_message_text2: I'll take care of the cake!
+    guest_use_cases_title: Real-life use cases
+    guest_use_cases_lead: RapproFam fits actual family moments.
+    guest_use_case_birthday_title: Children's or grandparents' birthdays
+    guest_use_case_birthday_text: Create the event, share date and place, coordinate who brings what in the group thread.
+    guest_use_case_christmas_title: Christmas or year-end celebrations
+    guest_use_case_christmas_text: Plan the meal, arrival times and shared gifts without scattered text messages.
+    guest_use_case_reunion_title: Family reunion or cousinade
+    guest_use_case_reunion_text: Centralize practical info, the participant list and reminders for the whole family.
+    guest_use_case_distance_title: Family spread across regions
+    guest_use_case_distance_text: Stay connected across cities or countries with a shared calendar and group messages.
+    guest_faq_teaser: Have a question about RapproFam?
+    guest_faq_link: Browse the FAQ
     guest_how_title: How it works
     guest_step1_title: Create an account
     guest_step1_text: Sign up for free to join or create a family group.
@@ -148,6 +195,7 @@ ui:
     guest_step3_title: Share your moments
     guest_step3_text: Publish events, chat with members, and stay connected day to day.
     guest_private_notice: Events, groups, and messages are only visible after sign-in. RapproFam is a private space, not a public directory.
+    vitrine_private_notice: RapproFam stays private — your group content is not published as an open directory on the web.
     guest_cta_register: Create an account
     guest_cta_login: Sign in
     guest_about_cta: Learn more about the project
@@ -462,6 +510,49 @@ ui:
       countdown_suffix: second(s) to protect your account.
       logout: Sign out
       stay: Stay signed in
+  faq:
+    title: FAQ
+    page_title: RapproFam — FAQ
+    meta_description: 'Frequently asked questions about RapproFam: sign-up, groups, events, invitations, privacy and account management.'
+    lead: Everything you need to know to use RapproFam as a family — sign-up, groups, events and privacy.
+    guest_cta_text: Ready to organize your family moments?
+    contact_link: Still have a question? Contact us
+    q1: What is RapproFam?
+    a1: RapproFam is a free platform to organize family life online — groups, events, invitations and messaging. It is not an open social network; content access is for registered members only.
+    q2: Is it free?
+    a2: Yes. RapproFam is a personal, non-commercial project. Sign-up and core features are free.
+    q3: How do I create an event?
+    a3: After signing up, join a group (or create one if you are the owner). The group owner, moderator or site staff can publish an event from the Events section.
+    q4: Can I invite people without an account?
+    a4: The invited person needs a free account to accept. The group owner then invites them by username or email from the group page.
+    q5: Is my data private?
+    a5: Yes. Groups, messages and private events are not publicly listed on the web. RapproFam is not a directory — only signed-in members see content according to their group rights. See our Terms for GDPR details.
+    q6: Can I create several groups?
+    a6: You can own one family group at a time. You may join several groups as a member (extended family, cousins, etc.).
+    q7: Is there a mobile app?
+    a7: Not yet. RapproFam works in the browser on desktop, tablet and phone. The interface adapts to smaller screens.
+    q8: How do I delete my account?
+    a8: From My space, Danger zone section. If you own a group, you must first transfer ownership or delete the group. Deletion is confirmed by email.
+    q9: Who can see my events?
+    a9: A private event is visible to members of the relevant group. A public event is visible to all signed-in members. Nothing is accessible without an account.
+    q10: How do I join a group?
+    a10: The owner invites you by username or email, or you can send a join request. Invitations are grouped in the Invitations section.
+    q11: What is the difference between a public and private event?
+    a11: A private event stays within the group. A public event also appears in the list visible to all signed-in members — useful for a reunion open to extended family.
+    q12: Who can publish an event?
+    a12: The group owner, its moderator or site staff. Regular members can suggest an event to the owner via private message.
+    q13: How do group messages work?
+    a13: Each group has a discussion thread. You can post a message (text and up to two photos per post), reply to threads and browse history according to group rules.
+    q14: How do notifications work?
+    a14: The bell icon and sidebar show unread invitations and messages. You can enable email alerts for new private messages in My space → Notifications.
+    q15: Can I leave a group?
+    a15: Yes, unless you are the owner — then you must appoint a successor or delete the group first. Regular members can leave from the group page.
+    q16: Are there usage limits?
+    a16: Anti-spam limits apply (messages, photos, contact form). They are tuned for normal family use and to protect the platform.
+    q17: Is RapproFam available in English?
+    a17: Yes. Switch between French and English from the menu at the bottom of the sidebar. Your choice is saved on your device and on your profile when signed in.
+    q18: How do I contact the site owner?
+    a18: Signed-in members can use the Contact form. For legal or privacy questions, see also the Terms and legal notice.
   about:
     title: About
     page_title: RapproFam — About

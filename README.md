@@ -10,7 +10,7 @@ Plateforme Symfony 8 de gestion d'événements familiaux.
 | **Cercle des responsables** | ☑ Groupe système (chefs / modos) · sync auto au deploy · messagerie de groupe ☑ |
 | **Modération membres (admin + site)** | ☑ Ajout / invitation / retrait admin · quitter un groupe (chef → successeur) |
 | **Google Analytics (GA4)** | ☑ Configuré en prod · consentement cookies `analytics` |
-| **Google AdSense** | ☑ Code + `ads.txt` prod · **examen Google en cours** (juin 2026) |
+| **Google AdSense** | ☑ Code + `ads.txt` prod · **rejeté** (manque de contenu, juin 2026) — enrichissement pages publiques en cours |
 | **Safe Browsing (Chrome « Site dangereux »)** | ☑ **Levé** — réputation héritée de l’ancien propriétaire du domaine ; demande d’examen Search Console acceptée |
 | **PayPal Donate** | ☑ Bouton footer « Soutenir le projet » → page hébergée (`hosted_button_id=E8ULND24DQE2W`) |
 | **Guide perso commit / deploy** | ☑ [docs/GUIDE_COMMANDES_RAPPROFAM.md](docs/GUIDE_COMMANDES_RAPPROFAM.md) § 10 (mémo PC vs serveur) |
@@ -204,6 +204,7 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 | `GET /profil/avatar/{id}` | `app_profile_avatar_show` | Affichage avatar (selon visibilité) |
 
 Accès public **invité** (sans compte) : `/` (vitrine), `/about`, `/cgu`, `/mentions-legales`, `/locale/switch`, auth (`/login`, `/register`, reset / verify e-mail, …).  
+**En cours (AdSense)** : `/fonctionnalites`, `/faq`, `/blog`, `/demo`, guide événements familiaux — voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route).  
 **Réservé `ROLE_USER`** : `/evenements`, `/groupes`, `/messages`, `/contact`, `/profil`, invitations, etc. Voir [Accueil public & AdSense](#accueil-public--adsense).
 
 Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, ex. `/ef-console-8f3a2c91`) — réservé au **staff site** (`ROLE_MODERATOR` minimum : modérateur, super-modérateur, administrateur).
@@ -813,7 +814,8 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 | 1 | **Vidéo de présentation** (courte démo : inscription, groupes, événements, messages) | À faire |
 | 2 | **Partage privé** avec amis / proches proches — retours UX | Après vidéo |
 | 3 | **Ouverture élargie** — lien `https://rapprofam.fr` à d’autres personnes | Après retours phase 2 |
-| 4 | **Réponse AdSense** — slots + CMP Google si approuvé | En attente Google |
+| 4 | **Contenu public AdSense** — pages `/faq`, `/fonctionnalites`, `/blog`, `/demo`, guide | En cours — voir [feuille de route AdSense](#adsense--rejet-manque-de-contenu--feuille-de-route) |
+| 5 | **Réponse AdSense** — nouvelle demande après enrichissement contenu | Après livraison contenu |
 
 ### Checklist prod — points encore à vérifier
 
@@ -1202,15 +1204,52 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | Contenu original (home + about) | ☑ |
 | CGU / confidentialité (mention AdSense) | ☑ |
 | Balise + `ads.txt` sur HTTPS | ☑ prod |
-| Demande d’examen | ☑ en cours |
+| Contenu public suffisant (pages dédiées) | ☐ en cours — [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) |
+| Demande d’examen | ☐ à re-soumettre après enrichissement |
 | CMP Google (EEE / UK / CH) | ☐ après approbation |
 | Slots publicitaires | ☐ après création des unités dans AdSense |
 
-### En attente — AdSense (examen Google)
+### AdSense — rejet (manque de contenu) & feuille de route
+
+> **Juin 2026** : demande AdSense **rejetée** — Google ne peut pas évaluer la valeur du site sans compte (vitrine `/` + `/about` trop légère). Le mur de connexion sur le reste du site aggrave le constat. **Objectif** : pages publiques riches, accessibles sans inscription, cohérentes avec le design existant (clair / sombre, variables SCSS, mixins boutons), FR + EN, **meta description** par page.
+
+**Routes cibles** : `/fonctionnalites` · `/faq` · `/blog` · `/demo` (+ guide dédié, voir ci-dessous).
+
+**Ordre d’implémentation** (du plus rapide au plus long) :
+
+| # | Tâche | URL / périmètre | Contenu attendu | Statut |
+|---|--------|-----------------|-----------------|--------|
+| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (accueil ☑) |
+| 2 | **Section accueil enrichie** | `/` (invité) | 3–5 captures d’écran ; explication détaillée de chaque fonctionnalité ; mini-FAQ ; cas d’usage concrets — **sans** toucher à l’auth | ☑ juin 2026 |
+| 3 | **FAQ** | `/faq` | 15–20 questions / réponses (ex. : Qu’est-ce que RapproFam ? Gratuit ? Créer un événement ? Inviter sans compte ? Données privées ? Plusieurs groupes ? App mobile ? Supprimer le compte ? Qui voit mes événements ? …) | ☑ juin 2026 |
+| 4 | **Fonctionnalités** | `/fonctionnalites` | Présentation détaillée : groupes, calendrier / événements, invitations, notifications, messagerie — captures si possible | ☐ |
+| 5 | **Guide pratique** | `/comment-organiser-evenements-familiaux` (ou équivalent) | 800–1 500 mots : conseils pour organiser des événements familiaux ; ton aligné RapproFam ; exemples adaptés au site | ☐ |
+| 6 | **Démonstration** | `/demo` | Famille fictive : calendrier, anniversaire, Noël, liste participants ; captures / maquettes (floutage si besoin) — **données statiques**, pas de BDD | ☐ |
+| 7 | **Blog** | `/blog` + articles | **8 articles** minimum (~1 000 mots chacun), ex. : cousinade réussie ; calendrier familial partagé ; erreurs à éviter ; lien malgré la distance ; Noël sans stress ; anniversaire familial ; pourquoi un agenda partagé ; coordonner plusieurs générations | ☐ |
+
+**Après livraison** : mettre à jour `security.yaml` (`PUBLIC_ACCESS` sur les nouvelles routes) · liens footer / sidebar invité · re-soumettre l’examen AdSense.
+
+**Contraintes design** : réutiliser `layout/legal.html.twig` ou `base.html.twig` (mode invité) ; SCSS page dédié dans `assets/styles/pages/` ; traductions `messages.{fr,en}.yaml` ; boutons via mixins existants (`custom-btn`, etc.).
+
+#### Articles blog (brouillon titres)
+
+| # | Slug (indicatif) | Titre |
+|---|------------------|-------|
+| 1 | `organiser-une-cousinade-reussie` | Comment organiser une cousinade réussie |
+| 2 | `calendrier-familial-partage` | Créer un calendrier familial partagé |
+| 3 | `erreurs-organisation-evenement-familial` | Les erreurs à éviter lors de l’organisation d’un événement familial |
+| 4 | `maintenir-lien-familial-distance` | Comment maintenir le lien familial malgré la distance |
+| 5 | `noel-en-famille-sans-stress` | Organiser Noël en famille sans stress |
+| 6 | `anniversaire-familial` | Préparer un anniversaire familial |
+| 7 | `pourquoi-agenda-partage` | Pourquoi utiliser un agenda partagé |
+| 8 | `coordonner-plusieurs-generations` | Comment coordonner plusieurs générations dans un même groupe familial |
+
+### En attente — AdSense (après enrichissement contenu)
 
 | Sujet | État | Quand |
 |-------|------|--------|
-| **Réponse examen AdSense** | En cours | Google (quelques jours à quelques semaines) |
+| **Enrichissement contenu public** | En cours | Voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) ci-dessus |
+| **Nouvelle demande d’examen AdSense** | À faire | Après livraison pages publiques |
 | **Safe Browsing** | ☑ Levé juin 2026 | — |
 | **CMP Google** (3 choix) | À configurer | **Après** approbation AdSense |
 | **`EF_GOOGLE_ADSENSE_SLOT_*`** | Vides | Créer les unités dans AdSense après approbation |

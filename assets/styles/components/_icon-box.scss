@@ -1,0 +1,10 @@
+@use '../base/mixins' as *;
+
+// Boîte icône orange — cartes accueil, vitrine invité, etc.
+.ef-icon-box {
+    @include ef-icon-box();
+
+    &--sm {
+        @include ef-icon-box(2.25rem, 1rem, 8px);
+    }
+}

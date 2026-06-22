@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'ui.faq.page_title'|trans }}{% endblock %}
+
+{% block page_title %}{{ 'ui.faq.title'|trans }}{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="{{ 'ui.faq.meta_description'|trans }}">
+{% endblock %}
+
+{% block body %}
+    <div class="ef-main-content-padding ef-faq">
+        <h1 class="visually-hidden">{{ 'ui.faq.title'|trans }}</h1>
+
+        <div class="ef-faq__inner mx-auto">
+            <p class="ef-faq__lead text-center mb-4">{{ 'ui.faq.lead'|trans }}</p>
+
+            <div class="accordion ef-faq__accordion" id="ef-faq-accordion">
+                {% for i in 1..faqCount %}
+                    <div class="accordion-item ef-faq__item">
+                        <h2 class="accordion-header" id="ef-faq-h-{{ i }}">
+                            <button
+                                class="accordion-button{{ i > 1 ? ' collapsed' : '' }}"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#ef-faq-c-{{ i }}"
+                                aria-expanded="{{ i == 1 ? 'true' : 'false' }}"
+                                aria-controls="ef-faq-c-{{ i }}"
+                            >
+                                {{ ('ui.faq.q' ~ i)|trans }}
+                            </button>
+                        </h2>
+                        <div
+                            id="ef-faq-c-{{ i }}"
+                            class="accordion-collapse collapse{{ i == 1 ? ' show' : '' }}"
+                            aria-labelledby="ef-faq-h-{{ i }}"
+                            data-bs-parent="#ef-faq-accordion"
+                        >
+                            <div class="accordion-body">
+                                {{ ('ui.faq.a' ~ i)|trans }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if not app.user %}
+                <div class="ef-faq__cta mt-5">
+                    <p class="ef-faq__cta-text text-center mb-3">{{ 'ui.faq.guest_cta_text'|trans }}</p>
+                    <div class="ef-home-guest__cta">
+                        <a href="{{ path('app_register') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
+                            {{ 'ui.home.guest_cta_register'|trans }}
+                        </a>
+                        <a href="{{ path('app_login') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                            {{ 'ui.home.guest_cta_login'|trans }}
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <p class="ef-faq__more text-center mt-4 mb-0">
+                    <a href="{{ path('app_contact') }}" class="ef-faq__more-link">
+                        {{ 'ui.faq.contact_link'|trans }}
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

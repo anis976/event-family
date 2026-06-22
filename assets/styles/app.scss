@@ -9,10 +9,12 @@
 @use 'components/dropdowns';
 @use 'components/session-idle';
 @use 'components/cookie-consent';
+@use 'components/icon-box';
 @use 'components/adsense';
 @use 'components/paginate';
 @use 'pages/home';
 @use 'pages/about';
+@use 'pages/faq';
 @use 'pages/contact';
 @use 'layout/auth';
 @use 'pages/sign-in';

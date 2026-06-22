@@ -59,7 +59,7 @@
                         <i class="bi bi-people fs-3" aria-hidden="true"></i>
                     </div>
                     <h2 class="h5 fw-bold">{{ 'ui.home.feature_groups_title'|trans }}</h2>
-                    <p class="text-muted small mb-0">{{ 'ui.home.feature_groups_text'|trans }}</p>
+                    <p class="text-muted small mb-0">{{ (app.user ? 'ui.home.feature_groups_text' : 'ui.home.guest_card_groups_text')|trans }}</p>
                 {% if app.user %}
                     </a>
                 {% else %}
@@ -76,7 +76,7 @@
                         <i class="bi bi-calendar-event fs-3" aria-hidden="true"></i>
                     </div>
                     <h2 class="h5 fw-bold">{{ 'ui.home.feature_events_title'|trans }}</h2>
-                    <p class="text-muted small mb-0">{{ 'ui.home.feature_events_text'|trans }}</p>
+                    <p class="text-muted small mb-0">{{ (app.user ? 'ui.home.feature_events_text' : 'ui.home.guest_card_events_text')|trans }}</p>
                 {% if app.user %}
                     </a>
                 {% else %}
@@ -93,7 +93,7 @@
                         <i class="bi bi-stars fs-3" aria-hidden="true"></i>
                     </div>
                     <h2 class="h5 fw-bold">{{ 'ui.home.feature_connect_title'|trans }}</h2>
-                    <p class="text-muted small mb-0">{{ 'ui.home.feature_connect_text'|trans }}</p>
+                    <p class="text-muted small mb-0">{{ (app.user ? 'ui.home.feature_connect_text' : 'ui.home.guest_card_connect_text')|trans }}</p>
                 {% if app.user %}
                     </a>
                 {% else %}
@@ -103,6 +103,10 @@
         </div>
 
         {% include 'components/_ef_adsense_unit.html.twig' with { slot: ef_google_adsense_slot_home } only %}
+
+        {% if not app.user %}
+            {% include 'home/_guest_vitrine.html.twig' %}
+        {% endif %}
 
         {% if app.user %}
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -123,53 +127,6 @@
                     {% endfor %}
                 </div>
             {% endif %}
-        {% else %}
-            <div class="ef-home-guest">
-                <section class="ef-home-guest__how" aria-labelledby="ef-home-guest-how-title">
-                    <h2 id="ef-home-guest-how-title" class="ef-home-guest__how-title">{{ 'ui.home.guest_how_title'|trans }}</h2>
-                    <div class="row g-4 ef-home-guest__steps">
-                        <div class="col-12 col-md-4">
-                            <article class="ef-home-guest__step">
-                                <span class="ef-home-guest__step-num" aria-hidden="true">1</span>
-                                <h3 class="ef-home-guest__step-title">{{ 'ui.home.guest_step1_title'|trans }}</h3>
-                                <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step1_text'|trans }}</p>
-                            </article>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <article class="ef-home-guest__step">
-                                <span class="ef-home-guest__step-num" aria-hidden="true">2</span>
-                                <h3 class="ef-home-guest__step-title">{{ 'ui.home.guest_step2_title'|trans }}</h3>
-                                <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step2_text'|trans }}</p>
-                            </article>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <article class="ef-home-guest__step">
-                                <span class="ef-home-guest__step-num" aria-hidden="true">3</span>
-                                <h3 class="ef-home-guest__step-title">{{ 'ui.home.guest_step3_title'|trans }}</h3>
-                                <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step3_text'|trans }}</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-
-                <p class="ef-home-guest__notice" role="note">{{ 'ui.home.guest_private_notice'|trans }}</p>
-
-                <div class="ef-home-guest__cta">
-                    <a href="{{ path('app_register') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
-                        {{ 'ui.home.guest_cta_register'|trans }}
-                    </a>
-                    <a href="{{ path('app_login') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
-                        {{ 'ui.home.guest_cta_login'|trans }}
-                    </a>
-                </div>
-
-                <p class="ef-home-guest__about">
-                    <a href="{{ path('app_about') }}" class="ef-home-guest__about-link">
-                        {{ 'ui.home.guest_about_cta'|trans }}
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                    </a>
-                </p>
-            </div>
         {% endif %}
     </div>
 {% endblock %}

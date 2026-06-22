@@ -60,6 +60,7 @@ ui:
     messages: Messages
     admin: Administration
     about: À propos
+    faq: FAQ
     contact: Contact
   sidebar:
     guest: Invité
@@ -138,9 +139,55 @@ ui:
     view_all_events: Voir tous les événements
     no_public_events: Aucun événement public à venir pour le moment.
     guest_page_title: RapproFam — Organise tes événements en famille
-    guest_meta_description: Crée des groupes familiaux, planifie des événements et échange en toute simplicité. RapproFam est un espace privé réservé aux membres inscrits.
+    guest_meta_description: 'RapproFam aide les familles à créer des groupes, planifier anniversaires, Noël ou cousinades, gérer les invitations et échanger en privé. Gratuit, espace sécurisé pour les membres inscrits.'
     guest_welcome: RapproFam, ton espace familial privé
-    guest_lead: Crée des groupes, planifie des événements et échange en toute simplicité — l’accès au contenu est réservé aux membres inscrits.
+    guest_lead: Planifie les moments qui comptent — groupes, calendrier partagé, invitations et messagerie réunis au même endroit.
+    guest_card_groups_text: 'Un groupe par famille ou branche : chef, modérateur, membres et règles de modération intégrées.'
+    guest_card_events_text: 'Publie des événements avec date, lieu et visibilité (groupe ou public entre membres).'
+    guest_card_connect_text: Messages privés, fil de groupe et notifications pour ne rien manquer.
+    guest_features_title: Tout ce dont tu as besoin pour organiser ta famille
+    guest_features_lead: RapproFam regroupe calendrier, invitations et échanges dans une interface simple, pensée pour les proches — pas pour le grand public.
+    guest_feature_groups_title: Groupes familiaux structurés
+    guest_feature_groups_text: 'Crée un espace dédié à ta famille (nom, branche, description). Le responsable invite les proches, gère les demandes d’adhésion et peut désigner un modérateur. Chaque membre voit les événements et messages du groupe une fois accepté.'
+    guest_feature_events_title: Calendrier et événements partagés
+    guest_feature_events_text: 'Publie anniversaires, repas de fête, cousinades ou réunions avec date de début et de fin, lieu et photos. Filtre les événements à venir, en cours ou passés. Les événements « publics » sont visibles par tous les membres connectés ; les événements privés restent dans le groupe.'
+    guest_feature_invites_title: Invitations et demandes d’adhésion
+    guest_feature_invites_text: Le chef ou le modérateur invite un membre par son pseudo ou son e-mail. Les proches peuvent aussi demander à rejoindre un groupe. Les invitations et demandes sont regroupées dans un hub dédié, avec des badges pour ne rien oublier.
+    guest_feature_messages_title: Messagerie et notifications
+    guest_feature_messages_text: Échange en message privé ou dans le fil du groupe (texte et photos). La cloche et la barre latérale affichent les invitations et messages non lus. Tu choisis si tu veux un e-mail lors d’un nouveau message privé.
+    guest_mock_groups_aria: Aperçu de la liste des groupes familiaux
+    guest_mock_groups_name: Famille Martin
+    guest_mock_groups_meta: 12 membres · Chef Marie
+    guest_mock_groups_name2: Cousins côté paternel
+    guest_mock_groups_meta2: 8 membres · Chef Pierre
+    guest_mock_events_aria: Aperçu du calendrier d’événements
+    guest_mock_event_date: 15 juin
+    guest_mock_event_title: Anniversaire de Léa
+    guest_mock_event_place: Chez les grands-parents
+    guest_mock_event_date2: 24 déc.
+    guest_mock_event_title2: Réveillon de Noël
+    guest_mock_event_place2: Salle des fêtes — Lagord
+    guest_mock_invites_aria: Aperçu d’une invitation de groupe
+    guest_mock_invite_title: Invitation — Famille Martin
+    guest_mock_invite_text: Marie t’invite à rejoindre le groupe.
+    guest_mock_invite_badge: Nouveau
+    guest_mock_messages_aria: Aperçu d’une conversation de groupe
+    guest_mock_message_author: Marie
+    guest_mock_message_text: Qui peut apporter le dessert samedi ?
+    guest_mock_message_author2: Thomas
+    guest_mock_message_text2: Je m’occupe du gâteau, promis !
+    guest_use_cases_title: Des cas d’usage concrets
+    guest_use_cases_lead: RapproFam s’adapte aux vrais moments de vie familiale.
+    guest_use_case_birthday_title: Anniversaire des enfants ou des grands-parents
+    guest_use_case_birthday_text: Crée l’événement, partage la date et le lieu, coordonne qui apporte quoi via le fil de groupe.
+    guest_use_case_christmas_title: Noël ou fêtes de fin d’année
+    guest_use_case_christmas_text: Planifie le repas, les horaires d’arrivée et les cadeaux communs sans enchaîner les SMS éparpillés.
+    guest_use_case_reunion_title: Cousinade ou grande réunion
+    guest_use_case_reunion_text: Centralise les infos pratiques, la liste des participants et les rappels pour toute la famille.
+    guest_use_case_distance_title: Famille éloignée géographiquement
+    guest_use_case_distance_text: Garde le lien entre régions ou pays grâce au calendrier partagé et aux messages de groupe.
+    guest_faq_teaser: Une question sur RapproFam ?
+    guest_faq_link: Consulter la foire aux questions
     guest_how_title: Comment ça marche ?
     guest_step1_title: Crée un compte
     guest_step1_text: Inscris-toi gratuitement pour rejoindre ou créer un groupe familial.
@@ -149,6 +196,7 @@ ui:
     guest_step3_title: Partage tes moments
     guest_step3_text: Publie des événements, échange avec les membres et garde le lien au quotidien.
     guest_private_notice: Les événements, groupes et messages ne sont visibles qu’après connexion. RapproFam est un espace privé, pas un annuaire public.
+    vitrine_private_notice: RapproFam reste un espace privé — le contenu de ton groupe n’est pas publié comme un annuaire ouvert sur Internet.
     guest_cta_register: Créer un compte
     guest_cta_login: Se connecter
     guest_about_cta: En savoir plus sur le projet
@@ -463,6 +511,49 @@ ui:
       countdown_suffix: seconde(s) pour protéger ton compte.
       logout: Se déconnecter
       stay: Rester connecté
+  faq:
+    title: Foire aux questions
+    page_title: RapproFam — FAQ
+    meta_description: 'Réponses aux questions fréquentes sur RapproFam : inscription, groupes, événements, invitations, confidentialité et compte.'
+    lead: Tout ce qu’il faut savoir pour utiliser RapproFam en famille — inscription, groupes, événements et confidentialité.
+    guest_cta_text: Prêt à organiser tes moments en famille ?
+    contact_link: Une question sans réponse ? Contacte-nous
+    q1: Qu’est-ce que RapproFam ?
+    a1: 'RapproFam est une plateforme gratuite pour organiser la vie familiale en ligne : groupes, événements, invitations et messagerie. Ce n’est pas un réseau social ouvert — l’accès au contenu est réservé aux membres inscrits.'
+    q2: Est-ce gratuit ?
+    a2: Oui. RapproFam est un projet personnel non commercial. L’inscription et l’utilisation des fonctionnalités principales sont gratuites.
+    q3: Comment créer un événement ?
+    a3: 'Après inscription, rejoins un groupe (ou crée le tien si tu en es le responsable). Le chef, le modérateur du groupe ou le staff du site peut publier un événement depuis la section Événements.'
+    q4: Puis-je inviter des personnes sans compte ?
+    a4: La personne invitée doit créer un compte gratuit pour accepter l’invitation. Le responsable du groupe l’invite ensuite par pseudo ou e-mail depuis la fiche du groupe.
+    q5: Mes données sont-elles privées ?
+    a5: 'Oui. Les groupes, messages et événements privés ne sont pas publics sur Internet. RapproFam n’est pas un annuaire : seuls les membres connectés voient le contenu selon les droits de leur groupe. Consulte nos CGU pour le détail RGPD.'
+    q6: Puis-je créer plusieurs groupes ?
+    a6: 'Tu peux être responsable d’un seul groupe familial à la fois. En revanche, tu peux rejoindre plusieurs groupes en tant que membre (famille élargie, cousins, etc.).'
+    q7: Existe-t-il une application mobile ?
+    a7: 'Pas pour l’instant. RapproFam fonctionne dans le navigateur sur ordinateur, tablette et smartphone. L’interface s’adapte aux petits écrans.'
+    q8: Comment supprimer mon compte ?
+    a8: 'Depuis Mon espace, section Zone dangereuse. Si tu es chef d’un groupe, tu devras d’abord transférer la responsabilité ou dissoudre le groupe. La suppression est confirmée par e-mail.'
+    q9: Qui peut voir mes événements ?
+    a9: 'Un événement privé est visible par les membres du groupe concerné. Un événement public est visible par tous les membres connectés du site. Rien n’est accessible sans compte.'
+    q10: Comment rejoindre un groupe ?
+    a10: 'Le responsable t’invite par pseudo ou e-mail, ou tu peux envoyer une demande d’adhésion si le groupe l’accepte. Les invitations sont regroupées dans la section Invitations.'
+    q11: Quelle est la différence entre un événement public et privé ?
+    a11: 'Un événement privé reste dans le périmètre du groupe. Un événement public apparaît aussi dans la liste des événements visibles par tous les membres connectés — utile pour partager une cousinade ou une fête ouverte à la famille élargie.'
+    q12: Qui peut publier un événement ?
+    a12: 'Le chef du groupe, son modérateur ou le staff du site. Les membres simples peuvent proposer un événement au responsable par message privé.'
+    q13: Comment fonctionnent les messages de groupe ?
+    a13: 'Chaque groupe dispose d’un fil de discussion. Tu peux publier un message (texte et jusqu’à deux photos par publication), répondre aux fils et consulter l’historique selon les règles du groupe.'
+    q14: Comment fonctionnent les notifications ?
+    a14: 'La cloche et la barre latérale affichent les invitations et messages non lus. Tu peux activer un e-mail pour les nouveaux messages privés depuis Mon espace → Notifications.'
+    q15: Puis-je quitter un groupe ?
+    a15: 'Oui, sauf si tu en es le responsable : dans ce cas, tu dois d’abord désigner un successeur ou supprimer le groupe. Les membres simples peuvent quitter depuis la fiche du groupe.'
+    q16: Y a-t-il des limites d’utilisation ?
+    a16: 'Des limites anti-spam s’appliquent (messages, photos, formulaire de contact). Elles sont calibrées pour un usage familial normal et protéger la plateforme.'
+    q17: RapproFam est-il disponible en anglais ?
+    a17: 'Oui. Tu peux basculer entre français et anglais depuis le menu en bas de la barre latérale. Le choix est mémorisé sur ton appareil et sur ton profil si tu es connecté.'
+    q18: Comment contacter le responsable du site ?
+    a18: 'Les membres connectés peuvent utiliser le formulaire Contact. Pour les questions juridiques ou la confidentialité, consulte aussi les CGU et les mentions légales.'
   about:
     title: À propos
     page_title: RapproFam — À propos

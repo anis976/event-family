@@ -36,3 +36,31 @@
     background-color: rgba($ef-primary-orange, 0.1) !important;
     color: $ef-primary-orange !important;
 }
+
+// Boîte icône orange (cartes accueil, vitrine invité) — clair / sombre
+@mixin ef-icon-box(
+    $size: 50px,
+    $font-size: 1.5rem,
+    $radius: 12px
+) {
+    width: $size;
+    height: $size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius;
+    background-color: $ef-primary-orange;
+    color: white;
+    font-size: $font-size;
+    flex-shrink: 0;
+
+    @include color-mode(dark) {
+        background-color: rgba($ef-soft-gold, 0.2);
+        border: 1px solid rgba($ef-soft-gold, 0.4);
+        color: $ef-soft-gold;
+
+        .bi {
+            color: $ef-soft-gold;
+        }
+    }
+}
