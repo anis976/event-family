@@ -63,6 +63,7 @@ ui:
     features: Fonctionnalités
     faq: FAQ
     guide: Guide pratique
+    demo: Démo
     contact: Contact
   sidebar:
     guest: Invité
@@ -193,6 +194,8 @@ ui:
     guest_faq_link: Consulter la foire aux questions
     guest_guide_teaser: Besoin de conseils pour organiser un événement ?
     guest_guide_link: Lire le guide pratique
+    guest_demo_teaser: Envie de voir un exemple concret ?
+    guest_demo_link: Découvrir la démonstration
     guest_how_title: Comment ça marche ?
     guest_step1_title: Crée un compte
     guest_step1_text: Inscris-toi gratuitement pour rejoindre ou créer un groupe familial.
@@ -640,6 +643,68 @@ ui:
     features_link: Découvrir toutes les fonctionnalités
     faq_link: Des questions ? Consulter la FAQ
     guest_cta_text: Prêt à organiser ton prochain moment en famille ?
+  demo:
+    title: Démonstration
+    page_title: RapproFam — Démonstration
+    meta_description: 'Exemple fictif : découvre comment la famille Martin-Dubois organise anniversaires, Noël et cousinade avec RapproFam — groupes, calendrier, invitations et messagerie.'
+    lead: 'Voici un aperçu illustré de RapproFam avec une famille fictive. Toutes les données ci-dessous sont statiques : elles montrent ce que tu verras une fois inscrit et invité dans un groupe.'
+    fictional_notice: 'Données de démonstration — aucun compte réel, aucune information personnelle.'
+    family_name: Famille Martin-Dubois
+    family_text: 'Marie et Pierre coordonnent leur tribu à Bordeaux : trois enfants, des cousins en région parisienne et des grands-parents en Nouvelle-Aquitaine. RapproFam leur sert de tableau de bord familial.'
+    group_title: Un groupe privé pour toute la famille
+    group_text: 'Le groupe « Famille Martin-Dubois » rassemble les proches invités. Marie en est la responsable ; Pierre est modérateur. Chaque membre voit les événements et le fil de discussion selon ses droits.'
+    group_mock_aria: 'Aperçu fictif : groupe familial et liste des membres'
+    group_name: Famille Martin-Dubois
+    group_meta: 5 membres · responsable Marie
+    member_marie_name: Marie Martin
+    member_marie_role: Responsable du groupe
+    member_pierre_name: Pierre Dubois
+    member_pierre_role: Modérateur
+    member_sophie_name: Sophie Martin
+    member_sophie_role: Membre
+    member_lucas_name: Lucas Martin
+    member_lucas_role: Membre
+    member_emma_name: Emma Martin
+    member_emma_role: Membre
+    events_title: Calendrier partagé des moments importants
+    events_text: 'Les événements à venir s’affichent avec date, lieu et description. La famille planifie ainsi anniversaire, fêtes et cousinade sans perdre les informations dans des fils de discussion.'
+    events_mock_aria: 'Aperçu fictif : calendrier avec trois événements à venir'
+    event_birthday_date: 12 juin
+    event_birthday_title: Anniversaire d’Emma — 8 ans
+    event_birthday_place: Jardin de la maison · apportez un dessert
+    event_christmas_date: 24 déc.
+    event_christmas_title: Réveillon de Noël
+    event_christmas_place: Chez les grands-parents · La Rochelle
+    event_reunion_date: 15 août
+    event_reunion_title: Cousinade d’été
+    event_reunion_place: Parc de la mairie · pique-nique partagé
+    participants_title: Invitations et participants
+    participants_text: 'Les proches invités reçoivent une notification et peuvent accepter ou décliner. Le responsable suit qui vient à chaque événement — pratique pour commander le traiteur ou prévoir les chambres.'
+    participants_mock_aria: 'Aperçu fictif : statut des invitations pour la cousinade'
+    participant_julien_name: Julien Martin
+    participant_julien_event: Cousinade d’été
+    participant_julien_status: accepted
+    participant_claire_name: Claire Dubois
+    participant_claire_event: Cousinade d’été
+    participant_claire_status: pending
+    participant_thomas_name: Thomas Martin
+    participant_thomas_event: Réveillon de Noël
+    participant_thomas_status: declined
+    status_accepted: Confirmé
+    status_pending: En attente
+    status_declined: Décliné
+    messages_title: Échanges dans le fil du groupe
+    messages_text: 'Avant le jour J, la famille coordonne menus, horaires et surprises dans le fil de messages. Les réponses restent visibles pour tout le groupe — plus besoin de relancer chacun en privé.'
+    messages_mock_aria: 'Aperçu fictif : fil de messages de groupe'
+    message1_author: Marie
+    message1_text: 'Pour la cousinade : qui peut apporter la salade et les boissons ? On vise 25 personnes.'
+    message2_author: Pierre
+    message2_text: 'Je m’occupe des boissons. Sophie propose de faire la salade de tomates.'
+    message3_author: Sophie
+    message3_text: 'Parfait ! J’arrive la veille pour aider à préparer les tables.'
+    guide_link: Lire le guide pour organiser un événement
+    features_link: Voir toutes les fonctionnalités
+    guest_cta_text: Essaie RapproFam avec ta propre famille
   about:
     title: À propos
     page_title: RapproFam — À propos

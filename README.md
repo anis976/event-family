@@ -206,8 +206,8 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 | `POST /profil/avatar` | `app_profile_avatar_upload` | Upload avatar |
 | `GET /profil/avatar/{id}` | `app_profile_avatar_show` | Affichage avatar (selon visibilité) |
 
-Accès public **invité** (sans compte) : `/` (vitrine), `/about`, `/faq`, `/fonctionnalites`, `/cgu`, `/mentions-legales`, `/locale/switch`, auth (`/login`, `/register`, reset / verify e-mail, …).  
-**En cours (AdSense)** : `/blog`, `/demo`, guide événements familiaux — voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route).  
+Accès public **invité** (sans compte) : `/` (vitrine), `/about`, `/faq`, `/fonctionnalites`, `/comment-organiser-evenements-familiaux`, `/demo`, `/cgu`, `/mentions-legales`, `/locale/switch`, auth (`/login`, `/register`, reset / verify e-mail, …).  
+**En cours (AdSense)** : `/blog` — voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route).  
 **Réservé `ROLE_USER`** : `/evenements`, `/groupes`, `/messages`, `/contact`, `/profil`, invitations, etc. Voir [Accueil public & AdSense](#accueil-public--adsense).
 
 Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, ex. `/ef-console-8f3a2c91`) — réservé au **staff site** (`ROLE_MODERATOR` minimum : modérateur, super-modérateur, administrateur).
@@ -844,7 +844,7 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 | 1 | **Vidéo de présentation** (courte démo : inscription, groupes, événements, messages) | À faire |
 | 2 | **Partage privé** avec amis / proches proches — retours UX | Après vidéo |
 | 3 | **Ouverture élargie** — lien `https://rapprofam.fr` à d’autres personnes | Après retours phase 2 |
-| 4 | **Contenu public AdSense** — `/faq` ☑ · `/fonctionnalites` ☑ · `/blog`, `/demo`, guide | En cours — voir [feuille de route AdSense](#adsense--rejet-manque-de-contenu--feuille-de-route) |
+| 4 | **Contenu public AdSense** — `/faq` ☑ · `/fonctionnalites` ☑ · guide ☑ · `/demo` ☑ · `/blog` | En cours — voir [feuille de route AdSense](#adsense--rejet-manque-de-contenu--feuille-de-route) |
 | 5 | **Réponse AdSense** — nouvelle demande après enrichissement contenu | Après livraison contenu |
 
 ### Checklist prod — points encore à vérifier
@@ -1249,12 +1249,12 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 | # | Tâche | URL / périmètre | Contenu attendu | Statut |
 |---|--------|-----------------|-----------------|--------|
-| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (`/` invité ☑ · `/faq` ☑ · `/fonctionnalites` ☑ · `/comment-organiser-evenements-familiaux` ☑) |
+| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (`/` invité ☑ · `/faq` ☑ · `/fonctionnalites` ☑ · `/comment-organiser-evenements-familiaux` ☑ · `/demo` ☑) |
 | 2 | **Section accueil enrichie** | `/` (invité uniquement) | Fonctionnalités détaillées, maquettes, cas d’usage, lien FAQ, « Comment ça marche » — connectés : hero + cartes + événements | ☑ prod juin 2026 |
 | 3 | **FAQ** | `/faq` | 18 questions / réponses FR + EN · footer invité + connecté · `PUBLIC_ACCESS` | ☑ prod juin 2026 |
 | 4 | **Fonctionnalités** | `/fonctionnalites` | Présentation détaillée : groupes, calendrier / événements, invitations, notifications, messagerie | ☑ juin 2026 |
 | 5 | **Guide pratique** | `/comment-organiser-evenements-familiaux` (ou équivalent) | 800–1 500 mots : conseils pour organiser des événements familiaux ; ton aligné RapproFam ; exemples adaptés au site | ☑ juin 2026 |
-| 6 | **Démonstration** | `/demo` | Famille fictive : calendrier, anniversaire, Noël, liste participants ; captures / maquettes (floutage si besoin) — **données statiques**, pas de BDD | ☐ |
+| 6 | **Démonstration** | `/demo` | Famille fictive : calendrier, anniversaire, Noël, liste participants ; captures / maquettes (floutage si besoin) — **données statiques**, pas de BDD | ☑ juin 2026 |
 | 7 | **Blog** | `/blog` + articles | **8 articles** minimum (~1 000 mots chacun), ex. : cousinade réussie ; calendrier familial partagé ; erreurs à éviter ; lien malgré la distance ; Noël sans stress ; anniversaire familial ; pourquoi un agenda partagé ; coordonner plusieurs générations | ☐ |
 
 **Après livraison** : mettre à jour `security.yaml` (`PUBLIC_ACCESS` sur les nouvelles routes) · liens footer / sidebar invité · re-soumettre l’examen AdSense.
@@ -1317,20 +1317,40 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | **Page** | `/comment-organiser-evenements-familiaux` — 6 sections (objectif, groupe, planification, invitations, coordination, générations) · ~1 000 mots · FR + EN |
 | **Liens** | Footer invité + connecté · teaser depuis vitrine accueil invité |
 | **SEO** | `meta description` dédiée (`ui.guide.meta_description`) |
+| **UX** | Icônes `ef-icon-box` centrées par section ; encart final même style ; padding horizontal `.ef-main-content-padding` renforcé (`3rem 4.5rem` desktop) |
 
 | Fichier | Rôle |
 |---------|------|
 | `src/Controller/FamilyEventsGuideController.php` | Route `/comment-organiser-evenements-familiaux` |
 | `templates/guide/index.html.twig` | Contenu page |
 | `assets/styles/pages/_guide.scss` | Styles clair / sombre |
+| `assets/styles/base/_globals.scss` | Padding contenu principal |
 | `translations/messages.{fr,en}.yaml` → `ui.guide.*` | Textes + `ui.nav.guide` |
 | `config/packages/security.yaml` | Accès public |
+
+#### Livré — démonstration (juin 2026)
+
+| Élément | Détail |
+|---------|--------|
+| **Page** | `/demo` — famille fictive Martin-Dubois · maquettes CSS statiques (groupe, calendrier, invitations, messages) · FR + EN |
+| **Liens** | Footer invité + connecté · teaser vitrine accueil invité |
+| **SEO** | `meta description` dédiée (`ui.demo.meta_description`) · mention « données fictives » |
+
+| Fichier | Rôle |
+|---------|------|
+| `src/Controller/DemoController.php` | Route `/demo` |
+| `templates/demo/index.html.twig` | Contenu + maquettes `ef-home-guest__mock` |
+| `assets/styles/pages/_demo.scss` | Layout showcase · pastilles statut |
+| `translations/messages.{fr,en}.yaml` → `ui.demo.*` | Textes + `ui.nav.demo` |
+| `config/packages/security.yaml` | Accès public |
+
+**Prochaine livraison AdSense** : `/blog` (8 articles).
 
 ### En attente — AdSense (après enrichissement contenu)
 
 | Sujet | État | Quand |
 |-------|------|--------|
-| **Enrichissement contenu public** | En cours (4/7 livrés) | [Feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) |
+| **Enrichissement contenu public** | En cours (5/7 livrés) | [Feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) |
 | **Nouvelle demande d’examen AdSense** | À faire | Après livraison pages publiques |
 | **Safe Browsing** | ☑ Levé juin 2026 | — |
 | **CMP Google** (3 choix) | À configurer | **Après** approbation AdSense |
@@ -1347,8 +1367,9 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 ### Court terme
 
 1. **Vidéo de présentation** + partage amis → retours UX
-2. **Admin EasyAdmin** — relecture rapide UX / i18n
-3. **Performances prod** — valider avec cache warmup si besoin
+2. **AdSense** — `/blog` (8 articles) — voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route)
+3. **Admin EasyAdmin** — relecture rapide UX / i18n
+4. **Performances prod** — valider avec cache warmup si besoin
 
 ### v2 — Cercle des responsables (planifié)
 
@@ -1382,6 +1403,13 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 5. Tests automatisés (PHPUnit)
 
 ## Changelog
+
+### 2026-06-22 — Guide pratique + démo AdSense
+
+- **Guide** : page `/comment-organiser-evenements-familiaux` — 6 sections · FR + EN · `PUBLIC_ACCESS` · footer + teaser vitrine invité
+- **Démo** : page `/demo` — famille fictive Martin-Dubois · maquettes CSS (groupe, événements, invitations, messages) · FR + EN
+- **UX** : icônes `ef-icon-box` centrées ; encart guide harmonisé ; padding horizontal `.ef-main-content-padding` augmenté
+- **README** : feuille de route AdSense 5/7 livrés ; prochaine étape `/blog`
 
 ### 2026-06-16 — Cercle des responsables : messagerie + admin
 

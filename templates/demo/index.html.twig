@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'ui.demo.page_title'|trans }}{% endblock %}
+
+{% block page_title %}{{ 'ui.demo.title'|trans }}{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="{{ 'ui.demo.meta_description'|trans }}">
+{% endblock %}
+
+{% block body %}
+    <div class="ef-main-content-padding ef-demo">
+        <h1 class="visually-hidden">{{ 'ui.demo.title'|trans }}</h1>
+
+        <div class="ef-demo__inner mx-auto">
+            <p class="ef-demo__lead text-center mb-4">{{ 'ui.demo.lead'|trans }}</p>
+            <p class="ef-demo__notice text-center mb-5" role="note">{{ 'ui.demo.fictional_notice'|trans }}</p>
+
+            <article class="ef-demo__family-card text-center mb-5" aria-labelledby="ef-demo-family-title">
+                <div class="ef-icon-box ef-demo__family-icon mx-auto mb-3" aria-hidden="true">
+                    <i class="bi bi-house-heart fs-3"></i>
+                </div>
+                <h2 id="ef-demo-family-title" class="ef-demo__family-title">{{ 'ui.demo.family_name'|trans }}</h2>
+                <p class="ef-demo__family-text mb-0">{{ 'ui.demo.family_text'|trans }}</p>
+            </article>
+
+            <div class="ef-demo__showcases">
+                <section class="ef-demo__showcase" aria-labelledby="ef-demo-group-title">
+                    <div class="ef-demo__showcase-copy">
+                        <div class="ef-icon-box ef-demo__showcase-icon" aria-hidden="true">
+                            <i class="bi bi-people-fill fs-3"></i>
+                        </div>
+                        <h2 id="ef-demo-group-title" class="ef-demo__showcase-title">{{ 'ui.demo.group_title'|trans }}</h2>
+                        <p class="ef-demo__showcase-text">{{ 'ui.demo.group_text'|trans }}</p>
+                    </div>
+                    <div class="ef-home-guest ef-demo__showcase-mock-wrap">
+                        <div class="ef-home-guest__mock" role="img" aria-label="{{ 'ui.demo.group_mock_aria'|trans }}">
+                            <div class="ef-home-guest__mock-bar"><span></span><span></span><span></span></div>
+                            <div class="ef-home-guest__mock-body">
+                                <div class="ef-home-guest__mock-card">
+                                    <span class="ef-icon-box ef-icon-box--sm"><i class="bi bi-people" aria-hidden="true"></i></span>
+                                    <div>
+                                        <strong>{{ 'ui.demo.group_name'|trans }}</strong>
+                                        <small>{{ 'ui.demo.group_meta'|trans }}</small>
+                                    </div>
+                                </div>
+                                {% for member in members %}
+                                    <div class="ef-demo__member">
+                                        <span class="ef-home-guest__mock-avatar{{ loop.index is even ? ' ef-home-guest__mock-avatar--alt' : '' }}" aria-hidden="true"></span>
+                                        <div>
+                                            <strong>{{ ('ui.demo.member_' ~ member ~ '_name')|trans }}</strong>
+                                            <small>{{ ('ui.demo.member_' ~ member ~ '_role')|trans }}</small>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ef-demo__showcase ef-demo__showcase--reverse" aria-labelledby="ef-demo-events-title">
+                    <div class="ef-demo__showcase-copy">
+                        <div class="ef-icon-box ef-demo__showcase-icon" aria-hidden="true">
+                            <i class="bi bi-calendar-event fs-3"></i>
+                        </div>
+                        <h2 id="ef-demo-events-title" class="ef-demo__showcase-title">{{ 'ui.demo.events_title'|trans }}</h2>
+                        <p class="ef-demo__showcase-text">{{ 'ui.demo.events_text'|trans }}</p>
+                    </div>
+                    <div class="ef-home-guest ef-demo__showcase-mock-wrap">
+                        <div class="ef-home-guest__mock" role="img" aria-label="{{ 'ui.demo.events_mock_aria'|trans }}">
+                            <div class="ef-home-guest__mock-bar"><span></span><span></span><span></span></div>
+                            <div class="ef-home-guest__mock-body">
+                                {% for event in events %}
+                                    <div class="ef-home-guest__mock-event">
+                                        <div class="ef-home-guest__mock-event-date{{ loop.index > 1 ? ' ef-home-guest__mock-event-date--alt' : '' }}">
+                                            {{ ('ui.demo.event_' ~ event ~ '_date')|trans }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ ('ui.demo.event_' ~ event ~ '_title')|trans }}</strong>
+                                            <small>{{ ('ui.demo.event_' ~ event ~ '_place')|trans }}</small>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ef-demo__showcase" aria-labelledby="ef-demo-participants-title">
+                    <div class="ef-demo__showcase-copy">
+                        <div class="ef-icon-box ef-demo__showcase-icon" aria-hidden="true">
+                            <i class="bi bi-envelope-check fs-3"></i>
+                        </div>
+                        <h2 id="ef-demo-participants-title" class="ef-demo__showcase-title">{{ 'ui.demo.participants_title'|trans }}</h2>
+                        <p class="ef-demo__showcase-text">{{ 'ui.demo.participants_text'|trans }}</p>
+                    </div>
+                    <div class="ef-home-guest ef-demo__showcase-mock-wrap">
+                        <div class="ef-home-guest__mock" role="img" aria-label="{{ 'ui.demo.participants_mock_aria'|trans }}">
+                            <div class="ef-home-guest__mock-bar"><span></span><span></span><span></span></div>
+                            <div class="ef-home-guest__mock-body">
+                                {% for participant in participants %}
+                                    <div class="ef-home-guest__mock-invite">
+                                        <span class="ef-icon-box ef-icon-box--sm"><i class="bi bi-person-check" aria-hidden="true"></i></span>
+                                        <div>
+                                            <strong>{{ ('ui.demo.participant_' ~ participant ~ '_name')|trans }}</strong>
+                                            <small>{{ ('ui.demo.participant_' ~ participant ~ '_event')|trans }}</small>
+                                        </div>
+                                        <span class="ef-demo__status-pill ef-demo__status-pill--{{ ('ui.demo.participant_' ~ participant ~ '_status')|trans }}">
+                                            {{ ('ui.demo.status_' ~ ('ui.demo.participant_' ~ participant ~ '_status')|trans)|trans }}
+                                        </span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ef-demo__showcase ef-demo__showcase--reverse" aria-labelledby="ef-demo-messages-title">
+                    <div class="ef-demo__showcase-copy">
+                        <div class="ef-icon-box ef-demo__showcase-icon" aria-hidden="true">
+                            <i class="bi bi-chat-left-text fs-3"></i>
+                        </div>
+                        <h2 id="ef-demo-messages-title" class="ef-demo__showcase-title">{{ 'ui.demo.messages_title'|trans }}</h2>
+                        <p class="ef-demo__showcase-text">{{ 'ui.demo.messages_text'|trans }}</p>
+                    </div>
+                    <div class="ef-home-guest ef-demo__showcase-mock-wrap">
+                        <div class="ef-home-guest__mock" role="img" aria-label="{{ 'ui.demo.messages_mock_aria'|trans }}">
+                            <div class="ef-home-guest__mock-bar"><span></span><span></span><span></span></div>
+                            <div class="ef-home-guest__mock-body">
+                                <div class="ef-home-guest__mock-message">
+                                    <span class="ef-home-guest__mock-avatar" aria-hidden="true"></span>
+                                    <div class="ef-home-guest__mock-bubble">
+                                        <strong>{{ 'ui.demo.message1_author'|trans }}</strong>
+                                        <p>{{ 'ui.demo.message1_text'|trans }}</p>
+                                    </div>
+                                </div>
+                                <div class="ef-home-guest__mock-message ef-home-guest__mock-message--reply">
+                                    <span class="ef-home-guest__mock-avatar ef-home-guest__mock-avatar--alt" aria-hidden="true"></span>
+                                    <div class="ef-home-guest__mock-bubble">
+                                        <strong>{{ 'ui.demo.message2_author'|trans }}</strong>
+                                        <p>{{ 'ui.demo.message2_text'|trans }}</p>
+                                    </div>
+                                </div>
+                                <div class="ef-home-guest__mock-message">
+                                    <span class="ef-home-guest__mock-avatar" aria-hidden="true"></span>
+                                    <div class="ef-home-guest__mock-bubble">
+                                        <strong>{{ 'ui.demo.message3_author'|trans }}</strong>
+                                        <p>{{ 'ui.demo.message3_text'|trans }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <p class="ef-home-guest__faq-teaser text-center mt-4 mb-0">
+                <a href="{{ path('app_family_events_guide') }}" class="ef-home-guest__faq-teaser-link">
+                    {{ 'ui.demo.guide_link'|trans }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </p>
+            <p class="ef-home-guest__faq-teaser text-center mt-2 mb-0">
+                <a href="{{ path('app_features') }}" class="ef-home-guest__faq-teaser-link">
+                    {{ 'ui.demo.features_link'|trans }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </p>
+
+            {% if not app.user %}
+                <div class="ef-demo__cta mt-5">
+                    <p class="ef-demo__cta-text text-center mb-3">{{ 'ui.demo.guest_cta_text'|trans }}</p>
+                    <div class="ef-home-guest__cta">
+                        <a href="{{ path('app_register') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
+                            {{ 'ui.home.guest_cta_register'|trans }}
+                        </a>
+                        <a href="{{ path('app_login') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                            {{ 'ui.home.guest_cta_login'|trans }}
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

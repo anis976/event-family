@@ -1,0 +1,223 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+.ef-demo {
+    &__inner {
+        max-width: 56rem;
+    }
+
+    &__lead {
+        font-size: $ef-font-size-sm;
+        line-height: 1.7;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__notice {
+        font-size: 0.8rem;
+        line-height: 1.55;
+        color: $gray-600;
+        padding: 0.65rem 1rem;
+        border-radius: 50px;
+        background: rgba($ef-primary-orange, 0.08);
+        border: 1px solid rgba($ef-primary-orange, 0.2);
+        max-width: 36rem;
+        margin-left: auto;
+        margin-right: auto;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+            background: rgba($ef-primary-orange-dark, 0.12);
+            border-color: rgba($ef-soft-gold, 0.2);
+        }
+    }
+
+    &__family-card {
+        padding: 1.75rem 1.35rem;
+        border-radius: 15px;
+        background: #fff;
+        border: 1px solid rgba($ef-border-color, 0.6);
+        box-shadow: $box-shadow;
+
+        @include color-mode(dark) {
+            background: #252525;
+            border-color: rgba($ef-white-color-dark, 0.12);
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+        }
+    }
+
+    &__family-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0 0 0.65rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__family-text {
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__showcases {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    &__showcase {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        align-items: center;
+
+        @include media-breakpoint-up(lg) {
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+
+            &--reverse {
+                .ef-demo__showcase-copy {
+                    order: 2;
+                }
+
+                .ef-demo__showcase-mock-wrap {
+                    order: 1;
+                }
+            }
+        }
+    }
+
+    // Showcase copy : icône + titre + texte centrés (mobile et desktop).
+    // Revenir à l’alignement gauche desktop : décommenter le bloc ci-dessous et retirer text-align: center.
+    // @include media-breakpoint-up(lg) { text-align: left; } sur &__showcase-copy
+    &__showcase-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    &__showcase-icon {
+        margin-bottom: 1rem;
+    }
+
+    &__showcase-title,
+    &__showcase-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    &__showcase-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 0.75rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__showcase-text {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__showcase-mock-wrap {
+        width: 100%;
+    }
+
+    &__member {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.45rem 0.5rem;
+        border-radius: 8px;
+
+        strong {
+            display: block;
+            font-size: 0.8rem;
+            color: $ef-text-gray;
+        }
+
+        small {
+            font-size: 0.72rem;
+            color: $gray-600;
+        }
+
+        @include color-mode(dark) {
+            strong {
+                color: $ef-white-color-dark;
+            }
+
+            small {
+                color: $gray-600-dark;
+            }
+        }
+    }
+
+    &__status-pill {
+        margin-left: auto;
+        flex-shrink: 0;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        border-radius: 50px;
+        align-self: center;
+
+        &--accepted {
+            color: #fff;
+            background: #2e9e5b;
+        }
+
+        &--pending {
+            color: $ef-text-gray;
+            background: rgba($ef-primary-orange, 0.15);
+            border: 1px solid rgba($ef-primary-orange, 0.35);
+
+            @include color-mode(dark) {
+                color: $ef-white-color-dark;
+                background: rgba($ef-primary-orange-dark, 0.2);
+                border-color: rgba($ef-soft-gold, 0.35);
+            }
+        }
+
+        &--declined {
+            color: $gray-600;
+            background: rgba($gray-500, 0.15);
+
+            @include color-mode(dark) {
+                color: $gray-600-dark;
+                background: rgba($ef-white-color-dark, 0.08);
+            }
+        }
+    }
+
+    &__cta-text {
+        font-size: 0.9rem;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+}

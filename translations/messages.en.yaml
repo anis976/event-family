@@ -62,6 +62,7 @@ ui:
     features: Features
     faq: FAQ
     guide: Practical guide
+    demo: Demo
     contact: Contact
   sidebar:
     guest: Guest
@@ -192,6 +193,8 @@ ui:
     guest_faq_link: Browse the FAQ
     guest_guide_teaser: Need tips to organize an event?
     guest_guide_link: Read the practical guide
+    guest_demo_teaser: Want to see a concrete example?
+    guest_demo_link: Explore the demo
     guest_how_title: How it works
     guest_step1_title: Create an account
     guest_step1_text: Sign up for free to join or create a family group.
@@ -639,6 +642,68 @@ ui:
     features_link: Explore all features
     faq_link: Questions? Browse the FAQ
     guest_cta_text: Ready to plan your next family moment?
+  demo:
+    title: Demo
+    page_title: RapproFam — Demo
+    meta_description: 'Fictional example: see how the Martin-Dubois family plans birthdays, Christmas and a reunion with RapproFam — groups, calendar, invitations and messaging.'
+    lead: 'Here is an illustrated preview of RapproFam with a fictional family. All data below is static — it shows what you will see once signed up and invited to a group.'
+    fictional_notice: 'Demo data only — no real accounts, no personal information.'
+    family_name: Martin-Dubois family
+    family_text: 'Marie and Pierre coordinate their crew near Bordeaux: three children, cousins in the Paris area and grandparents in Nouvelle-Aquitaine. RapproFam is their family dashboard.'
+    group_title: A private group for the whole family
+    group_text: 'The “Martin-Dubois Family” group brings invited relatives together. Marie is the owner; Pierre is moderator. Each member sees events and the discussion thread according to their rights.'
+    group_mock_aria: 'Fictional preview: family group and member list'
+    group_name: Martin-Dubois Family
+    group_meta: 5 members · owner Marie
+    member_marie_name: Marie Martin
+    member_marie_role: Group owner
+    member_pierre_name: Pierre Dubois
+    member_pierre_role: Moderator
+    member_sophie_name: Sophie Martin
+    member_sophie_role: Member
+    member_lucas_name: Lucas Martin
+    member_lucas_role: Member
+    member_emma_name: Emma Martin
+    member_emma_role: Member
+    events_title: Shared calendar of important moments
+    events_text: 'Upcoming events show date, location and description. The family plans birthdays, holidays and reunions without losing details in scattered chats.'
+    events_mock_aria: 'Fictional preview: calendar with three upcoming events'
+    event_birthday_date: Jun 12
+    event_birthday_title: Emma’s 8th birthday
+    event_birthday_place: Home garden · bring a dessert
+    event_christmas_date: Dec 24
+    event_christmas_title: Christmas Eve dinner
+    event_christmas_place: Grandparents’ home · La Rochelle
+    event_reunion_date: Aug 15
+    event_reunion_title: Summer reunion
+    event_reunion_place: Town park · shared picnic
+    participants_title: Invitations and participants
+    participants_text: 'Invited relatives get a notification and can accept or decline. The owner tracks who is coming to each event — handy for catering or spare rooms.'
+    participants_mock_aria: 'Fictional preview: invitation status for the reunion'
+    participant_julien_name: Julien Martin
+    participant_julien_event: Summer reunion
+    participant_julien_status: accepted
+    participant_claire_name: Claire Dubois
+    participant_claire_event: Summer reunion
+    participant_claire_status: pending
+    participant_thomas_name: Thomas Martin
+    participant_thomas_event: Christmas Eve dinner
+    participant_thomas_status: declined
+    status_accepted: Confirmed
+    status_pending: Pending
+    status_declined: Declined
+    messages_title: Group thread conversations
+    messages_text: 'Before the big day, the family coordinates menus, timing and surprises in the group thread. Replies stay visible to everyone — no need to chase people in private chats.'
+    messages_mock_aria: 'Fictional preview: group message thread'
+    message1_author: Marie
+    message1_text: 'For the reunion: who can bring salad and drinks? We are planning for about 25 people.'
+    message2_author: Pierre
+    message2_text: 'I will handle drinks. Sophie offered to make the tomato salad.'
+    message3_author: Sophie
+    message3_text: 'Perfect! I will arrive the day before to help set up the tables.'
+    guide_link: Read the guide to organize an event
+    features_link: See all features
+    guest_cta_text: Try RapproFam with your own family
   about:
     title: About
     page_title: RapproFam — About
