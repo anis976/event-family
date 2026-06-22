@@ -325,10 +325,16 @@ git add README.md
 git commit -m "docs: mise à jour du README"
 
 si le scss ne charge pas : 
+
+En prod (après deploy)
+php bin/console sass:build --env=prod
+php bin/console asset-map:compile --env=prod
+php bin/console cache:clear --env=prod
+
+En local (dev) — recommandé
+
 cd C:\laragon\www\eventFamily
-Remove-Item -Recurse -Force .\public\assets\* -ErrorAction SilentlyContinue
-npm run sass:build
-php bin/console asset-map:compile
+composer assets:refresh
 ```
 
 **Notes :**
