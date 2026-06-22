@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'ui.features.page_title'|trans }}{% endblock %}
+
+{% block page_title %}{{ 'ui.features.title'|trans }}{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="{{ 'ui.features.meta_description'|trans }}">
+{% endblock %}
+
+{% block body %}
+    <div class="ef-main-content-padding ef-features">
+        <h1 class="visually-hidden">{{ 'ui.features.title'|trans }}</h1>
+
+        <div class="ef-features__inner mx-auto">
+            <p class="ef-features__lead text-center mb-5">{{ 'ui.features.lead'|trans }}</p>
+
+            <div class="ef-features__list">
+                {% for block in ['groups', 'events', 'invites', 'notifications', 'messages'] %}
+                    <section class="ef-features__block" aria-labelledby="ef-features-{{ block }}-title">
+                        <div class="ef-icon-box ef-features__block-icon" aria-hidden="true">
+                            <i class="bi {{ ('ui.features.' ~ block ~ '_icon')|trans }} fs-3"></i>
+                        </div>
+                        <h2 id="ef-features-{{ block }}-title" class="ef-features__block-title">
+                            {{ ('ui.features.' ~ block ~ '_title')|trans }}
+                        </h2>
+                        <p class="ef-features__block-text">{{ ('ui.features.' ~ block ~ '_text')|trans }}</p>
+                        <ul class="ef-features__block-list">
+                            {% for i in 1..3 %}
+                                <li>{{ ('ui.features.' ~ block ~ '_item' ~ i)|trans }}</li>
+                            {% endfor %}
+                        </ul>
+                    </section>
+                {% endfor %}
+            </div>
+
+            <p class="ef-home-guest__faq-teaser text-center mt-4 mb-0">
+                <a href="{{ path('app_faq') }}" class="ef-home-guest__faq-teaser-link mt-2">
+                    {{ 'ui.features.faq_link'|trans }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </p>
+
+            {% if not app.user %}
+                <div class="ef-features__cta mt-5">
+                    <p class="ef-features__cta-text text-center mb-3">{{ 'ui.features.guest_cta_text'|trans }}</p>
+                    <div class="ef-home-guest__cta">
+                        <a href="{{ path('app_register') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
+                            {{ 'ui.home.guest_cta_register'|trans }}
+                        </a>
+                        <a href="{{ path('app_login') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                            {{ 'ui.home.guest_cta_login'|trans }}
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

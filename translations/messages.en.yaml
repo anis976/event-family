@@ -59,6 +59,7 @@ ui:
     messages: Messages
     admin: Administration
     about: About
+    features: Features
     faq: FAQ
     contact: Contact
   sidebar:
@@ -146,6 +147,7 @@ ui:
     guest_card_connect_text: Private messages, group threads and notifications so you never miss an update.
     guest_features_title: Everything you need to organize your family
     guest_features_lead: RapproFam brings calendar, invitations and conversations together in a simple interface built for relatives — not for the open web.
+    guest_features_link: See each feature in detail
     guest_feature_groups_title: Structured family groups
     guest_feature_groups_text: Create a dedicated space for your family (name, branch, description). The owner invites relatives, handles join requests and can appoint a moderator. Each member sees group events and messages once accepted.
     guest_feature_events_title: Shared calendar and events
@@ -510,6 +512,43 @@ ui:
       countdown_suffix: second(s) to protect your account.
       logout: Sign out
       stay: Stay signed in
+  features:
+    title: Features
+    page_title: RapproFam — Features
+    meta_description: 'Discover RapproFam features: family groups, shared events, invitations, notifications and private messaging.'
+    lead: RapproFam helps your family stay coordinated. Here is what you can do once signed up — in a private space for members only.
+    groups_icon: bi-people-fill
+    groups_title: Family groups
+    groups_text: Each group brings together your family or a branch — an owner, an optional moderator and invited members.
+    groups_item1: One group you own at a time (as group owner).
+    groups_item2: Invitations and join requests managed from the group page.
+    groups_item3: Built-in moderation (owner, moderator, member removal).
+    events_icon: bi-calendar-event
+    events_title: Events and calendar
+    events_text: Publish and browse important moments — birthdays, holidays, reunions or gatherings.
+    events_item1: Start and end dates, location, description and optional photos.
+    events_item2: Upcoming, ongoing and past filters; search by title or location.
+    events_item3: Group-only or public visibility among signed-in members.
+    invites_icon: bi-envelope-check
+    invites_title: Invitations
+    invites_text: Join your family in a few clicks or invite relatives to join you.
+    invites_item1: Invite by username or email from the group page.
+    invites_item2: Dedicated hub to accept or decline received invitations.
+    invites_item3: Join requests for groups that allow them.
+    notifications_icon: bi-bell
+    notifications_title: Notifications
+    notifications_text: Stay informed without checking every page all the time.
+    notifications_item1: Badges on Invitations and Messages in the sidebar.
+    notifications_item2: Bell icon in the top bar with total unread items.
+    notifications_item3: Optional email for new private messages (My space).
+    messages_icon: bi-chat-left-text
+    messages_title: Messaging
+    messages_text: Chat privately or in your group thread, with text and photos.
+    messages_item1: Private messages between two members (one thread per pair).
+    messages_item2: Group thread with replies and up to two photos per post.
+    messages_item3: Read receipts on private messages.
+    faq_link: Questions? Browse the FAQ
+    guest_cta_text: Ready to try RapproFam with your family?
   faq:
     title: FAQ
     page_title: RapproFam — FAQ

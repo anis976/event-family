@@ -176,6 +176,9 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 | Route | Nom | Description |
 |-------|-----|-------------|
 | `/` | `app_home` | Accueil |
+| `/about` | `app_about` | À propos |
+| `/faq` | `app_faq` | Foire aux questions (public) |
+| `/fonctionnalites` | `app_features` | Fonctionnalités (public) |
 | `/login`, `/register`, `/logout` | — | Authentification |
 | `/profil` | `app_profile` | Mon espace |
 | `/profil/utilisateur/{id}` | `app_profile_show` | Profil public + MP |
@@ -203,8 +206,8 @@ Lien footer **Gérer les cookies** · CGU `#privacy` · après modif SCSS : `com
 | `POST /profil/avatar` | `app_profile_avatar_upload` | Upload avatar |
 | `GET /profil/avatar/{id}` | `app_profile_avatar_show` | Affichage avatar (selon visibilité) |
 
-Accès public **invité** (sans compte) : `/` (vitrine), `/about`, `/cgu`, `/mentions-legales`, `/locale/switch`, auth (`/login`, `/register`, reset / verify e-mail, …).  
-**En cours (AdSense)** : `/fonctionnalites`, `/faq`, `/blog`, `/demo`, guide événements familiaux — voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route).  
+Accès public **invité** (sans compte) : `/` (vitrine), `/about`, `/faq`, `/fonctionnalites`, `/cgu`, `/mentions-legales`, `/locale/switch`, auth (`/login`, `/register`, reset / verify e-mail, …).  
+**En cours (AdSense)** : `/blog`, `/demo`, guide événements familiaux — voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route).  
 **Réservé `ROLE_USER`** : `/evenements`, `/groupes`, `/messages`, `/contact`, `/profil`, invitations, etc. Voir [Accueil public & AdSense](#accueil-public--adsense).
 
 Le back-office EasyAdmin est servi sous un **chemin obscur** (`EF_ADMIN_PATH`, ex. `/ef-console-8f3a2c91`) — réservé au **staff site** (`ROLE_MODERATOR` minimum : modérateur, super-modérateur, administrateur).
@@ -814,7 +817,7 @@ Fichiers : `assets/app.js`, `assets/js/ef-theme-init.js`, `templates/components/
 | 1 | **Vidéo de présentation** (courte démo : inscription, groupes, événements, messages) | À faire |
 | 2 | **Partage privé** avec amis / proches proches — retours UX | Après vidéo |
 | 3 | **Ouverture élargie** — lien `https://rapprofam.fr` à d’autres personnes | Après retours phase 2 |
-| 4 | **Contenu public AdSense** — pages `/faq`, `/fonctionnalites`, `/blog`, `/demo`, guide | En cours — voir [feuille de route AdSense](#adsense--rejet-manque-de-contenu--feuille-de-route) |
+| 4 | **Contenu public AdSense** — `/faq` ☑ · `/fonctionnalites` ☑ · `/blog`, `/demo`, guide | En cours — voir [feuille de route AdSense](#adsense--rejet-manque-de-contenu--feuille-de-route) |
 | 5 | **Réponse AdSense** — nouvelle demande après enrichissement contenu | Après livraison contenu |
 
 ### Checklist prod — points encore à vérifier
@@ -1219,10 +1222,10 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 | # | Tâche | URL / périmètre | Contenu attendu | Statut |
 |---|--------|-----------------|-----------------|--------|
-| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (accueil ☑) |
-| 2 | **Section accueil enrichie** | `/` (invité) | 3–5 captures d’écran ; explication détaillée de chaque fonctionnalité ; mini-FAQ ; cas d’usage concrets — **sans** toucher à l’auth | ☑ juin 2026 |
-| 3 | **FAQ** | `/faq` | 15–20 questions / réponses (ex. : Qu’est-ce que RapproFam ? Gratuit ? Créer un événement ? Inviter sans compte ? Données privées ? Plusieurs groupes ? App mobile ? Supprimer le compte ? Qui voit mes événements ? …) | ☑ juin 2026 |
-| 4 | **Fonctionnalités** | `/fonctionnalites` | Présentation détaillée : groupes, calendrier / événements, invitations, notifications, messagerie — captures si possible | ☐ |
+| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (`/` invité ☑ · `/faq` ☑ · `/fonctionnalites` ☑) |
+| 2 | **Section accueil enrichie** | `/` (invité uniquement) | Fonctionnalités détaillées, maquettes, cas d’usage, lien FAQ, « Comment ça marche » — connectés : hero + cartes + événements | ☑ prod juin 2026 |
+| 3 | **FAQ** | `/faq` | 18 questions / réponses FR + EN · footer invité + connecté · `PUBLIC_ACCESS` | ☑ prod juin 2026 |
+| 4 | **Fonctionnalités** | `/fonctionnalites` | Présentation détaillée : groupes, calendrier / événements, invitations, notifications, messagerie | ☑ juin 2026 |
 | 5 | **Guide pratique** | `/comment-organiser-evenements-familiaux` (ou équivalent) | 800–1 500 mots : conseils pour organiser des événements familiaux ; ton aligné RapproFam ; exemples adaptés au site | ☐ |
 | 6 | **Démonstration** | `/demo` | Famille fictive : calendrier, anniversaire, Noël, liste participants ; captures / maquettes (floutage si besoin) — **données statiques**, pas de BDD | ☐ |
 | 7 | **Blog** | `/blog` + articles | **8 articles** minimum (~1 000 mots chacun), ex. : cousinade réussie ; calendrier familial partagé ; erreurs à éviter ; lien malgré la distance ; Noël sans stress ; anniversaire familial ; pourquoi un agenda partagé ; coordonner plusieurs générations | ☐ |
@@ -1244,11 +1247,47 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | 7 | `pourquoi-agenda-partage` | Pourquoi utiliser un agenda partagé |
 | 8 | `coordonner-plusieurs-generations` | Comment coordonner plusieurs générations dans un même groupe familial |
 
+#### Livré — accueil vitrine + FAQ (juin 2026)
+
+| Élément | Détail |
+|---------|--------|
+| **Accueil invité** | Vitrine `_guest_vitrine.html.twig` : fonctionnalités, cas d’usage, maquettes CSS, étapes, CTA — **masquée si connecté** |
+| **FAQ** | `/faq` — 18 Q/R · `FaqController` · accordéon · meta SEO · CTA invité (boutons style home) |
+| **Icônes** | Composant `components/_icon-box.scss` + mixin `ef-icon-box` |
+| **Footer** | Lien FAQ (invité + connecté) · À propos ajouté au footer invité |
+| **i18n** | `ui.faq.*` · `ui.home.guest_*` dans `messages.{fr,en}.yaml` |
+| **Sécurité** | `PUBLIC_ACCESS` sur `^/faq` |
+
+| Fichier | Rôle |
+|---------|------|
+| `templates/home/_guest_vitrine.html.twig` | Vitrine accueil (invité) |
+| `src/Controller/FaqController.php` | Route `/faq` |
+| `templates/faq/index.html.twig` | Page FAQ |
+| `assets/styles/pages/_faq.scss` | Styles FAQ |
+| `assets/styles/components/_icon-box.scss` | Boîtes icônes orange |
+| `config/packages/security.yaml` | Accès public `/faq` |
+| `templates/layout/_footer.html.twig` | Liens FAQ / about |
+
+#### Livré — page Fonctionnalités (juin 2026)
+
+| Élément | Détail |
+|---------|--------|
+| **Page** | `/fonctionnalites` — 5 blocs (groupes, événements, invitations, notifications, messagerie) · FR + EN |
+| **Liens** | Footer invité + connecté · lien depuis vitrine accueil invité |
+| **SEO** | `meta description` dédiée (`ui.features.meta_description`) |
+
+| Fichier | Rôle |
+|---------|------|
+| `src/Controller/FeaturesController.php` | Route `/fonctionnalites` |
+| `templates/features/index.html.twig` | Contenu page |
+| `assets/styles/pages/_features.scss` | Styles clair / sombre |
+| `translations/messages.{fr,en}.yaml` → `ui.features.*` | Textes + `ui.nav.features` |
+
 ### En attente — AdSense (après enrichissement contenu)
 
 | Sujet | État | Quand |
 |-------|------|--------|
-| **Enrichissement contenu public** | En cours | Voir [feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) ci-dessus |
+| **Enrichissement contenu public** | En cours (3/7 livrés) | [Feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) |
 | **Nouvelle demande d’examen AdSense** | À faire | Après livraison pages publiques |
 | **Safe Browsing** | ☑ Levé juin 2026 | — |
 | **CMP Google** (3 choix) | À configurer | **Après** approbation AdSense |

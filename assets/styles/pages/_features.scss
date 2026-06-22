@@ -1,0 +1,103 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+.ef-features {
+    &.ef-main-content-padding {
+        @include media-breakpoint-up(md) {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    }
+
+    &__inner {
+        max-width: 56rem;
+    }
+
+    &__lead {
+        font-size: $ef-font-size-sm;
+        line-height: 1.65;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    &__block {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.75rem 1.35rem;
+        border-radius: 15px;
+        background: #fff;
+        border: 1px solid rgba($ef-border-color, 0.6);
+        box-shadow: $box-shadow;
+
+        @include color-mode(dark) {
+            background: #252525;
+            border-color: rgba($ef-white-color-dark, 0.12);
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+        }
+    }
+
+    &__block-icon {
+        margin: 0 auto 1rem;
+    }
+
+    &__block-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 0.65rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__block-text {
+        margin: 0 0 0.85rem;
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__block-list {
+        display: inline-block;
+        margin: 0;
+        padding-left: 1.15rem;
+        text-align: left;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: $gray-600;
+
+        li + li {
+            margin-top: 0.35rem;
+        }
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__cta-text {
+        font-size: 0.9rem;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+}

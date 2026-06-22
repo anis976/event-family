@@ -11,6 +11,7 @@
                 <h6 class="fw-bold">{{ 'ui.footer.quick_links'|trans }}</h6>
                 <ul class="list-unstyled mb-0">
                     <li><a href="{{ path('app_about') }}" class="ef-footer-link small">{{ 'ui.nav.about'|trans }}</a></li>
+                    <li><a href="{{ path('app_features') }}" class="ef-footer-link small">{{ 'ui.nav.features'|trans }}</a></li>
                     <li><a href="{{ path('app_faq') }}" class="ef-footer-link small">{{ 'ui.nav.faq'|trans }}</a></li>
                     <li><a href="{{ path('app_contact') }}" class="ef-footer-link small">{{ 'ui.nav.contact'|trans }}</a></li>
                     <li><a href="{{ path('app_mentions') }}" class="ef-footer-link small">{{ 'ui.footer.legal'|trans }}</a></li>
@@ -36,6 +37,7 @@
         {% else %}
         <nav class="d-flex flex-wrap justify-content-center gap-3 gap-md-4 py-2" aria-label="{{ 'ui.footer.quick_links'|trans }}">
             <a href="{{ path('app_about') }}" class="ef-footer-link small">{{ 'ui.nav.about'|trans }}</a>
+            <a href="{{ path('app_features') }}" class="ef-footer-link small">{{ 'ui.nav.features'|trans }}</a>
             <a href="{{ path('app_faq') }}" class="ef-footer-link small">{{ 'ui.nav.faq'|trans }}</a>
             <a href="{{ path('app_cgu') }}" class="ef-footer-link small">{{ 'ui.footer.cgu'|trans }}</a>
             <a href="{{ path('app_mentions') }}" class="ef-footer-link small">{{ 'ui.footer.legal'|trans }}</a>

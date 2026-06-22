@@ -60,6 +60,7 @@ ui:
     messages: Messages
     admin: Administration
     about: À propos
+    features: Fonctionnalités
     faq: FAQ
     contact: Contact
   sidebar:
@@ -147,6 +148,7 @@ ui:
     guest_card_connect_text: Messages privés, fil de groupe et notifications pour ne rien manquer.
     guest_features_title: Tout ce dont tu as besoin pour organiser ta famille
     guest_features_lead: RapproFam regroupe calendrier, invitations et échanges dans une interface simple, pensée pour les proches — pas pour le grand public.
+    guest_features_link: Voir le détail de chaque fonctionnalité
     guest_feature_groups_title: Groupes familiaux structurés
     guest_feature_groups_text: 'Crée un espace dédié à ta famille (nom, branche, description). Le responsable invite les proches, gère les demandes d’adhésion et peut désigner un modérateur. Chaque membre voit les événements et messages du groupe une fois accepté.'
     guest_feature_events_title: Calendrier et événements partagés
@@ -511,6 +513,43 @@ ui:
       countdown_suffix: seconde(s) pour protéger ton compte.
       logout: Se déconnecter
       stay: Rester connecté
+  features:
+    title: Fonctionnalités
+    page_title: RapproFam — Fonctionnalités
+    meta_description: 'Découvre les fonctionnalités de RapproFam : groupes familiaux, événements partagés, invitations, notifications et messagerie privée.'
+    lead: RapproFam aide ta famille à se coordonner au quotidien. Voici ce que tu peux faire une fois inscrit — dans un espace privé, réservé aux membres.
+    groups_icon: bi-people-fill
+    groups_title: Groupes familiaux
+    groups_text: 'Chaque groupe rassemble ta famille ou une branche : un responsable, un modérateur optionnel et les membres invités.'
+    groups_item1: 'Un seul groupe dont tu es responsable à la fois ; possibilité d’en rejoindre plusieurs en tant que membre.'
+    groups_item2: Invitations et demandes d’adhésion gérées depuis la fiche du groupe.
+    groups_item3: Modération intégrée (chef, modérateur, retrait de membre).
+    events_icon: bi-calendar-event
+    events_title: Événements et calendrier
+    events_text: 'Publie et consulte les moments importants : anniversaires, fêtes, cousinades ou réunions.'
+    events_item1: Dates de début et de fin, lieu, description et photos facultatives.
+    events_item2: Filtres à venir, en cours et passés ; recherche par titre ou lieu.
+    events_item3: Visibilité groupe ou publique entre membres connectés.
+    invites_icon: bi-envelope-check
+    invites_title: Invitations
+    invites_text: Rejoins ta famille en quelques clics ou invite tes proches à te rejoindre.
+    invites_item1: Invitation par pseudo ou e-mail depuis la fiche du groupe.
+    invites_item2: Hub dédié pour accepter ou refuser les invitations reçues.
+    invites_item3: Demandes d’adhésion pour les groupes qui l’autorisent.
+    notifications_icon: bi-bell
+    notifications_title: Notifications
+    notifications_text: Reste informé sans surveiller chaque page en permanence.
+    notifications_item1: Badges sur Invitations et Messages dans la barre latérale.
+    notifications_item2: Cloche en haut de page avec le total des éléments non lus.
+    notifications_item3: E-mail optionnel pour les nouveaux messages privés (Mon espace).
+    messages_icon: bi-chat-left-text
+    messages_title: Messagerie
+    messages_text: 'Échange en privé ou dans le fil de ton groupe, avec texte et photos.'
+    messages_item1: Messages privés entre deux membres (un fil par paire).
+    messages_item2: Fil de groupe avec réponses et jusqu’à deux photos par publication.
+    messages_item3: Accusé de lecture sur les messages privés.
+    faq_link: Des questions ? Consulter la FAQ
+    guest_cta_text: Prêt à essayer RapproFam avec ta famille ?
   faq:
     title: Foire aux questions
     page_title: RapproFam — FAQ
