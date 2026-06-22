@@ -153,9 +153,12 @@ powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
 2. Compile le CSS/JS en local (`sass:build`, SCSS inclus)
 3. **`git push`** vers GitHub (si besoin — **vous n'avez pas à le faire vous-même**)
 4. Met à jour le code sur le serveur (Composer, migrations BDD, etc.)
-5. Copie les assets compilés sur o2switch + vide le cache prod
+5. Copie les assets compilés sur o2switch
+6. **`cache:clear --env=prod` + `cache:warmup --env=prod` sur le serveur** (étape finale — rien à faire à la main après un deploy OK)
 
 Mot de passe cPanel demandé pour SSH. Attendre la ligne **`[OK] Deploy verifie`**.
+
+> Après un deploy réussi, **ne relancez pas** `cache:clear --env=prod` sauf modification de `.env.local` en SSH ou dépannage.
 
 ---
 
@@ -324,17 +327,27 @@ Pour le README à la racine
 git add README.md
 git commit -m "docs: mise à jour du README"
 
-si le scss ne charge pas : 
+Quand vider le cache à la main (SSH)
+Seulement si tu modifies .env.local sur le serveur sans redeployer, ou en cas de dépannage (erreur 500) :
 
-En prod (après deploy)
-php bin/console sass:build --env=prod
-php bin/console asset-map:compile --env=prod
+cd ~/rapprofam.fr
+composer dump-env prod    # si tu as changé des variables .env
 php bin/console cache:clear --env=prod
+php bin/console cache:warmup --env=prod
+
+si le scss ne charge pas : 
 
 En local (dev) — recommandé
 
 cd C:\laragon\www\eventFamily
 composer assets:refresh
+
+En dev (pas besoin la commande : deplloy le fait deja ceci : )
+
+En prod (après deploy)
+php bin/console sass:build --env=prod
+php bin/console asset-map:compile --env=prod
+php bin/console cache:clear --env=prod
 ```
 
 **Notes :**
