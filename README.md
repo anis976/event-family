@@ -679,9 +679,10 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 
 | Tâche | Action |
 |-------|--------|
+| **Deploy complet (PC)** | `powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1` — voir ci-dessous |
 | Migrations | `php bin/console doctrine:migrations:migrate --no-interaction` |
 | Assets CSS | `php bin/console sass:build` (`app.scss`, `error-page.scss`, `ef-admin.scss`) + `asset-map:compile` si prod |
-| Cache prod | `APP_ENV=prod php bin/console cache:clear` |
+| Cache prod (manuel) | **Uniquement en SSH** après modification de `.env.local` serveur ou dépannage : `php bin/console cache:clear --env=prod` puis `cache:warmup --env=prod` — **pas nécessaire après `deploy.ps1`** |
 | Cron purge comptes | `php bin/console app:users:purge-inactive --env=prod` (ex. 3 h) |
 | Cron purge events passés | `php bin/console app:events:purge-past --env=prod` (ex. 4 h) |
 | Cron purge messages | `php bin/console app:messages:purge-old --env=prod` (ex. 5 h) |
@@ -689,6 +690,32 @@ Détail, PayPal, OAuth, variables `.env` et **§ Délivrabilité e-mail** : [doc
 | Dossier photos events | `var/storage/events/` writable par PHP |
 | Dossier photos messages | `var/storage/message-photos/` writable par PHP |
 | Extension PHP | **GD** activée (avatars + photos événements + photos messages) |
+
+### Commande deploy — `bin/deploy.ps1`
+
+**Prérequis** : tout commité (`git add .` → `git commit -m "..."`) — le script refuse sinon.
+
+```powershell
+cd C:\laragon\www\eventFamily
+powershell -ExecutionPolicy Bypass -File .\bin\deploy.ps1
+```
+
+**Ce que fait le script (automatique, rien à ajouter après) :**
+
+| Étape | Où | Détail |
+|-------|-----|--------|
+| 1 | PC | Vérifie qu'il n'y a pas de fichiers non commités |
+| 2 | PC | `sass:build` + `asset-map:compile` (prod) |
+| 3 | PC → GitHub | `git push origin main` si besoin |
+| 4 | Serveur | `deploy-server.sh` : `git reset`, Composer, `assets:install`, migrations, `rm -rf var/cache/prod`, `cache:warmup` |
+| 5 | PC → serveur | `scp` de `public/assets/` (CSS/JS compilés) |
+| 6 | Serveur | **`cache:clear --env=prod` + `cache:warmup --env=prod`** (après sync assets) |
+
+> **Cache prod** : `deploy.ps1` vide et réchauffe le cache **à la fin du déploiement**. Vous n'avez **pas** à lancer `php bin/console cache:clear --env=prod` vous-même après un deploy réussi (`[OK] Deploy verifie`).
+>
+> **Cache manuel (SSH)** : seulement si vous modifiez `.env.local` **sur le serveur** sans redeployer, ou en cas d'erreur 500 — puis `composer dump-env prod` si variables d'environnement changées.
+
+Détail pas à pas : [docs/GUIDE_COMMANDES_RAPPROFAM.md](docs/GUIDE_COMMANDES_RAPPROFAM.md) § 6–10.
 
 ### Fonctionnalités à finaliser avant prod
 
@@ -1222,11 +1249,11 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 
 | # | Tâche | URL / périmètre | Contenu attendu | Statut |
 |---|--------|-----------------|-----------------|--------|
-| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (`/` invité ☑ · `/faq` ☑ · `/fonctionnalites` ☑) |
+| 1 | **SEO par page** | Toutes les pages publiques | `meta description` (+ OG si pertinent) propre à chaque page ; titres `<h1>` uniques | ☐ en cours (`/` invité ☑ · `/faq` ☑ · `/fonctionnalites` ☑ · `/comment-organiser-evenements-familiaux` ☑) |
 | 2 | **Section accueil enrichie** | `/` (invité uniquement) | Fonctionnalités détaillées, maquettes, cas d’usage, lien FAQ, « Comment ça marche » — connectés : hero + cartes + événements | ☑ prod juin 2026 |
 | 3 | **FAQ** | `/faq` | 18 questions / réponses FR + EN · footer invité + connecté · `PUBLIC_ACCESS` | ☑ prod juin 2026 |
 | 4 | **Fonctionnalités** | `/fonctionnalites` | Présentation détaillée : groupes, calendrier / événements, invitations, notifications, messagerie | ☑ juin 2026 |
-| 5 | **Guide pratique** | `/comment-organiser-evenements-familiaux` (ou équivalent) | 800–1 500 mots : conseils pour organiser des événements familiaux ; ton aligné RapproFam ; exemples adaptés au site | ☐ |
+| 5 | **Guide pratique** | `/comment-organiser-evenements-familiaux` (ou équivalent) | 800–1 500 mots : conseils pour organiser des événements familiaux ; ton aligné RapproFam ; exemples adaptés au site | ☑ juin 2026 |
 | 6 | **Démonstration** | `/demo` | Famille fictive : calendrier, anniversaire, Noël, liste participants ; captures / maquettes (floutage si besoin) — **données statiques**, pas de BDD | ☐ |
 | 7 | **Blog** | `/blog` + articles | **8 articles** minimum (~1 000 mots chacun), ex. : cousinade réussie ; calendrier familial partagé ; erreurs à éviter ; lien malgré la distance ; Noël sans stress ; anniversaire familial ; pourquoi un agenda partagé ; coordonner plusieurs générations | ☐ |
 
@@ -1283,11 +1310,27 @@ Sections ajoutées (FR + EN, `ui.about.*`) : public visé, fonctionnalités memb
 | `assets/styles/pages/_features.scss` | Styles clair / sombre |
 | `translations/messages.{fr,en}.yaml` → `ui.features.*` | Textes + `ui.nav.features` |
 
+#### Livré — guide pratique (juin 2026)
+
+| Élément | Détail |
+|---------|--------|
+| **Page** | `/comment-organiser-evenements-familiaux` — 6 sections (objectif, groupe, planification, invitations, coordination, générations) · ~1 000 mots · FR + EN |
+| **Liens** | Footer invité + connecté · teaser depuis vitrine accueil invité |
+| **SEO** | `meta description` dédiée (`ui.guide.meta_description`) |
+
+| Fichier | Rôle |
+|---------|------|
+| `src/Controller/FamilyEventsGuideController.php` | Route `/comment-organiser-evenements-familiaux` |
+| `templates/guide/index.html.twig` | Contenu page |
+| `assets/styles/pages/_guide.scss` | Styles clair / sombre |
+| `translations/messages.{fr,en}.yaml` → `ui.guide.*` | Textes + `ui.nav.guide` |
+| `config/packages/security.yaml` | Accès public |
+
 ### En attente — AdSense (après enrichissement contenu)
 
 | Sujet | État | Quand |
 |-------|------|--------|
-| **Enrichissement contenu public** | En cours (3/7 livrés) | [Feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) |
+| **Enrichissement contenu public** | En cours (4/7 livrés) | [Feuille de route](#adsense--rejet-manque-de-contenu--feuille-de-route) |
 | **Nouvelle demande d’examen AdSense** | À faire | Après livraison pages publiques |
 | **Safe Browsing** | ☑ Levé juin 2026 | — |
 | **CMP Google** (3 choix) | À configurer | **Après** approbation AdSense |

@@ -57,6 +57,7 @@ security:
         - { path: ^/about, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/faq, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/fonctionnalites, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
+        - { path: ^/comment-organiser-evenements-familiaux, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/locale/switch, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/$, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^%ef.admin.path%, roles: ROLE_MODERATOR, requires_channel: '%env(string:REQUIRED_SCHEME)%' }

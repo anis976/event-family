@@ -168,6 +168,14 @@
     </section>
 
     <p class="ef-home-guest__faq-teaser text-center">
+        <span class="ef-home-guest__faq-teaser-label">{{ 'ui.home.guest_guide_teaser'|trans }}</span>
+        <a href="{{ path('app_family_events_guide') }}" class="ef-home-guest__faq-teaser-link">
+            {{ 'ui.home.guest_guide_link'|trans }}
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        </a>
+    </p>
+
+    <p class="ef-home-guest__faq-teaser text-center">
         <span class="ef-home-guest__faq-teaser-label">{{ 'ui.home.guest_faq_teaser'|trans }}</span>
         <a href="{{ path('app_faq') }}" class="ef-home-guest__faq-teaser-link">
             {{ 'ui.home.guest_faq_link'|trans }}

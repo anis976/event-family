@@ -62,6 +62,7 @@ ui:
     about: À propos
     features: Fonctionnalités
     faq: FAQ
+    guide: Guide pratique
     contact: Contact
   sidebar:
     guest: Invité
@@ -190,6 +191,8 @@ ui:
     guest_use_case_distance_text: Garde le lien entre régions ou pays grâce au calendrier partagé et aux messages de groupe.
     guest_faq_teaser: Une question sur RapproFam ?
     guest_faq_link: Consulter la foire aux questions
+    guest_guide_teaser: Besoin de conseils pour organiser un événement ?
+    guest_guide_link: Lire le guide pratique
     guest_how_title: Comment ça marche ?
     guest_step1_title: Crée un compte
     guest_step1_text: Inscris-toi gratuitement pour rejoindre ou créer un groupe familial.
@@ -593,6 +596,50 @@ ui:
     a17: 'Oui. Tu peux basculer entre français et anglais depuis le menu en bas de la barre latérale. Le choix est mémorisé sur ton appareil et sur ton profil si tu es connecté.'
     q18: Comment contacter le responsable du site ?
     a18: 'Les membres connectés peuvent utiliser le formulaire Contact. Pour les questions juridiques ou la confidentialité, consulte aussi les CGU et les mentions légales.'
+  guide:
+    title: Comment organiser des événements familiaux
+    page_title: RapproFam — Guide organisation événements familiaux
+    meta_description: 'Conseils pratiques pour organiser anniversaires, cousinades, Noël ou réunions de famille : planification, invitations, coordination et outils RapproFam.'
+    lead: 'Organiser un anniversaire, une cousinade ou le repas de Noël en famille demande plus qu’une date dans l’agenda. Ce guide rassemble des conseils concrets pour planifier sereinement — que tu utilises RapproFam ou non — et te montre comment la plateforme peut t’épauler à chaque étape.'
+    define_icon: bi-bullseye
+    define_title: Clarifie d’abord l’objectif de l’événement
+    define_text: 'Avant d’envoyer la première invitation, prends le temps de définir le type de moment que tu veux créer. Un anniversaire surprise n’a pas les mêmes contraintes qu’une cousinade de cent personnes ou qu’un dîner de Noël en petit comité. Note l’ambiance recherchée, la durée approximative et le niveau de formalité attendu.'
+    define_item1: 'Fixe une date cible et une marge de quelques jours si plusieurs branches familiales doivent se coordonner.'
+    define_item2: 'Liste les personnes indispensables (grands-parents, enfants, famille éloignée) pour éviter les oublis.'
+    define_item3: 'Anticipe les contraintes : budget, accessibilité, régimes alimentaires, garde d’enfants ou transports.'
+    group_icon: bi-people-fill
+    group_title: Rassemble ta famille dans un espace commun
+    group_text: 'La coordination échoue souvent quand les informations sont éparpillées entre SMS, groupes WhatsApp et appels. Un groupe familial dédié — même informel — centralise les décisions. Sur RapproFam, tu crées un groupe privé réservé aux proches invités : seuls les membres connectés y accèdent, et un responsable valide les nouvelles arrivées. Tu peux rejoindre plusieurs groupes (famille proche, cousins, belle-famille) tout en n’en administrant qu’un seul à la fois.'
+    plan_icon: bi-calendar-event
+    plan_title: Choisis date, lieu et logistique
+    plan_text: 'Propose deux ou trois créneaux plutôt qu’une date unique figée : cela réduit les allers-retours. Indique clairement l’adresse, le point de rendez-vous et l’heure d’arrivée conseillée. Pour un événement sur plusieurs jours (week-end de cousinade), précise les moments clés : repas du samedi soir, brunch du dimanche, activités enfants.'
+    plan_item1: 'Publie l’événement avec titre, dates de début et de fin, lieu et description sur RapproFam pour que tous les membres du groupe le retrouvent au même endroit.'
+    plan_item2: 'Ajoute une photo ou une image d’illustration si cela aide à visualiser le lieu ou le thème.'
+    plan_item3: 'Pour un événement ouvert à la famille élargie, tu peux le rendre visible par tous les membres connectés du site — pratique pour une fête qui dépasse un seul groupe.'
+    invite_icon: bi-envelope-check
+    invite_title: Invite et suis les réponses
+    invite_text: 'Envoie les invitations suffisamment tôt : trois à six semaines pour un repas, deux à trois mois pour une cousinade ou un mariage familial. Indique une date limite de réponse pour commander la restauration ou réserver une salle. Sur RapproFam, le responsable du groupe invite par pseudo ou e-mail ; les proches reçoivent une notification dans leur hub Invitations et peuvent accepter ou refuser en quelques clics.'
+    invite_item1: 'Relance poliment une semaine avant la date limite — un message dans le fil du groupe suffit souvent.'
+    invite_item2: 'Note qui apporte quoi (entrée, dessert, boissons) pour éviter les doublons ou les trous dans le menu.'
+    invite_item3: 'Prévois un plan B si des personnes clés ne peuvent pas venir : visioconférence, report partiel ou célébration en deux temps.'
+    coordinate_icon: bi-chat-left-text
+    coordinate_title: Communique avant et pendant l’événement
+    coordinate_text: 'Un événement réussi repose sur une information claire et à jour. Partage les changements de dernière minute (retard, intempéries, parking) dans un canal unique plutôt qu’en messages privés éparpillés. La messagerie de groupe RapproFam permet d’échanger avec texte et photos ; les messages privés restent utiles pour des détails sensibles (surprise, cagnotte).'
+    coordinate_item1: 'Rappelle la veille l’heure, l’adresse exacte et ce qu’il faut apporter.'
+    coordinate_item2: 'Désigne un référent le jour J pour accueillir les retardataires et répondre aux questions pratiques.'
+    coordinate_item3: 'Après l’événement, partage quelques photos dans le fil pour prolonger le moment — avec l’accord des personnes photographiées.'
+    tips_icon: bi-heart
+    tips_title: Pense à toutes les générations et aux familles éloignées
+    tips_text: 'Un repas de famille réussi inclut les plus jeunes comme les aînés. Prévois un coin calme, des activités adaptées aux enfants et des places assises pour ceux qui fatiguent vite. Si une partie de la famille est à distance, propose un créneau de visio pendant le repas ou un message vidéo collectif. L’objectif n’est pas la perfection, mais que chacun se sente attendu et informé.'
+    tips_item1: 'Alterne les lieux d’une année sur l’autre pour que le trajet reste équitable entre branches.'
+    tips_item2: 'Utilise un agenda partagé pour éviter les chevauchements avec les vacances scolaires ou les fêtes religieuses.'
+    tips_item3: 'Garde une trace écrite des décisions prises : moins de malentendus l’année suivante.'
+    highlight_icon: bi-lightbulb
+    highlight_title: RapproFam en un coup d’œil
+    highlight_text: 'Inscription gratuite, groupes privés, calendrier d’événements, hub d’invitations, notifications et messagerie intégrée — tout est pensé pour un usage familial, sans exposition publique sur Internet. Crée ton compte, rejoins ou crée un groupe, puis publie ton premier événement en suivant les étapes de ce guide.'
+    features_link: Découvrir toutes les fonctionnalités
+    faq_link: Des questions ? Consulter la FAQ
+    guest_cta_text: Prêt à organiser ton prochain moment en famille ?
   about:
     title: À propos
     page_title: RapproFam — À propos

@@ -1,0 +1,132 @@
+@use '../base/variables' as *;
+@use '../base/mixins' as *;
+
+.ef-guide {
+    &__inner {
+        max-width: 48rem;
+    }
+
+    &__lead {
+        font-size: $ef-font-size-sm;
+        line-height: 1.7;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__sections {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+    }
+
+    &__section {
+        padding: 1.75rem 1.35rem;
+        border-radius: 15px;
+        background: #fff;
+        border: 1px solid rgba($ef-border-color, 0.6);
+        box-shadow: $box-shadow;
+
+        @include color-mode(dark) {
+            background: #252525;
+            border-color: rgba($ef-white-color-dark, 0.12);
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+        }
+    }
+
+    &__section-icon {
+        margin: 0 auto 1rem;
+    }
+
+    &__section-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 0.75rem;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__section-text {
+        margin: 0 0 0.85rem;
+        font-size: 0.925rem;
+        line-height: 1.7;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__section-list {
+        margin: 0;
+        padding-left: 1.2rem;
+        font-size: 0.875rem;
+        line-height: 1.65;
+        color: $gray-600;
+
+        li + li {
+            margin-top: 0.4rem;
+        }
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__highlight {
+        margin-top: 2rem;
+        padding: 1.75rem 1.35rem;
+        border-radius: 15px;
+        background-color: $ef-mission-card-bg;
+        border: 1px solid rgba($ef-border-color, 0.6);
+        border-left: 4px solid $ef-primary-orange;
+        box-shadow: $box-shadow;
+
+        @include color-mode(dark) {
+            background-color: $ef-mission-card-dark-bg;
+            border-color: rgba($ef-white-color-dark, 0.12);
+            border-left-color: $ef-primary-orange-dark;
+            box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.35);
+        }
+    }
+
+    &__highlight-icon {
+        margin: 0 auto 1rem;
+    }
+
+    &__highlight-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 0 0 0.75rem;
+        text-align: center;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__highlight-text {
+        font-size: 0.9rem;
+        line-height: 1.7;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__cta-text {
+        font-size: 0.9rem;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+}

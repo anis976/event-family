@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'ui.guide.page_title'|trans }}{% endblock %}
+
+{% block page_title %}{{ 'ui.guide.title'|trans }}{% endblock %}
+
+{% block meta_description %}
+    <meta name="description" content="{{ 'ui.guide.meta_description'|trans }}">
+{% endblock %}
+
+{% block body %}
+    <div class="ef-main-content-padding ef-guide">
+        <h1 class="visually-hidden">{{ 'ui.guide.title'|trans }}</h1>
+
+        <div class="ef-guide__inner mx-auto">
+            <p class="ef-guide__lead text-center mb-5">{{ 'ui.guide.lead'|trans }}</p>
+
+            <div class="ef-guide__sections">
+                {% for section in sections %}
+                    <section class="ef-guide__section" aria-labelledby="ef-guide-{{ section }}-title">
+                        <div class="ef-icon-box ef-guide__section-icon" aria-hidden="true">
+                            <i class="bi {{ ('ui.guide.' ~ section ~ '_icon')|trans }} fs-3"></i>
+                        </div>
+                        <h2 id="ef-guide-{{ section }}-title" class="ef-guide__section-title">
+                            {{ ('ui.guide.' ~ section ~ '_title')|trans }}
+                        </h2>
+                        <p class="ef-guide__section-text">{{ ('ui.guide.' ~ section ~ '_text')|trans }}</p>
+                        {% if section in sectionsWithItems %}
+                            <ul class="ef-guide__section-list">
+                                {% for i in 1..3 %}
+                                    <li>{{ ('ui.guide.' ~ section ~ '_item' ~ i)|trans }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </section>
+                {% endfor %}
+            </div>
+
+            <aside class="ef-guide__highlight" aria-labelledby="ef-guide-highlight-title">
+                <div class="ef-icon-box ef-guide__highlight-icon" aria-hidden="true">
+                    <i class="bi {{ 'ui.guide.highlight_icon'|trans }} fs-3"></i>
+                </div>
+                <h2 id="ef-guide-highlight-title" class="ef-guide__highlight-title">
+                    {{ 'ui.guide.highlight_title'|trans }}
+                </h2>
+                <p class="ef-guide__highlight-text mb-0">{{ 'ui.guide.highlight_text'|trans }}</p>
+            </aside>
+
+            <p class="ef-home-guest__faq-teaser text-center mt-4 mb-0">
+                <a href="{{ path('app_features') }}" class="ef-home-guest__faq-teaser-link">
+                    {{ 'ui.guide.features_link'|trans }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </p>
+            <p class="ef-home-guest__faq-teaser text-center mt-2 mb-0">
+                <a href="{{ path('app_faq') }}" class="ef-home-guest__faq-teaser-link">
+                    {{ 'ui.guide.faq_link'|trans }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </p>
+
+            {% if not app.user %}
+                <div class="ef-guide__cta mt-5">
+                    <p class="ef-guide__cta-text text-center mb-3">{{ 'ui.guide.guest_cta_text'|trans }}</p>
+                    <div class="ef-home-guest__cta">
+                        <a href="{{ path('app_register') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
+                            {{ 'ui.home.guest_cta_register'|trans }}
+                        </a>
+                        <a href="{{ path('app_login') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                            {{ 'ui.home.guest_cta_login'|trans }}
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

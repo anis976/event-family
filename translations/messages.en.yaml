@@ -61,6 +61,7 @@ ui:
     about: About
     features: Features
     faq: FAQ
+    guide: Practical guide
     contact: Contact
   sidebar:
     guest: Guest
@@ -189,6 +190,8 @@ ui:
     guest_use_case_distance_text: Stay connected across cities or countries with a shared calendar and group messages.
     guest_faq_teaser: Have a question about RapproFam?
     guest_faq_link: Browse the FAQ
+    guest_guide_teaser: Need tips to organize an event?
+    guest_guide_link: Read the practical guide
     guest_how_title: How it works
     guest_step1_title: Create an account
     guest_step1_text: Sign up for free to join or create a family group.
@@ -592,6 +595,50 @@ ui:
     a17: Yes. Switch between French and English from the menu at the bottom of the sidebar. Your choice is saved on your device and on your profile when signed in.
     q18: How do I contact the site owner?
     a18: Signed-in members can use the Contact form. For legal or privacy questions, see also the Terms and legal notice.
+  guide:
+    title: How to organize family events
+    page_title: RapproFam — Family event planning guide
+    meta_description: 'Practical tips to plan birthdays, reunions, Christmas or family gatherings: scheduling, invitations, coordination and RapproFam tools.'
+    lead: 'Organizing a birthday, reunion or Christmas dinner takes more than a date on the calendar. This guide gathers concrete advice to plan calmly — whether or not you use RapproFam — and shows how the platform can support you at each step.'
+    define_icon: bi-bullseye
+    define_title: Clarify the goal of the event first
+    define_text: 'Before sending the first invitation, take time to define the kind of moment you want to create. A surprise birthday has different constraints than a large reunion or a small Christmas dinner. Note the atmosphere you want, approximate duration and expected level of formality.'
+    define_item1: 'Set a target date and allow a few days of flexibility if several family branches need to coordinate.'
+    define_item2: 'List must-have guests (grandparents, children, distant relatives) to avoid oversights.'
+    define_item3: 'Anticipate constraints: budget, accessibility, dietary needs, childcare or travel.'
+    group_icon: bi-people-fill
+    group_title: Gather your family in one shared space
+    group_text: 'Coordination often fails when information is scattered across texts, WhatsApp groups and phone calls. A dedicated family group — even informal — centralizes decisions. On RapproFam, you create a private group for invited relatives only: only signed-in members can access it, and an owner approves new joiners. You can join several groups (close family, cousins, in-laws) while owning only one at a time.'
+    plan_icon: bi-calendar-event
+    plan_title: Choose date, venue and logistics
+    plan_text: 'Offer two or three time slots rather than a single fixed date — it cuts down on back-and-forth. State the address, meeting point and recommended arrival time clearly. For multi-day events (reunion weekend), spell out key moments: Saturday dinner, Sunday brunch, children’s activities.'
+    plan_item1: 'Publish the event with title, start and end dates, location and description on RapproFam so all group members find it in one place.'
+    plan_item2: 'Add a photo or illustration if it helps visualize the venue or theme.'
+    plan_item3: 'For an event open to extended family, you can make it visible to all signed-in members — useful when the celebration spans more than one group.'
+    invite_icon: bi-envelope-check
+    invite_title: Invite and track responses
+    invite_text: 'Send invitations early enough: three to six weeks for a meal, two to three months for a reunion or large family celebration. Set a reply-by date for catering or venue booking. On RapproFam, the group owner invites by username or email; relatives get a notification in their Invitations hub and can accept or decline in a few clicks.'
+    invite_item1: 'Send a polite reminder a week before the deadline — a group thread message is often enough.'
+    invite_item2: 'Track who brings what (starter, dessert, drinks) to avoid duplicates or gaps in the menu.'
+    invite_item3: 'Have a plan B if key people cannot attend: video call, partial reschedule or a two-part celebration.'
+    coordinate_icon: bi-chat-left-text
+    coordinate_title: Communicate before and during the event
+    coordinate_text: 'A successful event relies on clear, up-to-date information. Share last-minute changes (delay, weather, parking) in one channel rather than scattered private messages. RapproFam group messaging supports text and photos; private messages remain useful for sensitive details (surprises, group gifts).'
+    coordinate_item1: 'The day before, remind everyone of the time, exact address and what to bring.'
+    coordinate_item2: 'Assign a point person on the day to welcome latecomers and answer practical questions.'
+    coordinate_item3: 'After the event, share a few photos in the group thread to extend the moment — with consent from people pictured.'
+    tips_icon: bi-heart
+    tips_title: Include every generation and distant relatives
+    tips_text: 'A successful family gathering includes the youngest and the oldest. Plan a quiet corner, child-friendly activities and seating for those who tire quickly. If part of the family is far away, offer a video slot during the meal or a group video message. The goal is not perfection, but that everyone feels expected and informed.'
+    tips_item1: 'Rotate venues year to year so travel stays fair between branches.'
+    tips_item2: 'Use a shared calendar to avoid clashes with school holidays or religious holidays.'
+    tips_item3: 'Keep a written record of decisions: fewer misunderstandings next year.'
+    highlight_icon: bi-lightbulb
+    highlight_title: RapproFam at a glance
+    highlight_text: 'Free sign-up, private groups, event calendar, invitation hub, notifications and built-in messaging — all designed for family use, without public exposure on the web. Create your account, join or create a group, then publish your first event following the steps in this guide.'
+    features_link: Explore all features
+    faq_link: Questions? Browse the FAQ
+    guest_cta_text: Ready to plan your next family moment?
   about:
     title: About
     page_title: RapproFam — About
