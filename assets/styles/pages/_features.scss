@@ -16,6 +16,30 @@
         }
     }
 
+    &__context {
+        max-width: 40rem;
+        margin: 0 auto 2rem;
+    }
+
+    &__context-title {
+        color: $ef-text-gray;
+        margin-bottom: 0.5rem;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__context-text {
+        font-size: 0.9rem;
+        line-height: 1.7;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
     &__list {
         display: flex;
         flex-direction: column;

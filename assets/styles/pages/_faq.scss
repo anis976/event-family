@@ -16,6 +16,36 @@
         }
     }
 
+    &__topics {
+        max-width: 36rem;
+        margin: 0 auto 2rem;
+    }
+
+    &__topics-title {
+        color: $ef-text-gray;
+        margin-bottom: 0.75rem;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__topics-list {
+        margin: 0;
+        padding-left: 1.25rem;
+        font-size: 0.9rem;
+        line-height: 1.75;
+        color: $gray-600;
+
+        li + li {
+            margin-top: 0.35rem;
+        }
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
     &__accordion {
         margin: 0 auto;
     }

@@ -130,6 +130,7 @@ ui:
   home:
     title: Accueil
     page_title: RapproFam — Accueil
+    meta_description: 'Ton tableau de bord RapproFam : événements à venir, groupes familiaux et messagerie privée.'
     welcome: Bienvenue sur RapproFam
     lead: La plateforme qui rassemble les événements de ta famille
     feature_groups_title: Crée des groupes familiaux
@@ -142,14 +143,28 @@ ui:
     view_all_events: Voir tous les événements
     no_public_events: Aucun événement public à venir pour le moment.
     guest_page_title: RapproFam — Organise tes événements en famille
-    guest_meta_description: 'RapproFam aide les familles à créer des groupes, planifier anniversaires, Noël ou cousinades, gérer les invitations et échanger en privé. Gratuit, espace sécurisé pour les membres inscrits.'
-    guest_welcome: RapproFam, ton espace familial privé
-    guest_lead: Planifie les moments qui comptent — groupes, calendrier partagé, invitations et messagerie réunis au même endroit.
+    guest_meta_description: 'Coordination familiale, repas de fête, cousinades et réunions : conseils pratiques, check-list gratuite et outil RapproFam pour centraliser dates, tâches et invitations.'
+    guest_welcome: Simplifie l'organisation de tes événements familiaux
+    guest_lead: Coordination familiale, sans stress inutile.
+    guest_intro_title: Les défis de la coordination familiale moderne
+    guest_intro_p1: 'Dans nos vies actuelles, les familles sont souvent dispersées. Entre les déplacements professionnels, les études et les choix de vie, maintenir des liens étroits avec ta famille élargie devient un véritable défi.'
+    guest_intro_p2: 'La coordination d''un simple repas de fête peut se transformer en casse-tête logistique : trouver une date qui convient à tout le monde, s''assurer que personne n''est oublié, gérer les allergies alimentaires, organiser le transport des personnes âgées — le tout sans qu''un membre se sente mis de côté.'
+    guest_intro_p3: 'La communication se fragmente souvent dans des fils WhatsApp éphémères où les informations cruciales se perdent. Sans un espace dédié, l''organisation finit par devenir une source de stress plutôt qu''un moment de joie. Structurer la logistique, c''est libérer ton énergie mentale pour l''essentiel : profiter ensemble de ces moments précieux.'
+    guest_hero_cta: Découvrir la solution
+    guest_tips_label: Derniers conseils
+    guest_checklist_title: Les 3 erreurs à éviter lors de l'organisation d'un événement familial
+    guest_checklist_subtitle: Mini-boîte à outils gratuite — repars avec des repères concrets, même sans créer de compte.
+    guest_checklist_error1_title: Ne pas définir un canal de communication unique
+    guest_checklist_error1_text: Multiplier les messageries crée de la confusion et des oublis. Choisis un fil ou un espace où tout le monde sait où chercher les infos à jour.
+    guest_checklist_error2_title: Oublier de déléguer les tâches
+    guest_checklist_error2_text: Vouloir tout gérer seul conduit inévitablement à l'épuisement de l'organisateur. Liste les besoins et laisse chacun s'engager sur ce qu'il peut faire.
+    guest_checklist_error3_title: Négliger les détails logistiques (allergies, accès)
+    guest_checklist_error3_text: Ces petits points oubliés peuvent gâcher l'expérience des invités le jour J. Note-les tôt et partage-les clairement avec tout le monde.
     guest_card_groups_text: 'Un groupe par famille ou branche : chef, modérateur, membres et règles de modération intégrées.'
     guest_card_events_text: 'Publie des événements avec date, lieu et visibilité (groupe ou public entre membres).'
     guest_card_connect_text: Messages privés, fil de groupe et notifications pour ne rien manquer.
-    guest_features_title: Tout ce dont tu as besoin pour organiser ta famille
-    guest_features_lead: RapproFam regroupe calendrier, invitations et échanges dans une interface simple, pensée pour les proches — pas pour le grand public.
+    guest_features_title: Comment RapproFam facilite la coordination
+    guest_features_lead: 'Centralisation des dates, gestion des tâches partagées, partage d''informations pratiques : RapproFam structure la logistique pour que tu te concentres sur l''essentiel.'
     guest_features_link: Voir le détail de chaque fonctionnalité
     guest_feature_groups_title: Groupes familiaux structurés
     guest_feature_groups_text: 'Crée un espace dédié à ta famille (nom, branche, description). Le responsable invite les proches, gère les demandes d’adhésion et peut désigner un modérateur. Chaque membre voit les événements et messages du groupe une fois accepté.'
@@ -192,6 +207,8 @@ ui:
     guest_use_case_distance_text: Garde le lien entre régions ou pays grâce au calendrier partagé et aux messages de groupe.
     guest_faq_teaser: Une question sur RapproFam ?
     guest_faq_link: Consulter la foire aux questions
+    guest_faq_section_title: Des questions sur l'organisation ou l'outil ?
+    guest_faq_section_lead: Nous avons rassemblé les interrogations les plus fréquentes pour t'accompagner dans la réussite de tes réunions de famille.
     guest_guide_teaser: Besoin de conseils pour organiser un événement ?
     guest_guide_link: Lire le guide pratique
     guest_demo_teaser: Envie de voir un exemple concret ?
@@ -211,6 +228,9 @@ ui:
   events:
     title: Événements
     page_title: RapproFam — Événements
+    meta_description: 'Consulte et recherche les événements familiaux partagés sur RapproFam : anniversaires, fêtes et réunions.'
+    create_meta_description: 'Publie un nouvel événement familial : date, lieu, description et visibilité pour ton groupe.'
+    edit_meta_description: 'Modifie les détails d''un événement familial publié sur RapproFam.'
     create: Créer un événement
     member_notice: Pour publier un événement, rejoins un groupe et contacte son responsable.
     view_groups: Voir les groupes
@@ -238,6 +258,7 @@ ui:
     edit_page_title: RapproFam — Modifier l'événement
     show:
       page_title: RapproFam — %title%
+      meta_description: 'Détails de l''événement « %title% » sur RapproFam : dates, lieu, groupe et informations pratiques.'
       breadcrumb_aria: Fil d'Ariane
       location_detail: Lieu / détail
       propose_title: Proposer un événement au groupe
@@ -266,6 +287,9 @@ ui:
     back_to_group: Retour au groupe
     title: Groupes
     page_title: RapproFam — Groupes
+    meta_description: 'Gère et découvre tes groupes familiaux sur RapproFam : création, adhésion et modération.'
+    create_meta_description: 'Crée un groupe familial privé sur RapproFam pour organiser événements et échanges.'
+    edit_meta_description: 'Modifie les informations de ton groupe familial sur RapproFam.'
     my_groups: Mes groupes
     create: Créer un groupe
     create_first: Créer mon premier groupe
@@ -300,6 +324,7 @@ ui:
     edit_title: Modifier le groupe
     edit_info_heading: Modifier les informations
     show:
+      meta_description: 'Espace du groupe « %name% » : membres, événements et messages familiaux sur RapproFam.'
       my_groups_breadcrumb: Mes groupes
       manage_requests: Gérer les demandes
       manage_requests_aria: 'Gérer les demandes — %count% en attente'
@@ -370,6 +395,7 @@ ui:
       become_moderator: Je souhaite devenir modérateur du groupe (le modérateur actuel perdra ce titre)
       confirm: Confirmer le transfert
     manage_requests:
+      meta_description: 'Gère les demandes d''adhésion au groupe « %name% » sur RapproFam.'
       page_title: RapproFam — Demandes — %name%
       page_heading: Demandes d'adhésion
       breadcrumb: Demandes
@@ -377,6 +403,7 @@ ui:
       empty: Aucune demande en attente pour le moment.
       column_date: Date
     invite:
+      meta_description: 'Invite des proches à rejoindre le groupe « %name% » sur RapproFam.'
       page_title: RapproFam — Inviter — %name%
       page_heading: Inviter des membres
       breadcrumb: Inviter
@@ -398,6 +425,7 @@ ui:
   messages:
     title: Messages
     page_title: RapproFam — Messages
+    meta_description: 'Accède à tes fils de discussion RapproFam : messages privés et conversations de groupe.'
     hub_title: Espace Messages
     hub:
       link_private: Messages privés
@@ -408,6 +436,7 @@ ui:
       title: Messages privés
       subtitle: Conversations individuelles avec tes contacts
       page_title: RapproFam — Messages privés
+      meta_description: 'Messagerie privée entre membres RapproFam : échange en toute confidentialité.'
       empty: Aucun message privé pour le moment.
       showing_count: '{0} Aucune conversation affichée|{1} %visible% conversation affichée sur %total%|]1,Inf[ %visible% conversations affichées sur %total%'
       load_older: Charger les conversations plus anciennes
@@ -417,6 +446,7 @@ ui:
       title: Messages de groupe
       subtitle: Discussions dans tes groupes
       page_title: RapproFam — Messages de groupe
+      meta_description: 'Fil de discussion de groupe RapproFam : coordonne ta famille avec texte et photos.'
       picker_aria: Choisir un groupe
       picker_header: Mes groupes
       unread_count: '{1} %count% message non lu|]1,Inf[ %count% messages non lus'
@@ -499,6 +529,7 @@ ui:
   invitations:
     title: Invitations
     page_title: RapproFam — Invitations
+    meta_description: 'Consulte et réponds aux invitations de groupes familiaux reçues sur RapproFam.'
     received:
       title: Mes invitations reçues
       subtitle: Invitations personnelles pour rejoindre un groupe.
@@ -524,6 +555,11 @@ ui:
     page_title: RapproFam — Fonctionnalités
     meta_description: 'Découvre les fonctionnalités de RapproFam : groupes familiaux, événements partagés, invitations, notifications et messagerie privée.'
     lead: RapproFam aide ta famille à se coordonner au quotidien. Voici ce que tu peux faire une fois inscrit — dans un espace privé, réservé aux membres.
+    intro_title: Un outil pensé pour la vie familiale réelle
+    intro_p1: 'Organiser un événement en famille, ce n''est pas seulement fixer une date dans un agenda partagé. C''est synchroniser plusieurs générations, des proches éloignés géographiquement et des habitudes de communication différentes — souvent éparpillées entre SMS, appels et groupes WhatsApp.'
+    intro_p2: 'RapproFam regroupe les fonctions essentielles dans un seul espace privé : pas de fil public, pas d''annuaire ouvert. Chaque groupe est contrôlé par son responsable, et seuls les membres invités accèdent au contenu.'
+    context_title: Ce que tu retrouves dans l'application
+    context_text: 'Les cinq blocs ci-dessous détaillent le cœur de RapproFam. Ils s''articulent autour d''un même objectif : réduire la charge mentale de l''organisateur tout en gardant chaque membre informé et impliqué.'
     groups_icon: bi-people-fill
     groups_title: Groupes familiaux
     groups_text: 'Chaque groupe rassemble ta famille ou une branche : un responsable, un modérateur optionnel et les membres invités.'
@@ -561,6 +597,14 @@ ui:
     page_title: RapproFam — FAQ
     meta_description: 'Réponses aux questions fréquentes sur RapproFam : inscription, groupes, événements, invitations, confidentialité et compte.'
     lead: Tout ce qu’il faut savoir pour utiliser RapproFam en famille — inscription, groupes, événements et confidentialité.
+    intro_p1: 'Tu trouveras ci-dessous les réponses aux questions les plus fréquentes sur RapproFam : inscription, création de groupes, publication d''événements, invitations, confidentialité et gestion du compte.'
+    intro_p2: 'Si tu débutes sur la plateforme, consulte aussi le guide pratique d''organisation et la page fonctionnalités pour une vue d''ensemble avant de créer ton compte.'
+    topics_title: Sujets couverts
+    topics_item1: Compte, inscription et suppression
+    topics_item2: Groupes, rôles et invitations
+    topics_item3: Événements publics et privés
+    topics_item4: Messagerie, notifications et confidentialité
+
     guest_cta_text: Prêt à organiser tes moments en famille ?
     contact_link: Une question sans réponse ? Contacte-nous
     q1: Qu’est-ce que RapproFam ?
@@ -604,6 +648,7 @@ ui:
     page_title: RapproFam — Guide organisation événements familiaux
     meta_description: 'Conseils pratiques pour organiser anniversaires, cousinades, Noël ou réunions de famille : planification, invitations, coordination et outils RapproFam.'
     lead: 'Organiser un anniversaire, une cousinade ou le repas de Noël en famille demande plus qu’une date dans l’agenda. Ce guide rassemble des conseils concrets pour planifier sereinement — que tu utilises RapproFam ou non — et te montre comment la plateforme peut t’épauler à chaque étape.'
+    intro_p1: 'Ce guide détaille une méthode en six étapes, utilisable avec ou sans RapproFam. Chaque section propose des actions concrètes pour réduire le stress de l''organisateur et inclure toutes les générations, y compris les proches éloignés.'
     define_icon: bi-bullseye
     define_title: Clarifie d’abord l’objectif de l’événement
     define_text: 'Avant d’envoyer la première invitation, prends le temps de définir le type de moment que tu veux créer. Un anniversaire surprise n’a pas les mêmes contraintes qu’une cousinade de cent personnes ou qu’un dîner de Noël en petit comité. Note l’ambiance recherchée, la durée approximative et le niveau de formalité attendu.'
@@ -648,6 +693,9 @@ ui:
     page_title: RapproFam — Démonstration
     meta_description: 'Exemple fictif : découvre comment la famille Martin-Dubois organise anniversaires, Noël et cousinade avec RapproFam — groupes, calendrier, invitations et messagerie.'
     lead: 'Voici un aperçu illustré de RapproFam avec une famille fictive. Toutes les données ci-dessous sont statiques : elles montrent ce que tu verras une fois inscrit et invité dans un groupe.'
+    intro_p1: 'Cette page te guide pas à pas dans un scénario réaliste. Tu y verras comment une famille type — les Martin-Dubois — prépare simultanément un anniversaire, un réveillon et une cousinade d''été.'
+    intro_p2: 'Les écrans ci-dessous reproduisent l''interface RapproFam : membres du groupe, événements planifiés, statut des invitations et échanges avant le jour J. Aucune donnée personnelle réelle n''est affichée.'
+    outro_text: 'Une fois inscrit, tu bénéficies des mêmes écrans avec tes propres groupes, tes événements et tes conversations — toujours dans un cadre privé réservé aux membres invités.'
     fictional_notice: 'Données de démonstration — aucun compte réel, aucune information personnelle.'
     family_name: Famille Martin-Dubois
     family_text: 'Marie et Pierre coordonnent leur tribu à Bordeaux : trois enfants, des cousins en région parisienne et des grands-parents en Nouvelle-Aquitaine. RapproFam leur sert de tableau de bord familial.'
@@ -710,7 +758,11 @@ ui:
     page_title: RapproFam — À propos
     meta_description: RapproFam — plateforme privée pour organiser des événements familiaux entre proches invités. Découvre le projet, la confidentialité et comment nous contacter.
     subtitle: Plateforme de gestion d'événements familiaux
-    intro: RapproFam est une plateforme conçue pour rapprocher les familles et faciliter l'organisation d'événements familiaux.
+    intro_p1: 'RapproFam est né d''un constat simple : organiser un repas de famille ou une cousinade ne devrait pas exiger une douzaine de fils de discussion et une seule personne portant toute la charge logistique.'
+    intro_p2: 'Le projet est développé comme un service gratuit et non commercial, pensé pour les familles et les proches qui souhaitent un espace en ligne sobre, privé et orienté coordination — loin des réseaux sociaux où tout est public par défaut.'
+    intro_p3: 'Les pages publiques du site (accueil, guide, fonctionnalités, démo, FAQ) présentent le service et partagent des conseils pratiques. Le contenu de ton groupe — événements, membres, messages — reste inaccessible sans compte et sans invitation.'
+    origin_title: Pourquoi un outil dédié à la famille ?
+    origin_text: 'Les messageries généralistes excellent pour le quotidien, mais peinent à structurer un événement récurrent : dates, listes d''invités, répartitions des tâches et rappels se perdent vite. RapproFam propose une couche d''organisation au-dessus de la conversation, sans remplacer la chaleur des échanges humains.'
     feature_groups_title: Crée des groupes familiaux
     feature_groups_text: Rassemble ta famille dans des groupes privés pour mieux t'organiser.
     feature_events_title: Organise des événements
@@ -737,6 +789,7 @@ ui:
   contact:
     title: Contact
     page_title: RapproFam — Contact
+    meta_description: 'Contacte l''équipe RapproFam pour une question sur ton compte, un groupe ou un événement familial.'
     heading: Nous contacter
     subtitle: Une question ? N'hésite pas à nous écrire.
     form_title: Envoyer un message
@@ -761,6 +814,7 @@ ui:
   auth:
     login:
       page_title: RapproFam — Connexion
+      meta_description: 'Connecte-toi à ton espace familial RapproFam pour accéder à tes groupes, événements et messages.'
       title: Connexion à RapproFam
       idle_title: Session expirée
       idle_message: Tu as été déconnecté(e) après une période d'inactivité. Reconnecte-toi pour continuer.
@@ -799,6 +853,7 @@ ui:
       submit: Renvoyer l'e-mail d'activation
     register:
       page_title: RapproFam — Inscription
+      meta_description: 'Inscris-toi gratuitement sur RapproFam pour rejoindre ou créer un groupe familial privé.'
       title: Créer un compte
       google: S'inscrire avec Google
       google_terms_hint: "Après Google, tu devras accepter les conditions générales pour activer ton compte."
@@ -810,18 +865,21 @@ ui:
       illustration_alt: Illustration inscription
     google_complete:
       page_title: RapproFam — Finaliser ton compte
+      meta_description: 'Finalise ton inscription RapproFam après connexion avec Google.'
       title: Finalise ton profil
       intro: "Dernière étape après Google : vérifie ton identité sur RapproFam et accepte les conditions générales pour activer ton compte."
       submit: Accéder à RapproFam
       cancel: Annuler et revenir à la connexion
     forgot:
       page_title: RapproFam — Mot de passe oublié
+      meta_description: 'Réinitialise ton mot de passe RapproFam en quelques étapes par e-mail.'
       title: Mot de passe oublié
       hint: Saisis l'adresse e-mail de ton compte. Si elle est reconnue, tu recevras un lien sécurisé (valable 1 h). Sinon, ignore l'e-mail.
       submit: Envoyer le lien de réinitialisation
       back_to_login: Retour à la connexion
     reset:
       page_title: RapproFam — Nouveau mot de passe
+      meta_description: 'Choisis un nouveau mot de passe pour retrouver l''accès à ton compte RapproFam.'
       title: Nouveau mot de passe
       hint: Choisis un mot de passe robuste (au moins 8 caractères). Ce lien est à usage unique.
       submit: Enregistrer le mot de passe
@@ -856,6 +914,7 @@ ui:
   error:
     not_found:
       page_title: RapproFam — Page introuvable
+      meta_description: 'Page introuvable sur RapproFam. Retourne à l''accueil ou connecte-toi pour accéder à ton espace.'
       code: '404'
       title: Page introuvable
       message: La page que tu cherches n'existe pas ou a été déplacée.
@@ -865,6 +924,7 @@ ui:
       about: À propos du site
     forbidden:
       page_title: RapproFam — Accès refusé
+      meta_description: 'Accès refusé : tu n''as pas l''autorisation de consulter cette page sur RapproFam.'
       code: '403'
       title: Accès refusé
       message: Tu n'as pas l'autorisation d'accéder à cette page.
@@ -875,6 +935,7 @@ ui:
   profile:
     my_space: Mon espace
     my_space_page_title: RapproFam — Mon espace
+    my_space_meta_description: 'Gère ton profil RapproFam : informations personnelles, avatar, notifications et préférences.'
     personal_space_title: Mon espace personnel
     personal_space_subtitle: Gérer les informations privées de ton compte
     username: Nom d'utilisateur
@@ -900,6 +961,7 @@ ui:
     notify_private_message_email_help: Un e-mail te sera envoyé si quelqu'un t'écrit sur RapproFam (maximum un rappel toutes les 30 minutes par conversation).
     show:
       page_title: RapproFam — Profil de %name%
+      meta_description: 'Profil de %name% sur RapproFam : informations publiques du membre et groupes en commun.'
       page_heading: Profil membre
       title: Profil de membre
       subtitle: Consultation des informations du cercle
@@ -935,18 +997,21 @@ ui:
       alert_upload_failed: Impossible d'envoyer la photo. Réessaie.
     password_change:
       page_title: RapproFam — Modifier mon mot de passe
+      meta_description: 'Change ton mot de passe RapproFam depuis ton espace personnel sécurisé.'
       page_heading: Sécurité du compte
       back_aria: Retour
       hint: "Choisis un mot de passe robuste (au moins 8 caractères). Un e-mail de confirmation te sera envoyé : le changement ne sera effectif qu'après clic sur le lien. Si ce n'est pas toi, ignore simplement le message."
       submit: Mettre à jour mon mot de passe
     delete_account:
       page_title: RapproFam — Supprimer mon compte
+      meta_description: 'Supprime définitivement ton compte RapproFam et les données associées.'
       page_heading: Suppression du compte
       heading: Supprimer mon compte
       alert: 'Action définitive. Après envoi, tu seras déconnecté : ouvre le lien reçu par e-mail (1 h) pour confirmer. Ferme les autres onglets RapproFam et n''inscris pas un nouveau compte avant la confirmation.'
       submit: Recevoir l'e-mail de confirmation
     delete_blocked:
       page_title: RapproFam — Suppression impossible
+      meta_description: 'La suppression de ton compte RapproFam est temporairement impossible : résous les étapes indiquées.'
       heading: Avant de supprimer ton compte
       intro: 'Tu es propriétaire d''au moins un groupe familial. Avant de supprimer ton compte, il faudra soit :'
       intro_active: 'Tu es chef d''au moins un groupe. Transfère la responsabilité ou dissous ton groupe, puis tu pourras poursuivre la suppression de ton compte.'
@@ -1463,6 +1528,7 @@ admin:
     denied: Action non autorisée dans l'administration.
   system_notice:
     page_title: RapproFam — Message système — %name%
+    meta_description: 'Administration RapproFam : modifier le message système affiché dans le fil du groupe.'
     page_heading: Groupes — Message système
     breadcrumb_aria: Fil d'Ariane
     breadcrumb_messages: Messages de groupe

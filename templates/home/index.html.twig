@@ -8,11 +8,13 @@
 
 {% block meta_description %}
     {% if not app.user %}
-        <meta name="description" content="{{ 'ui.home.guest_meta_description'|trans }}">
+        {% include 'components/_ef_meta_description.html.twig' with { key: 'ui.home.guest_meta_description' } only %}
     {% else %}
         {{ parent() }}
     {% endif %}
 {% endblock %}
+
+{% set meta_description_key = 'ui.home.meta_description' %}
 
 {% block meta_og %}
     {% if not app.user %}
@@ -34,6 +36,14 @@
             <p class="lead mb-0">
                 {{ app.user ? 'ui.home.lead'|trans : 'ui.home.guest_lead'|trans }}
             </p>
+            {% if not app.user %}
+                <div class="ef-hero-section__cta mt-4">
+                    <a href="#ef-home-guest-features-title" class="ef-hero-section__cta-btn">
+                        {{ 'ui.home.guest_hero_cta'|trans }}
+                        <i class="bi bi-arrow-down" aria-hidden="true"></i>
+                    </a>
+                </div>
+            {% endif %}
         </div>
 
         <div class="ef-hero-section__wave-container">
@@ -48,6 +58,17 @@
     </section>
 
     <div class="ef-main-content-padding">
+        {% if not app.user %}
+            <section class="ef-home__intro-block" id="ef-home-intro" aria-labelledby="ef-home-intro-title">
+                <h2 id="ef-home-intro-title" class="ef-home__intro-title">{{ 'ui.home.guest_intro_title'|trans }}</h2>
+                <div class="ef-home__intro-body">
+                    <p>{{ 'ui.home.guest_intro_p1'|trans }}</p>
+                    <p>{{ 'ui.home.guest_intro_p2'|trans }}</p>
+                    <p class="mb-0">{{ 'ui.home.guest_intro_p3'|trans }}</p>
+                </div>
+            </section>
+        {% endif %}
+
         <div class="row g-4 text-center mb-5">
             <div class="col-12 col-md-6 col-lg-4">
                 {% if app.user %}

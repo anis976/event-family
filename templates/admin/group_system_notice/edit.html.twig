@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'admin.system_notice.page_title'|trans({'%name%': group.name}) }}{% endblock %}
+{% set meta_description_key = 'admin.system_notice.meta_description' %}
 {% block page_title %}{{ 'admin.system_notice.page_heading'|trans }}{% endblock %}
 
 {% block body %}

@@ -2,18 +2,26 @@
 
 {% block title %}{{ 'ui.features.page_title'|trans }}{% endblock %}
 
-{% block page_title %}{{ 'ui.features.title'|trans }}{% endblock %}
+{% set meta_description_key = 'ui.features.meta_description' %}
 
-{% block meta_description %}
-    <meta name="description" content="{{ 'ui.features.meta_description'|trans }}">
-{% endblock %}
+{% block page_title %}{{ 'ui.features.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="ef-main-content-padding ef-features">
         <h1 class="visually-hidden">{{ 'ui.features.title'|trans }}</h1>
 
         <div class="ef-features__inner mx-auto">
-            <p class="ef-features__lead text-center mb-5">{{ 'ui.features.lead'|trans }}</p>
+            <p class="ef-features__lead text-center mb-4">{{ 'ui.features.lead'|trans }}</p>
+
+            {% include 'components/_ef_page_intro.html.twig' with {
+                title_key: 'ui.features.intro_title',
+                paragraph_keys: ['ui.features.intro_p1', 'ui.features.intro_p2'],
+            } only %}
+
+            <section class="ef-features__context text-center mb-4" aria-labelledby="ef-features-context-title">
+                <h2 id="ef-features-context-title" class="ef-features__context-title h6 fw-bold">{{ 'ui.features.context_title'|trans }}</h2>
+                <p class="ef-features__context-text mb-0">{{ 'ui.features.context_text'|trans }}</p>
+            </section>
 
             <div class="ef-features__list">
                 {% for block in ['groups', 'events', 'invites', 'notifications', 'messages'] %}

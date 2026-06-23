@@ -2,11 +2,9 @@
 
 {% block title %}{{ 'ui.faq.page_title'|trans }}{% endblock %}
 
-{% block page_title %}{{ 'ui.faq.title'|trans }}{% endblock %}
+{% set meta_description_key = 'ui.faq.meta_description' %}
 
-{% block meta_description %}
-    <meta name="description" content="{{ 'ui.faq.meta_description'|trans }}">
-{% endblock %}
+{% block page_title %}{{ 'ui.faq.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="ef-main-content-padding ef-faq">
@@ -14,6 +12,20 @@
 
         <div class="ef-faq__inner mx-auto">
             <p class="ef-faq__lead text-center mb-4">{{ 'ui.faq.lead'|trans }}</p>
+
+            {% include 'components/_ef_page_intro.html.twig' with {
+                paragraph_keys: ['ui.faq.intro_p1', 'ui.faq.intro_p2'],
+            } only %}
+
+            <section class="ef-faq__topics mb-4" aria-labelledby="ef-faq-topics-title">
+                <h2 id="ef-faq-topics-title" class="ef-faq__topics-title h6 fw-bold text-center">{{ 'ui.faq.topics_title'|trans }}</h2>
+                <ul class="ef-faq__topics-list">
+                    <li>{{ 'ui.faq.topics_item1'|trans }}</li>
+                    <li>{{ 'ui.faq.topics_item2'|trans }}</li>
+                    <li>{{ 'ui.faq.topics_item3'|trans }}</li>
+                    <li>{{ 'ui.faq.topics_item4'|trans }}</li>
+                </ul>
+            </section>
 
             <div class="accordion ef-faq__accordion" id="ef-faq-accordion">
                 {% for i in 1..faqCount %}

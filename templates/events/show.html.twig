@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'ui.events.show.page_title'|trans({'%title%': event.title}) }}{% endblock %}
+{% block meta_description %}
+    {% include 'components/_ef_meta_description.html.twig' with {
+        key: 'ui.events.show.meta_description',
+        parameters: { '%title%': event.title },
+    } only %}
+{% endblock %}
 {% block page_title %}{{ event.title }}{% endblock %}
 
 {% block body %}

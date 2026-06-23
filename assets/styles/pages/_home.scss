@@ -71,6 +71,47 @@
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
     }
 
+    &__cta {
+        text-align: center;
+    }
+
+    &__cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.65rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: $ef-primary-orange;
+        background: #fff;
+        text-decoration: none;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            color 0.25s ease;
+
+        .bi {
+            transition: transform 0.25s ease;
+        }
+
+        &:hover {
+            color: darken($ef-primary-orange, 6%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.22);
+
+            .bi {
+                transform: translateX(4px);
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid #fff;
+            outline-offset: 3px;
+        }
+    }
+
     &__wave-container {
         position: absolute;
         bottom: -1px;
@@ -171,6 +212,39 @@
             margin-bottom: 2.5rem !important;
         }
     }
+
+    &__intro-block {
+        max-width: 44rem;
+        margin: 0 auto 3rem;
+        padding: 0 0.25rem;
+    }
+
+    &__intro-title {
+        text-align: center;
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin: 0 0 1.5rem;
+        color: $ef-text-gray;
+        line-height: 1.35;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__intro-body {
+        font-size: 1rem;
+        line-height: 1.85;
+        color: $gray-700;
+
+        p {
+            margin-bottom: 1.35rem;
+        }
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
 }
 
 // Vitrine invité (accueil public — examen AdSense)
@@ -178,6 +252,10 @@
     max-width: 1040px;
     margin: 0 auto;
     padding-top: 0.5rem;
+
+    &__tips-cta {
+        margin: 2rem 0 0;
+    }
 
     .ef-icon-box:not(.ef-icon-box--sm) {
         margin: 0 0 1rem;
@@ -189,6 +267,124 @@
 
     &__use-case .ef-icon-box:not(.ef-icon-box--sm) {
         margin: 0 auto 0.85rem;
+    }
+
+    &__tips {
+        margin-bottom: 3rem;
+    }
+
+    &__tips-label {
+        display: block;
+        text-align: center;
+        margin: 0 0 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: $ef-primary-orange;
+
+        @include color-mode(dark) {
+            color: $ef-soft-gold;
+        }
+    }
+
+    &__checklist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    &__checklist-item {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-start;
+        padding: 1.25rem 1.35rem;
+        border-radius: 15px;
+        background: #fff;
+        border: 1px solid rgba($ef-border-color, 0.65);
+        box-shadow: $box-shadow;
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.25s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: $box-shadow-lg;
+            border-color: rgba($ef-primary-orange, 0.28);
+        }
+
+        @include color-mode(dark) {
+            background: #252525;
+            border-color: rgba($ef-white-color-dark, 0.12);
+
+            &:hover {
+                border-color: rgba($ef-soft-gold, 0.35);
+            }
+        }
+    }
+
+    &__checklist-icon {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 12px;
+        color: #fff;
+        background: linear-gradient(135deg, $ef-primary-orange, $ef-soft-gold);
+        font-size: 1.1rem;
+
+        @include color-mode(dark) {
+            background: linear-gradient(135deg, $ef-primary-orange-dark, $ef-soft-gold);
+        }
+    }
+
+    &__checklist-heading {
+        margin: 0 0 0.4rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: $ef-text-gray;
+
+        @include color-mode(dark) {
+            color: $ef-white-color-dark;
+        }
+    }
+
+    &__checklist-text {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: $gray-600;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
+    &__section-cta {
+        margin-top: 2rem;
+    }
+
+    &__section-cta-hint {
+        font-size: 0.9rem;
+    }
+
+    &__faq-help {
+        margin-bottom: 2.5rem;
+        padding: 2rem 1.25rem;
+        border-radius: 18px;
+        background: rgba($ef-primary-orange, 0.06);
+        border: 1px solid rgba($ef-primary-orange, 0.14);
+
+        @include color-mode(dark) {
+            background: rgba($ef-primary-orange-dark, 0.1);
+            border-color: rgba($ef-soft-gold, 0.18);
+        }
     }
 
     &__section-title {

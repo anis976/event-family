@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}RapproFam — {{ ef_group_name(group) }}{% endblock %}
+{% block meta_description %}
+    {% include 'components/_ef_meta_description.html.twig' with {
+        key: 'ui.groups.show.meta_description',
+        parameters: { '%name%': ef_group_name(group) },
+    } only %}
+{% endblock %}
 {% block page_title %}{{ ef_group_name(group) }}{% endblock %}
 
 {% block body %}

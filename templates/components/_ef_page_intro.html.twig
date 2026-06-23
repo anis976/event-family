@@ -1,0 +1,11 @@
+{# Bloc éditorial SEO — paragraphes en HTML lisible par les crawlers #}
+<section class="ef-page-intro"{% if title_key is defined and title_key %} aria-labelledby="ef-page-intro-title"{% endif %}>
+    {% if title_key is defined and title_key %}
+        <h2 id="ef-page-intro-title" class="ef-page-intro__title">{{ title_key|trans({}, 'messages') }}</h2>
+    {% endif %}
+    <div class="ef-page-intro__body">
+        {% for key in paragraph_keys %}
+            <p{% if loop.last %} class="mb-0"{% endif %}>{{ key|trans({}, 'messages') }}</p>
+        {% endfor %}
+    </div>
+</section>

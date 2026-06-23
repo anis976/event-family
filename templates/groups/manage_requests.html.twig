@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'ui.groups.manage_requests.page_title'|trans({'%name%': group.name}) }}{% endblock %}
+{% block meta_description %}
+    {% include 'components/_ef_meta_description.html.twig' with {
+        key: 'ui.groups.manage_requests.meta_description',
+        parameters: { '%name%': ef_group_name(group) },
+    } only %}
+{% endblock %}
 {% block page_title %}{{ 'ui.groups.manage_requests.page_heading'|trans }}{% endblock %}
 
 {% block body %}

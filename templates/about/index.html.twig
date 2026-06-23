@@ -2,26 +2,31 @@
 
 {% block title %}{{ 'ui.about.page_title'|trans }}{% endblock %}
 
-{% block page_title %}{{ 'ui.about.title'|trans }}{% endblock %}
+{% set meta_description_key = 'ui.about.meta_description' %}
 
-{% block meta_description %}
-    <meta name="description" content="{{ 'ui.about.meta_description'|trans }}">
-{% endblock %}
+{% block page_title %}{{ 'ui.about.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="ef-main-content-padding ef-about">
         <h1 class="visually-hidden">{{ 'ui.about.title'|trans }}</h1>
 
         <div class="ef-about__inner mx-auto">
-            <p class="ef-about__lead text-center mb-5">{{ 'ui.about.subtitle'|trans }}</p>
+            <p class="ef-about__lead text-center mb-4">{{ 'ui.about.subtitle'|trans }}</p>
 
             <div class="card mb-4 border-0 shadow-sm ef-about__intro-card">
-                <div class="card-body">
-                    <p class="card-text ef-about__intro-text mb-0">
-                        {{ 'ui.about.intro'|trans }}
-                    </p>
+                <div class="card-body ef-about__intro-body">
+                    <p class="card-text ef-about__intro-text">{{ 'ui.about.intro_p1'|trans }}</p>
+                    <p class="card-text ef-about__intro-text">{{ 'ui.about.intro_p2'|trans }}</p>
+                    <p class="card-text ef-about__intro-text mb-0">{{ 'ui.about.intro_p3'|trans }}</p>
                 </div>
             </div>
+
+            <section class="ef-about__section mb-4" aria-labelledby="ef-about-origin-title">
+                <h2 id="ef-about-origin-title" class="ef-about__section-title h5 fw-bold">
+                    <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'ui.about.origin_title'|trans }}
+                </h2>
+                <p class="ef-about__section-text mb-0">{{ 'ui.about.origin_text'|trans }}</p>
+            </section>
 
             <section class="ef-about__section mb-4" aria-labelledby="ef-about-audience-title">
                 <h2 id="ef-about-audience-title" class="ef-about__section-title h5 fw-bold">

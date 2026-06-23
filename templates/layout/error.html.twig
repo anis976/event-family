@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>{% block title %}RapproFam{% endblock %}</title>
+    {% block meta_description %}
+        {% include 'components/_ef_meta_description.html.twig' with {
+            key: meta_description_key|default('ui.site.meta_description'),
+        } only %}
+    {% endblock %}
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>📅</text></svg>">
 
     <script src="{{ asset('js/ef-theme-init.js') }}"></script>

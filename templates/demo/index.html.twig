@@ -2,11 +2,9 @@
 
 {% block title %}{{ 'ui.demo.page_title'|trans }}{% endblock %}
 
-{% block page_title %}{{ 'ui.demo.title'|trans }}{% endblock %}
+{% set meta_description_key = 'ui.demo.meta_description' %}
 
-{% block meta_description %}
-    <meta name="description" content="{{ 'ui.demo.meta_description'|trans }}">
-{% endblock %}
+{% block page_title %}{{ 'ui.demo.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="ef-main-content-padding ef-demo">
@@ -14,6 +12,11 @@
 
         <div class="ef-demo__inner mx-auto">
             <p class="ef-demo__lead text-center mb-4">{{ 'ui.demo.lead'|trans }}</p>
+
+            {% include 'components/_ef_page_intro.html.twig' with {
+                paragraph_keys: ['ui.demo.intro_p1', 'ui.demo.intro_p2'],
+            } only %}
+
             <p class="ef-demo__notice text-center mb-5" role="note">{{ 'ui.demo.fictional_notice'|trans }}</p>
 
             <article class="ef-demo__family-card text-center mb-5" aria-labelledby="ef-demo-family-title">
@@ -153,6 +156,8 @@
                     </div>
                 </section>
             </div>
+
+            <p class="ef-demo__outro text-center mt-4 mb-0">{{ 'ui.demo.outro_text'|trans }}</p>
 
             <p class="ef-home-guest__faq-teaser text-center mt-4 mb-0">
                 <a href="{{ path('app_family_events_guide') }}" class="ef-home-guest__faq-teaser-link">

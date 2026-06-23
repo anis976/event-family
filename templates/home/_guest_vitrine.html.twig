@@ -1,5 +1,48 @@
 {# Vitrine publique — contenu riche pour SEO / AdSense #}
 <div class="ef-home-guest">
+    <section class="ef-home-guest__tips" aria-labelledby="ef-home-guest-tips-title">
+        <p class="ef-home-guest__tips-label">{{ 'ui.home.guest_tips_label'|trans }}</p>
+        <h2 id="ef-home-guest-tips-title" class="ef-home-guest__section-title">{{ 'ui.home.guest_checklist_title'|trans }}</h2>
+        <p class="ef-home-guest__section-lead">{{ 'ui.home.guest_checklist_subtitle'|trans }}</p>
+
+        <ol class="ef-home-guest__checklist">
+            <li class="ef-home-guest__checklist-item">
+                <span class="ef-home-guest__checklist-icon" aria-hidden="true">
+                    <i class="bi bi-chat-dots"></i>
+                </span>
+                <div>
+                    <h3 class="ef-home-guest__checklist-heading">{{ 'ui.home.guest_checklist_error1_title'|trans }}</h3>
+                    <p class="ef-home-guest__checklist-text">{{ 'ui.home.guest_checklist_error1_text'|trans }}</p>
+                </div>
+            </li>
+            <li class="ef-home-guest__checklist-item">
+                <span class="ef-home-guest__checklist-icon" aria-hidden="true">
+                    <i class="bi bi-person-exclamation"></i>
+                </span>
+                <div>
+                    <h3 class="ef-home-guest__checklist-heading">{{ 'ui.home.guest_checklist_error2_title'|trans }}</h3>
+                    <p class="ef-home-guest__checklist-text">{{ 'ui.home.guest_checklist_error2_text'|trans }}</p>
+                </div>
+            </li>
+            <li class="ef-home-guest__checklist-item">
+                <span class="ef-home-guest__checklist-icon" aria-hidden="true">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </span>
+                <div>
+                    <h3 class="ef-home-guest__checklist-heading">{{ 'ui.home.guest_checklist_error3_title'|trans }}</h3>
+                    <p class="ef-home-guest__checklist-text">{{ 'ui.home.guest_checklist_error3_text'|trans }}</p>
+                </div>
+            </li>
+        </ol>
+
+        <p class="ef-home-guest__tips-cta text-center">
+            <a href="{{ path('app_family_events_guide') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                {{ 'ui.home.guest_guide_link'|trans }}
+                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+            </a>
+        </p>
+    </section>
+
     <section class="ef-home-guest__features" aria-labelledby="ef-home-guest-features-title">
         <h2 id="ef-home-guest-features-title" class="ef-home-guest__section-title">{{ 'ui.home.guest_features_title'|trans }}</h2>
         <p class="ef-home-guest__section-lead">{{ 'ui.home.guest_features_lead'|trans }}</p>
@@ -116,12 +159,18 @@
             </article>
         </div>
 
-        <p class="ef-home-guest__faq-teaser text-center">
-            <a href="{{ path('app_features') }}" class="ef-home-guest__faq-teaser-link mt-2">
-                {{ 'ui.home.guest_features_link'|trans }}
-                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+        <div class="ef-home-guest__section-cta text-center">
+            <a href="{{ path('app_demo') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--primary">
+                {{ 'ui.home.guest_demo_link'|trans }}
+                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
             </a>
-        </p>
+            <p class="ef-home-guest__section-cta-hint mb-0 mt-3">
+                <a href="{{ path('app_features') }}" class="ef-home-guest__faq-teaser-link">
+                    {{ 'ui.home.guest_features_link'|trans }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </p>
+        </div>
     </section>
 
     <section class="ef-home-guest__use-cases" aria-labelledby="ef-home-guest-use-cases-title">
@@ -167,30 +216,6 @@
         </div>
     </section>
 
-    <p class="ef-home-guest__faq-teaser text-center">
-        <span class="ef-home-guest__faq-teaser-label">{{ 'ui.home.guest_demo_teaser'|trans }}</span>
-        <a href="{{ path('app_demo') }}" class="ef-home-guest__faq-teaser-link">
-            {{ 'ui.home.guest_demo_link'|trans }}
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-        </a>
-    </p>
-
-    <p class="ef-home-guest__faq-teaser text-center">
-        <span class="ef-home-guest__faq-teaser-label">{{ 'ui.home.guest_guide_teaser'|trans }}</span>
-        <a href="{{ path('app_family_events_guide') }}" class="ef-home-guest__faq-teaser-link">
-            {{ 'ui.home.guest_guide_link'|trans }}
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-        </a>
-    </p>
-
-    <p class="ef-home-guest__faq-teaser text-center">
-        <span class="ef-home-guest__faq-teaser-label">{{ 'ui.home.guest_faq_teaser'|trans }}</span>
-        <a href="{{ path('app_faq') }}" class="ef-home-guest__faq-teaser-link">
-            {{ 'ui.home.guest_faq_link'|trans }}
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-        </a>
-    </p>
-
     <section class="ef-home-guest__how" aria-labelledby="ef-home-guest-how-title">
         <h2 id="ef-home-guest-how-title" class="ef-home-guest__how-title">{{ 'ui.home.guest_how_title'|trans }}</h2>
         <div class="row g-4 ef-home-guest__steps">
@@ -215,6 +240,17 @@
                     <p class="ef-home-guest__step-text">{{ 'ui.home.guest_step3_text'|trans }}</p>
                 </article>
             </div>
+        </div>
+    </section>
+
+    <section class="ef-home-guest__faq-help" aria-labelledby="ef-home-guest-faq-title">
+        <h2 id="ef-home-guest-faq-title" class="ef-home-guest__section-title">{{ 'ui.home.guest_faq_section_title'|trans }}</h2>
+        <p class="ef-home-guest__section-lead">{{ 'ui.home.guest_faq_section_lead'|trans }}</p>
+        <div class="ef-home-guest__section-cta text-center">
+            <a href="{{ path('app_faq') }}" class="ef-home-guest__cta-btn ef-home-guest__cta-btn--secondary">
+                {{ 'ui.home.guest_faq_link'|trans }}
+                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+            </a>
         </div>
     </section>
 

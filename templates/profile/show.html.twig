@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'ui.profile.show.page_title'|trans({'%name%': profileUser.firstName|capitalize}) }}{% endblock %}
+{% block meta_description %}
+    {% include 'components/_ef_meta_description.html.twig' with {
+        key: 'ui.profile.show.meta_description',
+        parameters: { '%name%': profileUser.firstName|capitalize },
+    } only %}
+{% endblock %}
 
 {% block page_title %}{{ 'ui.profile.show.page_heading'|trans }}{% endblock %}
 

@@ -2,18 +2,20 @@
 
 {% block title %}{{ 'ui.guide.page_title'|trans }}{% endblock %}
 
-{% block page_title %}{{ 'ui.guide.title'|trans }}{% endblock %}
+{% set meta_description_key = 'ui.guide.meta_description' %}
 
-{% block meta_description %}
-    <meta name="description" content="{{ 'ui.guide.meta_description'|trans }}">
-{% endblock %}
+{% block page_title %}{{ 'ui.guide.title'|trans }}{% endblock %}
 
 {% block body %}
     <div class="ef-main-content-padding ef-guide">
         <h1 class="visually-hidden">{{ 'ui.guide.title'|trans }}</h1>
 
         <div class="ef-guide__inner mx-auto">
-            <p class="ef-guide__lead text-center mb-5">{{ 'ui.guide.lead'|trans }}</p>
+            <p class="ef-guide__lead text-center mb-4">{{ 'ui.guide.lead'|trans }}</p>
+
+            {% include 'components/_ef_page_intro.html.twig' with {
+                paragraph_keys: ['ui.guide.intro_p1'],
+            } only %}
 
             <div class="ef-guide__sections">
                 {% for section in sections %}

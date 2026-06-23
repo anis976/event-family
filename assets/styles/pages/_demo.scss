@@ -16,6 +16,19 @@
         }
     }
 
+    &__outro {
+        max-width: 40rem;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: $gray-700;
+
+        @include color-mode(dark) {
+            color: $gray-600-dark;
+        }
+    }
+
     &__notice {
         font-size: 0.8rem;
         line-height: 1.55;
