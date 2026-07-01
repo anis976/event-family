@@ -348,6 +348,14 @@ En prod (après deploy)
 php bin/console sass:build --env=prod
 php bin/console asset-map:compile --env=prod
 php bin/console cache:clear --env=prod
+
+POUR PROGRAMER UNE MAINTENANCE
+cd ~/rapprofam.fr
+nano .env.local
+# remplir les variables → Ctrl+X → Y → Entrée
+composer dump-env prod
+php bin/console cache:clear --env=prod
+php bin/console cache:warmup --env=prod
 ```
 
 **Notes :**
