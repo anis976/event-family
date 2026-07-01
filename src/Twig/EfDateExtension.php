@@ -19,8 +19,29 @@ final class EfDateExtension extends AbstractExtension
     {
         return [
             new TwigFilter('ef_datetime', $this->formatDateTime(...)),
+            new TwigFilter('ef_datetime_24', $this->formatDateTime24(...)),
             new TwigFilter('ef_date', $this->formatDate(...)),
         ];
+    }
+
+    public function formatDateTime24(?\DateTimeInterface $date, ?string $locale = null): string
+    {
+        if (null === $date) {
+            return '';
+        }
+
+        $formatter = new \IntlDateFormatter(
+            $this->resolveLocale($locale),
+            \IntlDateFormatter::NONE,
+            \IntlDateFormatter::NONE,
+            'Europe/Paris',
+            \IntlDateFormatter::GREGORIAN,
+            'dd/MM/yyyy HH:mm',
+        );
+
+        $formatted = $formatter->format($date);
+
+        return false !== $formatted ? $formatted : '';
     }
 
     public function formatDateTime(?\DateTimeInterface $date, ?string $locale = null): string

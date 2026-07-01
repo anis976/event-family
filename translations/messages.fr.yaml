@@ -550,6 +550,19 @@ ui:
       countdown_suffix: seconde(s) pour protéger ton compte.
       logout: Se déconnecter
       stay: Rester connecté
+  maintenance:
+    banner:
+      title: Maintenance planifiée
+      message: 'Le site sera indisponible du %start% au %end% (heure de Paris). Merci de terminer ce que tu fais avant le début de la maintenance.'
+    page:
+      title: RapproFam — Site en maintenance
+      heading: RapproFam revient bientôt
+      message_default: Le site est temporairement fermé au public. Merci de votre patience.
+      message_scheduled: 'Le site est en maintenance jusqu''à %end% (heure de Paris).'
+      countdown_prefix: Retour prévu dans
+      countdown_suffix: ''
+      back_available: La maintenance est terminée.
+      back_link: Se reconnecter
   features:
     title: Fonctionnalités
     page_title: RapproFam — Fonctionnalités
@@ -812,6 +825,7 @@ ui:
         message_max: Le message ne peut pas dépasser {{ limit }} caractères.
         message_min: 'Décris ta demande en au moins %min% caractères (évite les messages du type « salut » ou « bonjour » seuls).'
   auth:
+    back_home_aria: Retour à l'accueil
     login:
       page_title: RapproFam — Connexion
       meta_description: 'Connecte-toi à ton espace familial RapproFam pour accéder à tes groupes, événements et messages.'

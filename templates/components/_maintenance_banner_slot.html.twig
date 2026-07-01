@@ -1,0 +1,19 @@
+{% set maintenance = ef_maintenance.state %}
+{% if maintenance and maintenance.upcoming and not is_granted('ROLE_MODERATOR') %}
+    <div
+        id="ef-maintenance-banner-slot"
+        class="ef-flash-stack{% if not maintenance.showBanner %} d-none{% endif %}"
+        data-ef-maintenance-banner-slot
+    >
+        {% include 'components/_ef_alert.html.twig' with {
+            type: 'warning',
+            title: 'ui.maintenance.banner.title'|trans,
+            message: 'ui.maintenance.banner.message'|trans({
+                '%start%': maintenance.start|ef_datetime,
+                '%end%': maintenance.end|ef_datetime,
+            }),
+            dismissible: true,
+            compact: true,
+        } only %}
+    </div>
+{% endif %}

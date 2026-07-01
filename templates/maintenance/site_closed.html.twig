@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app.request.locale|default('fr') }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>RapproFam — Site en maintenance</title>
+    <title>{{ 'ui.maintenance.page.title'|trans }}</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -28,16 +28,84 @@
         .logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
         h1 { font-size: 1.35rem; margin-bottom: 0.75rem; }
         p { line-height: 1.55; color: #5c4030; font-size: 0.95rem; }
+        .countdown {
+            margin-top: 1.25rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.75rem;
+            background: rgba(232, 125, 42, 0.12);
+            color: #8a4b12;
+            font-size: 0.9rem;
+        }
+        .countdown strong {
+            font-variant-numeric: tabular-nums;
+            font-size: 1.05rem;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(145deg, #1a1410 0%, #2a1f18 100%);
+                color: #f5ebe0;
+            }
+            .card {
+                background: #2a221c;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+            }
+            p { color: #c9b8a8; }
+            .countdown {
+                background: rgba(232, 125, 42, 0.18);
+                color: #f0c090;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="card">
         <div class="logo" aria-hidden="true">📅</div>
-        <h1>RapproFam revient bientôt</h1>
-        <p>
-            Le site est temporairement fermé au public pendant que nous finalisons la mise en ligne.
-            Merci de votre patience.
-        </p>
+        <h1>{{ 'ui.maintenance.page.heading'|trans }}</h1>
+        {% if maintenance and maintenance.showEndCountdown %}
+            <p>{{ 'ui.maintenance.page.message_scheduled'|trans({
+                '%end%': maintenance.end|ef_datetime_24,
+            }) }}</p>
+            <div class="countdown" id="ef-maintenance-end-countdown" role="status" aria-live="polite"
+                 data-ef-end-ts="{{ maintenance.end.timestamp }}">
+                {{ 'ui.maintenance.page.countdown_prefix'|trans }}
+                <strong id="ef-maintenance-end-timer">--:--:--</strong>
+                {{ 'ui.maintenance.page.countdown_suffix'|trans }}
+            </div>
+        {% else %}
+            <p>{{ 'ui.maintenance.page.message_default'|trans }}</p>
+        {% endif %}
     </div>
+    {% if maintenance and maintenance.showEndCountdown %}
+        <script>
+            (function () {
+                const wrap = document.getElementById('ef-maintenance-end-countdown');
+                const timer = document.getElementById('ef-maintenance-end-timer');
+                if (!wrap || !timer) return;
+
+                const endTs = Number.parseInt(wrap.dataset.efEndTs || '0', 10);
+                if (!Number.isFinite(endTs) || endTs <= 0) return;
+
+                function pad(n) { return String(n).padStart(2, '0'); }
+
+                function formatRemaining(totalSeconds) {
+                    const h = Math.floor(totalSeconds / 3600);
+                    const m = Math.floor((totalSeconds % 3600) / 60);
+                    const s = totalSeconds % 60;
+                    return h > 0 ? pad(h) + ':' + pad(m) + ':' + pad(s) : pad(m) + ':' + pad(s);
+                }
+
+                function tick() {
+                    const remaining = Math.max(0, endTs - Math.floor(Date.now() / 1000));
+                    timer.textContent = formatRemaining(remaining);
+                    if (remaining <= 0) {
+                        window.location.reload();
+                    }
+                }
+
+                tick();
+                window.setInterval(tick, 1000);
+            })();
+        </script>
+    {% endif %}
 </body>
 </html>

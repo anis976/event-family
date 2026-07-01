@@ -28,5 +28,19 @@ services:
             $siteClosed: '%ef.site.closed%'
             $adminPath: '%ef.admin.path%'
 
+    App\Service\MaintenanceScheduleService:
+        arguments:
+            $startRaw: '%ef.site.maintenance.start%'
+            $endRaw: '%ef.site.maintenance.end%'
+            $warnMinutes: '%ef.site.maintenance.warn_minutes%'
+
+    App\Controller\MaintenanceStatusController:
+        arguments:
+            $siteClosed: '%ef.site.closed%'
+
+    App\Controller\InvitationController:
+        arguments:
+            $siteClosed: '%ef.site.closed%'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

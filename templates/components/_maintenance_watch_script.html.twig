@@ -1,0 +1,150 @@
+{# Horloge maintenance : script inline (fiable avec Turbo, comme l’inactivité session). #}
+{% if maintenance and maintenance.isClientScheduled and not is_granted('ROLE_MODERATOR') %}
+<script data-turbo-eval="false">
+(function () {
+    function readCfg() {
+        var body = document.body;
+        if (!body || body.dataset.efMaintenanceScheduled !== '1') {
+            return null;
+        }
+        var startTs = parseInt(body.dataset.efMaintenanceStartTs || '0', 10);
+        var warnSec = parseInt(body.dataset.efMaintenanceWarnSeconds || '0', 10);
+        var statusUrl = body.dataset.efMaintenanceStatusUrl || '';
+        if (!startTs || !statusUrl) {
+            return null;
+        }
+        return {
+            startTs: startTs,
+            warnSec: Math.max(warnSec, 60),
+            statusUrl: statusUrl,
+        };
+    }
+
+    function secondsUntilStart(startTs) {
+        return startTs - Math.floor(Date.now() / 1000);
+    }
+
+    function stopMaintenanceWatch() {
+        if (window.__efMaintClockTimer) {
+            clearInterval(window.__efMaintClockTimer);
+            window.__efMaintClockTimer = null;
+        }
+        if (window.__efMaintPollTimer) {
+            clearInterval(window.__efMaintPollTimer);
+            window.__efMaintPollTimer = null;
+        }
+        if (window.__efMaintPollAbort) {
+            window.__efMaintPollAbort.abort();
+            window.__efMaintPollAbort = null;
+        }
+    }
+
+    function redirectForMaintenance() {
+        if (window.__efMaintenanceRedirecting) {
+            return;
+        }
+        window.__efMaintenanceRedirecting = true;
+        stopMaintenanceWatch();
+        var url = new URL(window.location.href);
+        url.searchParams.set('_ef_m', String(Date.now()));
+        window.location.replace(url.toString());
+    }
+
+    window.__efStopMaintenanceWatch = stopMaintenanceWatch;
+
+    function onClockTick() {
+        if (window.__efMaintenanceRedirecting) {
+            return;
+        }
+        var cfg = readCfg();
+        if (!cfg) {
+            stopMaintenanceWatch();
+            return;
+        }
+        var remaining = secondsUntilStart(cfg.startTs);
+        if (remaining <= 0) {
+            redirectForMaintenance();
+            return;
+        }
+        if (remaining <= cfg.warnSec) {
+            var slot = document.getElementById('ef-maintenance-banner-slot');
+            if (slot) {
+                slot.classList.remove('d-none');
+            }
+        }
+    }
+
+    function pollServer() {
+        if (window.__efMaintenanceRedirecting) {
+            return;
+        }
+        var cfg = readCfg();
+        if (!cfg || secondsUntilStart(cfg.startTs) > cfg.warnSec + 120) {
+            return;
+        }
+        if (window.__efMaintPollAbort) {
+            window.__efMaintPollAbort.abort();
+        }
+        window.__efMaintPollAbort = new AbortController();
+        fetch(cfg.statusUrl, {
+            method: 'GET',
+            credentials: 'same-origin',
+            cache: 'no-store',
+            signal: window.__efMaintPollAbort.signal,
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+            .then(function (response) {
+                if (window.__efMaintenanceRedirecting) {
+                    return null;
+                }
+                if (response.status === 503) {
+                    redirectForMaintenance();
+                    return null;
+                }
+                return response.ok ? response.json() : null;
+            })
+            .then(function (data) {
+                if (data && data.active && !data.staff) {
+                    redirectForMaintenance();
+                }
+            })
+            .catch(function (error) {
+                if (error && error.name === 'AbortError') {
+                    return;
+                }
+            })
+            .finally(function () {
+                if (window.__efMaintPollAbort && window.__efMaintPollAbort.signal.aborted) {
+                    window.__efMaintPollAbort = null;
+                }
+            });
+    }
+
+    function startMaintenanceClock() {
+        stopMaintenanceWatch();
+        var cfg = readCfg();
+        if (!cfg) {
+            return;
+        }
+        if (!window.__efMaintenanceRedirecting) {
+            onClockTick();
+        }
+        window.__efMaintClockTimer = window.setInterval(onClockTick, 1000);
+        pollServer();
+        window.__efMaintPollTimer = window.setInterval(pollServer, 3000);
+    }
+
+    document.addEventListener('turbo:before-visit', stopMaintenanceWatch);
+    document.addEventListener('turbo:before-cache', stopMaintenanceWatch);
+    document.addEventListener('turbo:load', startMaintenanceClock);
+    if (document.readyState !== 'loading') {
+        startMaintenanceClock();
+    } else {
+        document.addEventListener('DOMContentLoaded', startMaintenanceClock);
+    }
+})();
+</script>
+{% endif %}

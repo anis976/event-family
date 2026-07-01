@@ -549,6 +549,19 @@ ui:
       countdown_suffix: second(s) to protect your account.
       logout: Sign out
       stay: Stay signed in
+  maintenance:
+    banner:
+      title: Scheduled maintenance
+      message: 'The site will be unavailable from %start% to %end% (Paris time). Please finish what you are doing before maintenance begins.'
+    page:
+      title: RapproFam — Site under maintenance
+      heading: RapproFam will be back soon
+      message_default: The site is temporarily closed to the public. Thank you for your patience.
+      message_scheduled: 'The site is under maintenance until %end% (Paris time).'
+      countdown_prefix: Back in
+      countdown_suffix: ''
+      back_available: Maintenance is over.
+      back_link: Sign in
   features:
     title: Features
     page_title: RapproFam — Features
@@ -810,6 +823,7 @@ ui:
         message_max: Message cannot exceed {{ limit }} characters.
         message_min: 'Describe your request in at least %min% characters (avoid messages like just « hi » or « hello »).'
   auth:
+    back_home_aria: Back to home
     login:
       page_title: RapproFam — Sign in
       meta_description: 'Sign in to your RapproFam family space to access your groups, events and messages.'

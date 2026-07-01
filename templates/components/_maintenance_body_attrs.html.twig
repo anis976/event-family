@@ -1,0 +1,6 @@
+{% if maintenance and maintenance.isClientScheduled and not is_granted('ROLE_MODERATOR') %}
+    data-ef-maintenance-scheduled="1"
+    data-ef-maintenance-start-ts="{{ maintenance.start.timestamp }}"
+    data-ef-maintenance-warn-seconds="{{ max(maintenance.warnMinutes, 1) * 60 }}"
+    data-ef-maintenance-status-url="{{ path('app_maintenance_status') }}"
+{% endif %}

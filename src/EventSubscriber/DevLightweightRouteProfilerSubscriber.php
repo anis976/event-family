@@ -25,6 +25,7 @@ final class DevLightweightRouteProfilerSubscriber implements EventSubscriberInte
         'app_messages_read',
         'app_invitations_counts',
         'app_session_activity',
+        'app_maintenance_status',
     ];
 
     public function onKernelRequest(RequestEvent $event): void

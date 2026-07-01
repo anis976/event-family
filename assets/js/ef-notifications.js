@@ -3,9 +3,20 @@
  * Les compteurs ne sont plus calculés côté serveur à chaque page HTML.
  */
 
+import { redirectForMaintenance, maintenanceWatchScheduled } from './ef-maintenance-watch.js';
+
 const POLL_INTERVAL_MS = 30_000;
+const POLL_INTERVAL_MAINTENANCE_MS = 3_000;
 
 let pollTimer = null;
+
+function maintenancePollScheduled() {
+    return maintenanceWatchScheduled();
+}
+
+function getPollIntervalMs() {
+    return maintenancePollScheduled() ? POLL_INTERVAL_MAINTENANCE_MS : POLL_INTERVAL_MS;
+}
 
 function updateBadge(name, count) {
     document.querySelectorAll(`[data-ef-badge="${name}"]`).forEach((badge) => {
@@ -62,6 +73,12 @@ function applyCounts(data) {
         return;
     }
 
+    if (data.maintenance_active && maintenancePollScheduled()) {
+        redirectForMaintenance();
+
+        return;
+    }
+
     const total = Number(data.total) || 0;
 
     updateBadge('invitations', data.invitations);
@@ -79,9 +96,19 @@ export async function refreshNotificationCounts() {
 
     try {
         const response = await fetch(url, {
-            headers: { Accept: 'application/json' },
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
             credentials: 'same-origin',
+            cache: 'no-store',
         });
+
+        if (response.status === 503 && maintenancePollScheduled()) {
+            redirectForMaintenance();
+
+            return;
+        }
 
         if (!response.ok) {
             return;
@@ -98,7 +125,12 @@ function startPolling() {
         return;
     }
 
-    pollTimer = window.setInterval(refreshNotificationCounts, POLL_INTERVAL_MS);
+    const tick = () => {
+        refreshNotificationCounts();
+    };
+
+    tick();
+    pollTimer = window.setInterval(tick, getPollIntervalMs());
 }
 
 function stopPolling() {
@@ -110,13 +142,17 @@ function stopPolling() {
     pollTimer = null;
 }
 
+function restartPolling() {
+    stopPolling();
+    startPolling();
+}
+
 export function initNotificationBadges() {
     if (!document.body.dataset.efCountsUrl) {
         return;
     }
 
-    refreshNotificationCounts();
-    startPolling();
+    restartPolling();
 }
 
 document.addEventListener('turbo:load', initNotificationBadges);

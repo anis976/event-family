@@ -2,22 +2,60 @@
 @use '../base/mixins' as *;
 
 // --- Inscription / connexion : layout page auth ---
-.ef-signUp,
-.ef-signIn {
+body.ef-auth-page.ef-signUp,
+body.ef-auth-page.ef-signIn {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
     width: 100%;
     min-height: 100vh;
     background-color: transparent;
-    padding: 1.5rem 1rem 1.25rem;
+    margin: 0;
+    padding: 0;
     overflow-y: auto;
 
+    // Rollback ≥ tablette (lg) body : padding 1.75rem 1rem 1.5rem
     @include media-breakpoint-up(lg) {
+        align-items: center;
         justify-content: center;
-        padding-top: 1.75rem;
-        padding-bottom: 1.5rem;
+        padding: 1.75rem 1rem 1.5rem;
+    }
+
+    // < tablette : zéro marge/padding sur body + wrappers Bootstrap.
+    // Rollback .container-fluid.ef-main-wrapper : margin auto + --bs-gutter-x 1.5rem + padding ~0.75rem côté
+    // Rollback .container (enfant) : idem + max-width Bootstrap par breakpoint
+    @include media-breakpoint-down(lg) {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        .container-fluid.ef-main-wrapper {
+            margin: 0 !important;
+            padding: 0 !important;
+            --bs-gutter-x: 0;
+            --bs-gutter-y: 0;
+            max-width: none;
+            width: 100%;
+
+            > .container {
+                margin: 0 !important;
+                padding: 0 !important;
+                --bs-gutter-x: 0;
+                --bs-gutter-y: 0;
+                max-width: none;
+                width: 100%;
+            }
+
+            .row {
+                margin: 0 !important;
+                --bs-gutter-x: 0;
+                --bs-gutter-y: 0;
+            }
+
+            [class*='col-'] {
+                padding: 0 !important;
+            }
+        }
     }
 }
 

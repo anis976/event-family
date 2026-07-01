@@ -1,3 +1,13 @@
 parameters:
     env(EF_SITE_CLOSED): '0'
+    env(EF_MAINTENANCE_START): ''
+    env(EF_MAINTENANCE_END): ''
+    env(EF_MAINTENANCE_WARN_MINUTES): '10'
     ef.site.closed: '%env(bool:EF_SITE_CLOSED)%'
+    ef.site.maintenance.start: '%env(EF_MAINTENANCE_START)%'
+    ef.site.maintenance.end: '%env(EF_MAINTENANCE_END)%'
+    ef.site.maintenance.warn_minutes: '%env(int:EF_MAINTENANCE_WARN_MINUTES)%'
+
+twig:
+    globals:
+        ef_maintenance: '@App\Service\MaintenanceScheduleService'

@@ -1,3 +1,4 @@
+{% set maintenance = ef_maintenance.state %}
 <!DOCTYPE html>
 <html lang="{{ app.request.locale|default('fr') }}" data-bs-theme="light" data-ef-consent-choice="{{ ef_consent.hasChoice ? '1' : '0' }}" data-ef-consent-marketing="{{ ef_consent.marketing ? '1' : '0' }}" data-ef-consent-analytics="{{ ef_consent.analytics ? '1' : '0' }}">
 <head>
@@ -37,8 +38,14 @@
 
     {% include 'components/_ef_adsense_head.html.twig' %}
 </head>
-<body class="ef-body ef-legal-page{% block body_class %}{% endblock %}">
+<body class="ef-body ef-legal-page{% block body_class %}{% endblock %}"
+    {% include 'components/_maintenance_body_attrs.html.twig' %}
+>
     {% include 'components/_ef_cookie_consent.html.twig' %}
+    <div class="container-fluid px-3 pt-3">
+        {% include 'components/_maintenance_banner_slot.html.twig' %}
+    </div>
     {% block body %}{% endblock %}
+    {% include 'components/_maintenance_watch_script.html.twig' %}
 </body>
 </html>

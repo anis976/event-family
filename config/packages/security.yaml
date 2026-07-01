@@ -60,6 +60,7 @@ security:
         - { path: ^/comment-organiser-evenements-familiaux, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/demo, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/locale/switch, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
+        - { path: ^/maintenance/statut, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^/$, roles: PUBLIC_ACCESS, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         - { path: ^%ef.admin.path%, roles: ROLE_MODERATOR, requires_channel: '%env(string:REQUIRED_SCHEME)%' }
         # ^/.+ et non ^/ : sinon "/" est exigé ROLE_USER avant la vitrine invitée (PUBLIC_ACCESS ^/$).

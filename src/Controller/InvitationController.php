@@ -23,6 +23,8 @@ final class InvitationController extends AbstractAppController
         private readonly GroupRequestService $groupRequestService,
         private readonly NotificationCountService $notificationCountService,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly \App\Service\MaintenanceScheduleService $maintenance,
+        private readonly bool $siteClosed,
     ) {
     }
 
@@ -53,7 +55,11 @@ final class InvitationController extends AbstractAppController
 
         $user = $this->requireUser();
 
-        $response = $this->json($this->notificationCountService->getCountsPayload($user, $this->urlGenerator));
+        $payload = $this->notificationCountService->getCountsPayload($user, $this->urlGenerator);
+        $payload['maintenance_active'] = !$this->isGranted('ROLE_MODERATOR')
+            && $this->maintenance->isSiteEffectivelyClosed($this->siteClosed);
+
+        $response = $this->json($payload);
         $response->headers->set('Cache-Control', 'private, no-store');
         $response->headers->set('X-Robots-Tag', 'noindex');
 
